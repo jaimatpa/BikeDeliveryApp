@@ -23,7 +23,9 @@ export default {
       { hid: 'description', name: 'description', content: '' },
     ],
     link: [
-      { rel: 'icon', type: 'image/x-icon', href: '/icon.png' }
+      { rel: 'icon', href: '/icon.png' },
+      { rel: 'shortcut icon', href: '/icon.png' },
+      { rel: 'apple-touch-icon', href: '/icon.png' },
     ],
   },
 
@@ -38,8 +40,7 @@ export default {
 
   // Plugins to run before rendering page (https://go.nuxtjs.dev/config-plugins)
   plugins: [
-    { src: '~/plugins/theme.js', mode: 'client' },
-    { src: '~/plugins/vue-signature-pad.js', mode: 'client' }
+    { src: '~/plugins/theme.js', mode: 'client'}
   ],
 
   // Auto import components (https://go.nuxtjs.dev/config-components)
@@ -47,14 +48,26 @@ export default {
 
   // Modules for dev and build (recommended) (https://go.nuxtjs.dev/config-modules)
   buildModules: [
-    '@nuxtjs/vuetify',
+    '@nuxtjs/vuetify'
   ],
 
   // Modules (https://go.nuxtjs.dev/config-modules)
   modules: [
     '@nuxtjs/axios',
-    '@nuxtjs/auth-next'
+    '@nuxtjs/pwa',
+    '@nuxtjs/auth-next',
+    '@nuxtjs/sentry'
   ],
+
+  // Sentry options
+  sentry: {
+    dsn: process.env.SENTRY_DSN || '',
+    publicRelease: true,
+    sourceMapStyle: 'hidden-source-map',
+    config: {
+    	//release: 'paradym-client@' + process.env.npm_package_version
+    }
+  },
 
   // Nuxt Auth Options
   auth: {
@@ -87,14 +100,14 @@ export default {
 
   // nuxt/axios options
   axios: {
-    baseURL: process.env.BASE_URL
+    baseURL: process.env.API_URL || 'http://localhost:3100'
   },
 
   // nuxt/pwa options
   pwa: {
     meta: {
-      name: 'PMC App',
-      description: 'The web app for PMC',
+      name: 'Paradym Client',
+      description: 'The template client application for the Paradym framework',
       theme_color: process.env.COLOR_PRIMARY || '#4c9a2a'
     },
     workbox: {
@@ -107,13 +120,14 @@ export default {
   // Vuetify module configuration (https://go.nuxtjs.dev/config-vuetify)
   vuetify: {
     customVariables: ['~/assets/variables.scss'],
+    treeShake: true,
     theme: {
       dark: false,
       themes: {
         dark: {
-          primary: '#98002e',
+          primary: colors.blue.darken2,
           accent: colors.grey.darken3,
-          secondary: '#547ca7',
+          secondary: colors.amber.darken3,
           info: colors.teal.lighten1,
           warning: colors.amber.base,
           error: colors.deepOrange.accent4,

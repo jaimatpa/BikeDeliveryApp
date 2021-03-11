@@ -1,6 +1,8 @@
 {
-  "name": "bba-client",
+  "name": "paradym-client",
   "version": "1.0.0",
+  "description": "The client template application for the Paradym framework",
+  "author": "Daniel Dilly <ddilly@paradynamix.com> (https://www.paradynamix.com/)",
   "private": true,
   "scripts": {
     "dev": "nuxt",
@@ -9,11 +11,12 @@
     "generate": "nuxt generate"
   },
   "dependencies": {
-    "@nuxtjs/auth-next": "^5.0.0-1613647907.37b1156",
-    "@nuxtjs/axios": "^5.13.1",
-    "core-js": "^3.8.3",
+    "@nuxtjs/auth-next": "^5.0.0-1610809099.bcf293f",
+    "@nuxtjs/axios": "^5.12.5",
+    "@nuxtjs/pwa": "^3.3.4",
+    "@nuxtjs/sentry": "^5.0.0",
+    "core-js": "^3.8.2",
     "nuxt": "^2.14.12",
-    "vue-signature-pad": "^2.0.2",
     "wavesurfer.js": "^4.5.0"
   },
   "devDependencies": {

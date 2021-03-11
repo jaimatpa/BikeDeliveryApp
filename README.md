@@ -3,8 +3,8 @@
 ## Build Setup
 
 ## Configuration
-Rename env.example from bba-client/env.example to bba-client/.env
-Modify the `.env` file to configure the server's settings.
+* Rename `env.example` from `bba-client/env.example` to `bba-client/.env`
+* Modify the `.env` file to configure the server's settings.
 
 ### App Settings
 * `APP_NAME` - Used to identify the application when sending emails
@@ -15,7 +15,6 @@ Modify the `.env` file to configure the server's settings.
 * `PORT` - The port number that the server will run on (Default: 3000)
 
 ```bash
-
 # go to project folder
 $ cd bba-client
 
@@ -72,7 +71,6 @@ Modify the `.env` file to configure the server's settings.
 * `SMTP_PORT`
 
 ```bash
-
 # go to project folder
 $ cd bba-server
 
