@@ -1,0 +1,11 @@
+// Vuetify overrides
+.v-application .v-application--wrap {
+  .overline {
+    color: #666;
+    font-size: .6875rem !important;
+    letter-spacing: .07272727em !important;
+    line-height: 17.5px;
+    margin-bottom: -2px;
+    margin-right: 8px;
+  }
+}
