@@ -45,8 +45,8 @@ BBA Server is the REST-API server for the BBA client application.
 * The MySQL Event Scheduler must be enabled (`SET GLOBAL event_scheduler = ON;`).  This is to support the automatic expiring of validation tokens.
 
 ## Configuration
-Rename env.example from bba-server/env.example to bba-server/.env
-Modify the `.env` file to configure the server's settings.
+* Rename `env.example` from `bba-server/env.example` to `bba-server/.env`
+* Modify the `.env` file to configure the server's settings.
 
 ### App Settings
 * `APP_NAME` - Used to identify the application when sending emails

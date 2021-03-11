@@ -20,6 +20,9 @@ module.exports = {
       lastName: {
         type: Sequelize.STRING
       },
+      isVerified: {
+        type: Sequelize.INTEGER
+      },
       createdAt: {
         allowNull: false,
         type: Sequelize.DATE

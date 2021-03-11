@@ -53,11 +53,13 @@ router.post('/', async (req, res) => {
             userId: newUser.id,
             token: crypto({length: 16})
           }).save()
+
           // Send email verfication
           console.log('Register: Sending email verication message...')
           let emailHTML = email.createVerifyEmailMessage(token.token, newUser.email)
           let emailText = 'Visit ' + process.env.CLIENT_URL + 'verifyEmail?token=' + token.token + '&email=' + newUser.email + ' to verify your email address.'
-          let appName = process.env.APP_NAME || 'Paradym'
+          let appName = process.env.APP_NAME || 'Bullock Bike App'
+
           try {
             email.sendEmail({
               to: req.body.email, // list of receivers

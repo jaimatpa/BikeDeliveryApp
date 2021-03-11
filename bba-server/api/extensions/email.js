@@ -2,7 +2,7 @@
 
 const nodemailer = require("nodemailer");
 
-let appName = process.env.APP_NAME || 'Paradym'
+let appName = process.env.APP_NAME || 'Bullock Bike App'
 let appEmail = process.env.APP_EMAIL || 'zchowdhury@paradynamix.com'
 let primaryColor = process.env.COLOR_PRIMARY || '#0E4D80'
 
