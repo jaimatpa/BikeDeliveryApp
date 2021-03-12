@@ -105,12 +105,6 @@ export default {
           to: "/",
         },
         {
-          title: "Things",
-          icon: "mdi-animation-outline",
-          iconSelected: "mdi-animation",
-          to: "/things",
-        },
-        {
           title: "Upload",
           icon: "mdi-upload-outline",
           iconSelected: "mdi-upload",

@@ -1,7 +1,7 @@
-'use strict';
+"use strict";
 module.exports = {
   up: async (queryInterface, Sequelize) => {
-    await queryInterface.createTable('VerificationTokens', {
+    await queryInterface.createTable("VerificationTokens", {
       id: {
         type: Sequelize.INTEGER,
         primaryKey: true,
@@ -11,11 +11,11 @@ module.exports = {
       userId: {
         type: Sequelize.INTEGER,
         references: {
-          model: 'Users',
-          key: 'id'
+          model: "Users",
+          key: "id",
         },
         allowNull: false,
-        onDelete: 'cascade',
+        onDelete: "cascade",
       },
       token: {
         type: Sequelize.STRING,
@@ -25,18 +25,21 @@ module.exports = {
         allowNull: false,
         type: Sequelize.DATE,
       },
-    })
+    });
+
     // Expire tokens after 1 day (check every hour)
     queryInterface.sequelize.query(`
       CREATE EVENT IF NOT EXISTS expireVerificationTokens
       ON SCHEDULE EVERY 1 HOUR
       DO DELETE FROM verificationtokens WHERE createdAt < DATE_SUB(NOW(), INTERVAL 1 DAY);
-    `)
-    console.log('expireVerificationTokens event created')
+    `);
+    console.log("expireVerificationTokens event created");
   },
   down: async (queryInterface, Sequelize) => {
-    await queryInterface.dropTable('VerificationTokens')
-    queryInterface.sequelize.query(`DROP EVENT IF EXISTS expireVerificationTokens`)
-    console.log('expireVerificationTokens event dropped')
-  }
+    await queryInterface.dropTable("VerificationTokens");
+    queryInterface.sequelize.query(
+      `DROP EVENT IF EXISTS expireVerificationTokens`
+    );
+    console.log("expireVerificationTokens event dropped");
+  },
 };

@@ -6,8 +6,7 @@ module.exports = {
       {
         email: 'admin@admin.com',
         password: 'password',
-        firstName: 'Super',
-        lastName: 'User',
+        name: 'Super User',
         createdAt: new Date(),
         updatedAt: new Date()
       }

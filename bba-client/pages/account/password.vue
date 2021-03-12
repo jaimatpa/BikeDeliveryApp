@@ -10,6 +10,7 @@
       :busy="busy"
       :error="error"
       @submit="changePW"
+      :isShowCurrentPassword="true"
     />
   </PageSetting>
 </template>
@@ -38,7 +39,7 @@ export default {
         this.busy = true;
         this.finished = false;
         this.error = "";
-        let response = await this.$axios.$post(
+        let response = await this.$axios.$put(
           "/api/user/changePassword",
           data
         );

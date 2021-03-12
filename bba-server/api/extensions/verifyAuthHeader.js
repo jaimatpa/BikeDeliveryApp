@@ -1,17 +1,22 @@
-const jwt = require('jsonwebtoken')
+const jwt = require("jsonwebtoken");
+const constVariables = require("./../../constants");
+
 module.exports = (authHeader) => {
   // Check if a valid JWT token exists in the header
-  console.log('Authentication: Checking that auth header exists...')
-  if (authHeader && authHeader.split(' ')[0] === 'Bearer') {
-    let authorization = authHeader.split(' ')[1]
+  if (
+    authHeader &&
+    authHeader.split(" ")[constVariables.NUMBER_0] === "Bearer"
+  ) {
+    const authorization = authHeader.split(" ")[constVariables.NUMBER_1];
     try {
-      console.log('Authentication: Header found, decoding...')
-      let decoded = jwt.verify(authorization, process.env.JWT_SECRET /*, { ignoreExpiration: true } */);
-      console.log('Authentication: Header successfully decoded.')
-      return decoded
+      const decoded = jwt.verify(
+        authorization,
+        process.env.JWT_SECRET /*, { ignoreExpiration: true } */
+      );
+
+      return decoded;
     } catch (e) {
-      return null
+      return null;
     }
-  } else
-    return null
-}
+  } else return null;
+};

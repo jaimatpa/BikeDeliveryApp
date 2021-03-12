@@ -1,39 +1,78 @@
 const express = require("express");
 const router = express.Router();
-const status = require("http-status");
 const jwt = require("jsonwebtoken");
+const status = require("http-status");
 
 const models = require("./../../../models");
 const apiError = require("./../../../libs/apiError");
 const constVariables = require("./../../../constants");
 const apiMessage = require("./../../../language/en.json");
+const verifyAuthHeader = require("./../../extensions/verifyAuthHeader");
 
-// ****************
-// Login User route - currently assumes username & password data attributes
-// ****************
-router.post("/", async (req, res) => {
-  // Check if username and password seem valid
-  if (!req.body.email || !req.body.password)
+// *********************
+// Change Password Route
+// *********************
+router.put("/", async (req, res) => {
+  console.log("Change Password: New request received.");
+  // Authenticate request & decode token
+  const decodedToken = verifyAuthHeader(req.headers.authorization);
+  if (!decodedToken || !decodedToken.id)
+    return apiError(
+      res,
+      {
+        type: "authentication",
+        message: apiMessage.user.api_message.common.unauthorized_request,
+      },
+      status.UNAUTHORIZED
+    );
+
+  // Check if all the password data exists
+  if (
+    !req.body.password ||
+    !req.body.newPassword ||
+    !req.body.confirmNewPassword
+  )
     return apiError(res, {
       type: "other",
-      message: apiMessage.user.api_message.common.invalid_email_or_password,
+      message:
+        apiMessage.user.api_message.change_password.missing_password_data,
+    });
+  // Check if both new passwords are the same
+  if (req.body.newPassword !== req.body.confirmNewPassword)
+    return apiError(res, {
+      type: "other",
+      message:
+        apiMessage.user.api_message.change_password.password_do_not_match,
     });
 
   try {
-    // Locate the user
-    let userToLogin = await models.User.findOne({
-      where: { email: req.body.email },
+    // Find the user in the database
+    const userToLogin = await models.User.findOne({
+      where: { id: decodedToken.id },
     });
-    if (userToLogin) {
-      // If the user was found
+
+    if (!userToLogin)
+      return apiError(res, {
+        type: "user",
+        message: apiMessage.user.api_message.common.not_find_your_account,
+      });
+    else {
+      // If we found the user
       if (userToLogin.isVerified) {
         // If user has been verified
         // Check the password
         const isValidPassword = await userToLogin.validPassword(
           req.body.password
         );
+
+        // If the current password was valid
         if (isValidPassword) {
-          // If the password was valid
+          // Change the password
+          userToLogin.password = req.body.newPassword;
+
+          // Save the password
+          await userToLogin.save();
+
           // Create the payload & JWT token
           const payload = {
             id: userToLogin.id,
@@ -64,13 +103,17 @@ router.post("/", async (req, res) => {
               displayName: userToLogin.displayName,
             },
             token: token,
-            message: apiMessage.user.api_message.login.user_authenticated,
+            message:
+              apiMessage.user.api_message.change_password.password_updated,
           };
 
           // Send the response
-          return res.status(status.OK).send(response);
-        } // Password was invalid
-        else
+          console.log(
+            "Login: Employee successfully changed their password.  Sending response."
+          );
+
+          return res.send(response);
+        } else
           return apiError(
             res,
             {
@@ -81,24 +124,15 @@ router.post("/", async (req, res) => {
           );
       } // Employee was not verified
       else
-        return apiError(
-          res,
+        return err(
           {
             type: "verification",
-            message: apiMessage.user.api_message.login.user_not_verified,
+            message:
+              apiMessage.user.api_message.change_password.user_not_verified,
           },
           status.UNAUTHORIZED
         );
-    } // Employee not found
-    else
-      return apiError(
-        res,
-        {
-          type: "username",
-          message: apiMessage.user.api_message.common.not_find_your_account,
-        },
-        status.UNAUTHORIZED
-      );
+    }
   } catch (error) {
     //  Handle other errors
     if (error.errors)
