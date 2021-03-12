@@ -10,7 +10,7 @@ module.exports = async () => {
       name: "@rahmat058",
       email: "md.kazi.rahmat@gmail.com",
       password: "password",
-      isVerified: true,
+      isVerified: true
     }
   ];
 

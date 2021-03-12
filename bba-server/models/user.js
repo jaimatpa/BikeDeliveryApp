@@ -20,6 +20,8 @@ module.exports = (sequelize, DataTypes) => {
       password: DataTypes.STRING,
       name: DataTypes.STRING,
       isVerified: DataTypes.BOOLEAN,
+      createdAt: DataTypes.DATE,
+      updatedAt: DataTypes.DATE,
       deletedAt: DataTypes.DATE,
       displayName: {
         type: DataTypes.VIRTUAL,
