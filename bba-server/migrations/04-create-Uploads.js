@@ -14,7 +14,7 @@ module.exports = {
       mimetype: Sequelize.STRING,
       size: Sequelize.INTEGER,
       createdAt: {
-        allowNull: false,
+        allowNull: true,
         type: Sequelize.DATE
       }
     });
