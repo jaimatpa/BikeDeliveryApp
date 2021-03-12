@@ -2,7 +2,7 @@
   <PageForm>
     <!-- Login Form -->
     <FormLogin
-      :title="`${$config.appName} Login`"
+      :title="`${$config.appName}`"
       logo="/icon.png"
       logoWidth="100"
       logoHeight="100"
@@ -81,13 +81,13 @@ export default {
         this.email = credentials.email;
         let remember = credentials.remember;
         delete credentials.remember;
-        let response = await this.$auth.loginWith("local", {
+        const response = await this.$auth.loginWith("local", {
           data: credentials,
-        });
+        });        
 
         if (response.status == 200) {
           this.$auth.setUser(response.data.user);
-          this.$auth.$storage.setLocalStorage("user", response.data.user);
+          this.$auth.$storage.setLocalStorage("user", response.data);
           if (remember)
             this.$auth.$storage.setLocalStorage("rememberMe", this.email);
           else this.$auth.$storage.removeLocalStorage("rememberMe");
@@ -95,6 +95,8 @@ export default {
           this.showSuccess("Login Successfully Done!!!");
         }
       } catch (err) {
+        console.log('err', err);
+        
         try {
           let error = err.response.data.message;
           switch (err.response.data.type) {

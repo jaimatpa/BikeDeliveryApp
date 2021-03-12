@@ -21,7 +21,7 @@ export default {
     busy: Boolean,
     timeout: {
       type: Number,
-      default: 5000,
+      default: 2000,
     },
     color: String,
     message: String,

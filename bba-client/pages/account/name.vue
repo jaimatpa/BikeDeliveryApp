@@ -55,7 +55,7 @@ export default {
         this.busy = true;
         this.finished = false;
         this.error = "";
-        let response = await this.$axios.$post("/api/user/update", {
+        let response = await this.$axios.$put("/api/user/updateUser", {
           name: this.name,
         });
         

@@ -1,9 +1,9 @@
 const login = require('./user/login')
 const register = require('./user/register')
 const verifyEmail = require('./user/verifyEmail')
-const sendEmailVerification = require('./user/sendEmailVerification')
 const forgotPassword = require('./user/forgotPassword')
 const resetPassword = require('./user/resetPassword')
+const sendEmailVerification = require('./user/sendEmailVerification')
 
 module.exports = {
   create: (app) => {

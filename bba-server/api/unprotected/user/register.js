@@ -1,64 +1,90 @@
-const express = require('express')
-const router = express.Router()
-const models = require('./../../../models')
-const email = require('./../../extensions/email')
-const crypto = require('crypto-random-string')
+const express = require("express");
+const router = express.Router();
+const status = require("http-status");
+const crypto = require("crypto-random-string");
 
-function validateEmail(email) {
-  const re = /^(([^<>()[\]\\.,;:\s@\"]+(\.[^<>()[\]\\.,;:\s@\"]+)*)|(\".+\"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
-  return re.test(email);
-}
+const models = require("./../../../models");
+const email = require("./../../extensions/email");
+const apiError = require("./../../../libs/apiError");
+const constVariables = require("./../../../constants");
+const validateEmail = require("./../../../libs/validateEmail");
+const apiMessage = require("./../../../language/en.json");
 
 // *****************
 // Register User route
 // *****************
-router.post('/', async (req, res) => {
-
-  function err(msg, code) {
-    code = code ? code : 400
-    console.log(`Register: Error ${code}: ${msg.message}`)
-    return res.status(code).send(msg)
-  }
-
-  console.log('Register: Attempt to create a new user...')
+router.post("/", async (req, res) => {
   // Check if email was provided
   if (!req.body.email)
-    return err({ 'type': 'email', 'message': 'An email address is required.' })
+    return apiError(res, {
+      type: "email",
+      message: apiMessage.user.api_message.common.email_required,
+    });
   // Check if email is valid
   else if (!validateEmail(req.body.email))
-    return err({ 'type': 'email', 'message': 'Invalid email address.' })
+    return apiError(res, {
+      type: "email",
+      message: apiMessage.user.api_message.common.invalid_email,
+    });
+
   // Check if password was provided
   if (!req.body.password)
-    return err({ 'type': 'password', 'message': 'A password is required.' })
+    return apiError(res, {
+      type: "password",
+      message: apiMessage.user.api_message.common.password_required,
+    });
 
   try {
     // Locate the user
-    let userToLogin = await models.User.findOne({ where: { email: req.body.email } })
-    if (!userToLogin) { // If the user was NOT found
+    let userToLogin = await models.User.findOne({
+      where: { email: req.body.email },
+    });
+
+    if (!userToLogin) {
+      // If the user was NOT found
       try {
         // Create the user
-        let newUser = await models.User.build({ email: req.body.email, firstName: req.body.firstName || '', lastName: req.body.lastName || '', password: req.body.password, isVerified: req.body.isVerified}).save()
+        let newUser = await models.User
+          .build({
+            email: req.body.email,
+            name: req.body.name || "",
+            password: req.body.password,
+            isVerified: false,
+          })
+          .save();
+
         if (newUser) {
-          console.log('Register: New User Created.')
-          let response = {
+          const response = {
             success: true,
             email: req.body.email,
-            firstName: req.body.firstName || '',
-            lastName: req.body.lastName || '',
-            message: 'User created'
-          }
+            name: req.body.name || "",
+            message: apiMessage.user.api_message.register.user_created,
+          };
 
           // Generate a verification token
-          let token = await models.VerificationToken.build({
-            userId: newUser.id,
-            token: crypto({length: 16})
-          }).save()
+          const verifyToken = await models.VerificationToken
+            .build({
+              userId: newUser.id,
+              token: crypto({ length: constVariables.NUMBER_16 }),
+            })
+            .save();
 
           // Send email verfication
-          console.log('Register: Sending email verication message...')
-          let emailHTML = email.createVerifyEmailMessage(token.token, newUser.email)
-          let emailText = 'Visit ' + process.env.CLIENT_URL + 'verifyEmail?token=' + token.token + '&email=' + newUser.email + ' to verify your email address.'
-          let appName = process.env.APP_NAME || 'Bullock Bike App'
+          const emailHTML = email.createVerifyEmailMessage(
+            verifyToken.token,
+            newUser.email
+          );
+
+          const emailText =
+            "Visit " +
+            process.env.CLIENT_URL +
+            "/verifyEmail?token=" +
+            verifyToken.token +
+            "&email=" +
+            newUser.email +
+            " to verify your email address.";
+
+          const appName = process.env.APP_NAME ? process.env.APP_NAME : "BDA";
 
           try {
             email.sendEmail({
@@ -66,33 +92,57 @@ router.post('/', async (req, res) => {
               subject: `${appName}: Verify your Email address.`, // Subject line
               text: emailText, // plain text body
               html: emailHTML, // html body
-            })
-          } catch(error) {
-            console.log(error)
-            console.log('Register: Error sending verification email')
+            });
+          } catch (error) {
+            console.log("Register: Error sending verification email");
           }
 
           // Send the response
-          console.log('Register: Registration completed. Sending Response.')
-          return res.send(response)
-
+          return res.send(response);
         } else
-          return err({'type': 'unknown', 'message': 'Error creating new user.' }, 500)
-
-      } catch(error) {
-        return err({'type': 'unknown', 'message': 'Error creating new user.' }, 500)
+          return apiError(
+            res,
+            {
+              type: "unknown",
+              message:
+                apiMessage.user.api_message.register.error_creating_new_user,
+            },
+            status.INTERNAL_SERVER_ERROR
+          );
+      } catch (error) {
+        return apiError(
+          res,
+          {
+            type: "unknown",
+            message:
+              apiMessage.user.api_message.register.error_creating_new_user,
+          },
+          status.INTERNAL_SERVER_ERROR
+        );
       }
-    }
-    else
-      return err({'type': 'email', 'message': 'An account with this email already exists.' })
-  }
-  catch(error) {
+    } else
+      return apiError(res, {
+        type: "email",
+        message: apiMessage.user.api_message.common.account_exists,
+      });
+  } catch (error) {
     //  Handle other errors
     if (error.errors)
-      return err({ 'type': 'unknown', 'message': error.errors[0].message }, 500)
+      return apiError(
+        res,
+        {
+          type: "unknown",
+          message: error.errors[constVariables.NUMBER_0].message,
+        },
+        status.INTERNAL_SERVER_ERROR
+      );
     else
-      return err({ 'type': 'unknown', 'message': error }, 500)
+      return apiError(
+        res,
+        { type: "unknown", message: error },
+        status.INTERNAL_SERVER_ERROR
+      );
   }
-})
+});
 
-module.exports = router
+module.exports = router;

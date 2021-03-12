@@ -1,33 +1,33 @@
 /* This module exports various functions for creating & sending email messages */
-
 const nodemailer = require("nodemailer");
+const constVariables = require("./../../constants");
 
-let appName = process.env.APP_NAME || 'Bullock Bike App'
-let appEmail = process.env.APP_EMAIL || 'zchowdhury@paradynamix.com'
-let primaryColor = process.env.COLOR_PRIMARY || '#0E4D80'
+const appName = process.env.APP_NAME || "BDA";
+const appEmail = process.env.APP_EMAIL || "krahamatullah@pardynamix.com";
+const primaryColor = process.env.COLOR_PRIMARY || "#4C9A2A";
 
 // Sends an email message using nodemailer
 async function sendEmail(message) {
-  console.log('Sending an email message...')
-  if (!message.hasOwnProperty('from')) {
-    message.from = `"${appName}" <${appEmail}>`
+  console.log("Sending an email message...");
+  if (!message.hasOwnProperty("from")) {
+    message.from = `"${appName}" <${appEmail}>`;
   }
   try {
-    let transporter = nodemailer.createTransport({
+    const transporter = nodemailer.createTransport({
       host: process.env.SMTP_SERVER,
       port: process.env.SMTP_PORT,
-      secure: process.env.SMTP_PORT == 465 ? true : false,
+      secure: process.env.SMTP_PORT == constVariables.NUMBER_465 ? true : false,
       auth: {
         user: process.env.SMTP_USER,
         pass: process.env.SMTP_PASSWORD,
       },
-    })
-    let result = await transporter.sendMail(message)
-    console.log('Email sent.')
-    return { success: true, messageId: result.messageId }
+    });
+    const result = await transporter.sendMail(message);
+    console.log("Email sent.");
+    return { success: true, messageId: result.messageId };
   } catch (err) {
-    console.log('Error sending email: ' + err)
-    return { error: true, message: err }
+    console.log("Error sending email: " + err);
+    return { error: true, message: err };
   }
 }
 
@@ -42,20 +42,21 @@ function createButton(text, link) {
         </a>
       </td>
     </tr>
-  </table>`
-  return button
+  </table>`;
+  return button;
 }
 
 // Creates an email message that includes a title, message, and a button link
 function createMessage(messageInfo) {
-  let msg = '<div style="background-color: #ffffff">'
-  msg += '<div style="max-width: 600px; margin: 0 auto; font-family: \'Roboto\', sans-serif; font-weight: 400; text-align: center;">'
-  msg += '<h1 style="font-weight: 400;">' + messageInfo.title + '</h1>'
-  msg += '<p>' + messageInfo.message + '</p>'
-  msg += createButton(messageInfo.linkText, messageInfo.link)
-  msg += '</div>'
-  msg += '</div>'
-  return msg
+  let msg = '<div style="background-color: #ffffff">';
+  msg +=
+    "<div style=\"max-width: 600px; margin: 0 auto; font-family: 'Roboto', sans-serif; font-weight: 400; text-align: center;\">";
+  msg += '<h1 style="font-weight: 400;">' + messageInfo.title + "</h1>";
+  msg += "<p>" + messageInfo.message + "</p>";
+  msg += createButton(messageInfo.linkText, messageInfo.link);
+  msg += "</div>";
+  msg += "</div>";
+  return msg;
 }
 
 // Creates a 'Password Was Reset' message
@@ -63,29 +64,39 @@ function createPasswordWasResetMessage(email) {
   return createMessage({
     title: `<span style="color: ${primaryColor};">${appName}</span> account update!`,
     message: `Your ${appName} password was reset.`,
-    link: process.env.CLIENT_URL + '/login',
-    linkText: 'Login'
-  })
+    link: process.env.CLIENT_URL + "/login",
+    linkText: "Login",
+  });
 }
 
 // Creates a 'Verify Your Email' message
 function createVerifyEmailMessage(token, email) {
   return createMessage({
     title: `Welcome to <span style="color: ${primaryColor};">${appName}</span>!`,
-    message: 'Click the button below to verify your email address.',
-    link: process.env.CLIENT_URL + '/verifyEmail?token=' + token + '&email=' + email,
-    linkText: 'Verify My Email'
-  })
+    message: "Click the button below to verify your email address.",
+    link:
+      process.env.CLIENT_URL +
+      "/verifyEmail?token=" +
+      token +
+      "&email=" +
+      email,
+    linkText: "Verify My Email",
+  });
 }
 
 // Creates a 'Reset Your Password' message
 function createResetPasswordMessage(token, email) {
   return createMessage({
-    title: 'Reset Password',
+    title: "Reset Password",
     message: `Click the button below to reset your ${appName} password.`,
-    link: process.env.CLIENT_URL + '/resetPassword?token=' + token + '&email=' + email,
-    linkText: 'Reset My Password'
-  })
+    link:
+      process.env.CLIENT_URL +
+      "/resetPassword?token=" +
+      token +
+      "&email=" +
+      email,
+    linkText: "Reset My Password",
+  });
 }
 
 module.exports = {
@@ -94,5 +105,5 @@ module.exports = {
   createMessage,
   createPasswordWasResetMessage,
   createVerifyEmailMessage,
-  createResetPasswordMessage
-}
+  createResetPasswordMessage,
+};

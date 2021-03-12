@@ -36,6 +36,7 @@
 
     <!-- Current Password -->
     <v-text-field
+      v-if="isShowCurrentPassword"
       v-model="currentPassword"
       label="Current Password"
       outlined
@@ -112,7 +113,7 @@ export default {
   props: {
     minLength: {
       type: Number,
-      default: 8,
+      default: 6,
     },
     // Base Form
     title: String,
@@ -128,8 +129,9 @@ export default {
     error: String,
     disabled: Boolean,
     busy: Boolean,
+    isShowCurrentPassword: Boolean,
   },
-  data() {
+  data() {        
     return {
       // Form fields
       currentPassword: "",

@@ -69,7 +69,7 @@ export const actions = {
 
   async success({ commit, dispatch }, message) {
     dispatch("busy", {
-      timeout: 5000,
+      timeout: 2000,
       color: "success",
       canClose: false,
       message: message,
