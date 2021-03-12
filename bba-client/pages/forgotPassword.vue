@@ -63,6 +63,7 @@ export default {
       busy: false,
       error: "",
       finished: false,
+      email: ""
     };
   },
   methods: {
@@ -72,7 +73,10 @@ export default {
         let response = await this.$axios.$post("/api/user/forgotPassword", {
           email: email,
         });
-        if (response.success) this.finished = true;
+        if (response.success) {
+          this.finished = true;
+          this.email = email;
+        }
       } catch (err) {
         try {
           try {
