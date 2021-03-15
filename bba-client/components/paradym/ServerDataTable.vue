@@ -50,12 +50,12 @@
         <v-icon small color="primary" class="mr-2" @click="$emit('edit', item)">
           mdi-pencil
         </v-icon>
-        <v-icon small color="primary" @click="confirmDelete(item)">
+        <v-icon small color="secondary" @click="confirmDelete(item)">
           mdi-delete
         </v-icon>
       </template>
     </v-data-table>
-    
+
     <ModalConfirm
       v-model="deleteDialog"
       :title="`Delete ${name}`"
@@ -171,7 +171,7 @@ export default {
         this.options.page = 1;
       }, 200);
     },
-    confirmDelete(item) {
+    confirmDelete(item) {      
       this.itemToDelete = item;
       this.deleteDialog = true;
     },

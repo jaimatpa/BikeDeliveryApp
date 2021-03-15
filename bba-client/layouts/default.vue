@@ -6,7 +6,8 @@
       :title="$config.appName"
       logo="/icon.png"
       @menuClick="drawer = !drawer"
-      :color="$vuetify.theme.dark ? '' : 'white'"
+      :color="$vuetify.theme.dark ? '' : 'primary'"
+      :dark="true"
     >
       <IconButton
         @click="settings = true"
@@ -116,6 +117,12 @@ export default {
           iconSelected: "mdi-test-tube",
           to: "/test",
         },
+        {
+          title: "Users",
+          icon: "mdi-account-group-outline",
+          iconSelected: "mdi-account-group-outline",
+          to: "/users",
+        },
       ],
       userItems: [
         {
@@ -140,11 +147,11 @@ export default {
   computed: {
     ...mapState(["hideNav"]),
     ...mapState({
-      snackbar: (state) => state.snackbar
+      snackbar: (state) => state.snackbar,
     }),
   },
   methods: {
-    ...mapMutations("snackbar", ["setBusy"])
+    ...mapMutations("snackbar", ["setBusy"]),
   },
 };
 </script>
