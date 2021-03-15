@@ -50,7 +50,7 @@ export default {
   },
   computed: {
     addText() {
-      if (typeof itemToEdit == "object") {
+      if (typeof itemToEdit == "object") {        
         if (Object.keys(this.itemToEdit).length > 0)
           return this.name ? "Update " + this.name : "Update Item";
         else return this.name ? "Add " + this.name : "Add Item";

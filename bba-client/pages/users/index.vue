@@ -23,10 +23,16 @@ export default {
         email: {
           type: String,
           required: true,
+          email: true
         },
         name: {
           type: String,
           required: true,
+        },
+        password: {
+          type: String,
+          required: true,
+          minLength: true,
         },
       },
     };

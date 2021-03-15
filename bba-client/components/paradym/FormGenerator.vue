@@ -112,12 +112,12 @@
         validate-on-blur
       />
     </div>
-    <!-- Email Address
-    <v-text-field v-model="email" label="Email address" autocomplete="off"
+
+    <!-- Email Address -->
+    <!-- <v-text-field v-model="email" label="Email address" autocomplete="off"
       class="mb-4" color="primary" validate-on-blur
       outlined dense hide-details="auto" :prepend-inner-icon="icons ? 'mdi-email' : ''"
-      :rules="[rules.required, rules.email]" />
-    -->
+      :rules="[rules.required, rules.email]" /> -->
 
     <!-- Slot: Footer -->
     <template v-slot:footer>
@@ -164,6 +164,8 @@ export default {
       // Rules
       rules: {
         required: (value) => value == false || !!value || "Required.",
+        minLength: (value) =>
+          (value && value.length >= 8) || "Min Length 8 Required.",
         email: (value) => {
           if (value == "" || value == null) return true;
           const pattern = /^(([^<>()[\]\\.,;:\s@"]+(\.[^<>()[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
@@ -221,6 +223,8 @@ export default {
     getRules(field) {
       let result = [];
       if (field.required) result.push(this.rules.required);
+      if (field.minLength) result.push(this.rules.minLength);
+      if (field.email) result.push(this.rules.email);
       return result;
     },
     onSubmit() {
