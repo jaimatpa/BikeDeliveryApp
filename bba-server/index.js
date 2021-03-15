@@ -6,6 +6,7 @@ const consola = require('consola')
 const cors = require('cors')
 const express = require('express')
 const finale = require('finale-rest')
+const morgan = require('morgan')
 
 // Import Libraries (Sentry Error Logging)
 const Sentry = require("@sentry/node");

@@ -1,0 +1,47 @@
+//Fonts 
+$body-font-family: 'Poppins', sans-serif;
+
+// COLORS
+$color-primary: #4c9a2a;
+$color-secondary: #8b91a0;
+$color-accent: #1f375b;
+$color-error: #ff426f;
+$color-info: #2196f3;
+$color-success: #4caf50;
+
+$color-white: #FFFFFF;
+$color-black: #000000;
+
+$color-grey-light-1: #faf9f9;
+$color-grey-light-2: #f4f2f2;
+$color-grey-light-3: #f0eeee;
+$color-grey-light-4: #ccc;
+$color-grey-light-5: #f6f9ff;
+$color-grey-light-6: #F5F5F5;
+
+$color-grey-dark-1: #333;
+$color-grey-dark-2: #777;
+$color-grey-dark-3: #999;
+
+$color-shadow-dark: 0 2rem 6rem rgba(0,0,0,.3);
+$color-shadow-light: 0 2rem 5rem rgba(0,0,0, .06);
+
+$color-background-1: #EAF1F8;
+$color-background-2: #F5F6FA;
+$color-line: 1px solid var($color-grey-light-2);
+
+$color-text-one: #343c4b;
+$color-text-two: #5e677b;
+
+$color-border-1: #8b91a0;
+$color-border-2: rgba(31, 55, 91, 0.1);
+$color-border-3: hsla(0,0%,100%,.12);
+
+// // Font
+// $default-font-size: 1.6rem;
+
+// Box-Shadow
+$default-box-shadow:rgba(54, 57, 164, 0.1) !important;
+$border-top-color: rgba(31, 55, 91, 0.08) !important;
+$divider-border-color: rgba(0,0,0,.05) !important;
+$card-border-color: rgba(0,0,0,.10) !important;

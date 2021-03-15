@@ -1,0 +1,30 @@
+@mixin clearfix {
+  &::after {
+    content: "";
+    display: table;
+    clear: both;
+  }
+}
+
+@mixin absCenter {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+}
+
+// All Media Query Manager
+@mixin responsive($breakpoint) {
+  @if $breakpoint == phone {
+    @media (max-width: 600px) { @content };
+  }
+  @if $breakpoint == tab {
+    @media (max-width: 960px) { @content };
+  }
+  @if $breakpoint == laptop {
+    @media (max-width: 1264px) { @content };
+  }
+  @if $breakpoint == big-desktop {
+    @media (min-width: 1904px) { @content };
+  }
+}

@@ -10,8 +10,8 @@
       @click.stop="$emit('menuClick')"
     />
     <v-toolbar-title v-if="title || logo" class="mx-1 pl-0">
-      <n-link to="/" class="d-flex align-center">
-        <div>
+      <n-link to="/">
+        <div class="d-flex align-center">
           <img
             v-if="logo"
             :src="logo"

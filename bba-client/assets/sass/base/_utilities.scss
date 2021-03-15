@@ -1,0 +1,120 @@
+.cursor-pointer {
+  cursor: pointer;
+}
+
+.mb-0 {
+  margin-bottom: 0 !important;
+}
+
+.pl-30 {
+  padding-left: 30px !important;
+}
+
+.card-box-shadow {
+  box-shadow: 0px 5px 6px $default-box-shadow;
+}
+
+.card-border-color {
+  border: 1px solid $card-border-color;
+}
+
+.button-box-shadow {
+  box-shadow: 0px 5px 6px $default-box-shadow;
+}
+
+.divider-border-color {
+  border-color: $divider-border-color;
+}
+
+.caret-up-icon {
+  font-size: 18px !important;
+}
+
+.caret-down-icon {
+  font-size: 18px !important;
+}
+
+/** 
+  * Flex-Box-Design
+  * @desc Flex-Box Common Code Will Be here
+  * 
+*/
+
+.d-flex-column-start {
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-start;
+  align-items: flex-start;
+}
+
+.d-flex-row-space-between {
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.d-flex-row-start {
+  display: flex;
+  flex-direction: row;
+  justify-content: flex-start;
+  align-items: center;
+}
+
+.d-flex-row-center {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.d-flex-column-space-between {
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.d-flex-column-space-between-start {
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  align-items: flex-start;
+}
+
+/** 
+  * Font-Size
+  * @desc Font-Size Common Code Will Be here
+  * 
+*/
+
+.fs-12 {
+  font-size: 12px !important;
+}
+
+.fs-13 {
+  font-size: 13px !important;
+}
+
+.fs-14 {
+  font-size: 14px !important;
+}
+
+.fs-16 {
+  font-size: 16px !important;
+}
+
+.fs-18 {
+  font-size: 18px !important;
+}
+
+.fs-20 {
+  font-size: 20px !important;
+}
+
+.fs-22 {
+  font-size: 22px !important;
+}
+
+.fs-24 {
+  font-size: 24px !important;
+}

@@ -12,7 +12,7 @@
         itemToEdit = null;
         dialog = true;
       "
-      color="secondary"
+      color="primary"
     />
     <Dialog v-model="dialog" :title="addText" max-width="800" hideButtons>
       <FormGenerator

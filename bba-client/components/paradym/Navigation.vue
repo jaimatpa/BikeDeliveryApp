@@ -19,7 +19,6 @@
     clipped
     fixed
     width="225"
-    class="pt-1"
   >
     <slot name="header"></slot>
     <v-list shaped>
