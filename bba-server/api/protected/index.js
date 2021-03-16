@@ -21,7 +21,7 @@ module.exports = {
     app.use("/api/upload", upload);
 
     // User
-    finale.resource({
+    const resource = finale.resource({
       model: models.User,
       excludeAttributes: [
         "isVerified",
@@ -32,9 +32,15 @@ module.exports = {
       ],
       endpoints: ["/api/users", "/api/users/:id"],
       sort: {
-        default: '-createdAt'
+        default: "-createdAt",
       },
-      actions: ["create", "list", "read", "update", "delete"]
+      actions: ["create", "list", "read", "update", "delete"],
+    });
+
+    /*Send email from here*/
+    resource.create.write.after(function (req, res, context) {
+      console.log(req.body);
+      return context.continue;
     });
   },
 };
