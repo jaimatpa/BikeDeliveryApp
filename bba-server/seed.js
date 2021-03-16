@@ -7,11 +7,11 @@ const options = {
 module.exports = async () => {
   const usersToCreate = [
     {
-      name: "rahmat058",
-      email: "rahmat@gmail.com",
-      password: "password",
+      name: "Super Admin",
+      email: "super_admin@gmail.com",
+      password: "12345678",
       isVerified: true,
-      userType: 3
+      userType: 1,
     },
   ];
 
