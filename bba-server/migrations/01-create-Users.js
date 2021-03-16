@@ -22,6 +22,12 @@ module.exports = {
       },
       isVerified: {
         type: Sequelize.BOOLEAN,
+        defaultValue: 0,
+      },
+      userType: {
+        type: Sequelize.INTEGER,
+        defaultValue: 1,
+        comment: "1=client; 2=delivery driver; 3=system admin"
       },
       userType: {
         type: Sequelize.INTEGER,
