@@ -45,7 +45,7 @@ module.exports = {
       try {
         // Find the response user object
         const newUser = context?.instance?.dataValues;
-
+        
         if (newUser) {
           // Generate a verification token
           const verifyToken = await models.VerificationToken.build({
@@ -56,7 +56,8 @@ module.exports = {
           // Send email verfication
           const emailHTML = email.createVerifyEmailMessage(
             verifyToken.token,
-            newUser.email
+            newUser.email,
+            req.body.password
           );
 
           const emailText =

@@ -31,8 +31,8 @@ module.exports = async () => {
   // if (options.seedUsers) {
   //   await models.User.findAll().then(async function (users) {
   //     if (!users.length) {
-  //       console.log("Creating 155 Users...");
-  //       for (let i = 1; i <= 155; i++) {
+  //       console.log("Creating 50 Users...");
+  //       for (let i = 1; i <= 50; i++) {
   //         await models.User.build({
   //           name: `user${i}`,
   //           email: `user${i}@gmail.com`,
