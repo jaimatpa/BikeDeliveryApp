@@ -31,6 +31,9 @@ module.exports = {
         "deletedAt",
       ],
       endpoints: ["/api/users", "/api/users/:id"],
+      sort: {
+        default: '-createdAt'
+      },
       actions: ["create", "list", "read", "update", "delete"]
     });
   },

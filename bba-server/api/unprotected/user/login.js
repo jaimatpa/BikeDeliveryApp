@@ -39,6 +39,7 @@ router.post("/", async (req, res) => {
             id: userToLogin.id,
             name: userToLogin.name,
             email: userToLogin.email,
+            userType: userToLogin.userType
           };
 
           let token;
@@ -61,6 +62,7 @@ router.post("/", async (req, res) => {
               id: userToLogin.id,
               email: userToLogin.email,
               name: userToLogin.name,
+              userType: userToLogin.userType,
               displayName: userToLogin.displayName,
             },
             token: token,

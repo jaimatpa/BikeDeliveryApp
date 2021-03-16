@@ -23,6 +23,10 @@ module.exports = {
       isVerified: {
         type: Sequelize.BOOLEAN,
       },
+      userType: {
+        type: Sequelize.INTEGER,
+        allowNull: false,
+      },
       createdAt: {
         allowNull: true,
         type: Sequelize.DATE,

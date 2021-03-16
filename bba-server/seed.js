@@ -7,82 +7,11 @@ const options = {
 module.exports = async () => {
   const usersToCreate = [
     {
-      name: "@rahmat058",
-      email: "md.kazi.rahmat@gmail.com",
+      name: "rahmat058",
+      email: "rahmat@gmail.com",
       password: "password",
-      isVerified: true
-    },
-    {
-      name: "user1",
-      email: "user1@gmail.com",
-      password: "123456",
-      isVerified: true
-    },
-    {
-      name: "user2",
-      email: "user2@gmail.com",
-      password: "123456",
-      isVerified: true
-    },
-    {
-      name: "user3",
-      email: "user3@gmail.com",
-      password: "123456",
-      isVerified: true
-    },
-    {
-      name: "user4",
-      email: "user4@gmail.com",
-      password: "123456",
-      isVerified: true
-    },
-    {
-      name: "user5",
-      email: "user5@gmail.com",
-      password: "123456",
-      isVerified: true
-    },
-    {
-      name: "user6",
-      email: "user6@gmail.com",
-      password: "123456",
-      isVerified: true
-    },
-    {
-      name: "user7",
-      email: "user7@gmail.com",
-      password: "123456",
-      isVerified: true
-    },
-    {
-      name: "user8",
-      email: "user8@gmail.com",
-      password: "123456",
-      isVerified: true
-    },
-    {
-      name: "user9",
-      email: "user9@gmail.com",
-      password: "123456",
-      isVerified: true
-    },
-    {
-      name: "user10",
-      email: "user10@gmail.com",
-      password: "123456",
-      isVerified: true
-    },
-    {
-      name: "user11",
-      email: "user11@gmail.com",
-      password: "123456",
-      isVerified: true
-    },
-    {
-      name: "user12",
-      email: "user12@gmail.com",
-      password: "123456",
-      isVerified: true
+      isVerified: true,
+      userType: 3
     },
   ];
 
@@ -98,6 +27,25 @@ module.exports = async () => {
       }
     });
   }
+
+  // if (options.seedUsers) {
+  //   await models.User.findAll().then(async function (users) {
+  //     if (!users.length) {
+  //       console.log("Creating 155 Users...");
+  //       for (let i = 1; i <= 155; i++) {
+  //         await models.User.build({
+  //           name: `user${i}`,
+  //           email: `user${i}@gmail.com`,
+  //           password: "password",
+  //           isVerified: true,
+  //         }).save();
+  //       }
+  //       console.log("Users Created");
+  //     } else {
+  //       console.log("Users already exist.  Not seeding Users.");
+  //     }
+  //   });
+  // }
 
   consola.success("Database seeding completed.");
 };
