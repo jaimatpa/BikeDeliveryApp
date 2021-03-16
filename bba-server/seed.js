@@ -11,7 +11,7 @@ module.exports = async () => {
       email: "super_admin@gmail.com",
       password: "12345678",
       isVerified: true,
-      userType: 1,
+      userType: 3,
     },
   ];
 
