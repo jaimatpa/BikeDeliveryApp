@@ -25,7 +25,7 @@
       "register": {
         "user_created": "User created",
         "error_creating_new_user": "Error creating new user.",
-        "user_type_required": "User type was required."
+        "user_type_required": "User type is required."
       },
       "forgot_password": {
         "account_not_exists": "No account exists with this email address.",
