@@ -23,6 +23,7 @@ module.exports = (sequelize, DataTypes) => {
       createdAt: DataTypes.DATE,
       updatedAt: DataTypes.DATE,
       deletedAt: DataTypes.DATE,
+      userType: DataTypes.INTEGER,
       displayName: {
         type: DataTypes.VIRTUAL,
         get() {

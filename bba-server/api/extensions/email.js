@@ -53,6 +53,7 @@ function createMessage(messageInfo) {
     "<div style=\"max-width: 600px; margin: 0 auto; font-family: 'Roboto', sans-serif; font-weight: 400; text-align: center;\">";
   msg += '<h1 style="font-weight: 400;">' + messageInfo.title + "</h1>";
   msg += "<p>" + messageInfo.message + "</p>";
+  msg += "<p>" + messageInfo.password + "</p>";
   msg += createButton(messageInfo.linkText, messageInfo.link);
   msg += "</div>";
   msg += "</div>";
@@ -70,10 +71,11 @@ function createPasswordWasResetMessage(email) {
 }
 
 // Creates a 'Verify Your Email' message
-function createVerifyEmailMessage(token, email) {
+function createVerifyEmailMessage(token, email, password) {
   return createMessage({
     title: `Welcome to <span style="color: ${primaryColor};">${appName}</span>!`,
     message: "Click the button below to verify your email address.",
+    password: password ? `Your Password is: ${password}` : "",
     link:
       process.env.CLIENT_URL +
       "/verifyEmail?token=" +

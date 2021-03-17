@@ -34,6 +34,13 @@ router.post("/", async (req, res) => {
       message: apiMessage.user.api_message.common.password_required,
     });
 
+  // Check if userType was provided. userType should be an integer like: [client: 1, deliveryDriver: 2, systemAdmin: 3]
+  if (!req.body.userType)
+    return apiError(res, {
+      type: "userType",
+      message: apiMessage.user.api_message.register.user_type_required,
+    });
+
   try {
     // Locate the user
     let userToLogin = await models.User.findOne({
@@ -43,15 +50,14 @@ router.post("/", async (req, res) => {
     if (!userToLogin) {
       // If the user was NOT found
       try {
-        // Create the user
-        let newUser = await models.User
-          .build({
-            email: req.body.email,
-            name: req.body.name || "",
-            password: req.body.password,
-            isVerified: false,
-          })
-          .save();
+        // Create the user        
+        let newUser = await models.User.build({
+          email: req.body.email,
+          name: req.body.name || "",
+          password: req.body.password,
+          userType: parseInt(req.body.userType.userTypeVal, 10),
+          isVerified: false,
+        }).save();
 
         if (newUser) {
           const response = {
@@ -62,12 +68,10 @@ router.post("/", async (req, res) => {
           };
 
           // Generate a verification token
-          const verifyToken = await models.VerificationToken
-            .build({
-              userId: newUser.id,
-              token: crypto({ length: constVariables.NUMBER_16 }),
-            })
-            .save();
+          const verifyToken = await models.VerificationToken.build({
+            userId: newUser.id,
+            token: crypto({ length: constVariables.NUMBER_16 }),
+          }).save();
 
           // Send email verfication
           const emailHTML = email.createVerifyEmailMessage(
