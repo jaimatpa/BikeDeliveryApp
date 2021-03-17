@@ -28,6 +28,7 @@ module.exports = {
       model: models.User,
       excludeAttributes: [
         "isVerified",
+        "userType",
         "displayName",
         "password",
         "updatedAt",
@@ -37,11 +38,18 @@ module.exports = {
       sort: {
         default: "-createdAt",
       },
-      actions: ["create", "list", "read", "update", "delete"],
+      actions: [
+        "create",
+        "list",
+        "read",
+        "update",
+        "delete"
+      ],
     });
 
-    /*Send Verify Email For New user which is Super Admin Create*/
     resource.create.write.after(async function (req, res, context) {
+    
+      /*Send Verify Email For New user which is System Admin Create*/
       try {
         // Find the response user object
         const newUser = context?.instance?.dataValues;

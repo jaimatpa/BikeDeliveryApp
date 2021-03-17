@@ -29,10 +29,6 @@ module.exports = {
         defaultValue: 1,
         comment: "1=client; 2=delivery driver; 3=system admin"
       },
-      userType: {
-        type: Sequelize.INTEGER,
-        allowNull: false,
-      },
       createdAt: {
         allowNull: true,
         type: Sequelize.DATE,
