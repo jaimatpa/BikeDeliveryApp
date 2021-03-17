@@ -4,22 +4,21 @@
     <AppBar
       app
       :title="$config.appName"
-      logo="/icon.png"
       @menuClick="drawer = !drawer"
-      :color="$vuetify.theme.dark ? '' : 'primary'"
+      :color="$vuetify.theme.dark ? '' : '#444444'"
       :dark="true"
     >
-      <IconButton
+      <!-- <IconButton
         @click="settings = true"
         icon="mdi-cog-outline"
         tooltip="Settings"
-      />
+      /> -->
       <IconButtonMenu
         :items="userItems"
         :icon="
           $nuxt.$route.path === '/account'
-            ? 'mdi-account'
-            : 'mdi-account-outline'
+            ? 'mdi-account-cog'
+            : 'mdi-account-cog-outline'
         "
       />
     </AppBar>
