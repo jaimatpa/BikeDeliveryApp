@@ -30,10 +30,11 @@ export default {
           required: true,
         },
         password: {
-          type: String,
-          required: true,
-          minLength: true,
+          type: "Password"
         },
+        userType: {
+          type: "UserType"
+        }
       },
     };
   },

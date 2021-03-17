@@ -7,7 +7,10 @@
   <v-sheet
     class="form pa-4"
     rounded
-    :class="{ 'form-outlined': outlined, 'elevation-2': elevated }"
+    :class="{
+      'form-outlined': isMobile ? '' : outlined,
+      'elevation-2': elevated,
+    }"
     :style="{ width: computedWidth }"
   >
     <v-form
@@ -29,21 +32,27 @@
         <div
           v-if="logo || title || text"
           class="mt-2"
-          :class="{ 'mb-8': logo && !title, 'mb-5': title }"
+          :class="{ 'mb-8': logo && !title, 'mb-12': title }"
         >
+          <!-- Logo Left Line -->
+          <div class="icon-line-1"></div>
+          <div class="icon-line-2"></div>
+          <div class="icon-line-3"></div>
+          <div class="icon-line-4"></div>
+
           <!-- Logo -->
           <img
             v-if="logo"
             :src="logo"
             class="mx-auto"
-            :class="{ 'mb-2': title }"
+            :class="{ 'mb-1': title }"
             :width="logoWidth"
             :height="logoHeight"
           />
           <!-- Title -->
-          <h1 v-if="title" class="form-title" v-html="title" />
+          <h2 v-if="title" class="form-title" v-html="title" />
           <!-- Text -->
-          <p v-if="text" class="form-text" v-html="text" />
+          <p v-if="text" class="form-text mt-4" v-html="text" />
         </div>
       </slot>
 
@@ -110,6 +119,10 @@ export default {
       type: String,
       default: "Submit",
     },
+    breakpoint: {
+      type: Number,
+      default: 640,
+    },
     error: String,
     disabled: Boolean,
     busy: Boolean,
@@ -135,6 +148,9 @@ export default {
     hasFooterContent() {
       return !!this.$slots.footer;
     },
+    isMobile() {
+      return this.$vuetify.breakpoint.width < this.breakpoint;
+    },
   },
   methods: {
     async formAction() {
@@ -156,10 +172,40 @@ export default {
   }
   .form-title {
     font-weight: 400;
-    font-size: 28px;
+    font-size: 26px;
     line-height: 1.2;
     margin-bottom: 8px;
     text-align: center;
+    color: #4c9a2a;
+  }
+  .icon-line-1,
+  .icon-line-2,
+  .icon-line-3,
+  .icon-line-4 {
+    background-color: #4c9a2a;
+    border-radius: 50px;
+    height: 3px;
+    position: relative;
+  }
+  .icon-line-1 {
+    width: 40px;
+    top: 55px;
+    left: 35px;
+  }
+  .icon-line-2 {
+    width: 45px;
+    top: 68px;
+    left: 23px;
+  }
+  .icon-line-3 {
+    width: 62px;
+    top: 80px;
+    left: 8px;
+  }
+  .icon-line-4 {
+    width: 40px;
+    top: 94px;
+    left: 35px;
   }
 }
 .form-outlined {

@@ -7,6 +7,7 @@
       :dataTypes="{ createdAt: Date, updatedAt: Date }"
       @edit="editItem"
     />
+
     <FloatingButton
       @click="
         itemToEdit = null;
@@ -14,6 +15,7 @@
       "
       color="primary"
     />
+
     <Dialog v-model="dialog" :title="addText" max-width="800" hideButtons>
       <FormGenerator
         :fields="fields"
@@ -27,6 +29,9 @@
 </template>
 
 <script>
+import _ from "lodash";
+import { mapActions } from "vuex";
+
 import Page from "./Page";
 import ServerDataTable from "./ServerDataTable";
 import FloatingButton from "./FloatingButton";
@@ -46,11 +51,12 @@ export default {
     return {
       dialog: false,
       itemToEdit: null,
+      errorMessage: "",
     };
   },
   computed: {
     addText() {
-      if (typeof itemToEdit == "object") {        
+      if (typeof itemToEdit === "object") {
         if (Object.keys(this.itemToEdit).length > 0)
           return this.name ? "Update " + this.name : "Update Item";
         else return this.name ? "Add " + this.name : "Add Item";
@@ -58,6 +64,7 @@ export default {
     },
   },
   methods: {
+    ...mapActions("snackbar", { showSuccess: "success", showError: "error" }),
     editItem(item) {
       this.itemToEdit = JSON.parse(JSON.stringify(item));
       console.log("itemToEdit", this.itemToEdit);
@@ -66,16 +73,43 @@ export default {
     async addUpdateItem(data) {
       console.log("add/update item ", { data });
       this.dialog = false;
+
       Object.keys(data).forEach((key) => {
         if (Array.isArray(data[key])) {
           console.log("found array");
           delete data[key];
         }
       });
+
       delete data.updatedAt;
       delete data.createdAt;
+
+      // Processed to data add/update for new user
+      let sendData = _.omit(data, "id", "userType");
+      sendData.userType = parseInt(data?.userType?.userTypeVal, 10);
+
       try {
-        let response = await this.$axios.$post(this.endpoint, data);
+        this.errorMessage = "";
+
+        if (data?.id) {
+          const response = await this.$axios.$put(
+            this.endpoint + "/" + data?.id,
+            sendData
+          );
+
+          if (response) {
+            this.showSuccess("User Updated Successfully Done!!!");
+          }
+        } else {
+          const response = await this.$axios.$post(this.endpoint, sendData);
+
+          if (response) {
+            this.showSuccess("User Created Successfully Done!!!");
+            this.itemToEdit = null;
+          }
+        }
+
+        this.itemToEdit = null;
         this.$refs.serverDataTable.$fetch();
       } catch (err) {
         console.log(err);

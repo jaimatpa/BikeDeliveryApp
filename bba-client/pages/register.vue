@@ -4,11 +4,11 @@
     <FormRegister
       v-if="!registrationCompleteEmail"
       confirm
-      title="Create your account"
-      logo="/icon.png"
+      title="bike delivery app"
+      :logo="bikeLogo"
       width="340"
-      logoWidth="100"
-      logoHeight="100"
+      logoWidth="155"
+      logoHeight="98"
       outlined
       :busy="busy"
       :error="error"
@@ -34,6 +34,7 @@
 <script>
 import PageForm from "@/components/paradym/PageForm";
 import FormRegister from "@/components/paradym/forms/FormRegister";
+import bikeLogo from '@/assets/images/bike_logo.svg'
 
 export default {
   name: "pageRegister",
@@ -48,10 +49,11 @@ export default {
       busy: false,
       registrationCompleteEmail: "",
       error: "",
+      bikeLogo: bikeLogo,
     };
   },
   methods: {
-    async registerUser(userInfo) {
+    async registerUser(userInfo) {            
       try {
         this.error = "";
         this.busy = true;

@@ -8,6 +8,9 @@
         <FormEmail
           title="Forgot your password?"
           width="340"
+          :logo="bikeLogo"
+          logoWidth="155"
+          logoHeight="98"
           icons
           outlined
           text="Enter your email address and <br>we'll send you a link to reset it."
@@ -31,7 +34,7 @@
         <p>
           An email has been sent to:
         </p>
-        <h2 class="mb-4">{{ email }}</h2>
+        <h2 class="mb-4 primary--text">{{ email }}</h2>
         <p class="caption" style="margin: 0 -16px 8px -16px;">
           Follow the instructions in the email to reset your password.
         </p>
@@ -49,6 +52,7 @@
 <script>
 import PageForm from "@/components/paradym/PageForm";
 import FormEmail from "@/components/paradym/forms/FormEmail";
+import bikeLogo from "@/assets/images/bike_logo.svg";
 
 export default {
   name: "pageForgotPassword",
@@ -63,7 +67,8 @@ export default {
       busy: false,
       error: "",
       finished: false,
-      email: ""
+      email: "",
+      bikeLogo: bikeLogo,
     };
   },
   methods: {

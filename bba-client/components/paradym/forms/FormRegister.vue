@@ -106,6 +106,21 @@
       :prepend-inner-icon="icons ? 'mdi-account' : ''"
     />
 
+    <!-- User Type Select -->
+    <v-select
+      v-model="userType"
+      :items="userTypeItems"
+      label="User Type"
+      class="mb-4"
+      color="primary"
+      hide-details="auto"
+      item-text="userType"
+      item-value="userTypeVal"
+      return-object
+      dense
+      outlined
+    ></v-select>
+
     <!-- Slot: BeforeSubmit -->
     <template v-slot:beforeSubmit>
       <slot name="beforeSubmit"></slot>
@@ -129,6 +144,12 @@
 
 <script>
 import Form from "./Form";
+import {
+  CLIENT,
+  DELVERY_DRIVER,
+  CLIENT_NUMBER,
+  DELVERY_DRIVER_NUMBER,
+} from "@/constants";
 
 export default {
   name: "formRegister",
@@ -161,9 +182,15 @@ export default {
       password: "",
       passwordConfirm: "",
       name: "",
+      userType: { userType: CLIENT, userTypeVal: CLIENT_NUMBER },
       // Options
       showPassword: false,
       showPasswordConfirm: false,
+      // User Type Items
+      userTypeItems: [
+        { userType: CLIENT, userTypeVal: CLIENT_NUMBER },
+        { userType: DELVERY_DRIVER, userTypeVal: DELVERY_DRIVER_NUMBER },
+      ],
       // Rules
       rules: {
         required: (value) => !!value || "Required.",
@@ -188,6 +215,7 @@ export default {
         email: this.email,
         password: this.password,
         name: this.name,
+        userType: this.userType,
       });
     },
   },

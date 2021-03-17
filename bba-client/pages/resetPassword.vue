@@ -6,6 +6,9 @@
       <FormChangePassword
         v-if="!busy"
         title="Reset your password"
+        :logo="bikeLogo"
+        logoWidth="155"
+        logoHeight="98"
         width="340"
         outlined
         :busy="busy"
@@ -33,6 +36,7 @@
 <script>
 import PageForm from "@/components/paradym/PageForm";
 import FormChangePassword from "@/components/paradym/forms/FormChangePassword";
+import bikeLogo from "@/assets/images/bike_logo.svg";
 
 export default {
   name: "pageResetPassword",
@@ -51,6 +55,7 @@ export default {
       busy: false,
       error: "",
       finished: false,
+      bikeLogo: bikeLogo,
     };
   },
   computed: {

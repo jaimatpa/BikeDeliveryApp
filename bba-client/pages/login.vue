@@ -2,10 +2,10 @@
   <PageForm>
     <!-- Login Form -->
     <FormLogin
-      :title="`${$config.appName}`"
-      logo="/icon.png"
-      logoWidth="100"
-      logoHeight="100"
+      title="bike delivery app"
+      :logo="bikeLogo"
+      logoWidth="155"
+      logoHeight="98"
       width="340"
       email
       outlined
@@ -49,6 +49,7 @@ import { mapActions } from "vuex";
 
 import PageForm from "@/components/paradym/PageForm";
 import FormLogin from "@/components/paradym/forms/FormLogin";
+import bikeLogo from '@/assets/images/bike_logo.svg'
 
 export default {
   name: "pageLogin",
@@ -67,6 +68,7 @@ export default {
       error: "",
       verifyError: false,
       verifyEmailSent: false,
+      bikeLogo: bikeLogo,
       email: "", // Stores the email address when logging in
       user: "", // Stores the username (email) from local storage
     };
