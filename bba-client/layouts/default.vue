@@ -101,38 +101,74 @@ export default {
       breakpoint: 640,
       items: [
         {
-          title: "Dashboard",
+          title: "DASHBOARD",
           icon: "mdi-view-dashboard-outline",
           iconSelected: "mdi-view-dashboard",
           to: "/",
         },
         {
-          title: "Upload",
-          icon: "mdi-upload-outline",
-          iconSelected: "mdi-upload",
-          to: "/upload",
+          title: "SEARCH HISTORY",
+          icon: "mdi-card-search-outline",
+          iconSelected: "mdi-card-search",
+          to: "/search",
         },
         {
-          title: "Test",
-          icon: "mdi-test-tube-empty",
-          iconSelected: "mdi-test-tube",
-          to: "/test",
+          title: "DELIVERY ORDER",
+          icon: "mdi-bike",
+          iconSelected: "mdi-bike-fast",
+          to: "/deliveryOrder",
+        },
+        {
+          title: "LOCKING",
+          icon: "mdi-lock-outline",
+          iconSelected: "mdi-lock",
+          to: "/locking",
+        },
+        {
+          title: "RESEND",
+          icon: "mdi-share-outline",
+          iconSelected: "mdi-share",
+          to: "/resend",
         },
         {
           title: "Users",
           icon: "mdi-account-group-outline",
-          iconSelected: "mdi-account-group-outline",
+          iconSelected: "mdi-account-group",
           to: "/users",
         },
       ],
       userItems: [
         {
-          title: "My Account",
+          title: "WEB HOOK SETTINGS",
+          to: "/webHookSetting",
+        },
+        {
+          title: "USER MANAGEMENT",
+          to: "/userManagement",
+        },
+        {
+          title: "TEXT MESSAGE TEMPLATE",
+          to: "/textMessageTemplate",
+        },
+        {
+          title: "BACKUP DATABASE",
+          to: "/backupDatabase",
+          iconImage: require("./../assets/images/download.svg"),
+          downArrowIcon: require("./../assets/images/down_arrow.svg"),
+        },
+        {
+          title: "BACKUP PHOTOS",
+          to: "/backupPhotos",
+          iconImage: require("./../assets/images/download.svg"),
+          downArrowIcon: require("./../assets/images/down_arrow.svg"),
+        },
+        {
+          title: "MY ACCOUNT",
           to: "/account",
           icon: "mdi-account-circle",
         },
         {
-          title: "Sign Out",
+          title: "LOGOUT",
           to: "/logout",
           icon: "mdi-logout",
           /*
