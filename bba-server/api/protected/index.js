@@ -28,7 +28,6 @@ module.exports = {
       model: models.User,
       excludeAttributes: [
         "isVerified",
-        "userType",
         "displayName",
         "password",
         "updatedAt",

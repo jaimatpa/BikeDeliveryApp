@@ -214,10 +214,4 @@ export default {
   border-radius: 4px;
   padding: 24px 24px 18px 24px;
 }
-.theme--dark .form-outlined {
-  border-color: rgba(255, 255, 255, 0.1);
-}
-.theme--light .form-outlined {
-  border-color: rgb(218, 220, 224);
-}
 </style>
