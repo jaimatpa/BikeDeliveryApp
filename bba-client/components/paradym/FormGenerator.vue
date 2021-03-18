@@ -70,18 +70,14 @@
       <!-- User Type Select -->
       <v-select
         v-if="field.type === 'UserType' && isShowUserTypeSelectField"
-        v-model="inputData[field.name]"
+        v-model="userType"
         :items="userTypeItems"
-        :rules="[rules.required]"
-        label="User Type"
-        class="mb-4"
-        color="primary"
-        hide-details="auto"
-        item-text="userType"
+        item-text="userTypeAttr"
         item-value="userTypeVal"
+        label="User Type"
+        persistent-hint
         return-object
-        dense
-        outlined
+        single-line
       ></v-select>
 
       <!-- Numbers -->
@@ -205,16 +201,17 @@ export default {
   },
   created() {},
   data() {
+    console.log(this.values);
     return {
       showPassword: false,
       isShowPasswordField: this.values ? false : true,
       isShowUserTypeSelectField: this.values ? false : true,
       // User Type Items
-      userType: { userType: CLIENT, userTypeVal: CLIENT_NUMBER },
+      userType: { userTypeAttr: DELVERY_DRIVER, userTypeVal: DELVERY_DRIVER_NUMBER },
       userTypeItems: [
-        { userType: CLIENT, userTypeVal: CLIENT_NUMBER },
-        { userType: DELVERY_DRIVER, userTypeVal: DELVERY_DRIVER_NUMBER },
-        { userType: SYSTEM_ADMIN, userTypeVal: SYSTEM_ADMIN_NUMBER },
+        { userTypeAttr: CLIENT, userTypeVal: CLIENT_NUMBER },
+        { userTypeAttr: DELVERY_DRIVER, userTypeVal: DELVERY_DRIVER_NUMBER },
+        { userTypeAttr: SYSTEM_ADMIN, userTypeVal: SYSTEM_ADMIN_NUMBER },
       ],
       // Input Data
       inputData: this.values
@@ -239,7 +236,7 @@ export default {
       if (newValue) {
         this.inputData = JSON.parse(JSON.stringify(newValue));
         this.isShowPasswordField = false;
-        this.isShowUserTypeSelectField = false;
+        this.isShowUserTypeSelectField = true;
       } else {
         this.inputData = this.defaultInputData();
         this.isShowPasswordField = true;

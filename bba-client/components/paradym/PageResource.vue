@@ -112,7 +112,7 @@ export default {
         this.itemToEdit = null;
         this.$refs.serverDataTable.$fetch();
       } catch (err) {
-        console.log(err);
+        console.log(err.response.data.errors[0]);
       }
     },
   },
