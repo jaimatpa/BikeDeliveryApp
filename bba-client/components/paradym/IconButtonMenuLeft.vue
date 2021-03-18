@@ -34,10 +34,12 @@
         >
           <v-list-item-action>
             <v-img
+              v-if="item.iconImage"
               max-height="20"
               max-width="20"
               :src="item.iconImage"
             ></v-img>
+            <v-icon v-else color="#E4E4E4">{{ item.icon }}</v-icon>
           </v-list-item-action>
           <v-list-item-content>
             <v-list-item-title>{{ item.title }}</v-list-item-title>
@@ -65,7 +67,7 @@ export default {
     },
     icon: String,
     left: Boolean,
-    iconImage: String
+    iconImage: String,
   },
   computed: {
     isMobile() {

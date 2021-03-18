@@ -33,10 +33,26 @@
           @click="runAction(item)"
         >
           <v-list-item-content>
-            <v-list-item-title>{{ item.title }}</v-list-item-title>
+            <div class="d-flex">
+              <v-list-item-title>{{ item.title }}</v-list-item-title>
+              <div class="d-flex rectangular-icon" v-if="isMobile && item.iconImage">
+                <v-img
+                  max-height="30"
+                  max-width="35"
+                  :src="item.iconImage"
+                  class="ml-5"
+                ></v-img>
+                <v-img
+                  max-height="15"
+                  max-width="15"
+                  :src="item.downArrowIcon"
+                  class="arrow-icon"
+                ></v-img>
+              </div>
+            </div>
           </v-list-item-content>
-          <v-list-item-action>
-            <v-icon v-text="item.icon" />
+          <v-list-item-action v-if="item.icon">
+            <v-icon v-text="item.icon" :color="isMobile ? '#E4E4E4' : ''" />
           </v-list-item-action>
         </v-list-item>
         <v-divider v-if="index < items.length - 1" />
@@ -60,6 +76,8 @@ export default {
       default: 640,
     },
     icon: String,
+    iconImage: String,
+    downArrowIcon: String,
     left: Boolean,
   },
   computed: {
@@ -85,7 +103,28 @@ export default {
   transform-origin: left top !important;
   z-index: 8 !important;
 
-  border-bottom-color: #4C9A2A;
+  border-bottom-color: #4c9a2a;
   border-bottom-style: solid;
+  border-top-left-radius: 0 !important;
+  border-top-right-radius: 0 !important;
+
+  .v-list {
+    background-color: #444444 !important;
+
+    .v-list-item__content {
+      .v-list-item__title {
+        color: #ffffff !important;
+        flex: none !important;
+      }
+
+      .rectangular-icon {
+        .arrow-icon {
+          position: relative;
+          top: 3px;
+          left: -26px;
+        }
+      }
+    }
+  }
 }
 </style>
