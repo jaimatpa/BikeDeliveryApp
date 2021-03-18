@@ -37,6 +37,7 @@ import ServerDataTable from "./ServerDataTable";
 import FloatingButton from "./FloatingButton";
 import Dialog from "./Dialog";
 import FormGenerator from "./FormGenerator";
+import { NUMBER_0 } from "@/constants";
 
 export default {
   name: "pageResource",
@@ -112,7 +113,7 @@ export default {
         this.itemToEdit = null;
         this.$refs.serverDataTable.$fetch();
       } catch (err) {
-        console.log(err.response.data.errors[0]);
+        this.showError(err?.response?.data?.errors[NUMBER_0].message);
       }
     },
   },

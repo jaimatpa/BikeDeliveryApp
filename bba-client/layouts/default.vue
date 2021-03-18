@@ -130,12 +130,6 @@ export default {
           iconSelected: "mdi-share",
           to: "/resend",
         },
-        {
-          title: "Users",
-          icon: "mdi-account-group-outline",
-          iconSelected: "mdi-account-group",
-          to: "/users",
-        },
       ],
       userItems: [
         {
@@ -144,7 +138,7 @@ export default {
         },
         {
           title: "USER MANAGEMENT",
-          to: "/userManagement",
+          to: "/users",
         },
         {
           title: "TEXT MESSAGE TEMPLATE",
