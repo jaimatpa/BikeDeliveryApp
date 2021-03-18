@@ -23,9 +23,9 @@ export default {
       { hid: "description", name: "description", content: "" },
     ],
     link: [
-      { rel: "icon", href: "/icon.png" },
-      { rel: "shortcut icon", href: "/icon.png" },
-      { rel: "apple-touch-icon", href: "/icon.png" },
+      { rel: "icon", href: "/favicon.png" },
+      { rel: "shortcut icon", href: "/favicon.png" },
+      { rel: "apple-touch-icon", href: "/favicon.png" },
     ],
   },
 
@@ -128,7 +128,12 @@ export default {
         },
         light: {
           primary: process.env.COLOR_PRIMARY || "#4c9a2a",
-          secondary: process.env.COLOR_SECONDARY || "#DC3545",
+          secondary: process.env.COLOR_SECONDARY || "#8b91a0",
+          accent: "#343c4b",
+          info: "#2196f3",
+          warning: "#FFEB3B",
+          success: "#4caf50",
+          error: "#DC3545",
         },
       },
     },

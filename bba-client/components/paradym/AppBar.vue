@@ -5,10 +5,19 @@
 
 <template>
   <v-app-bar :app="app" clipped-left flat :dark="dark" :color="color">
+    <!-- For Mobile Menu -->
+    <IconButtonMenuLeft
+      v-if="isMobileBreakPoint"
+      :items="menuItems"
+      icon="mdi-menu"
+    />
+
+    <!-- For Web Menu -->
     <v-app-bar-nav-icon
-      v-if="hasMenuClickHandler"
+      v-if="hasMenuClickHandler && !isMobileBreakPoint"
       @click.stop="$emit('menuClick')"
     />
+
     <v-toolbar-title v-if="title || logo" class="mx-1 pl-0">
       <n-link to="/">
         <div class="d-flex align-center">
@@ -29,6 +38,8 @@
 </template>
 
 <script>
+import IconButtonMenuLeft from "./IconButtonMenuLeft";
+
 export default {
   name: "appBar",
   props: {
@@ -41,6 +52,10 @@ export default {
     },
     dark: Boolean,
     app: Boolean,
+    isMobileBreakPoint: Boolean,
+  },
+  components: {
+    IconButtonMenuLeft,
   },
   computed: {
     hasMenuClickHandler() {
@@ -50,6 +65,43 @@ export default {
       if (!isNaN(this.logoHeight)) return this.logoHeight + "px";
       else return this.logoHeight;
     },
+  },
+  data() {
+    return {
+      menuItems: [
+        {
+          title: "DASHBOARD",
+          iconImage: require('./../../assets/images/home.svg'),
+          to: "/",
+        },
+        {
+          title: "SEARCH HISTORY",
+          iconImage: require('./../../assets/images/search.svg'),
+          to: "/search",
+        },
+        {
+          title: "DELIVERY ORDER",
+          iconImage: require('./../../assets/images/delivery_bike.svg'),
+          to: "/deliveryOrder",
+        },
+        {
+          title: "LOCKING",
+          iconImage: require('./../../assets/images/lock.svg'),
+          to: "/locking",
+        },
+        {
+          title: "RESEND",
+          iconImage: require('./../../assets/images/resend.svg'),
+          to: "/resend",
+        },
+        // {
+        //   title: "Users",
+        //   icon: "mdi-account-group-outline",
+        //   iconSelected: "mdi-account-group-outline",
+        //   to: "/users",
+        // },
+      ],
+    };
   },
 };
 </script>

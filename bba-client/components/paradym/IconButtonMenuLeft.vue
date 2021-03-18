@@ -1,5 +1,5 @@
 <!-- Paradym Component
-  Name:     IconButtonMenu
+  Name:     IconButtonMenuLeft
   Version:  0.1
 -->
 
@@ -32,12 +32,16 @@
           :to="item.hasOwnProperty('action') ? undefined : item.to"
           @click="runAction(item)"
         >
+          <v-list-item-action>
+            <v-img
+              max-height="20"
+              max-width="20"
+              :src="item.iconImage"
+            ></v-img>
+          </v-list-item-action>
           <v-list-item-content>
             <v-list-item-title>{{ item.title }}</v-list-item-title>
           </v-list-item-content>
-          <v-list-item-action>
-            <v-icon v-text="item.icon" />
-          </v-list-item-action>
         </v-list-item>
         <v-divider v-if="index < items.length - 1" />
       </template>
@@ -61,6 +65,7 @@ export default {
     },
     icon: String,
     left: Boolean,
+    iconImage: String
   },
   computed: {
     isMobile() {
@@ -85,7 +90,19 @@ export default {
   transform-origin: left top !important;
   z-index: 8 !important;
 
-  border-bottom-color: #4C9A2A;
+  border-bottom-color: #4c9a2a;
   border-bottom-style: solid;
+  border-top-left-radius: 0 !important;
+  border-top-right-radius: 0 !important;
+
+  .v-list {
+    background-color: #444444 !important;
+
+    .v-list-item__content {
+      .v-list-item__title {
+        color: #ffffff !important;
+      }
+    }
+  }
 }
 </style>

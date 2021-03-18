@@ -7,6 +7,7 @@
       @menuClick="drawer = !drawer"
       :color="$vuetify.theme.dark ? '' : '#444444'"
       :dark="true"
+      :isMobileBreakPoint="isMobile"
     >
       <!-- <IconButton
         @click="settings = true"
@@ -97,6 +98,7 @@ export default {
     return {
       drawer: false,
       settings: false,
+      breakpoint: 640,
       items: [
         {
           title: "Dashboard",
@@ -148,6 +150,9 @@ export default {
     ...mapState({
       snackbar: (state) => state.snackbar,
     }),
+    isMobile() {
+      return this.$vuetify.breakpoint.width < this.breakpoint;
+    },
   },
   methods: {
     ...mapMutations("snackbar", ["setBusy"]),
