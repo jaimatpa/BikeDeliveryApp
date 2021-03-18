@@ -8,8 +8,8 @@ module.exports = async () => {
   const usersToCreate = [
     {
       name: "Super Admin",
-      email: "super_admin@gmail.com",
-      password: "12345678",
+      email: "admin@paradynamix.com",
+      password: "password",
       isVerified: true,
       userType: 3,
     },
