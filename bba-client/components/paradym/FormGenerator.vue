@@ -69,15 +69,20 @@
 
       <!-- User Type Select -->
       <v-select
-        v-if="field.type === 'UserType' && isShowUserTypeSelectField"
+        v-if="field.type === 'UserType'"
         v-model="userType"
         :items="userTypeItems"
+        :label="getLabel(field)"
+        :rules="[rules.required]"
         item-text="userTypeAttr"
         item-value="userTypeVal"
-        label="User Type"
-        persistent-hint
+        class="mb-4"
+        color="primary"
+        validate-on-blur
+        outlined
+        dense
+        hide-details="auto"
         return-object
-        single-line
       ></v-select>
 
       <!-- Numbers -->
@@ -201,13 +206,13 @@ export default {
   },
   created() {},
   data() {
-    console.log(this.values);
     return {
       showPassword: false,
       isShowPasswordField: this.values ? false : true,
-      isShowUserTypeSelectField: this.values ? false : true,
       // User Type Items
-      userType: { userTypeAttr: DELVERY_DRIVER, userTypeVal: DELVERY_DRIVER_NUMBER },
+      userType: this.values
+        ? this.getUserTypesVal(JSON.parse(JSON.stringify(this.values)))
+        : this.getUserTypesVal(this.defaultInputData()),
       userTypeItems: [
         { userTypeAttr: CLIENT, userTypeVal: CLIENT_NUMBER },
         { userTypeAttr: DELVERY_DRIVER, userTypeVal: DELVERY_DRIVER_NUMBER },
@@ -236,11 +241,13 @@ export default {
       if (newValue) {
         this.inputData = JSON.parse(JSON.stringify(newValue));
         this.isShowPasswordField = false;
-        this.isShowUserTypeSelectField = true;
+        this.userType = this.getUserTypesVal(
+          JSON.parse(JSON.stringify(newValue))
+        );
       } else {
         this.inputData = this.defaultInputData();
         this.isShowPasswordField = true;
-        this.isShowUserTypeSelectField = true;
+        this.userType = this.getUserTypesVal(this.defaultInputData());
       }
     },
   },
@@ -265,6 +272,18 @@ export default {
     },
   },
   methods: {
+    getUserTypesVal(userVal) {
+      if (userVal?.userType === 1)
+        return { userTypeAttr: CLIENT, userTypeVal: CLIENT_NUMBER };
+      else if (userVal?.userType === 2)
+        return {
+          userTypeAttr: DELVERY_DRIVER,
+          userTypeVal: DELVERY_DRIVER_NUMBER,
+        };
+      else if (userVal?.userType === 3)
+        return { userTypeAttr: SYSTEM_ADMIN, userTypeVal: SYSTEM_ADMIN_NUMBER };
+      else return { userTypeAttr: CLIENT, userTypeVal: CLIENT_NUMBER };
+    },
     defaultInputData() {
       let defaultData = {};
 
@@ -304,6 +323,7 @@ export default {
           outputData[field.name] = parseFloat(outputData[field.name]);
         else if (field.type == "integer")
           outputData[field.name] = parseInt(outputData[field.name]);
+        else if (field.type === "UserType") outputData.userType = this.userType;
       });
       return outputData;
     },
