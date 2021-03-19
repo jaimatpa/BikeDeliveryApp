@@ -45,12 +45,31 @@
           </v-col>
         </v-row>
       </template>
+
+      <!-- Show Custom User Type Column -->
+      <template v-slot:item.userType="{ item }">
+        <v-chip v-if="item.userType === 1" color="orange" dark>
+          Client
+        </v-chip>
+        <v-chip v-if="item.userType === 2" color="teal" dark>
+          Delivery Driver
+        </v-chip>
+        <v-chip v-if="item.userType === 3" color="green" dark>
+          System Admin
+        </v-chip>
+      </template>
+
+      <!-- Show Custom CreatedAt Column -->
+      <template v-slot:item.createdAt="{ item }">
+        {{ item.createdAt }}
+      </template>
+
       <!-- Actions -->
       <template v-slot:item.actions="{ item }">
         <v-icon small color="primary" class="mr-2" @click="$emit('edit', item)">
           mdi-pencil
         </v-icon>
-        <v-icon small color="secondary" @click="confirmDelete(item)">
+        <v-icon small color="error" @click="confirmDelete(item)">
           mdi-delete
         </v-icon>
       </template>
@@ -171,7 +190,7 @@ export default {
         this.options.page = 1;
       }, 200);
     },
-    confirmDelete(item) {      
+    confirmDelete(item) {
       this.itemToDelete = item;
       this.deleteDialog = true;
     },
