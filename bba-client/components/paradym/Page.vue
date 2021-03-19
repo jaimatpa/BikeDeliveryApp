@@ -16,7 +16,7 @@
         class="mb-8"
         :class="{ 'text-center': center }"
       >
-        <h1 v-if="title" v-html="title" class="text-h4 mb-4" />
+        <h1 v-if="title" v-html="title" class="text-h4 mb-4 primary--text" />
         <div class="page-desc">
           <slot name="desc">
             <p v-if="desc" v-html="desc" />

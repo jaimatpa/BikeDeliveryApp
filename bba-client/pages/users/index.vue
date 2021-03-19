@@ -1,7 +1,7 @@
 <template>
   <PageResource
     name="Users"
-    title="Users"
+    title="List of Users"
     :fields="fields"
     endpoint="/api/users"
   />
