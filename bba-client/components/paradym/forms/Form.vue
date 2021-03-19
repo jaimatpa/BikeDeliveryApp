@@ -7,6 +7,7 @@
   <v-sheet
     class="form pa-4"
     rounded
+    outlined
     :class="{
       'form-outlined': isMobile ? '' : outlined,
       'elevation-2': elevated,
