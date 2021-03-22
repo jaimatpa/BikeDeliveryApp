@@ -12,14 +12,23 @@ const updateUser = require("./user/updateUsers");
 const deleteUser = require("./user/deleteUser");
 const restoreUsers = require("./user/restoreUsers");
 
+const allWebHooks = require("./webHook/allWebHooks");
+const createWebHook = require("./webHook/createWebHook");
+const updateWebHook = require("./webHook/updateWebHook");
+
 module.exports = {
   create: (app) => {
-    // Create the routes
+    // Create the protected user routes
     app.use("/api/user/changePassword", changePassword);
     app.use("/api/user/allUsers", allUsers);
     app.use("/api/user/restoreUsers", restoreUsers);
     app.use("/api/user/updateUser", updateUser);
     app.use("/api/user/deleteUser", deleteUser);
+
+    // Create Protected Web hook route
+    app.use("/api/webHook/allWebHooks", allWebHooks);
+    app.use("/api/webHook/createWebHook", createWebHook);
+    app.use("/api/webHook/updateWebHook", updateWebHook);
 
     app.use("/api/upload", upload);
 
@@ -37,22 +46,15 @@ module.exports = {
       sort: {
         default: "-createdAt",
       },
-      actions: [
-        "create",
-        "list",
-        "read",
-        "update",
-        "delete"
-      ],
+      actions: ["create", "list", "read", "update", "delete"],
     });
 
     resource.create.write.after(async function (req, res, context) {
-    
       /*Send Verify Email For New user which is System Admin Create*/
       try {
         // Find the response user object
         const newUser = context?.instance?.dataValues;
-        
+
         if (newUser) {
           // Generate a verification token
           const verifyToken = await models.VerificationToken.build({

@@ -6,11 +6,11 @@
 import Page from "@/components/paradym/Page";
 
 export default {
-  name: "pageTest",
+  name: "resend",
   auth: true,
   head() {
     return {
-      title: "Test",
+      title: "Resend",
     };
   },
   components: { Page },

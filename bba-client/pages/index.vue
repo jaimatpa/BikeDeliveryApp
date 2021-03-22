@@ -60,7 +60,7 @@
 <script>
 import Page from "@/components/paradym/Page";
 import PageSection from "@/components/paradym/PageSection";
-import orderMockData from "@/constants/ORDER_MOCK_DATA.json";
+import orderMockData from "@/webHooks/ORDER_MOCK_DATA.json";
 
 export default {
   name: "pageIndex",
