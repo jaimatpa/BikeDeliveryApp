@@ -106,11 +106,10 @@ export default {
 
           if (response) {
             this.showSuccess("User Created Successfully Done!!!");
-            this.itemToEdit = null;
+            this.itemToEdit = {};
           }
         }
 
-        this.itemToEdit = null;
         this.$refs.serverDataTable.$fetch();
       } catch (err) {
         this.showError(err?.response?.data?.errors[NUMBER_0].message);

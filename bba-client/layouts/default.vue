@@ -130,6 +130,12 @@ export default {
           iconSelected: "mdi-share",
           to: "/resend",
         },
+        {
+          title: "All Users",
+          icon: "mdi-account-group-outline",
+          iconSelected: "mdi-account-group",
+          to: "/users/allUsers",
+        },
       ],
       userItems: [
         {

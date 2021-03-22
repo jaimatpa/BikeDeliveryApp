@@ -94,12 +94,6 @@ export default {
           iconImage: require('./../../assets/images/resend.svg'),
           to: "/resend",
         },
-        {
-          title: "Users",
-          icon: "mdi-account-group-outline",
-          iconSelected: "mdi-account-group-outline",
-          to: "/users",
-        },
       ],
     };
   },
