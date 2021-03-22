@@ -28,12 +28,39 @@
         </v-card>
       </v-col>
     </v-row>
+
+    <v-row>
+      <v-col xs="12" sm="12" md="12" xl="12" class="mt-5" justify="center">
+        <div :class="[isMobile ? 'text-center' : '']">
+          <p class="headline text-uppercase primary--text mb-1">
+            Today's Delivaries
+          </p>
+          <v-divider :class="[isMobile ? 'mobile-divider' : '']"></v-divider>
+        </div>
+      </v-col>
+    </v-row>
+
+    <!-- Orders Mock Data Table -->
+    <v-row>
+      <v-col xs="12" sm="12" md="12" xl="12" class="mt-1">
+        <v-data-table
+          :headers="headers"
+          :items="orders"
+          :options.sync="options"
+          :server-items-length="totalOrders"
+          :loading="loading"
+          class="elevation-1"
+        >
+        </v-data-table>
+      </v-col>
+    </v-row>
   </Page>
 </template>
 
 <script>
 import Page from "@/components/paradym/Page";
 import PageSection from "@/components/paradym/PageSection";
+import orderMockData from "@/constants/ORDER_MOCK_DATA.json";
 
 export default {
   name: "pageIndex",
@@ -50,6 +77,20 @@ export default {
   data() {
     return {
       breakpoint: 640,
+      totalOrders: 0,
+      orders: [],
+      loading: true,
+      options: {},
+      headers: [
+        {
+          text: "Order#",
+          align: "start",
+          sortable: false,
+          value: "order",
+        },
+        { text: "Name", value: "name" },
+        { text: "Location", value: "location" },
+      ],
       dashboardItems: [
         {
           title: "Search History",
@@ -74,6 +115,63 @@ export default {
       ],
     };
   },
+  watch: {
+    options: {
+      handler() {
+        this.getDataFromApi();
+      },
+      deep: true,
+    },
+  },
+  mounted() {
+    this.getDataFromApi();
+  },
+  methods: {
+    async getDataFromApi() {
+      this.loading = true;
+      this.apiCall().then((data) => {
+        this.orders = data.items;
+        this.totalOrders = data.total;
+        this.loading = false;
+      });
+    },
+    apiCall() {
+      return new Promise(async (resolve, reject) => {
+        const { sortBy, sortDesc, page, itemsPerPage } = this.options;
+
+        let items = orderMockData;
+        const total = orderMockData.length;
+
+        if (sortBy.length === 1 && sortDesc.length === 1) {
+          items = items.sort((a, b) => {
+            const sortA = a[sortBy[0]];
+            const sortB = b[sortBy[0]];
+
+            if (sortDesc[0]) {
+              if (sortA < sortB) return 1;
+              if (sortA > sortB) return -1;
+              return 0;
+            } else {
+              if (sortA < sortB) return -1;
+              if (sortA > sortB) return 1;
+              return 0;
+            }
+          });
+        }
+
+        if (itemsPerPage > 0) {
+          items = items.slice((page - 1) * itemsPerPage, page * itemsPerPage);
+        }
+
+        setTimeout(() => {
+          resolve({
+            items,
+            total,
+          });
+        }, 1000);
+      });
+    },
+  },
 };
 </script>
 
@@ -96,7 +194,11 @@ export default {
   }
 }
 .dashboard-card {
-  background-color: #E9E9E9;
+  background-color: #e9e9e9;
   border: 2px solid #4c9a2a;
+}
+.mobile-divider {
+  max-width: 50%;
+  margin: 0 auto;
 }
 </style>
