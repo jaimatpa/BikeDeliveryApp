@@ -66,5 +66,15 @@
         "user_successfully_updated": "User Successfully Updated"
       }
     }
+  },
+  "web_hook": {
+    "api_message": {
+      "web_hook_url_required": "Web Hook URL is required.",
+      "web_hook_created": "Web Hook URL created",
+      "error_creating_web_hook_url": "Error creating new web hook url.",
+      "web_hook_updated": "Web Hook URL updated.",
+      "retrieving_all_web_hook_error": "Retrieving all web hooks error",
+      "retrieving_all_web_hook_success": "Retrieving all web hooks success"
+    }
   }
 }
