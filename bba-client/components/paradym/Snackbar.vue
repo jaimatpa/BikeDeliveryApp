@@ -4,7 +4,15 @@
 -->
 
 <template>
-  <v-snackbar :value="busy" :timeout="timeout" :color="color" top right>
+  <v-snackbar
+    :value="busy"
+    :timeout="timeout"
+    :color="color"
+    :top="!isMobile"
+    :right="!isMobile"
+    :bottom="isMobile"
+    :center="isMobile"
+  >
     {{ message }}
     <template v-slot:action="{ attrs }">
       <v-btn v-if="canClose" v-bind="attrs" text @click="$emit('close')"
@@ -23,9 +31,18 @@ export default {
       type: Number,
       default: 2000,
     },
+    breakpoint: {
+      type: Number,
+      default: 640,
+    },
     color: String,
     message: String,
     canClose: Boolean,
-  }
+  },
+  computed: {
+    isMobile() {
+      return this.$vuetify.breakpoint.width < this.breakpoint;
+    },
+  },
 };
 </script>

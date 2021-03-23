@@ -24,6 +24,17 @@
       />
     </AppBar>
 
+    <!-- Topbar -->
+    <div
+      v-if="isMobile && $nuxt.$route.name !== 'index'"
+      class="top-bar d-flex align-center px-6"
+    >
+      <v-icon medium color="white" class="mr-2">
+        {{ getTopBarIcon($nuxt.$route) }}
+      </v-icon>
+      <p class="text-uppercase white--text mb-0">{{ $nuxt.$route.name }}</p>
+    </div>
+
     <!-- Navigation -->
     <Navigation
       v-model="drawer"
@@ -192,8 +203,42 @@ export default {
   },
   methods: {
     ...mapMutations("snackbar", ["setBusy"]),
+    getTopBarIcon(route) {
+      switch (route.path) {
+        case "/search":
+          return "mdi-card-search";
+          break;
+        case "/deliveryOrder":
+          return "mdi-bike";
+          break;
+        case "/locking":
+          return "mdi-lock";
+          break;
+        case "/resend":
+          return "mdi-share";
+          break;
+        case "/webHookSetting":
+          return "mdi-hook";
+          break;
+        case "/users":
+          return "mdi-account-group";
+          break;
+
+        default:
+          return "";
+          break;
+      }
+    },
   },
 };
 </script>
 
-<style lang="scss"></style>
+<style lang="scss">
+.top-bar {
+  position: relative;
+  top: 56px;
+  left: 0;
+  background-color: #4c9a2a;
+  height: 30px;
+}
+</style>
