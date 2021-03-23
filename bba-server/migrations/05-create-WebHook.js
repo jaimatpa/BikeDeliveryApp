@@ -16,7 +16,16 @@ module.exports = {
       },
       isActive: {
         allowNull: false,
-        type: Sequelize.BOOLEAN
+        type: Sequelize.BOOLEAN,
+      },
+      userId: {
+        type: Sequelize.INTEGER,
+        references: {
+          model: "Users",
+          key: "id",
+        },
+        allowNull: false,
+        onDelete: "cascade",
       },
       createdAt: {
         allowNull: true,
