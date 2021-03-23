@@ -1,21 +1,38 @@
 <template lang="html">
-  <Page title="Web Hook Setting"> </Page>
+  <PageResource
+    name="Web Hook"
+    title="List of Web Hooks"
+    :fields="fields"
+    endpoint="/api/webHooks"
+  />
 </template>
 
 <script>
-import Page from "@/components/paradym/Page";
+import PageResource from "@/components/paradym/PageResource";
 
 export default {
-  name: "pageTest",
+  name: "webHook",
   auth: true,
   head() {
     return {
-      title: "Test",
+      title: "Web Hook",
     };
   },
-  components: { Page },
+  components: { PageResource },
   data() {
-    return {};
+    return {
+      fields: {
+        webHookUrl: {
+          type: String,
+          required: true,
+          isValidUrl: true,
+        },
+        isActive: {
+          type: Boolean,
+          required: true,
+        },
+      },
+    };
   },
 };
 </script>

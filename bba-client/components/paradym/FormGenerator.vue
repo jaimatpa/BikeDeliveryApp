@@ -104,7 +104,7 @@
 
       <!-- Booleans -->
       <v-radio-group
-        v-if="field.type == Boolean"
+        v-if="field.type === Boolean"
         v-model="inputData[field.name]"
         row
         :rules="getRules(field)"
@@ -233,6 +233,11 @@ export default {
           const pattern = /^(([^<>()[\]\\.,;:\s@"]+(\.[^<>()[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
           return pattern.test(value) || "Invalid e-mail.";
         },
+        isValidUrl: (value) => {
+          if (value == "" || value == null) return true;
+          const pattern = /^(ftp|http|https):\/\/[^ "]+$/;
+          return pattern.test(value) || "Invalid url.";
+        },
       },
     };
   },
@@ -309,6 +314,7 @@ export default {
       if (field.required) result.push(this.rules.required);
       if (field.minLength) result.push(this.rules.minLength);
       if (field.email) result.push(this.rules.email);
+      if (field.isValidUrl) result.push(this.rules.isValidUrl);
       return result;
     },
     onSubmit() {

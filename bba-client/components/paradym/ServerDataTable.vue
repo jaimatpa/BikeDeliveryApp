@@ -59,6 +59,16 @@
         </v-chip>
       </template>
 
+      <!-- Show Custom isActive Column -->
+      <template v-slot:item.isActive="{ item }">
+        <v-chip v-if="item.isActive" color="primary" dark>
+          Yes
+        </v-chip>
+        <v-chip v-else color="error" dark>
+          No
+        </v-chip>
+      </template>
+
       <!-- Show Custom CreatedAt Column -->
       <template v-slot:item.createdAt="{ item }">
         {{ item.createdAt }}

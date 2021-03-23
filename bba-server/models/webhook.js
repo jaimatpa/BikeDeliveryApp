@@ -9,6 +9,7 @@ module.exports = (sequelize, DataTypes) => {
   WebHook.init(
     {
       webHookUrl: DataTypes.STRING,
+      isActive: DataTypes.BOOLEAN,
       createdAt: DataTypes.DATE,
       updatedAt: DataTypes.DATE,
     },
