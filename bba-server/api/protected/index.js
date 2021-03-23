@@ -33,7 +33,7 @@ module.exports = {
     app.use("/api/upload", upload);
 
     // User
-    const resource = finale.resource({
+    const userResource = finale.resource({
       model: models.User,
       excludeAttributes: [
         "isVerified",
@@ -49,7 +49,18 @@ module.exports = {
       actions: ["create", "list", "read", "update", "delete"],
     });
 
-    resource.create.write.after(async function (req, res, context) {
+    // Web Hooks
+    const webHookresource = finale.resource({
+      model: models.WebHook,
+      excludeAttributes: ["updatedAt"],
+      endpoints: ["/api/webHooks", "/api/webHooks/:id"],
+      sort: {
+        default: "-createdAt",
+      },
+      actions: ["create", "list", "read", "update", "delete"],
+    });
+
+    userResource.create.write.after(async function (req, res, context) {
       /*Send Verify Email For New user which is System Admin Create*/
       try {
         // Find the response user object

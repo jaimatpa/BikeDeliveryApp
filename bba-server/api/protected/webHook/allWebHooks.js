@@ -2,11 +2,11 @@ const express = require("express");
 const router = express.Router();
 const status = require("http-status");
 
-const models = require("../../../models");
+const models = require("./../../../models");
 const apiError = require("../../../libs/apiError");
 const constVariables = require("../../../constants");
 const apiMessage = require("./../../../language/en.json");
-const verifyAuthHeader = require("../../extensions/verifyAuthHeader");
+const verifyAuthHeader = require("./../../extensions/verifyAuthHeader");
 
 // *****************
 // Get All Web Hooks Route
@@ -48,7 +48,7 @@ router.get("/", async (req, res) => {
     else {
       const response = {
         success: true,
-        allUsers: allWebHooks,
+        allWebHooks: allWebHooks,
         message:
           apiMessage.web_hook.api_message.retrieving_all_web_hook_success,
       };

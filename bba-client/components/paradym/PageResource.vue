@@ -57,11 +57,11 @@ export default {
   },
   computed: {
     addText() {
-      if (typeof itemToEdit === "object") {
-        if (Object.keys(this.itemToEdit).length > 0)
+      if (typeof this.itemToEdit === "object") {
+        if (this.itemToEdit !== null && Object.keys(this.itemToEdit).length > 0)
           return this.name ? "Update " + this.name : "Update Item";
         else return this.name ? "Add " + this.name : "Add Item";
-      }
+      } else return this.name ? "Add " + this.name : "Add Item";
     },
   },
   methods: {
@@ -99,13 +99,13 @@ export default {
           );
 
           if (response) {
-            this.showSuccess("User Updated Successfully Done!!!");
+            this.showSuccess(`${this.name} Updated Successfully Done!!!`);
           }
         } else {
           const response = await this.$axios.$post(this.endpoint, sendData);
 
           if (response) {
-            this.showSuccess("User Created Successfully Done!!!");
+            this.showSuccess(`${this.name} Created Successfully Done!!!`);
             this.itemToEdit = {};
           }
         }
