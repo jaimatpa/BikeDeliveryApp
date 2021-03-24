@@ -30,9 +30,11 @@
       class="top-bar d-flex align-center px-6"
     >
       <v-icon medium color="white" class="mr-2">
-        {{ getTopBarIcon($nuxt.$route) }}
+        {{ getTopBarIcon($nuxt.$route.name) }}
       </v-icon>
-      <p class="text-uppercase white--text mb-0">{{ $nuxt.$route.name }}</p>
+      <p class="text-uppercase white--text mb-0">
+        {{ getTopBarName($nuxt.$route.name) }}
+      </p>
     </div>
 
     <!-- Navigation -->
@@ -119,9 +121,9 @@ export default {
         },
         {
           title: "SEARCH HISTORY",
-          icon: "mdi-card-search-outline",
-          iconSelected: "mdi-card-search",
-          to: "/search",
+          icon: "mdi-magnify",
+          iconSelected: "mdi-magnify",
+          to: "/searchHistory",
         },
         {
           title: "DELIVERY ORDER",
@@ -203,29 +205,61 @@ export default {
   },
   methods: {
     ...mapMutations("snackbar", ["setBusy"]),
-    getTopBarIcon(route) {
-      switch (route.path) {
-        case "/search":
-          return "mdi-card-search";
+    getTopBarIcon(routeName) {
+      switch (routeName) {
+        case "searchHistory":
+          return "mdi-magnify";
           break;
-        case "/deliveryOrder":
+        case "deliveryOrder":
           return "mdi-bike";
           break;
-        case "/locking":
+        case "locking":
           return "mdi-lock";
           break;
-        case "/resend":
+        case "resend":
           return "mdi-share";
           break;
-        case "/webHookSetting":
+        case "webHookSetting":
           return "mdi-hook";
           break;
-        case "/users":
+        case "users":
           return "mdi-account-group";
+          break;
+        case "searchHistory-orderId":
+          return "mdi-magnify";
           break;
 
         default:
           return "";
+          break;
+      }
+    },
+    getTopBarName(routeName) {
+      switch (routeName) {
+        case "searchHistory":
+          return "Search History";
+          break;
+        case "deliveryOrder":
+          return "Delivery Order";
+          break;
+        case "locking":
+          return "Locking";
+          break;
+        case "resend":
+          return "Resend";
+          break;
+        case "webHookSetting":
+          return "Web Hook Settings";
+          break;
+        case "users":
+          return "User Management";
+          break;
+        case "searchHistory-orderId":
+          return "Order Details";
+          break;
+
+        default:
+          return routeName;
           break;
       }
     },

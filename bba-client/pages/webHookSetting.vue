@@ -1,7 +1,7 @@
 <template lang="html">
   <PageResource
     name="Web Hook"
-    title="List of Web Hooks"
+    :title="!isMobile ? 'List of Web Hooks' : ''"
     :fields="fields"
     endpoint="/api/webHooks"
   />
@@ -19,8 +19,14 @@ export default {
     };
   },
   components: { PageResource },
+  computed: {
+    isMobile() {
+      return this.$vuetify.breakpoint.width < this.breakpoint;
+    },
+  },
   data() {
     return {
+      breakpoint: 640,
       fields: {
         webHookUrl: {
           type: String,

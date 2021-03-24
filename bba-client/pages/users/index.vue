@@ -1,7 +1,7 @@
 <template>
   <PageResource
     name="User"
-    title="List of Users"
+    :title="!isMobile ? 'List of Users' : ''"
     :fields="fields"
     endpoint="/api/users"
   />
@@ -17,24 +17,30 @@ export default {
     return { title: "Users" };
   },
   components: { PageResource },
+  computed: {
+    isMobile() {
+      return this.$vuetify.breakpoint.width < this.breakpoint;
+    },
+  },
   data() {
     return {
+      breakpoint: 640,
       fields: {
         email: {
           type: String,
           required: true,
-          email: true
+          email: true,
         },
         name: {
           type: String,
           required: true,
         },
         password: {
-          type: "Password"
+          type: "Password",
         },
         userType: {
-          type: "UserType"
-        }
+          type: "UserType",
+        },
       },
     };
   },

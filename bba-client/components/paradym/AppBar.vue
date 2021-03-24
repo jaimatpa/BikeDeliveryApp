@@ -77,7 +77,7 @@ export default {
         {
           title: "SEARCH HISTORY",
           iconImage: require('./../../assets/images/search.svg'),
-          to: "/search",
+          to: "/searchHistory",
         },
         {
           title: "DELIVERY ORDER",

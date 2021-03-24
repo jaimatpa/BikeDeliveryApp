@@ -95,7 +95,7 @@ export default {
         {
           title: "Search History",
           icon: require("./../assets/images/dashboard_search.svg"),
-          to: "/search",
+          to: "/searchHistory",
         },
         {
           title: "Delivery Order",
