@@ -15,9 +15,9 @@
 
     <v-data-table
       :headers="headers"
-      :items="resends"
+      :items="searchHistories"
       :options.sync="options"
-      :server-items-length="totalResend"
+      :server-items-length="totalSearchHistory"
       :loading="loading"
       :search="search"
       class="elevation-1"
@@ -25,67 +25,31 @@
       <!-- Actions -->
       <template v-slot:item.actions="{ item }">
         <v-icon
-          class="resend-icon"
           medium
-          color="white"
-          @click.stop="resendDialog = true"
+          color="primary"
+          @click.stop="
+            $router.push({
+              path: `/searchHistory/${item.order}`,
+            })
+          "
         >
-          mdi-share
+          mdi-page-next
         </v-icon>
       </template>
     </v-data-table>
-
-    <!-- Resend Dialog -->
-    <v-dialog
-      v-model="resendDialog"
-      transition="dialog-bottom-transition"
-      max-width="350"
-      content-class="resend-dialog"
-    >
-      <v-card>
-        <v-toolbar dense color="primary" dark elevation="0">
-          <v-toolbar-title>Resend</v-toolbar-title>
-          <v-spacer />
-          <v-btn icon dark @click="resendDialog = false">
-            <v-icon>mdi-close</v-icon>
-          </v-btn>
-        </v-toolbar>
-
-        <v-card-text class="my-5 text-center">
-          <p class="title mb-3 secondary--text sure-title">
-            Are you sure you want to resend this information?
-          </p>
-
-          <div class="d-flex flex-column">
-            <v-btn class="ma-2" color="primary" @click="sendNotification()">
-              Confirm
-            </v-btn>
-            <v-btn
-              class="ma-2"
-              outlined
-              color="error"
-              @click="resendDialog = false"
-            >
-              Cancel
-            </v-btn>
-          </div>
-        </v-card-text>
-      </v-card>
-    </v-dialog>
   </Page>
 </template>
 
 <script>
-import { mapActions } from "vuex";
 import Page from "@/components/paradym/Page";
-import resendMockData from "@/webHooks/RESEND_MOCK_DATA.json";
+import searchMockData from "@/webHooks/SEARCH_MOCK_DATA.json";
 
 export default {
-  name: "resend",
+  name: "searchHistory",
   auth: true,
   head() {
     return {
-      title: "Resend",
+      title: "Search History",
     };
   },
   components: { Page },
@@ -97,10 +61,10 @@ export default {
   data() {
     return {
       breakpoint: 640,
-      totalResend: 0,
-      resendDialog: false,
+      totalSearchHistory: 0,
+
       search: "",
-      resends: [],
+      searchHistories: [],
       loading: true,
       options: {},
       headers: [
@@ -111,6 +75,7 @@ export default {
         },
         { text: "Name", value: "name", sortable: false },
         { text: "Location", value: "location", sortable: false },
+        { text: "Bike Rack", value: "rack", sortable: false },
         { text: "Order", value: "order" },
         { text: "Actions", value: "actions", sortable: false, align: "center" },
       ],
@@ -128,16 +93,11 @@ export default {
     this.getDataFromApi();
   },
   methods: {
-    ...mapActions("snackbar", { showSuccess: "success", showError: "error" }),
-    sendNotification() {
-      this.resendDialog = false;
-      this.showSuccess("Notification Sent.");
-    },
     async getDataFromApi() {
       this.loading = true;
       this.apiCall().then((data) => {
-        this.resends = data.items;
-        this.totalResend = data.total;
+        this.searchHistories = data.items;
+        this.totalSearchHistory = data.total;
         this.loading = false;
       });
     },
@@ -145,8 +105,8 @@ export default {
       return new Promise(async (resolve, reject) => {
         const { sortBy, sortDesc, page, itemsPerPage } = this.options;
 
-        let items = resendMockData;
-        const total = resendMockData.length;
+        let items = searchMockData;
+        const total = searchMockData.length;
 
         if (sortBy.length === 1 && sortDesc.length === 1) {
           items = items.sort((a, b) => {
@@ -180,20 +140,3 @@ export default {
   },
 };
 </script>
-
-<style lang="scss">
-.resend-dialog {
-  box-shadow: none !important;
-
-  .sure-title {
-    font-size: 1.2rem !important;
-    line-height: 1.5rem !important;
-  }
-}
-
-.resend-icon {
-  background: #4c9a2a;
-  padding: 5px;
-  border-radius: 5px;
-}
-</style>
