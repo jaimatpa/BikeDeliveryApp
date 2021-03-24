@@ -71,7 +71,7 @@
       <!-- Slot: Buttons -->
       <slot name="buttons">
         <div
-          class="d-flex justify-end"
+          class="d-flex justify-end flex-wrap"
           :class="{ 'mb-2': hasFooterContent }"
           style="max-width: 100%;"
         >
