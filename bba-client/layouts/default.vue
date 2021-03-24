@@ -228,6 +228,9 @@ export default {
         case "searchHistory-orderId":
           return "mdi-magnify";
           break;
+        case "locking-deliveryId":
+          return "mdi-lock";
+          break;
 
         default:
           return "";
@@ -256,6 +259,9 @@ export default {
           break;
         case "searchHistory-orderId":
           return "Order Details";
+          break;
+        case "locking-deliveryId":
+          return "Lock Details";
           break;
 
         default:
