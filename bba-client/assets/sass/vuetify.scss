@@ -2,8 +2,8 @@
 .v-application .v-application--wrap {
   .overline {
     color: #666;
-    font-size: .6875rem !important;
-    letter-spacing: .07272727em !important;
+    font-size: 0.6875rem !important;
+    letter-spacing: 0.07272727em !important;
     line-height: 17.5px;
     margin-bottom: -2px;
     margin-right: 8px;
@@ -12,5 +12,23 @@
 
 // Navigation Drawer
 .v-navigation-drawer__content {
-  background-color: #F5F6FA !important;
+  background-color: #f5f6fa !important;
 }
+
+// Vuetify Data Table css override if necessary for per page write below this code
+
+// .v-data-table {
+//   .v-data-table__mobile-table-row {
+//     display: flex !important;
+    
+//     .v-data-table__mobile-row {
+//       display: flex !important;
+//       flex-direction: column !important;
+//       justify-content: center !important;
+//       align-items: flex-start !important;
+//       border-bottom: thin solid rgba(0, 0, 0, 0.12) !important;
+
+//       min-width: 150px !important;
+//     }
+//   }
+// }
