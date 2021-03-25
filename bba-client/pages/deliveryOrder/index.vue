@@ -1,5 +1,13 @@
 <template lang="html">
   <Page>
+    <!-- Delivery Order Scan Button  -->
+    <v-btn v-if="isMobile" block depressed color="primary" class="mb-5">
+      <v-icon left medium color="white" class="mr-2">
+        mdi-barcode-scan
+      </v-icon>
+      Scan
+    </v-btn>
+
     <!-- Order Search Field -->
     <v-text-field
       v-model="search"
