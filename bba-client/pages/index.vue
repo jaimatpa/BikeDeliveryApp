@@ -3,6 +3,7 @@
     <v-row>
       <v-col
         v-for="(item, index) in dashboardItems"
+        cols="12"
         xs="6"
         sm="6"
         md="3"
@@ -30,7 +31,15 @@
     </v-row>
 
     <v-row>
-      <v-col xs="12" sm="12" md="12" xl="12" class="mt-5" justify="center">
+      <v-col
+        cols="12"
+        xs="12"
+        sm="12"
+        md="12"
+        xl="12"
+        class="mt-5"
+        justify="center"
+      >
         <div :class="[isMobile ? 'text-center' : '']">
           <p class="headline text-uppercase primary--text mb-1">
             Today's Delivaries
@@ -42,7 +51,7 @@
 
     <!-- Orders Mock Data Table -->
     <v-row>
-      <v-col xs="12" sm="12" md="12" xl="12" class="mt-1">
+      <v-col cols="12" xs="12" sm="12" md="12" xl="12" class="mt-1">
         <v-data-table
           :headers="headers"
           :items="orders"

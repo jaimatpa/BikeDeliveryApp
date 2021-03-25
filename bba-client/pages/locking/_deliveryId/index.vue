@@ -1,13 +1,7 @@
 <template lang="html">
   <Page :title="!isMobile ? 'Lock Details' : ''">
     <v-row>
-      <v-col
-        :class="[isMobile ? 'lock-details-mobile-col' : '']"
-        xs="12"
-        sm="12"
-        md="6"
-        xl="6"
-      >
+      <v-col cols="12" xs="12" sm="12" md="6" xl="6">
         <v-text-field
           v-model="lockData.lock"
           label="Lock"
@@ -18,13 +12,7 @@
         >
         </v-text-field>
       </v-col>
-      <v-col
-        :class="[isMobile ? 'lock-details-mobile-col' : '']"
-        xs="12"
-        sm="12"
-        md="6"
-        xl="6"
-      >
+      <v-col cols="12" xs="12" sm="12" md="6" xl="6">
         <v-text-field
           v-model="lockData.color"
           label="Color"
@@ -38,13 +26,7 @@
     </v-row>
 
     <v-row>
-      <v-col
-        :class="[isMobile ? 'lock-details-mobile-col' : '']"
-        xs="12"
-        sm="12"
-        md="6"
-        xl="6"
-      >
+      <v-col cols="12" xs="12" sm="12" md="6" xl="6">
         <v-text-field
           v-model="lockData.combination"
           label="Combination"
@@ -59,13 +41,7 @@
 
     <!-- Notification Send Button -->
     <v-row>
-      <v-col
-        :class="[isMobile ? 'lock-details-mobile-col' : '']"
-        xs="12"
-        sm="12"
-        md="6"
-        xl="6"
-      >
+      <v-col cols="12" xs="12" sm="12" md="6" xl="6">
         <v-btn block depressed color="primary" @click.stop="$router.go(-1)">
           Save
         </v-btn>
@@ -109,8 +85,4 @@ export default {
 };
 </script>
 
-<style lang="scss">
-.lock-details-mobile-col {
-  flex-basis: 100% !important;
-}
-</style>
+<style lang="scss"></style>

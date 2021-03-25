@@ -231,6 +231,9 @@ export default {
         case "locking-deliveryId":
           return "mdi-lock";
           break;
+        case "deliveryOrder-orderId":
+          return "mdi-bike";
+          break;
 
         default:
           return "";
@@ -262,6 +265,9 @@ export default {
           break;
         case "locking-deliveryId":
           return "Lock Details";
+          break;
+        case "deliveryOrder-orderId":
+          return "Delivery Details";
           break;
 
         default:
