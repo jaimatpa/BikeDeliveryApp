@@ -130,7 +130,7 @@ export default {
           primary: process.env.COLOR_PRIMARY || "#4c9a2a",
           secondary: process.env.COLOR_SECONDARY || "#8b91a0",
           accent: "#343c4b",
-          info: "#2196f3",
+          info: "#32AB3A",
           warning: "#FFEB3B",
           success: "#4caf50",
           error: "#DC3545",

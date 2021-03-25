@@ -1,13 +1,7 @@
 <template lang="html">
   <Page :title="!isMobile ? 'Order Details' : ''">
     <v-row>
-      <v-col
-        :class="[isMobile ? 'search-details-mobile-col' : '']"
-        xs="12"
-        sm="12"
-        md="6"
-        xl="6"
-      >
+      <v-col cols="12" xs="12" sm="12" md="6" xl="6">
         <v-text-field
           v-model="orderData.date"
           label="Date"
@@ -18,13 +12,7 @@
         >
         </v-text-field>
       </v-col>
-      <v-col
-        :class="[isMobile ? 'search-details-mobile-col' : '']"
-        xs="12"
-        sm="12"
-        md="6"
-        xl="6"
-      >
+      <v-col cols="12" xs="12" sm="12" md="6" xl="6">
         <v-text-field
           v-model="orderData.name"
           label="Name"
@@ -38,13 +26,7 @@
     </v-row>
 
     <v-row>
-      <v-col
-        :class="[isMobile ? 'search-details-mobile-col' : '']"
-        xs="12"
-        sm="12"
-        md="6"
-        xl="6"
-      >
+      <v-col cols="12" xs="12" sm="12" md="6" xl="6">
         <v-text-field
           v-model="orderData.location"
           label="Location"
@@ -55,13 +37,7 @@
         >
         </v-text-field>
       </v-col>
-      <v-col
-        :class="[isMobile ? 'search-details-mobile-col' : '']"
-        xs="12"
-        sm="12"
-        md="6"
-        xl="6"
-      >
+      <v-col cols="12" xs="12" sm="12" md="6" xl="6">
         <v-text-field
           v-model="orderData.order"
           label="Order"
@@ -75,13 +51,7 @@
     </v-row>
 
     <v-row>
-      <v-col
-        :class="[isMobile ? 'search-details-mobile-col' : '']"
-        xs="12"
-        sm="12"
-        md="6"
-        xl="6"
-      >
+      <v-col cols="12" xs="12" sm="12" md="6" xl="6">
         <v-text-field
           v-model="orderData.rack"
           label="Bike Rack"
@@ -96,13 +66,7 @@
 
     <!-- Notification Send Button -->
     <v-row>
-      <v-col
-        :class="[isMobile ? 'search-details-mobile-col' : '']"
-        xs="12"
-        sm="12"
-        md="6"
-        xl="6"
-      >
+      <v-col cols="12" xs="12" sm="12" md="6" xl="6">
         <v-btn
           block
           depressed
@@ -203,10 +167,6 @@ export default {
 </script>
 
 <style lang="scss">
-.search-details-mobile-col {
-  flex-basis: 100% !important;
-}
-
 .search-history-dialog {
   box-shadow: none !important;
 
