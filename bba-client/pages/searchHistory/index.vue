@@ -21,6 +21,8 @@
       :loading="loading"
       :search="search"
       class="elevation-1"
+      :mobile-breakpoint='0'
+      :class="{mobile: isMobile}"
     >
       <!-- Actions -->
       <template v-slot:item.actions="{ item }">

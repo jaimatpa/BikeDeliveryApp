@@ -27,6 +27,7 @@
       :search="search"
       multi-sort
       :footer-props="{ 'items-per-page-options': [10, 25, 50, 100] }"
+      :mobile-breakpoint='0'
     >
       <!-- Top -->
       <template v-slot:top>

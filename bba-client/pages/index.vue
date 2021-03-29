@@ -59,6 +59,8 @@
           :server-items-length="totalOrders"
           :loading="loading"
           class="elevation-1"
+          :mobile-breakpoint='0'
+        
         >
         </v-data-table>
       </v-col>
@@ -210,4 +212,20 @@ export default {
   max-width: 50%;
   margin: 0 auto;
 }
+
+// .v-data-table {
+//   .v-data-table__mobile-table-row {
+//     display: flex !important;
+
+//     .v-data-table__mobile-row {
+//       display: flex !important;
+//       flex-direction: column !important;
+//       justify-content: center !important;
+//       align-items: flex-start !important;
+//       border-bottom: thin solid rgba(0, 0, 0, 0.12) !important;
+
+//       min-width: 150px !important;
+//     }
+//   }
+// }
 </style>
