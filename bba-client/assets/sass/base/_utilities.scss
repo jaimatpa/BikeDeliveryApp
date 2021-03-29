@@ -35,53 +35,6 @@
 }
 
 /** 
-  * Flex-Box-Design
-  * @desc Flex-Box Common Code Will Be here
-  * 
-*/
-
-.d-flex-column-start {
-  display: flex;
-  flex-direction: column;
-  justify-content: flex-start;
-  align-items: flex-start;
-}
-
-.d-flex-row-space-between {
-  display: flex;
-  flex-direction: row;
-  justify-content: space-between;
-  align-items: center;
-}
-
-.d-flex-row-start {
-  display: flex;
-  flex-direction: row;
-  justify-content: flex-start;
-  align-items: center;
-}
-
-.d-flex-row-center {
-  display: flex;
-  justify-content: center;
-  align-items: center;
-}
-
-.d-flex-column-space-between {
-  display: flex;
-  flex-direction: column;
-  justify-content: space-between;
-  align-items: center;
-}
-
-.d-flex-column-space-between-start {
-  display: flex;
-  flex-direction: column;
-  justify-content: space-between;
-  align-items: flex-start;
-}
-
-/** 
   * Font-Size
   * @desc Font-Size Common Code Will Be here
   * 
@@ -118,3 +71,13 @@
 .fs-24 {
   font-size: 24px !important;
 }
+
+/** 
+  * Mobile-Divider-Design
+  * @desc Mobile Divider Common Code Will Be here
+  * 
+*/
+// .mobile-divider {
+//   max-width: 50%;
+//   margin: 0 auto;
+// }

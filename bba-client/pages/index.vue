@@ -184,7 +184,7 @@ export default {
 };
 </script>
 
-<style lang="scss" scoped>
+<style lang="scss">
 .custom-media-sm {
   flex-basis: 50% !important;
 
