@@ -23,6 +23,22 @@
       }
     }
   }
+
+  .v-data-table.v-data-table--has-top.v-data-table--has-bottom.theme--light {
+    .v-data-table__wrapper {
+      table tr th,td {
+        font-size: 10px;
+        padding: 0 2px;
+      }
+    }
+  }
+  .v-chip.theme--dark.v-size--default {
+    font-size: 10px;
+    padding: 0 5px;
+    border-radius: 8px;
+  }
+
+
 }
 
 
