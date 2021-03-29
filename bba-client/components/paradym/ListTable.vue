@@ -41,7 +41,7 @@
       hide-default-footer
       dense
       disable-pagination
-      :mobile-breakpoint="0"
+      :mobile-breakpoint='0'
     >
       <template
         v-for="header in headers"

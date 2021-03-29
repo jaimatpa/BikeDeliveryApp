@@ -7,6 +7,7 @@
       :server-items-length="totalUsers"
       :loading="loading"
       class="elevation-1"
+      :mobile-breakpoint='0'
     >
       <!-- Show Custom User Type Column -->
       <template v-slot:item.userType="{ item }">
