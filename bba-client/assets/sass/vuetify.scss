@@ -14,6 +14,22 @@
 .v-navigation-drawer__content {
   background-color: #f5f6fa !important;
 }
+@media (max-width: 576px){
+  .v-data-table.elevation-1.v-data-table--has-bottom.theme--light {
+    .v-data-table__wrapper {
+      table tr th,td {
+        font-size: 10px;
+        padding: 0 2px;
+      }
+    }
+  }
+}
+
+
+
+
+
+
 
 // Vuetify Data Table css override if necessary for per page write below this code
 

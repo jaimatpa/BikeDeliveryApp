@@ -234,6 +234,9 @@ export default {
         case "deliveryOrder-orderId":
           return "mdi-bike";
           break;
+        case "textMessageTemplate":
+          return "mdi-email-edit";
+          break;
 
         default:
           return "";
@@ -268,6 +271,9 @@ export default {
           break;
         case "deliveryOrder-orderId":
           return "Delivery Details";
+          break;
+        case "textMessageTemplate":
+          return "Text Message Template";
           break;
 
         default:

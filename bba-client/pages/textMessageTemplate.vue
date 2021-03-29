@@ -1,16 +1,24 @@
 <template lang="html">
-  <Page title="Text Message Template"> </Page>
+  <Page>
+    <v-textarea
+      clearable
+      clear-icon="mdi-close-circle"
+      label="Message"
+      value="This is clearable text."
+      outlined
+    ></v-textarea>
+  </Page>
 </template>
 
 <script>
 import Page from "@/components/paradym/Page";
 
 export default {
-  name: "pageTest",
+  name: "textMessageTemplate",
   auth: true,
   head() {
     return {
-      title: "Test",
+      title: "Text Message Template",
     };
   },
   components: { Page },

@@ -29,6 +29,7 @@
       :loading="loading"
       :search="search"
       class="elevation-1"
+      :mobile-breakpoint='0'
     >
       <!-- Actions -->
       <template v-slot:item.actions="{ item }">
