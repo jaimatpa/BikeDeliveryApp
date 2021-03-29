@@ -143,6 +143,12 @@ export default {
           iconSelected: "mdi-share",
           to: "/resend",
         },
+        {
+          title: "Call For Help",
+          icon: "mdi-help-circle-outline",
+          iconSelected: "mdi-help-circle",
+          to: "/callForHelp",
+        },
       ],
       userItems: [
         {
@@ -240,6 +246,9 @@ export default {
         case "account-name":
           return "mdi-account-edit";
           break;
+        case "callForHelp":
+          return "mdi-help-circle";
+          break;
 
         default:
           return "";
@@ -277,6 +286,9 @@ export default {
           break;
         case "textMessageTemplate":
           return "Text Message Template";
+          break;
+        case "callForHelp":
+          return "Call For Help";
           break;
 
         default:

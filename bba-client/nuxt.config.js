@@ -37,7 +37,10 @@ export default {
   css: ["~/assets/sass/vuetify.scss", "~/assets/sass/main.scss"],
 
   // Plugins to run before rendering page (https://go.nuxtjs.dev/config-plugins)
-  plugins: [{ src: "~/plugins/theme.js", mode: "client" }],
+  plugins: [
+    { src: "~/plugins/theme.js", mode: "client" },
+    { src: "~/plugins/google-maps.js", ssr: true },
+  ],
 
   // Auto import components (https://go.nuxtjs.dev/config-components)
   components: true,
@@ -140,5 +143,7 @@ export default {
   },
 
   // Build Configuration (https://go.nuxtjs.dev/config-build)
-  build: {},
+  build: {
+    transpile: [/^vue2-google-maps($|\/)/],
+  },
 };
