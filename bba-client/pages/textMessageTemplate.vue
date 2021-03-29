@@ -83,8 +83,6 @@ export default {
   },
 };
 </script>
-<<<<<<< HEAD
-=======
 
 <style lang="scss">
 .text-message-template-box {
@@ -99,4 +97,3 @@ export default {
   margin: 0 auto;
 }
 </style>
->>>>>>> 35756ab6f420b1d4f89cebd451cd034cf7dd02d1
