@@ -52,9 +52,9 @@
     </v-main>
 
     <!-- Sidebar: Settings -->
-    <Sidebar v-model="settings" title="Settings">
+    <!-- <Sidebar v-model="settings" title="Settings">
       <ThemeSettings />
-    </Sidebar>
+    </Sidebar> -->
 
     <!-- Snackbar -->
     <Snackbar
@@ -143,12 +143,6 @@ export default {
           iconSelected: "mdi-share",
           to: "/resend",
         },
-        {
-          title: "All Users",
-          icon: "mdi-account-group-outline",
-          iconSelected: "mdi-account-group",
-          to: "/users/allUsers",
-        },
       ],
       userItems: [
         {
@@ -236,6 +230,15 @@ export default {
           break;
         case "textMessageTemplate":
           return "mdi-email-edit";
+          break;
+        case "account":
+          return "mdi-account-box";
+          break;
+        case "account-password":
+          return "mdi-account-key";
+          break;
+        case "account-name":
+          return "mdi-account-edit";
           break;
 
         default:
