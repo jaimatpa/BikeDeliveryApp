@@ -71,7 +71,7 @@
                 <div v-if="Object.keys(clickedImage).length > 0">
                     <div class="slider-img-container py-0 my-0" style="display:flex;">
                         <img style="align-self: flex-end;" ref="currentImgRef" :src="clickedImage.local_blob_url" :width="innerWindowWidth > 800 ? 600 : 300" />
-                        <span class="img-cross-btn" v-if="false"   @click="deleteImage( clickedImage.array_index )">
+                        <span class="img-cross-btn" @click="deleteImage( clickedImage.array_index )">
                             <v-icon class="black--tex" style="font-size: 20px; color: black;"> mdi-close </v-icon>  
                         </span> 
                         <span class="img-left-btn"   @click="goToNextImage('left')">
@@ -197,6 +197,8 @@ export default {
         }
     }, 
     methods: {
+        ...mapMutations( ['SET_CAPTURED_IMAGES_IN_VUEX'] ), 
+
         resize() {
             let windowAspectRatio = window.innerWidth / window.innerHeight
             if (windowAspectRatio > this.aspectRatio) {
@@ -227,6 +229,36 @@ export default {
             }
 
         }, 
+
+
+        deleteImage( img_index ) {
+			// console.log('%c img_index: ', 'color: yellowgreen; font-size: 20px', img_index)
+			if (confirm('Are you sure to remove?')) {
+				let nextImage = { }
+
+				const filtered_images = this.capturedImagesFromVuex.filter((obj, index) => {
+					if (index === img_index) {
+						if (img_index === this.capturedImagesFromVuex.length - 1) {
+							nextImage = {...this.capturedImagesFromVuex [ img_index - 1], array_index: img_index - 1 }
+						} else {
+							nextImage = {...this.capturedImagesFromVuex [ img_index + 1], array_index: img_index  }
+						}
+
+						return false
+					}
+					return true
+				})
+				console.log('nextImage: ', nextImage)
+				this.clickedImage = nextImage
+
+                this.SET_CAPTURED_IMAGES_IN_VUEX( [ ...filtered_images ] )
+				// this.local_files_to_upload = [ ...filtered_images ]
+
+
+			}
+
+
+		}, 
 
     }
 
