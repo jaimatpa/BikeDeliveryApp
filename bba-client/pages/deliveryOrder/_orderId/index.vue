@@ -152,12 +152,12 @@
 
         <!-- Fourth Stepper -->
         <v-stepper-content step="4">
-        <FourthStepper 
-          :deliveryOrderData="deliveryOrderData"
-          :cyclePhoto="cyclePhoto"
-          @set-delivery-stepper="setDelivaryStepper" 
-          @set-delivery-order-dialog="setDelivaryDialog" 
-        />
+          <FourthStepper
+            :deliveryOrderData="deliveryOrderData"
+            :cyclePhoto="cyclePhoto"
+            @set-delivery-stepper="setDelivaryStepper"
+            @set-delivery-order-dialog="setDelivaryDialog"
+          />
         </v-stepper-content>
       </v-stepper-items>
     </v-stepper>
@@ -211,8 +211,8 @@ import deliveryOrderMockData from "@/webHooks/ORDER_DELIVERY_MOCK_DATA.json";
 import emptyPhoto from "@/assets/images/empty.jpg";
 import cyclePhoto from "@/assets/images/cycle@2x.png";
 
-import ThirdStepper from '../../../components/delivery-order/steppers/ThirdStepper'
-import FourthStepper from '../../../components/delivery-order/steppers/FourthStepper'
+import ThirdStepper from "@/components/delivery-order/steppers/ThirdStepper";
+import FourthStepper from "@/components/delivery-order/steppers/FourthStepper";
 
 export default {
   name: "deliveryOrderDetails",
@@ -239,7 +239,7 @@ export default {
     return {
       breakpoint: 640,
       deliveryOrderData: null,
-      deliveryStepper: 3,
+      deliveryStepper: 1,
       deliveryOrderDialog: false,
       emptyPhoto: emptyPhoto,
       cyclePhoto: cyclePhoto,
@@ -252,13 +252,12 @@ export default {
       this.showSuccess("Notification Sent.");
       this.$router.go(-1);
     },
-    setDelivaryStepper( param ) {
-      this.deliveryStepper = param
+    setDelivaryStepper(param) {
+      this.deliveryStepper = param;
     },
-    setDelivaryDialog( param) {
-      this.deliveryOrderDialog = param
-    }
-    
+    setDelivaryDialog(param) {
+      this.deliveryOrderDialog = param;
+    },
   },
 };
 </script>

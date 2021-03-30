@@ -1,50 +1,95 @@
 <template>
-  <div class="qf-photo-capture"  style="background:#262627;">
-    <figure><video ref="video" :width="width" :height="height" :src="source" :autoplay="autoplay" :playsinline="playsinline" /></figure>
-    <v-btn v-if="cameras.length > 1" fab absolute bottom small dark color="rgba(0,0,0,0.25)" class="elevation-0" style="top: 16px; right: 16px;" @click="switchDevice()">
+  <div class="qf-photo-capture" style="background:#262627;">
+    <figure>
+      <video
+        ref="video"
+        :width="width"
+        :height="height"
+        :src="source"
+        :autoplay="autoplay"
+        :playsinline="playsinline"
+      />
+    </figure>
+    <v-btn
+      v-if="cameras.length > 1"
+      fab
+      absolute
+      bottom
+      small
+      dark
+      color="rgba(0,0,0,0.25)"
+      class="elevation-0"
+      style="top: 16px; right: 16px;"
+      @click="switchDevice()"
+    >
       <v-icon>mdi-camera-switch</v-icon>
     </v-btn>
 
-    <div style="width: 100%; display:flex; justify-content:center;"> 
-        <v-btn :style="'bottom: '+iBottom+'px;'" fab absolute bottom light class="elevation-0" @click="capture()">
-            <v-icon>mdi-camera</v-icon>
-        </v-btn>
+    <div style="width: 100%; display:flex; justify-content:center;">
+      <v-btn
+        :style="'bottom: ' + iBottom + 'px;'"
+        fab
+        absolute
+        bottom
+        light
+        class="elevation-0"
+        @click="capture()"
+      >
+        <v-icon>mdi-camera</v-icon>
+      </v-btn>
     </div>
-    
-    <span @click="openFlash" id="open-flash" style="cursor:pointer; padding: 5px; position:absolute; bottom: 50%; right: 2%;"  absolute bottom light class="elevation-0" >
-      <v-icon large color="white" v-if="flashIsOn === false">mdi-lightning-bolt-outline</v-icon>
+
+    <span
+      @click="openFlash"
+      id="open-flash"
+      style="cursor:pointer; padding: 5px; position:absolute; bottom: 50%; right: 2%;"
+      absolute
+      bottom
+      light
+      class="elevation-0"
+    >
+      <v-icon large color="white" v-if="flashIsOn === false"
+        >mdi-lightning-bolt-outline</v-icon
+      >
       <v-icon large color="white" v-else>mdi-lightning-bolt</v-icon>
     </span>
     <!-- <span v-else @click="flashIsOn=false" style="cursor:pointer; padding: 5px; position:absolute; bottom: 50%; right: 2%;"  absolute bottom light class="elevation-0" >
       <v-icon large color="white">mdi-lightning-bolt</v-icon>
     </span> -->
 
-    <v-btn color="primary" v-if="images.length > 0" absolute small class="elevation-0" style="bottom: 25px; right: 16px;" @click="handleArrowBtnClick">
-       Next <v-icon>mdi-arrow-right</v-icon>  
+    <v-btn
+      color="primary"
+      v-if="images.length > 0"
+      absolute
+      small
+      class="elevation-0"
+      style="bottom: 25px; right: 16px;"
+      @click="handleArrowBtnClick"
+    >
+      Next <v-icon>mdi-arrow-right</v-icon>
     </v-btn>
-    
-    <div style="top: 16px; position:absolute; width: 100%; display:flex; justify-content:center;"> 
-      <span v-if="images.length > 0" class="white--text">
-        <span> Photos Taken {{images.length}}  </span> 
 
+    <div
+      style="top: 16px; position:absolute; width: 100%; display:flex; justify-content:center;"
+    >
+      <span v-if="images.length > 0" class="white--text">
+        <span> Photos Taken {{ images.length }} </span>
       </span>
-    </div> 
-    
+    </div>
   </div>
 </template>
 
 <script>
 export default {
-  name: 'DynamicFormCapturePhoto',
+  name: "DynamicFormCapturePhoto",
   props: {
     images: {
-      type: Array, 
-      default: []
-
-    }, 
+      type: Array,
+      default: [],
+    },
     width: {
       type: [Number, String],
-      default: "100%"
+      default: "100%",
     },
     // height: {
     //   type: [Number, String],
@@ -54,42 +99,42 @@ export default {
     // },
     autoplay: {
       type: Boolean,
-      default: true
+      default: true,
     },
     screenshotFormat: {
       type: String,
-      default: "image/jpeg"
+      default: "image/jpeg",
     },
     selectFirstDevice: {
       type: Boolean,
-      default: false
+      default: false,
     },
     playsinline: {
       type: Boolean,
-      default: true
+      default: true,
     },
     resolution: {
       type: Object,
       default: null,
-      validator: value => {
+      validator: (value) => {
         return value.height && value.width;
-      }
-    }
+      },
+    },
   },
   data() {
     return {
-      height: '100%', 
-      
-      flashIsOn: false, 
-      iBottom:16,
+      height: "100%",
+
+      flashIsOn: false,
+      iBottom: 16,
       source: null,
       deviceId: null,
       canvas: null,
       camerasListEmitted: false,
       cameras: [],
 
-      firstVideoTrack: null
-    }
+      firstVideoTrack: null,
+    };
   },
   watch: {
     deviceId: function(id) {
@@ -97,13 +142,17 @@ export default {
     },
   },
   mounted() {
-    let agent = window.navigator.userAgent
-    if(agent.includes('iPhone')||agent.includes('Mac')){
-      this.iBottom = 60
-    }else if(agent.includes('Chrome')||agent.includes('OPR')||agent.includes('Firefox')){
-      this.iBottom = 16
-    }else if(agent.includes('Safari')){
-      this.iBottom = 60
+    let agent = window.navigator.userAgent;
+    if (agent.includes("iPhone") || agent.includes("Mac")) {
+      this.iBottom = 60;
+    } else if (
+      agent.includes("Chrome") ||
+      agent.includes("OPR") ||
+      agent.includes("Firefox")
+    ) {
+      this.iBottom = 16;
+    } else if (agent.includes("Safari")) {
+      this.iBottom = 60;
     }
     this.setupMedia();
   },
@@ -111,15 +160,14 @@ export default {
     this.stop();
   },
   methods: {
-
     handleArrowBtnClick() {
-      this.$emit('cancel', {cross_btn_clicked: false, save_backup: true}) // another one is, 'capture'
+      this.$emit("cancel", { cross_btn_clicked: false, save_backup: true }); // another one is, 'capture'
     },
     /**
      * get user media
      */
     legacyGetUserMediaSupport() {
-      return constraints => {
+      return (constraints) => {
         // First get ahold of the legacy getUserMedia, if present
         let getUserMedia =
           navigator.getUserMedia ||
@@ -145,7 +193,7 @@ export default {
      */
     setupMedia() {
       if (navigator.mediaDevices === undefined) {
-        navigator.mediaDevices = {}
+        navigator.mediaDevices = {};
         //console.log('navigator.mediaDevices not found')
       }
       if (navigator.mediaDevices.getUserMedia === undefined) {
@@ -153,8 +201,8 @@ export default {
         navigator.mediaDevices.getUserMedia = this.legacyGetUserMediaSupport();
       }
       this.testMediaAccess();
-      console.log('window.innerheight -----> ', window.innerHeight)
-      this.height = window.innerHeight 
+      console.log("window.innerheight -----> ", window.innerHeight);
+      this.height = window.innerHeight;
     },
     /**
      * load available cameras
@@ -163,7 +211,7 @@ export default {
       //console.log('Loading cameras')
       navigator.mediaDevices
         .enumerateDevices()
-        .then(deviceInfos => {
+        .then((deviceInfos) => {
           //console.log('deviceInfos length: ' + deviceInfos.length)
           for (let i = 0; i !== deviceInfos.length; ++i) {
             let deviceInfo = deviceInfos[i];
@@ -188,7 +236,7 @@ export default {
             this.camerasListEmitted = true;
           }
         })
-        .catch(error => this.$emit("notsupported", error));
+        .catch((error) => this.$emit("notsupported", error));
     },
     /**
      * change to a different camera stream, like front and back camera on phones
@@ -216,8 +264,8 @@ export default {
       };
 
       this.$emit("started", stream);
-      this.firstVideoTrack = stream.getVideoTracks()[0]
-      this.applyFlash(this.flashIsOn)
+      this.firstVideoTrack = stream.getVideoTracks()[0];
+      this.applyFlash(this.flashIsOn);
     },
     /**
      * stop the selected streamed video to change camera
@@ -225,7 +273,7 @@ export default {
     stopStreamedVideo(videoElem) {
       let stream = videoElem.srcObject;
       let tracks = stream.getTracks();
-      tracks.forEach(track => {
+      tracks.forEach((track) => {
         // stops the video track
         track.stop();
         this.$emit("stopped", stream);
@@ -263,26 +311,26 @@ export default {
     testMediaAccess() {
       //console.log('Testing media access.')
       let constraints = {
-        video: true
+        video: true,
       };
       if (this.resolution) {
-        constraints.video = {}
-        constraints.video.height = this.resolution.height
-        constraints.video.width = this.resolution.width
+        constraints.video = {};
+        constraints.video.height = this.resolution.height;
+        constraints.video.width = this.resolution.width;
       }
       navigator.mediaDevices
         .getUserMedia(constraints)
-        .then(stream => {
+        .then((stream) => {
           //Make sure to stop this MediaStream
           //console.log('Stopping tracks')
           let tracks = stream.getTracks();
-          tracks.forEach(track => {
+          tracks.forEach((track) => {
             track.stop();
           });
 
           this.loadCameras();
         })
-        .catch(error => this.$emit("error", error));
+        .catch((error) => this.$emit("error", error));
     },
     /**
      * load the camera passed as index!
@@ -291,9 +339,9 @@ export default {
       let constraints = {
         video: {
           deviceId: {
-            exact: device
-          }
-        }
+            exact: device,
+          },
+        },
       };
       if (this.resolution) {
         constraints.video.height = this.resolution.height;
@@ -301,63 +349,62 @@ export default {
       }
       navigator.mediaDevices
         .getUserMedia(constraints)
-        .then(stream => this.loadSrcStream(stream))
-        .catch(error => this.$emit("error", error));
+        .then((stream) => this.loadSrcStream(stream))
+        .catch((error) => this.$emit("error", error));
     },
     /**
      * capture screenshot
      */
     capture() {
-
-      let canvas = this.getCanvas()
-      this.$emit('onCapture', canvas)
+      let canvas = this.getCanvas();
+      this.$emit("onCapture", canvas);
     },
 
     async applyFlash(flash_is_on) {
       if (this.firstVideoTrack !== null) {
         const constraints = {
-          advanced: [{ torch: flash_is_on }]
+          advanced: [{ torch: flash_is_on }],
         };
         await this.firstVideoTrack.applyConstraints(constraints);
-      } else {   
-        alert('First video track is null. \nLoading...')
+      } else {
+        alert("First video track is null. \nLoading...");
       }
-    }, 
+    },
 
     async openFlash() {
-      this.flashIsOn = !this.flashIsOn
-      this.applyFlash( this.flashIsOn )
-
+      this.flashIsOn = !this.flashIsOn;
+      this.applyFlash(this.flashIsOn);
     },
 
     /**
      * get canvas
      */
     getCanvas() {
-      let video = this.$refs.video
+      let video = this.$refs.video;
       if (!this.ctx) {
-        let canvas = document.createElement("canvas")
+        let canvas = document.createElement("canvas");
         //console.log('video width & height: ' + video.videoWidth + 'x' +video.videoHeight)
-        canvas.height = video.videoHeight
-        canvas.width = video.videoWidth
-        this.canvas = canvas
-        this.ctx = canvas.getContext("2d")
+        canvas.height = video.videoHeight;
+        canvas.width = video.videoWidth;
+        this.canvas = canvas;
+        this.ctx = canvas.getContext("2d");
       }
-      const { ctx, canvas } = this
-      ctx.drawImage(video, 0, 0, canvas.width, canvas.height)
-      return canvas
+      const { ctx, canvas } = this;
+      ctx.drawImage(video, 0, 0, canvas.width, canvas.height);
+      return canvas;
     },
     switchDevice() {
-      if (this.cameras[this.cameras.length - 1] && this.deviceId != this.cameras[this.cameras.length - 1].deviceId) {
-        this.deviceId = this.cameras[this.cameras.length - 1].deviceId 
-
+      if (
+        this.cameras[this.cameras.length - 1] &&
+        this.deviceId != this.cameras[this.cameras.length - 1].deviceId
+      ) {
+        this.deviceId = this.cameras[this.cameras.length - 1].deviceId;
       } else if (this.cameras[1] && this.deviceId != this.cameras[1].deviceId) {
-        this.deviceId = this.cameras[1].deviceId
+        this.deviceId = this.cameras[1].deviceId;
       } else if (this.cameras[0]) {
-        this.deviceId = this.cameras[0].deviceId
+        this.deviceId = this.cameras[0].deviceId;
       }
-    }, 
-
-  }
+    },
+  },
 };
 </script>
