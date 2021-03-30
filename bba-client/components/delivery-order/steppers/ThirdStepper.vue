@@ -9,7 +9,24 @@
 			xl="12"
 			class="d-flex flex-column justify-center align-center"
 		>
-			<v-img max-height="180" max-width="220" :src="emptyPhoto"></v-img>
+			<v-img v-if="local_files_to_upload.length === 0" max-height="180" max-width="220" :src="emptyPhoto"></v-img>
+			<div v-else>
+				<div class="slider-img-container py-0 my-0" style="display:flex;">
+					<img style="align-self: flex-end;" ref="currentImgRef" :src="clickedImage.local_blob_url" :width="innerWindowWidth > 800 ? 600 : 300" />
+					<span class="img-cross-btn"   @click="deleteImage( clickedImage.array_index )">
+						<v-icon class="white--text"> mdi-close </v-icon>  
+					</span> 
+					<span class="img-left-btn"   @click="goToNextImage('left')">
+						<v-icon class="white--text">mdi-arrow-left-bold</v-icon>  
+					</span> 
+					<span class="img-right-btn"   @click="goToNextImage('right')">
+						<v-icon class="white--text">mdi-arrow-right-bold</v-icon>  
+					</span> 
+				</div> 
+									<div style="text-align:center; margin-top: 5px;"> Photo {{ clickedImage.array_index + 1}} </div>
+
+			</div>
+
 			<v-btn block depressed color="secondary" class="mt-5" @click="open_camera_module = !open_camera_module">
 				Take Photo
 			</v-btn>
@@ -65,6 +82,7 @@
 </template>
 
 <script>
+import touchScreen from '../../../service/touchScreen'
 import emptyPhoto from "@/assets/images/empty.jpg";
 import CameraModal from '../photo-capture/CameraModal'
 export default {
@@ -86,9 +104,45 @@ export default {
 				//   mimetype: ""
 				// }
 			], // As we have work with multiple photo upload. 
+
+      canvasHeight: 480,
+      canvasWidth: 640,
+      aspectRatio: null,
+      reviewPhoto: false,
+
+      innerWindowWidth: 0, 
+      clickedImage: {
+        local_blob_url: null, 
+				originalName: "", 
+				mimetype: "", 
+
+        array_index: null, 
+        caption: '', 
+        tags: '', 
+        id: '', 
+        isDirty: false, 
+        isRetake: false, 
+      }, 
 			
 		}
 	},
+
+	mounted() {
+    var el = this.$refs.currentImgRef
+    touchScreen.swipedetect(el, (swipedir) => {
+        // swipedir contains either "none", "left", "right", "top", or "down"
+        if (swipedir ==='left'){ 
+          this.goToNextImage('right')
+        } else if (swipedir ==='right') {
+          this.goToNextImage('left')
+        }
+
+    })
+    this.innerWindowWidth = window.innerWidth
+    window.addEventListener('resize', this.resize)
+    this.resize()
+  },
+
 	methods: {
 		saveCameraImages( images ) {
 
@@ -103,10 +157,106 @@ export default {
 			}
 			this.local_files_to_upload = result
 
+			if (result.length > 0) {
+				this.clickedImage = {...result[0], array_index: 0}
+			}
+
 			console.log('saveCameraImages result ==========> ', result)
 		
 
 		},
-	}
+
+		resize() {
+      let windowAspectRatio = window.innerWidth / window.innerHeight
+      if (windowAspectRatio > this.aspectRatio) {
+        this.canvasHeight = window.innerHeight
+        this.canvasWidth = this.canvasHeight * this.aspectRatio
+      } else if (windowAspectRatio < this.aspectRatio){
+        this.canvasWidth = window.innerWidth
+        this.canvasHeight = window.innerWidth / this.aspectRatio
+      } else {
+        this.canvasWidth = window.innerWidth
+        this.canvasHeight = window.innerHeight
+      }
+    },
+
+		goToNextImage(direction) {
+
+      const {array_index} = this.clickedImage
+      if (direction === 'left') {
+        if(array_index !== 0) {
+          const result = {...this.local_files_to_upload[array_index - 1], array_index: array_index - 1}
+
+          this.clickedImage = result
+        }
+      } else if (direction === 'right') {
+        if (array_index !== this.local_files_to_upload.length - 1) {
+          const result = {...this.local_files_to_upload[array_index + 1], array_index: array_index + 1}
+          this.clickedImage = result
+        }
+      }
+
+    }, 
+	}, 
 }
 </script>
+
+<style>
+
+
+.slider-img-container {
+  display: inline-block; 
+  position: relative;
+}
+
+/* 
+	.img-container {
+		display: inline-block; 
+		position: relative;
+	}
+
+
+	.cpation-tags-overlay {
+		position: absolute; 
+		bottom: 0%;   
+		background: rgba(29, 29, 29, 0.5);  
+		padding-top: 2px;
+		padding-bottom: 2px;
+		padding-left: 5px;
+		padding-right: 5px;
+		width: 100%;
+		color: white;
+	} 
+*/
+
+	.img-cross-btn {
+		position: absolute; 
+		top: 5px; 
+		right: 5px; 
+		padding: 2px;  
+		background: rgba(192,192,192,0.2);  
+		border-radius: 50%
+	}
+
+.img-right-btn {
+  cursor: pointer;
+  position: absolute; 
+  top: 50%; 
+  right: 5px; 
+  padding: 2px;  
+  background: rgba(192,192,192,0.2);  
+  border-radius: 50%
+}
+
+.img-left-btn {
+  cursor: pointer;
+  position: absolute; 
+  top: 50%; 
+  left: 5px; 
+  padding: 2px;  
+  background: rgba(192,192,192,0.2);  
+  border-radius: 50%
+}
+
+
+</style>
