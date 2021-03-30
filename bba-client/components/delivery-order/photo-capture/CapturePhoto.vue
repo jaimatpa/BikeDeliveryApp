@@ -113,7 +113,7 @@ export default {
   methods: {
 
     handleArrowBtnClick() {
-      this.$emit('cancel') // another one is, 'capture'
+      this.$emit('cancel', {cross_btn_clicked: false, save_backup: true}) // another one is, 'capture'
     },
     /**
      * get user media
