@@ -43,7 +43,7 @@
 				depressed
 				outlined
 				color="primary"
-				@click.stop="$emit('set-delivery-stepper', 4)"
+				@click.stop="handleGoToNextStepper"
 			>
 				Next
 			</v-btn>
@@ -85,6 +85,7 @@
 import touchScreen from '../../../service/touchScreen'
 import emptyPhoto from "@/assets/images/empty.jpg";
 import CameraModal from '../photo-capture/CameraModal'
+import { mapState, mapMutations, } from 'vuex'
 export default {
     name: 'ThirdStepper',
 	components: {
@@ -146,6 +147,13 @@ export default {
   },
 
 	methods: {
+		...mapMutations( ['SET_CAPTURED_IMAGES_IN_VUEX'] ), 
+
+		handleGoToNextStepper() {
+			this.SET_CAPTURED_IMAGES_IN_VUEX( this.local_files_to_upload )
+			this.$emit('set-delivery-stepper', 4)
+		}, 
+
 		handleCancel( obj ) {
 			// console.log('handleCancel this.local_files_to_upload ===> ', this.local_files_to_upload)
 			if (obj !== undefined && obj.save_backup === true) {

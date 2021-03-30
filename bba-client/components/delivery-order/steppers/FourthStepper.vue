@@ -67,7 +67,16 @@
               xl="12"
               class="d-flex flex-column justify-center align-center"
             >
+              
+              
+
+                {{ capturedImagesFromVuex }}
+
+
+
               <v-img max-height="180" max-width="220" :src="cyclePhoto"></v-img>
+
+
             </v-col>
           </v-row>
           <!-- Fourth Stepper Button -->
@@ -109,6 +118,8 @@
     </div>
 </template>
 <script>
+import { mapState, mapMutations, } from 'vuex'
+
 export default {
     name: 'FourthStepper',
     props: {
@@ -120,6 +131,12 @@ export default {
             type: String, 
             default: ''
         }
+    }, 
+    computed: {
+        ...mapState({
+            capturedImagesFromVuex: state => state.capturedImages,
+
+        }),
     }
 
 }
