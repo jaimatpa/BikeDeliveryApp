@@ -10,7 +10,7 @@
 			class="d-flex flex-column justify-center align-center"
 		>
 			<v-img max-height="180" max-width="220" :src="emptyPhoto"></v-img>
-			<v-btn block depressed color="secondary" class="mt-5">
+			<v-btn block depressed color="secondary" class="mt-5" @click="open_camera_module = !open_camera_module">
 				Take Photo
 			</v-btn>
 			<p class="primary--text mt-5 mb-0">Location</p>
@@ -54,19 +54,59 @@
 			</v-btn>
 		</v-col>
 	</v-row>
+	<CameraModal 
+      v-if="open_camera_module"
+      :show="open_camera_module"
+      @cancel="open_camera_module = false"
+      @captured-camera-images="saveCameraImages"
+      :multipleUpload="true"
+    />
 </div>    
 </template>
 
 <script>
 import emptyPhoto from "@/assets/images/empty.jpg";
-
+import CameraModal from '../photo-capture/CameraModal'
 export default {
     name: 'ThirdStepper',
-		data() {
-			return {
-				emptyPhoto: emptyPhoto, 
-				
-			}
+	components: {
+		CameraModal,
+
+	},
+	data() {
+		return {
+			emptyPhoto: emptyPhoto, 
+
+			open_camera_module: false, 
+
+			local_files_to_upload: [
+				// {
+				//   local_blob_url: "", 
+				//   originalName: "", 
+				//   mimetype: ""
+				// }
+			], // As we have work with multiple photo upload. 
+			
 		}
+	},
+	methods: {
+		saveCameraImages( images ) {
+
+			const blob_urls = this.local_files_to_upload.map(o => o.local_blob_url)
+			const result = [...this.local_files_to_upload]
+			for (let i=0; i<images.length; i++) {
+			let obj = images[i]
+			if ( !blob_urls.includes(obj.local_blob_url) ) {
+				result.push(obj)
+			}
+
+			}
+			this.local_files_to_upload = result
+
+			console.log('saveCameraImages result ==========> ', result)
+		
+
+		},
+	}
 }
 </script>

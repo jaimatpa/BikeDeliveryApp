@@ -352,7 +352,7 @@ export default {
     return {
       breakpoint: 640,
       deliveryOrderData: null,
-      deliveryStepper: 1,
+      deliveryStepper: 3,
       deliveryOrderDialog: false,
       emptyPhoto: emptyPhoto,
       cyclePhoto: cyclePhoto,
