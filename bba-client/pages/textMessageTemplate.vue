@@ -1,14 +1,5 @@
 <template lang="html">
   <Page>
-<<<<<<< HEAD
-    <v-textarea
-      clearable
-      clear-icon="mdi-close-circle"
-      label="Message"
-      value="This is clearable text."
-      outlined
-    ></v-textarea>
-=======
     <v-row>
       <v-col cols="12" xs="12" sm="12" md="12" xl="12">
         <!-- <div class="text-message-template-box px-2 py-2">
@@ -75,7 +66,6 @@
         >
       </v-col>
     </v-row>
->>>>>>> 37c2be94af47e154d0ac709188bc6ece93bc8f55
   </Page>
 </template>
 
