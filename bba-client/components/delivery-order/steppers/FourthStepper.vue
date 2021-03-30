@@ -68,13 +68,26 @@
               class="d-flex flex-column justify-center align-center"
             >
               
-              
+                <div v-if="Object.keys(clickedImage).length > 0">
+                    <div class="slider-img-container py-0 my-0" style="display:flex;">
+                        <img style="align-self: flex-end;" ref="currentImgRef" :src="clickedImage.local_blob_url" :width="innerWindowWidth > 800 ? 600 : 300" />
+                        <span class="img-cross-btn" v-if="false"   @click="deleteImage( clickedImage.array_index )">
+                            <v-icon class="black--tex" style="font-size: 20px; color: black;"> mdi-close </v-icon>  
+                        </span> 
+                        <span class="img-left-btn"   @click="goToNextImage('left')">
+                            <v-icon class="white--text">mdi-arrow-left-bold</v-icon>  
+                        </span> 
+                        <span class="img-right-btn"   @click="goToNextImage('right')">
+                            <v-icon class="white--text">mdi-arrow-right-bold</v-icon>  
+                        </span> 
+                    </div> 
+                    <div style="text-align:center; margin-top: 5px;"> Photo {{ clickedImage.array_index + 1}} of {{ capturedImagesFromVuex.length }}</div>
 
-                {{ capturedImagesFromVuex }}
+                </div>
 
 
 
-              <v-img max-height="180" max-width="220" :src="cyclePhoto"></v-img>
+              <v-img v-else max-height="180" max-width="220" :src="cyclePhoto"></v-img>
 
 
             </v-col>
@@ -119,6 +132,7 @@
 </template>
 <script>
 import { mapState, mapMutations, } from 'vuex'
+import touchScreen from '../../../service/touchScreen'
 
 export default {
     name: 'FourthStepper',
@@ -132,11 +146,88 @@ export default {
             default: ''
         }
     }, 
+    data() {
+        return {
+            clickedImage: { }, 
+
+            innerWindowWidth: 0, 
+
+                  canvasHeight: 480,
+      canvasWidth: 640,
+      aspectRatio: null,
+      reviewPhoto: false,
+
+        }
+    }, 
     computed: {
         ...mapState({
             capturedImagesFromVuex: state => state.capturedImages,
 
         }),
+    },
+
+	mounted() {
+    var el = this.$refs.currentImgRef
+    touchScreen.swipedetect(el, (swipedir) => {
+        // swipedir contains either "none", "left", "right", "top", or "down"
+        if (swipedir ==='left'){ 
+          this.goToNextImage('right')
+        } else if (swipedir ==='right') {
+          this.goToNextImage('left')
+        }
+
+    })
+    this.innerWindowWidth = window.innerWidth
+    window.addEventListener('resize', this.resize)
+    this.resize()
+  },
+    watch: {
+        capturedImagesFromVuex: {
+            deep: true, 
+            immediate: true, 
+            handler: function (newVal, oldVal) {
+
+                if (newVal.length > 0) {
+                    this.clickedImage = {...newVal[0], array_index: 0}
+                } else {
+                    this.clickedImage = { }
+                }
+                console.log('hereeeeeeeeeeeeeee ........ ')
+            }
+        }
+    }, 
+    methods: {
+        resize() {
+            let windowAspectRatio = window.innerWidth / window.innerHeight
+            if (windowAspectRatio > this.aspectRatio) {
+                this.canvasHeight = window.innerHeight
+                this.canvasWidth = this.canvasHeight * this.aspectRatio
+            } else if (windowAspectRatio < this.aspectRatio){
+                this.canvasWidth = window.innerWidth
+                this.canvasHeight = window.innerWidth / this.aspectRatio
+            } else {
+                this.canvasWidth = window.innerWidth
+                this.canvasHeight = window.innerHeight
+            }
+        },
+
+        goToNextImage(direction) {
+            const {array_index} = this.clickedImage
+            if (direction === 'left') {
+                if(array_index !== 0) {
+                const result = {...this.capturedImagesFromVuex[array_index - 1], array_index: array_index - 1}
+
+                this.clickedImage = result
+                }
+            } else if (direction === 'right') {
+                if (array_index !== this.capturedImagesFromVuex.length - 1) {
+                const result = {...this.capturedImagesFromVuex[array_index + 1], array_index: array_index + 1}
+                this.clickedImage = result
+                }
+            }
+
+        }, 
+
     }
 
 }
