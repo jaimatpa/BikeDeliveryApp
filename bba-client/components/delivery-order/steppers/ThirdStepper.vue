@@ -14,7 +14,7 @@
 				<div class="slider-img-container py-0 my-0" style="display:flex;">
 					<img style="align-self: flex-end;" ref="currentImgRef" :src="clickedImage.local_blob_url" :width="innerWindowWidth > 800 ? 600 : 300" />
 					<span class="img-cross-btn"   @click="deleteImage( clickedImage.array_index )">
-						<v-icon class="black--tex" style="font-size: 20px; color: black;cursor: pointer;"> mdi-close </v-icon>  
+						<v-icon color="black" style="font-size: 20px;cursor: pointer;"> mdi-close </v-icon>  
 					</span> 
 					<span class="img-left-btn"   @click="goToNextImage('left')">
 						<v-icon class="white--text">mdi-arrow-left-bold</v-icon>  
@@ -271,8 +271,8 @@ export default {
 .img-cross-btn {
 	font-size: 5px;
 	position: absolute; 
-	top: 0px; 
-	right: 10px; 
+	top: 10px; 
+	right: 15px; 
 	padding: 2px;  
 	background: rgba(192,192,192,0.2);  
 	border-radius: 50%

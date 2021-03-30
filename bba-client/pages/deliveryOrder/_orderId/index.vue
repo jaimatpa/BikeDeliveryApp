@@ -152,104 +152,12 @@
 
         <!-- Fourth Stepper -->
         <v-stepper-content step="4">
-          <v-row>
-            <v-col cols="12" xs="12" sm="12" md="12" xl="12">
-              <div class="d-flex justify-space-between align-center flex-wrap">
-                <p class="secondary--text mb-0">
-                  <span class="font-weight-bold">Date:</span>
-                  <span class="font-weight-regular">{{
-                    deliveryOrderData.date
-                  }}</span>
-                </p>
-                <p class="secondary--text mb-0">
-                  <span class="font-weight-bold">Name:</span>
-                  <span class="font-weight-regular">{{
-                    deliveryOrderData.name
-                  }}</span>
-                </p>
-              </div>
-
-              <div class="d-flex justify-space-between align-center flex-wrap">
-                <p class="secondary--text mb-0">
-                  <span class="font-weight-bold">Location:</span>
-                  <span class="font-weight-regular">{{
-                    deliveryOrderData.location
-                  }}</span>
-                </p>
-                <p class="secondary--text mb-0">
-                  <span class="font-weight-bold">Order#:</span>
-                  <span class="font-weight-regular">{{
-                    deliveryOrderData.order
-                  }}</span>
-                </p>
-              </div>
-
-              <div class="d-flex justify-space-between align-center flex-wrap">
-                <p class="secondary--text mb-0">
-                  <span class="font-weight-bold">Color:</span>
-                  <span class="font-weight-regular">{{
-                    deliveryOrderData.color
-                  }}</span>
-                </p>
-                <p class="secondary--text mb-0">
-                  <span class="font-weight-bold">Combination:</span>
-                  <span class="font-weight-regular">{{
-                    deliveryOrderData.combination
-                  }}</span>
-                </p>
-              </div>
-
-              <div class="d-flex justify-space-between align-center flex-wrap">
-                <p class="secondary--text mb-0">
-                  <span class="font-weight-bold">Bike Rack:</span>
-                  <span class="font-weight-regular">{{
-                    deliveryOrderData.rack
-                  }}</span>
-                </p>
-              </div>
-            </v-col>
-          </v-row>
-
-          <v-row>
-            <v-col
-              cols="12"
-              xs="12"
-              sm="12"
-              md="12"
-              xl="12"
-              class="d-flex flex-column justify-center align-center"
-            >
-              <v-img max-height="180" max-width="220" :src="cyclePhoto"></v-img>
-            </v-col>
-          </v-row>
-          <!-- Fourth Stepper Button -->
-          <v-row>
-            <v-col cols="12" xs="12" sm="12" md="4" xl="4">
-              <v-btn
-                block
-                depressed
-                color="primary"
-                @click.stop="deliveryOrderDialog = true"
-              >
-                Complete
-              </v-btn>
-            </v-col>
-            <v-col cols="12" xs="12" sm="12" md="4" xl="4">
-              <v-btn
-                block
-                depressed
-                color="accent"
-                @click.stop="deliveryStepper = 3"
-              >
-                Back
-              </v-btn>
-            </v-col>
-            <v-col cols="12" xs="12" sm="12" md="4" xl="4">
-              <v-btn block depressed color="error" @click.stop="$router.go(-1)">
-                Cancel
-              </v-btn>
-            </v-col>
-          </v-row>
+        <FourthStepper 
+          :deliveryOrderData="deliveryOrderData"
+          :cyclePhoto="cyclePhoto"
+          @set-delivery-stepper="setDelivaryStepper" 
+          @set-delivery-order-dialog="setDelivaryDialog" 
+        />
         </v-stepper-content>
       </v-stepper-items>
     </v-stepper>
@@ -304,6 +212,7 @@ import emptyPhoto from "@/assets/images/empty.jpg";
 import cyclePhoto from "@/assets/images/cycle@2x.png";
 
 import ThirdStepper from '../../../components/delivery-order/steppers/ThirdStepper'
+import FourthStepper from '../../../components/delivery-order/steppers/FourthStepper'
 
 export default {
   name: "deliveryOrderDetails",
@@ -313,7 +222,7 @@ export default {
       title: "Delivery Order Details",
     };
   },
-  components: { Page, ThirdStepper },
+  components: { Page, ThirdStepper, FourthStepper },
   created() {
     this.deliveryOrderData = _.find(
       deliveryOrderMockData,
@@ -345,7 +254,11 @@ export default {
     },
     setDelivaryStepper( param ) {
       this.deliveryStepper = param
+    },
+    setDelivaryDialog( param) {
+      this.deliveryOrderDialog = param
     }
+    
   },
 };
 </script>
