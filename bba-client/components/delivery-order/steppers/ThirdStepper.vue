@@ -131,20 +131,44 @@ export default {
 	},
 
 	mounted() {
-    var el = this.$refs.currentImgRef
-    touchScreen.swipedetect(el, (swipedir) => {
-        // swipedir contains either "none", "left", "right", "top", or "down"
-        if (swipedir ==='left'){ 
-          this.goToNextImage('right')
-        } else if (swipedir ==='right') {
-          this.goToNextImage('left')
-        }
+		var el = this.$refs.currentImgRef
+		touchScreen.swipedetect(el, (swipedir) => {
+			// swipedir contains either "none", "left", "right", "top", or "down"
+			if (swipedir ==='left'){ 
+			this.goToNextImage('right')
+			} else if (swipedir ==='right') {
+			this.goToNextImage('left')
+			}
 
-    })
-    this.innerWindowWidth = window.innerWidth
-    window.addEventListener('resize', this.resize)
-    this.resize()
-  },
+		})
+		this.innerWindowWidth = window.innerWidth
+		window.addEventListener('resize', this.resize)
+		this.resize()
+  	},
+
+	watch: {
+	    capturedImagesFromVuex: {
+            deep: true, 
+            immediate: true, 
+            handler: function (newVal, oldVal) {
+
+                if (newVal.length > 0) {
+                    this.local_files_to_upload = [...newVal]
+					this.clickedImage = {  ...this.local_files_to_upload[0], array_index: 0}
+                } else {
+                    this.clickedImage = { }
+                }
+                console.log('hereeeeeeeeeeeeeee ........ ')
+            }
+        }	
+	}, 
+
+	computed: {
+		...mapState({
+            capturedImagesFromVuex: state => state.capturedImages,
+
+        }),
+	}, 
 
 	methods: {
 		...mapMutations( ['SET_CAPTURED_IMAGES_IN_VUEX'] ), 
