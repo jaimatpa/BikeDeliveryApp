@@ -57,8 +57,12 @@
   }
   .v-chip.theme--dark.v-size--default {
     font-size: 12px;
-    padding: 0 5px;
-    border-radius: 8px;
+    padding: 0px 10px;
+    border-radius: 5px;
+  }
+
+  .v-chip.v-size--default {
+    height: 25px !important;
   }
 }
 

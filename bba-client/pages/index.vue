@@ -14,7 +14,7 @@
         <v-card
           height="180"
           class="d-flex flex-column align-center justify-center cursor-pointer dashboard-card"
-          elevation="0"
+          elevation="2"
           :to="item.to"
           outlined
         >
@@ -59,8 +59,7 @@
           :server-items-length="totalOrders"
           :loading="loading"
           class="elevation-1"
-          :mobile-breakpoint='0'
-        
+          :mobile-breakpoint="0"
         >
         </v-data-table>
       </v-col>
@@ -192,6 +191,8 @@ export default {
 
   .dashboard-card {
     height: 120px !important;
+    background-color: #f5f6fa;
+    border: 2px solid #4c9a2a;
 
     .v-image {
       max-height: 40px !important;
@@ -204,10 +205,7 @@ export default {
     }
   }
 }
-.dashboard-card {
-  background-color: #e9e9e9;
-  border: 2px solid #4c9a2a;
-}
+
 .mobile-divider {
   max-width: 50%;
   margin: 0 auto;
