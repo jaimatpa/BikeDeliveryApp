@@ -40,6 +40,7 @@ export default {
   plugins: [
     { src: "~/plugins/theme.js", mode: "client" },
     { src: "~/plugins/google-maps.js", ssr: true },
+    { src: "~/plugins/QReader.js", mode: "client" },
   ],
 
   // Auto import components (https://go.nuxtjs.dev/config-components)

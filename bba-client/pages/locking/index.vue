@@ -1,12 +1,16 @@
 <template lang="html">
   <Page>
     <!-- Lock Scan Button  -->
-    <v-btn v-if="isMobile" block depressed color="primary" class="mb-5">
-      <v-icon left medium color="white" class="mr-2">
-        mdi-barcode-scan
-      </v-icon>
-      Scan
-    </v-btn>
+    <div class="qr-code mb-5" v-if="isMobile">
+      <qrcode-stream @decode="onDecode"></qrcode-stream>
+
+      <div class="title-section">
+        <v-icon left medium color="white" class="mr-2">
+          mdi-barcode-scan
+        </v-icon>
+        Scan
+      </div>
+    </div>
 
     <!-- Lock Search Field -->
     <v-text-field
@@ -29,7 +33,7 @@
       :loading="loading"
       :search="search"
       class="elevation-1"
-      :mobile-breakpoint='0'
+      :mobile-breakpoint="0"
     >
       <!-- Actions -->
       <template v-slot:item.actions="{ item }">
@@ -101,6 +105,9 @@ export default {
     this.getDataFromApi();
   },
   methods: {
+    onDecode(decodedString) {
+      console.log("decodedString", decodedString);
+    },
     async getDataFromApi() {
       this.loading = true;
       this.apiCall().then((data) => {
@@ -148,3 +155,21 @@ export default {
   },
 };
 </script>
+
+<style lang="scss" scoped>
+.qr-code {
+  background: #4c9a2a;
+  color: #fff;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  height: 40px;
+  width: 100%;
+  border-radius: 10px;
+
+  .title-section {
+    position: absolute;
+  }
+}
+</style>
