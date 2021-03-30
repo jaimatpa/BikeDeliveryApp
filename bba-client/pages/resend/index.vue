@@ -21,13 +21,13 @@
       :loading="loading"
       :search="search"
       class="elevation-1"
-      :mobile-breakpoint='0'
+      :mobile-breakpoint="0"
     >
       <!-- Actions -->
       <template v-slot:item.actions="{ item }">
         <v-icon
           class="resend-icon"
-          medium
+          small
           color="white"
           @click.stop="resendDialog = true"
         >
@@ -187,8 +187,8 @@ export default {
   box-shadow: none !important;
 
   .sure-title {
-    font-size: 1.2rem !important;
-    line-height: 1.5rem !important;
+    font-size: 1rem !important;
+    line-height: 1.2rem !important;
   }
 }
 

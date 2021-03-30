@@ -25,9 +25,9 @@
       :server-items-length="totalItems"
       :options.sync="options"
       :search="search"
-      multi-sort
+      disable-sort
       :footer-props="{ 'items-per-page-options': [10, 25, 50, 100] }"
-      :mobile-breakpoint='0'
+      :mobile-breakpoint="0"
     >
       <!-- Top -->
       <template v-slot:top>
