@@ -84,7 +84,7 @@ export default {
         },
         { text: "Color", value: "color", sortable: false },
         { text: "Combination", value: "combination", sortable: false },
-        { text: "Delivery", value: "delivery" },
+        { text: "Delivery", value: "delivery", sortable: false },
         { text: "Actions", value: "actions", sortable: false, align: "center" },
       ],
     };

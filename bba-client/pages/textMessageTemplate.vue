@@ -2,7 +2,7 @@
   <Page>
     <v-row>
       <v-col cols="12" xs="12" sm="12" md="12" xl="12">
-        <div class="text-message-template-box px-2 py-2">
+        <!-- <div class="text-message-template-box px-2 py-2">
           <p class="text-uppercase primary--text mb-0">Message</p>
           <p class="subtitle-2 secondary--text mb-0">
             Hello <span class="primary--text">[customer-name]</span>! Your bike
@@ -11,9 +11,19 @@
             is <span class="primary--text">[delivery-number]</span>
           </p>
           <p class="secondary--text primary--text mb-0">Thank You.</p>
-        </div>
+        </div> -->
+        <v-textarea
+          outlined
+          name="textMessageTemplate"
+          label="Message"
+          value="Hello [customer-name]! Your bike is now available at [geo-lat] [geo-long] Your deliver number is [delivery-number] Thank You."
+        ></v-textarea>
       </v-col>
     </v-row>
+
+    <v-btn block depressed color="primary">
+      Update
+    </v-btn>
 
     <v-row>
       <v-col
