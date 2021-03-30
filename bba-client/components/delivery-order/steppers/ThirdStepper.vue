@@ -74,7 +74,7 @@
 	<CameraModal 
       v-if="open_camera_module"
       :show="open_camera_module"
-      @cancel="open_camera_module = false"
+      @cancel="handleCancel"
       @captured-camera-images="saveCameraImages"
       :multipleUpload="true"
     />
@@ -105,6 +105,8 @@ export default {
 				// }
 			], // As we have work with multiple photo upload. 
 
+			local_files_to_upload_copy: [], 
+
       canvasHeight: 480,
       canvasWidth: 640,
       aspectRatio: null,
@@ -112,9 +114,9 @@ export default {
 
       innerWindowWidth: 0, 
       clickedImage: {
-        local_blob_url: null, 
-				originalName: "", 
-				mimetype: "", 
+      local_blob_url: null, 
+	  originalName: "", 
+	  mimetype: "", 
 
         array_index: null, 
         caption: '', 
@@ -144,6 +146,18 @@ export default {
   },
 
 	methods: {
+		handleCancel( obj ) {
+			// console.log('handleCancel this.local_files_to_upload ===> ', this.local_files_to_upload)
+			if (obj !== undefined && obj.save_backup === true) {
+				this.local_files_to_upload_copy = JSON.parse(JSON.stringify(this.local_files_to_upload))
+			}
+
+			if (obj !== undefined && obj.cross_btn_clicked === true) {
+				this.local_files_to_upload = this.local_files_to_upload_copy
+			} 
+			this.open_camera_module = false
+		}, 
+
 		deleteImage( img_index ) {
 			// console.log('%c img_index: ', 'color: yellowgreen; font-size: 20px', img_index)
 			if (confirm('Are you sure to remove?')) {
@@ -171,8 +185,7 @@ export default {
 		}, 
 
 		saveCameraImages( images ) {
-
-			const blob_urls = this.local_files_to_upload.map(o => o.local_blob_url)
+			const blob_urls =  this.local_files_to_upload.map(o => o.local_blob_url)
 			const result = [...this.local_files_to_upload]
 			for (let i=0; i<images.length; i++) {
 			let obj = images[i]

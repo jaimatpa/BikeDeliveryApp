@@ -1,5 +1,5 @@
 <template>
-  <v-dialog class="qf-modal qf-modal-capture-photo"  content-class="custom-class-photo-cap-modal" :value="show" @click:outside="$emit('cancel');" light>
+  <v-dialog class="qf-modal qf-modal-capture-photo"  content-class="custom-class-photo-cap-modal" :value="show" @click:outside="$emit('cancel', {cross_btn_clicked: true})" light>
     <OverlayLoading :active="loading || !cameraReady" :message="loadingMessage">
       <CapturePhoto 
         v-if="cameraMode === 'capture'" 
@@ -107,7 +107,7 @@ export default {
 
     exit() {
       console.log('exit clickeddddddddd ')
-      this.$emit('cancel')
+      this.$emit('cancel', {cross_btn_clicked: true})
     }, 
 
     savePhoto(canvas) {
@@ -125,7 +125,9 @@ export default {
           this.$emit('captured-camera-images', this.capturedImages)
 
           if (this.multipleUpload === false) {
-            this.$emit('cancel')
+            //this.$emit('cancel')
+            this.$emit('cancel', {cross_btn_clicked: false})
+
           }
 
          }, 'image/jpeg', 1); // use .95 to get JPEG at 95% quality
@@ -141,7 +143,9 @@ export default {
           camera_mode: ''
         }
         this.$emit('goto-camera-module', camModuleObj)  
-        this.$emit('cancel')
+        // this.$emit('cancel')
+        this.$emit('cancel', {cross_btn_clicked: false})
+
       }
 
     }, 
