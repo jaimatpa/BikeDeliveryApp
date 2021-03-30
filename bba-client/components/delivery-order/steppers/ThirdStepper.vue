@@ -23,7 +23,7 @@
 						<v-icon class="white--text">mdi-arrow-right-bold</v-icon>  
 					</span> 
 				</div> 
-									<div style="text-align:center; margin-top: 5px;"> Photo {{ clickedImage.array_index + 1}} </div>
+									<div style="text-align:center; margin-top: 5px;"> Photo {{ clickedImage.array_index + 1}} of {{ local_files_to_upload.length }}</div>
 
 			</div>
 
@@ -144,6 +144,32 @@ export default {
   },
 
 	methods: {
+		deleteImage( img_index ) {
+			// console.log('%c img_index: ', 'color: yellowgreen; font-size: 20px', img_index)
+			if (confirm('Are you sure to remove?')) {
+				let nextImage = { }
+
+				const filtered_images = this.local_files_to_upload.filter((obj, index) => {
+					if (index === img_index) {
+						if (img_index === this.local_files_to_upload.length - 1) {
+							nextImage = {...this.local_files_to_upload [ img_index - 1], array_index: img_index - 1 }
+						} else {
+							nextImage = {...this.local_files_to_upload [ img_index + 1], array_index: img_index  }
+						}
+
+						return false
+					}
+					return true
+				})
+				console.log('nextImage: ', nextImage)
+				this.clickedImage = nextImage
+				this.local_files_to_upload = [ ...filtered_images ]
+
+			}
+
+
+		}, 
+
 		saveCameraImages( images ) {
 
 			const blob_urls = this.local_files_to_upload.map(o => o.local_blob_url)
