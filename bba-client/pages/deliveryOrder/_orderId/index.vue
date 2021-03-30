@@ -162,60 +162,7 @@
 
         <!-- Third Stepper -->
         <v-stepper-content step="3">
-          <v-row>
-            <v-col
-              cols="12"
-              xs="12"
-              sm="12"
-              md="12"
-              xl="12"
-              class="d-flex flex-column justify-center align-center"
-            >
-              <v-img max-height="180" max-width="220" :src="emptyPhoto"></v-img>
-              <v-btn block depressed color="secondary" class="mt-5">
-                Take Photo
-              </v-btn>
-              <p class="primary--text mt-5 mb-0">Location</p>
-              <p class="body-2 secondary--text">No Location Found</p>
-            </v-col>
-          </v-row>
-
-          <!-- Third Stepper Button -->
-          <v-row>
-            <v-col cols="12" xs="12" sm="12" md="4" xl="4">
-              <v-btn
-                block
-                depressed
-                outlined
-                color="primary"
-                @click.stop="deliveryStepper = 4"
-              >
-                Next
-              </v-btn>
-            </v-col>
-            <v-col cols="12" xs="12" sm="12" md="4" xl="4">
-              <v-btn
-                block
-                depressed
-                outlined
-                color="accent"
-                @click.stop="deliveryStepper = 2"
-              >
-                Back
-              </v-btn>
-            </v-col>
-            <v-col cols="12" xs="12" sm="12" md="4" xl="4">
-              <v-btn
-                block
-                depressed
-                outlined
-                color="error"
-                @click.stop="$router.go(-1)"
-              >
-                Cancel
-              </v-btn>
-            </v-col>
-          </v-row>
+          <ThirdStepper @set-delivery-stepper="setDelivaryStepper" />
         </v-stepper-content>
 
         <!-- Fourth Stepper -->
@@ -378,6 +325,8 @@ import deliveryOrderMockData from "@/webHooks/ORDER_DELIVERY_MOCK_DATA.json";
 import emptyPhoto from "@/assets/images/empty.jpg";
 import cyclePhoto from "@/assets/images/cycle@2x.png";
 
+import ThirdStepper from '../../../components/delivery-order/steppers/ThirdStepper'
+
 export default {
   name: "deliveryOrderDetails",
   auth: true,
@@ -386,7 +335,7 @@ export default {
       title: "Delivery Order Details",
     };
   },
-  components: { Page },
+  components: { Page, ThirdStepper },
   created() {
     this.deliveryOrderData = _.find(
       deliveryOrderMockData,
@@ -416,6 +365,9 @@ export default {
       this.showSuccess("Notification Sent.");
       this.$router.go(-1);
     },
+    setDelivaryStepper( param ) {
+      this.deliveryStepper = param
+    }
   },
 };
 </script>
