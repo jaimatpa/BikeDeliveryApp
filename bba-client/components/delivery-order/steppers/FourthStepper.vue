@@ -187,12 +187,12 @@ export default {
             immediate: true, 
             handler: function (newVal, oldVal) {
 
-                if (newVal.length > 0) {
+                if (newVal!==undefined &&  newVal.length > 0) {
                     this.clickedImage = {...newVal[0], array_index: 0}
                 } else {
                     this.clickedImage = { }
                 }
-                console.log('hereeeeeeeeeeeeeee ........ ')
+                console.log('hereeeeeeeeeeeeeee ........ ', newVal)
             }
         }
     }, 
