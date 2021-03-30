@@ -14,21 +14,52 @@
 .v-navigation-drawer__content {
   background-color: #f5f6fa !important;
 }
+@media (max-width: 640px) {
+  .v-data-table.elevation-1.v-data-table--has-bottom.theme--light {
+    .v-data-table__wrapper {
+      table tr th,
+      td {
+        font-size: 12px;
+        padding: 0 4px;
+        height: 40px !important;
+      }
 
-// Vuetify Data Table css override if necessary for per page write below this code
+      tr:hover:not(.v-data-table__expanded__content):not(.v-data-table__empty-wrapper) {
+        background: #e4f0df !important;
+      }
+    }
 
-.v-data-table {
-  .v-data-table__mobile-table-row {
-    display: flex !important;
-    
-    .v-data-table__mobile-row {
-      display: flex !important;
-      flex-direction: column !important;
-      justify-content: center !important;
-      align-items: flex-start !important;
-      border-bottom: thin solid rgba(0, 0, 0, 0.12) !important;
+    .v-data-footer {
+      .v-data-footer__icons-before,
+      .v-data-footer__icons-after {
+        margin-bottom: 5px;
 
-      min-width: 150px !important;
+        .v-btn--round {
+          background-color: #4c9a2a !important;
+          color: #ffffff !important;
+        }
+
+        .v-btn--disabled {
+          background-color: #ccc !important;
+        }
+      }
     }
   }
+
+  .v-data-table.v-data-table--has-top.v-data-table--has-bottom.theme--light {
+    .v-data-table__wrapper {
+      table tr th,
+      td {
+        font-size: 12px;
+        padding: 0 4px;
+      }
+    }
+  }
+  .v-chip.theme--dark.v-size--default {
+    font-size: 12px;
+    padding: 0 5px;
+    border-radius: 8px;
+  }
 }
+
+

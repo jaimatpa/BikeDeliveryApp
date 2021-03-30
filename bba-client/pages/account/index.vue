@@ -1,6 +1,6 @@
 <template>
   <Page
-    title="Account Settings"
+    :title="!isMobile ? 'Account Settings' : ''"
     desc="Change your name, password, and more."
     center
   >
@@ -19,8 +19,14 @@ export default {
     return { title: "Account" };
   },
   components: { Page, SettingsList },
-  data() {    
+  computed: {
+    isMobile() {
+      return this.$vuetify.breakpoint.width < this.breakpoint;
+    },
+  },
+  data() {
     return {
+      breakpoint: 640,
       items: [
         {
           label: "Email",

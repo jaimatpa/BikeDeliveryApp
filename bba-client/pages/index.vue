@@ -59,6 +59,8 @@
           :server-items-length="totalOrders"
           :loading="loading"
           class="elevation-1"
+          :mobile-breakpoint='0'
+        
         >
         </v-data-table>
       </v-col>

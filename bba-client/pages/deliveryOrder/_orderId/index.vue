@@ -74,7 +74,6 @@
               <v-btn
                 block
                 depressed
-                outlined
                 color="primary"
                 @click.stop="deliveryStepper = 2"
               >
@@ -82,13 +81,7 @@
               </v-btn>
             </v-col>
             <v-col cols="12" xs="12" sm="12" md="6" xl="6">
-              <v-btn
-                block
-                depressed
-                outlined
-                color="error"
-                @click.stop="$router.go(-1)"
-              >
+              <v-btn block depressed color="error" @click.stop="$router.go(-1)">
                 Cancel
               </v-btn>
             </v-col>
@@ -128,7 +121,6 @@
               <v-btn
                 block
                 depressed
-                outlined
                 color="primary"
                 @click.stop="deliveryStepper = 3"
               >
@@ -139,7 +131,6 @@
               <v-btn
                 block
                 depressed
-                outlined
                 color="accent"
                 @click.stop="deliveryStepper = 1"
               >
@@ -147,13 +138,7 @@
               </v-btn>
             </v-col>
             <v-col cols="12" xs="12" sm="12" md="4" xl="4">
-              <v-btn
-                block
-                depressed
-                outlined
-                color="error"
-                @click.stop="$router.go(-1)"
-              >
+              <v-btn block depressed color="error" @click.stop="$router.go(-1)">
                 Cancel
               </v-btn>
             </v-col>
@@ -253,7 +238,6 @@
               <v-btn
                 block
                 depressed
-                outlined
                 color="accent"
                 @click.stop="deliveryStepper = 3"
               >
@@ -261,13 +245,7 @@
               </v-btn>
             </v-col>
             <v-col cols="12" xs="12" sm="12" md="4" xl="4">
-              <v-btn
-                block
-                depressed
-                outlined
-                color="error"
-                @click.stop="$router.go(-1)"
-              >
+              <v-btn block depressed color="error" @click.stop="$router.go(-1)">
                 Cancel
               </v-btn>
             </v-col>
@@ -385,8 +363,8 @@ export default {
   box-shadow: none !important;
 
   .sure-title {
-    font-size: 1.2rem !important;
-    line-height: 1.5rem !important;
+    font-size: 1rem !important;
+    line-height: 1.2rem !important;
   }
 }
 </style>

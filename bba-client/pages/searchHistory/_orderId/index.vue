@@ -171,8 +171,8 @@ export default {
   box-shadow: none !important;
 
   .sure-title {
-    font-size: 1.2rem !important;
-    line-height: 1.5rem !important;
+    font-size: 1rem !important;
+    line-height: 1.2rem !important;
   }
 }
 </style>

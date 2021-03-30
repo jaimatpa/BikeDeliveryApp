@@ -52,9 +52,9 @@
     </v-main>
 
     <!-- Sidebar: Settings -->
-    <Sidebar v-model="settings" title="Settings">
+    <!-- <Sidebar v-model="settings" title="Settings">
       <ThemeSettings />
-    </Sidebar>
+    </Sidebar> -->
 
     <!-- Snackbar -->
     <Snackbar
@@ -144,10 +144,10 @@ export default {
           to: "/resend",
         },
         {
-          title: "All Users",
-          icon: "mdi-account-group-outline",
-          iconSelected: "mdi-account-group",
-          to: "/users/allUsers",
+          title: "Call For Help",
+          icon: "mdi-help-circle-outline",
+          iconSelected: "mdi-help-circle",
+          to: "/callForHelp",
         },
       ],
       userItems: [
@@ -237,6 +237,18 @@ export default {
         case "textMessageTemplate":
           return "mdi-email-edit";
           break;
+        case "account":
+          return "mdi-account-box";
+          break;
+        case "account-password":
+          return "mdi-account-key";
+          break;
+        case "account-name":
+          return "mdi-account-edit";
+          break;
+        case "callForHelp":
+          return "mdi-help-circle";
+          break;
 
         default:
           return "";
@@ -274,6 +286,9 @@ export default {
           break;
         case "textMessageTemplate":
           return "Text Message Template";
+          break;
+        case "callForHelp":
+          return "Call For Help";
           break;
 
         default:
