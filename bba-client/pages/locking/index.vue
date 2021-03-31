@@ -1,15 +1,23 @@
 <template lang="html">
   <Page>
     <!-- Lock Scan Button  -->
-    <div class="qr-code mb-5" v-if="isMobile">
-      <qrcode-stream @decode="onDecode"></qrcode-stream>
+    <v-btn
+      v-if="isMobile"
+      @click="showQrScanner = true"
+      block
+      depressed
+      color="primary"
+      class="mb-5"
+    >
+      <v-icon left medium color="white" class="mr-2">
+        mdi-barcode-scan
+      </v-icon>
+      Scan
+    </v-btn>
 
-      <div class="title-section">
-        <v-icon left medium color="white" class="mr-2">
-          mdi-barcode-scan
-        </v-icon>
-        Scan
-      </div>
+    <!-- QRCode Scanner Reader -->
+    <div class="qr-code mb-5" v-if="isMobile && showQrScanner">
+      <qrcode-stream @decode="onDecode"></qrcode-stream>
     </div>
 
     <!-- Lock Search Field -->
@@ -75,7 +83,8 @@ export default {
     return {
       breakpoint: 640,
       totalLock: 0,
-
+      showQrScanner: false,
+      decodedResult: "",
       search: "",
       locks: [],
       loading: true,
@@ -107,6 +116,11 @@ export default {
   methods: {
     onDecode(decodedString) {
       console.log("decodedString", decodedString);
+      if (decodedString) {
+        this.decodedResult = decodedString;
+        this.search = decodedString;
+        this.showQrScanner = false;
+      }
     },
     async getDataFromApi() {
       this.loading = true;
@@ -157,19 +171,15 @@ export default {
 </script>
 
 <style lang="scss" scoped>
-.qr-code {
-  background: #4c9a2a;
-  color: #fff;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  text-align: center;
-  height: 40px;
-  width: 100%;
-  border-radius: 10px;
-
-  .title-section {
-    position: absolute;
-  }
-}
+// .qr-code {
+//   background: #4c9a2a;
+//   color: #fff;
+//   display: flex;
+//   align-items: center;
+//   justify-content: center;
+//   text-align: center;
+//   height: 40px;
+//   width: 100%;
+//   border-radius: 10px;
+// }
 </style>
