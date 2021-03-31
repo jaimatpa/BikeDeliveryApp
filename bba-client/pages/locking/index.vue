@@ -12,7 +12,7 @@
       <v-icon left medium color="white" class="mr-2">
         mdi-barcode-scan
       </v-icon>
-      Scan
+      Scan Barcode
     </v-btn>
 
     <!-- QRCode Scanner Reader -->
@@ -20,18 +20,15 @@
       <qrcode-stream @decode="onDecode"></qrcode-stream>
     </div>
 
-    <!-- Lock Search Field -->
-    <v-text-field
-      v-model="search"
-      append-icon="mdi-magnify"
-      label="Search by Order#"
-      single-line
-      hide-details
-      outlined
-      dense
-      clearable
-      class="mb-5"
-    ></v-text-field>
+    <!-- Lock Select Box -->
+    <v-select :items="colors" label="Color" dense outlined>
+      <template v-slot:selection="{ item, index }">
+        <div class="d-flex align-center">
+          <div :style="lockSelectValueColor(item)"></div>
+          <span class="accent--text ml-1">{{ item }}</span>
+        </div>
+      </template>
+    </v-select>
 
     <v-data-table
       :headers="headers"
@@ -62,6 +59,7 @@
 </template>
 
 <script>
+import _ from "lodash";
 import Page from "@/components/paradym/Page";
 import lockMockData from "@/webHooks/LOCK_MOCK_DATA.json";
 
@@ -89,6 +87,7 @@ export default {
       locks: [],
       loading: true,
       options: {},
+      colors: lockMockData.length > 0 ? _.map(lockMockData, "color") : [],
       headers: [
         {
           text: "Lock",
@@ -114,6 +113,13 @@ export default {
     this.getDataFromApi();
   },
   methods: {
+    lockSelectValueColor(color) {
+      return {
+        width: "20px",
+        height: "20px",
+        "background-color": color,
+      };
+    },
     onDecode(decodedString) {
       console.log("decodedString", decodedString);
       if (decodedString) {

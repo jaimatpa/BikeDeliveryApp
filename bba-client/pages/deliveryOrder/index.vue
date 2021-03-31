@@ -5,7 +5,7 @@
       <v-icon left medium color="white" class="mr-2">
         mdi-barcode-scan
       </v-icon>
-      Scan
+      Scan Barcode
     </v-btn>
 
     <!-- Order Search Field -->
