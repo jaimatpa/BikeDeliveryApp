@@ -47,6 +47,7 @@ BBA Server is the REST-API server for the BBA client application.
 ## Configuration
 * Rename `env.example` from `bba-server/env.example` to `bba-server/.env`
 * Modify the `.env` file to configure the server's settings.
+* Update `SEED=1` in `.env` file
 
 ### App Settings
 * `APP_NAME` - Used to identify the application when sending emails
