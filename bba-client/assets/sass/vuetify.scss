@@ -27,6 +27,12 @@
       tr:hover:not(.v-data-table__expanded__content):not(.v-data-table__empty-wrapper) {
         background: #e4f0df !important;
       }
+
+      tbody {
+        tr:nth-child(odd) {
+          background-color: #f2f2f2 !important;
+        }
+      }
     }
 
     .v-data-footer {
@@ -65,5 +71,3 @@
     height: 25px !important;
   }
 }
-
-

@@ -42,7 +42,7 @@
       >
         <div :class="[isMobile ? 'text-center' : '']">
           <p class="headline text-uppercase primary--text mb-1">
-            Today's Delivaries
+            Today's Deliveries
           </p>
           <v-divider :class="[isMobile ? 'mobile-divider' : '']"></v-divider>
         </div>
