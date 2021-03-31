@@ -81,7 +81,7 @@ $ yarn install
 $ npx sequelize db:migrate
 
 # serve with hot reload at localhost
-$ yarn run dev
+$ yarn run dev # It will run both client(bba-client) and server(bba-server)
 
 # build for production and launch server
 $ yarn run start
