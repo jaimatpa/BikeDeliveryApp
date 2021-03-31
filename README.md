@@ -87,4 +87,7 @@ $ yarn run dev
 $ yarn run start
 
 ```
+### Default Login credential
+Email: admin@paradynamix.com
+Password: password
 
