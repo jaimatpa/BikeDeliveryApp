@@ -13,11 +13,9 @@ app.get('/webhook', (req, res) => {
         }
         try{
             const request = await axios.post("http://localhost:3100/api/user/deliveryorder",data, { headers: {'Content-Type': 'application/json'} }); 
-            console.log(request);   
         }catch(error){
-            console.log(error)
+            
         }
-        
 
         //axios post to deliveryorder endpoint
         return res.send(data)
@@ -30,10 +28,16 @@ app.get('/webhook', (req, res) => {
   
 })
 async function webhookEvent(){
-    axios.get('/webhook').then(result =>{
-
-    });
+    try{
+        await axios.get('http://localhost:8000/webhook').then(result =>{
+            console.log(result)
+        });
+    }catch(error){
+        console.log(error)
+    }
+    
 }
 app.listen(port, () => {
+    webhookEvent();
   console.log(`app listening at http://localhost:${port}`)
 })
