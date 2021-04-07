@@ -8,7 +8,7 @@
     "color": "Pink",
     "combination": "4713",
     "lock": "LOCK001",
-    "mobileNo": "+8801716362875",
+    "phonenumber": "+8801716362875",
     "barcode": "6541964564"
   },
   {
@@ -20,7 +20,7 @@
     "color": "Goldenrod",
     "combination": "5431",
     "lock": "LOCK002",
-    "mobileNo": "+8801722669565",
+    "phonenumber": "+8801722669565",
     "barcode": "6541961654"
   },
   {
@@ -32,7 +32,7 @@
     "color": "Green",
     "combination": "4121",
     "lock": "LOCK003",
-    "mobileNo": "+8801753362960",
+    "phonenumber": "+8801753362960",
     "barcode": "1654654196"
   },
   {
@@ -44,7 +44,7 @@
     "color": "Pink",
     "combination": "4713",
     "lock": "LOCK001",
-    "mobileNo": "+8801745476473",
+    "phonenumber": "+8801745476473",
     "barcode": "9532654196"
   },
   {
@@ -56,7 +56,7 @@
     "color": "Goldenrod",
     "combination": "5431",
     "lock": "LOCK002",
-    "mobileNo": "+8801716362875",
+    "phonenumber": "+8801716362875",
     "barcode": "7544654196"
   },
   {
@@ -68,7 +68,7 @@
     "color": "Green",
     "combination": "4121",
     "lock": "LOCK003",
-    "mobileNo": "+8801716362875",
+    "phonenumber": "+8801716362875",
     "barcode": "3544654196"
   },
   {
@@ -80,7 +80,7 @@
     "color": "Pink",
     "combination": "4713",
     "lock": "LOCK001",
-    "mobileNo": "+8801716362875",
+    "phonenumber": "+8801716362875",
     "barcode": "1564654196"
   },
   {
@@ -92,7 +92,7 @@
     "color": "Goldenrod",
     "combination": "5431",
     "lock": "LOCK002",
-    "mobileNo": "+8801716362875",
+    "phonenumber": "+8801716362875",
     "barcode": "3654654196"
   },
   {
@@ -104,7 +104,7 @@
     "color": "Green",
     "combination": "4121",
     "lock": "LOCK003",
-    "mobileNo": "+8801716362875",
+    "phonenumber": "+8801716362875",
     "barcode": "35865654196"
   }
 ]

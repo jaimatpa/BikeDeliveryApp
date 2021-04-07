@@ -11,21 +11,13 @@ const apiMessage = require("../../../language/en.json");
 
 router.post("/", async (req, res) => {
 
-    const data = JSON.parse(JSON.stringify(req.body));
-    for(let i =0;i<data.length;i++){
-        // const d = models.Web
-        const d = await models.WebhookMaps.findOne({
-            where:{
-                table_key:data[i].table_key
-            }
-        });
-        if(d){
-            d.json_key = data[i].json_key;
-            await d.save();
-        }else{
-            await models.WebhookMaps.build(data[i]).save();
-        }
-        
+    const data = await models.Templates.findOne();
+    if(data){
+        data.body = req.body.template;
+        await data.save();
+    }else{
+        await models.Templates.build({body:req.body.template}).save();
+
     }
     //received the json here req.body
     // console.log(req.body)
@@ -33,7 +25,7 @@ router.post("/", async (req, res) => {
 });
 
 router.get("/", async (req, res) => {
-   const data = await models.WebhookMaps.findAll();
+    const data = await models.Templates.findAll();
     return res.send(data);
 });
 
