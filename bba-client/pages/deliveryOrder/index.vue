@@ -80,7 +80,6 @@
 <script>
 import _ from "lodash";
 import Page from "@/components/paradym/Page";
-import orderDeliveryMockData from "@/webHooks/ORDER_DELIVERY_MOCK_DATA.json";
 
 export default {
   name: "deliveryOrder",
@@ -119,7 +118,7 @@ export default {
         { text: "Color", value: "color", sortable: false },
         { text: "Combination", value: "combination", sortable: false },
         { text: "Barcode", value: "barcode", sortable: false },
-        { text: "Order", value: "order" },
+        { text: "Order", value: "orderid" },
         { text: "Actions", value: "actions", sortable: false, align: "center" },
       ],
     };
@@ -171,41 +170,25 @@ export default {
       });
     },
     apiCall() {
-      return new Promise(async (resolve, reject) => {
+      return new Promise(async (resolve, reject) => {        
+        let param = this.search
+          ? { orderid: this.search }
+          : this.searchByBarcode
+          ? { barcodeid: this.searchByBarcode }
+          : {};
+
+        const orderDeliveryMockData = await this.$axios.$get(
+          "/api/user/deliveryOrder",
+          {
+            params: param,
+          }
+        );
         const { sortBy, sortDesc, page, itemsPerPage } = this.options;
 
-        let items;
-        let total;
+        let items = orderDeliveryMockData;
+        let total = orderDeliveryMockData?.length;
 
-        if (this.search !== "") {
-          const res = _.filter(
-            orderDeliveryMockData,
-            (orderData) =>
-              orderData.name
-                .toLowerCase()
-                .indexOf(this.search.toLowerCase()) !== -1 ||
-              orderData.order
-                .toLowerCase()
-                .indexOf(this.search.toLowerCase()) !== -1
-          );
-          items = res;
-          total = res?.length;
-        } else if (this.searchByBarcode !== "") {
-          const res = _.filter(
-            orderDeliveryMockData,
-            (orderData) =>
-              orderData.barcode
-                .toLowerCase()
-                .indexOf(this.searchByBarcode.toLowerCase()) !== -1
-          );
-          items = res;
-          total = res?.length;
-
-          if (total === 1) this.dialog = false;
-        } else {
-          items = orderDeliveryMockData;
-          total = orderDeliveryMockData?.length;
-        }
+        if(orderDeliveryMockData?.length === 1) this.dialog = false;
 
         if (sortBy?.length === 1 && sortDesc?.length === 1) {
           items = items.sort((a, b) => {

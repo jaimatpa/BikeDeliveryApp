@@ -17,6 +17,5 @@ module.exports = {
     app.use('/api/user/resetPassword', resetPassword)
     app.use('/api/user/resetPassword', resetPassword)
     app.use('/api/user/deliveryOrder', deliveryOrder)
-
   }
 }

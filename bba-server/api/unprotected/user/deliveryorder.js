@@ -1,6 +1,7 @@
 const express = require("express");
 const router = express.Router();
 const status = require("http-status");
+const { Op } = require("sequelize");
 
 const models = require("./../../../models");
 const apiError = require("./../../../libs/apiError");
@@ -20,9 +21,42 @@ router.post("/", async (req, res) => {
 });
 
 router.get("/", async (req, res) => {
-    const data = await models.DeliveryOrders.findAll();
-    console.log('inside get!!!')
-    res.send(data);
+    let data = [];
+    const orderid = req.query.orderid;
+    const barcodeid = req.query.barcodeid;
+    if(orderid){
+        try{
+            data = await models.DeliveryOrders.findAll({
+                where:{
+                    orderid: {
+                        [Op.like]: `%${orderid}%`
+                    }
+                }
+            });
+            console.log(data)
+        }catch(error){
+            console.log(error)
+        }
+    }else if(barcodeid){
+        if(barcodeid){
+            try{
+                data = await models.DeliveryOrders.findAll({
+                    where:{
+                        barcode: {
+                            [Op.like]: `%${barcodeid}%`
+                        }
+                    }
+                });
+                console.log(data)
+            }catch(error){
+                console.log(error)
+            }
+        }
+    }
+    else{
+        data = await models.DeliveryOrders.findAll();
+    }
+    return res.send(data);
 });
 
 module.exports = router;
