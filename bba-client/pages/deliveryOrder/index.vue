@@ -170,9 +170,9 @@ export default {
       });
     },
     apiCall() {
-      return new Promise(async (resolve, reject) => {        
+      return new Promise(async (resolve, reject) => {
         let param = this.search
-          ? { orderid: this.search }
+          ? { search: this.search }
           : this.searchByBarcode
           ? { barcodeid: this.searchByBarcode }
           : {};
@@ -188,7 +188,7 @@ export default {
         let items = orderDeliveryMockData;
         let total = orderDeliveryMockData?.length;
 
-        if(orderDeliveryMockData?.length === 1) this.dialog = false;
+        if (orderDeliveryMockData?.length === 1) this.dialog = false;
 
         if (sortBy?.length === 1 && sortDesc?.length === 1) {
           items = items.sort((a, b) => {

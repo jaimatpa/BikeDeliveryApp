@@ -54,7 +54,6 @@
 import _ from "lodash";
 
 import Page from "@/components/paradym/Page";
-import lockMockData from "@/webHooks/LOCK_MOCK_DATA.json";
 
 export default {
   name: "lockDetails",
@@ -66,10 +65,7 @@ export default {
   },
   components: { Page },
   created() {
-    this.lockData = _.find(
-      lockMockData,
-      (lockData) => lockData.delivery === this.$route.params.deliveryId
-    );
+    this.getOrderDetails()
   },
   computed: {
     isMobile() {
@@ -79,9 +75,33 @@ export default {
   data() {
     return {
       breakpoint: 640,
-      lockData: null,
+      lockData: {},
     };
   },
+  methods: {
+    async getOrderDetails() {
+
+       try {
+        let response = await this.$axios.$get(
+          "/api/user/deliveryOrder",
+          {
+            params: {
+              search : this.$route.params.orderId
+            },
+          }
+        );
+        console.log('respones', response);
+        this.lockData = response[0]
+      
+        //  this.$router.go(-1);
+       
+      } catch (err) {
+        console.log('errror', err.response);
+       
+      }
+
+    },
+  }
 };
 </script>
 

@@ -11,6 +11,8 @@
       dense
       clearable
       class="mb-5"
+      @keyup="onKeyUp"
+      @click:clear="onClearClicked"
     ></v-text-field>
 
     <v-data-table
@@ -31,7 +33,7 @@
           color="primary"
           @click.stop="
             $router.push({
-              path: `/searchHistory/${item.order}`,
+              path: `/searchHistory/${item.orderid}`,
             })
           "
         >
@@ -68,6 +70,7 @@ export default {
       search: "",
       searchHistories: [],
       loading: true,
+      initialRender: true,
       options: {},
       headers: [
         {
@@ -78,23 +81,45 @@ export default {
         { text: "Name", value: "name", sortable: false },
         { text: "Location", value: "location", sortable: false },
         { text: "Bike Rack", value: "rack", sortable: false },
-        { text: "Order", value: "order" },
+        { text: "Order", value: "orderid" },
         { text: "Actions", value: "actions", sortable: false, align: "center" },
       ],
     };
   },
   watch: {
+    search: function (newValue) {
+      this.getDataFromApi();
+    },
     options: {
       handler() {
-        this.getDataFromApi();
+        // console.log('watch this.options: ', this.options)
+        if (this.initialRender === false) {
+          this.getDataFromApi();
+        }
       },
       deep: true,
     },
   },
-  mounted() {
+  created() {
     this.getDataFromApi();
+    this.initialRender = false;
   },
   methods: {
+    onClearClicked() {
+      if (this.search !== "") {
+        this.search = "";
+      }
+      this.getDataFromApi();
+    },
+    onKeyUp(event) {
+      // console.log('key uppppppp ', typeof event.target.value,  `${event.target.value}`.length)
+      if (event.key === "Enter") {
+        this.getDataFromApi();
+      } else if (`${event.target.value}`.length === 0) {
+        // if someone clears the input field.
+        this.getDataFromApi();
+      }
+    },
     async getDataFromApi() {
       this.loading = true;
       this.apiCall().then((data) => {
@@ -105,10 +130,19 @@ export default {
     },
     apiCall() {
       return new Promise(async (resolve, reject) => {
+        let param = this.search ? { search: this.search } : {};
+
+        const orderDeliveryMockData = await this.$axios.$get(
+          "/api/user/deliveryOrder",
+          {
+            params: param,
+          }
+        );
+
         const { sortBy, sortDesc, page, itemsPerPage } = this.options;
 
-        let items = searchMockData;
-        const total = searchMockData.length;
+        let items = orderDeliveryMockData;
+        let total = orderDeliveryMockData?.length;
 
         if (sortBy.length === 1 && sortDesc.length === 1) {
           items = items.sort((a, b) => {

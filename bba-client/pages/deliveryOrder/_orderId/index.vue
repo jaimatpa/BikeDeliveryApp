@@ -43,7 +43,7 @@
             </v-col>
             <v-col cols="12" xs="12" sm="12" md="6" xl="6">
               <v-text-field
-                v-model="deliveryOrderData.order"
+                v-model="deliveryOrderData.orderid"
                 label="Order"
                 placeholder="Order"
                 readonly
@@ -231,8 +231,6 @@ export default {
   components: { Page, ThirdStepper, FourthStepper },
  async created() {
    this.getOrderDetails()
-
-   
   },
   computed: {
     isMobile() {
@@ -291,7 +289,7 @@ export default {
           "/api/user/deliveryOrder",
           {
             params: {
-              orderid : this.$route.params.orderId
+              search : this.$route.params.orderId
             },
           }
         );

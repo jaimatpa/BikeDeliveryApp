@@ -47,7 +47,7 @@
     color="primary"
     @click.stop="
       $router.push({
-        path: `/locking/${item.delivery}`,
+        path: `/locking/${item.orderid}`,
       })
     "
   >
@@ -61,7 +61,6 @@
 <script>
 import _ from "lodash";
 import Page from "@/components/paradym/Page";
-import orderDeliveryMockData from "@/webHooks/ORDER_DELIVERY_MOCK_DATA.json";
 
 export default {
   name: "lock",
@@ -89,10 +88,7 @@ export default {
       initialRender: true,
       options: {},
       selectColor: "",
-      colors:
-        orderDeliveryMockData.length > 0
-          ? _.map(orderDeliveryMockData, "color")
-          : [],
+      colors: undefined,
       headers: [
         {
           text: "Lock",
@@ -101,7 +97,7 @@ export default {
         },
         { text: "Color", value: "color", sortable: false },
         { text: "Combination", value: "combination", sortable: false },
-        { text: "Delivery", value: "order", sortable: false },
+        { text: "Delivery", value: "orderid", sortable: false },
         { text: "Actions", value: "actions", sortable: false, align: "center" },
       ],
     };
@@ -150,23 +146,19 @@ export default {
       return new Promise(async (resolve, reject) => {
         const { sortBy, sortDesc, page, itemsPerPage } = this.options;
 
-        let items;
-        let total;
+        const orderDeliveryMockData = await this.$axios.$get(
+          "/api/user/deliveryOrder",
+          {
+            params: {
+              search: this.selectColor,
+            },
+          }
+        );
 
-        if (this.selectColor !== "") {
-          const res = _.filter(
-            orderDeliveryMockData,
-            (orderData) =>
-              orderData.color
-                .toLowerCase()
-                .indexOf(this.selectColor.toLowerCase()) !== -1
-          );
-          items = res;
-          total = res?.length;
-        } else {
-          items = orderDeliveryMockData;
-          total = orderDeliveryMockData?.length;
-        }
+        this.colors = _.map(orderDeliveryMockData, "color");
+
+        let items = orderDeliveryMockData;
+        let total = orderDeliveryMockData?.length;
 
         if (sortBy?.length === 1 && sortDesc?.length === 1) {
           items = items.sort((a, b) => {
