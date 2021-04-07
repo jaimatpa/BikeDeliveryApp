@@ -153,20 +153,20 @@ export default {
      
       let message = `Hello ${dataToAdd.name}! Your bike is now available at ${dataToAdd.location}.  Your Order number is ${dataToAdd.order}. Thank You.`
       this.smsObject.message = message;
-      //   try {
-      //   let response = await this.$axios.$post(
-      //     "api/user/sendSMS", this.smsObject
+        try {
+        let response = await this.$axios.$post(
+          "api/user/sendSMS", this.smsObject
         
-      //   );
-      //   console.log('respones', response.message);
-      //    this.loader = false;
-      //      this.showSuccess(response.message);
-      //   //  this.$router.go(-1);
+        );
+        console.log('respones', response.message);
+         this.loader = false;
+        this.showSuccess(response.message);
+        //  this.$router.go(-1);
        
-      // } catch (err) {
-      //   console.log('errror', err.response);
-      //   this.loader = false;
-      // }
+      } catch (err) {
+        console.log('errror', err.response);
+        this.loader = false;
+      }
     },
     async getDataFromApi() {
       this.loading = true;

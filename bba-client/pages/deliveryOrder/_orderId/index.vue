@@ -275,8 +275,8 @@ export default {
         
         );
         console.log('respones', response.message);
-         this.loader = false;
-           this.showSuccess(response.message);
+        this.loader = false;
+        this.showSuccess(response.message);
         //  this.$router.go(-1);
        
       } catch (err) {
