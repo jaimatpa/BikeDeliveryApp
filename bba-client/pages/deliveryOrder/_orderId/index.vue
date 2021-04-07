@@ -265,9 +265,15 @@ export default {
       console.log('delivery information', this.deliveryOrderData)
       let dataToAdd = this.deliveryOrderData;
      
-      let message = `Hello ${dataToAdd.name}! Your bike is now available at ${dataToAdd.location} Your deliver number is ${dataToAdd.order}. Bike Rack : ${dataToAdd.rack}, Color : ${dataToAdd.color}, Lock-Combo : ${dataToAdd.combination}.  Thank You.`
-      this.smsObject.message = message;
+  
+      let msg = `Hello ${dataToAdd.name}! Your bike is now available at ${dataToAdd.location}  Your deliver number is ${dataToAdd.orderid} Thank You.`
+      this.smsObject.message = msg;
+
+
       this.smsObject.to = dataToAdd.mobileNo;
+
+
+      console.log('Data ready====>', this.smsObject)
         try {
         let response = await this.$axios.$post(
           "api/user/sendSMS", this.smsObject
