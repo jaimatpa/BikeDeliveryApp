@@ -172,7 +172,7 @@ export default {
     apiCall() {
       return new Promise(async (resolve, reject) => {        
         let param = this.search
-          ? { orderid: this.search }
+          ? { search: this.search }
           : this.searchByBarcode
           ? { barcodeid: this.searchByBarcode }
           : {};
