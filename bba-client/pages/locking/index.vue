@@ -21,7 +21,7 @@
     </div>
 
     <!-- Lock Select Box -->
-    <v-select :items="colors" label="Color" dense outlined>
+    <v-select v-model="selectColor" :items="colors" label="Color" dense outlined>
       <template v-slot:selection="{ item, index }">
         <div class="d-flex align-center">
           <div :style="lockSelectValueColor(item)"></div>
@@ -77,7 +77,7 @@ export default {
       return this.$vuetify.breakpoint.width < this.breakpoint;
     },
   },
-  data() {
+  data() {        
     return {
       breakpoint: 640,
       totalLock: 0,
@@ -87,6 +87,7 @@ export default {
       locks: [],
       loading: true,
       options: {},
+      selectColor: 'Green',
       colors: lockMockData.length > 0 ? _.map(lockMockData, "color") : [],
       headers: [
         {
@@ -111,6 +112,8 @@ export default {
   },
   mounted() {
     this.getDataFromApi();
+    console.log('selectColor', this.selectColor);
+    
   },
   methods: {
     lockSelectValueColor(color) {
