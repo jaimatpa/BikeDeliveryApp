@@ -167,8 +167,9 @@ export default {
       this.getDataFromApi();
     },
     code(value){
-      console.log('This value', value)
-      this.searchByBarcode = value
+      console.log('This value', value);
+      this.searchByBarcode = value;
+      this.dialog = false;
     },
     onKeyUp(event) {
       // console.log('key uppppppp ', typeof event.target.value,  `${event.target.value}`.length)
