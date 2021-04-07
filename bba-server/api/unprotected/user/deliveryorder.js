@@ -22,15 +22,44 @@ router.post("/", async (req, res) => {
 
 router.get("/", async (req, res) => {
     let data = [];
-    const orderid = req.query.orderid;
+    const search = req.query.search;
     const barcodeid = req.query.barcodeid;
-    if(orderid){
+    if(search){
         try{
             data = await models.DeliveryOrders.findAll({
                 where:{
-                    orderid: {
-                        [Op.like]: `%${orderid}%`
+                    [Op.or]:{
+                        name: {
+                            [Op.like]: `%${search}%`
+                        },
+                        location: {
+                            [Op.like]: `%${search}%`
+                        },
+                        orderid: {
+                            [Op.like]: `%${search}%`
+                        },
+                        rack: {
+                            [Op.like]: `%${search}%`
+                        },
+                        color: {
+                            [Op.like]: `%${search}%`
+                        },
+                        combination: {
+                            [Op.like]: `%${search}%`
+                        },
+                        lock: {
+                            [Op.like]: `%${search}%`
+                        },
+                        mobileNo: {
+                            [Op.like]: `%${search}%`
+                        },
+                        barcode: {
+                            [Op.like]: `%${search}%`
+                        }
+
                     }
+                    
+                    
                 }
             });
             console.log(data)
