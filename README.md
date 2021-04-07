@@ -46,6 +46,9 @@ BBA Server is the REST-API server for the BBA client application.
 - A MySQL Server running with a database created
 - The MySQL Event Scheduler must be enabled (`SET GLOBAL event_scheduler = ON;`). This is to support the automatic expiring of validation tokens.
 
+## Requirements Documents
+https://gitlab.com/paradynamix/bullock-bike-app/-/requirements_management/requirements
+
 ## Configuration
 
 - Rename `env.example` from `bba-server/env.example` to `bba-server/.env`
