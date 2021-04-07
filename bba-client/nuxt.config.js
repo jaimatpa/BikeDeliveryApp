@@ -41,6 +41,8 @@ export default {
     { src: "~/plugins/theme.js", mode: "client" },
     { src: "~/plugins/google-maps.js", ssr: true },
     { src: "~/plugins/QReader.js", mode: "client" },
+    { src: "~/plugins/barCode.js", ssr: false, mode: "client" },
+    // { src: "~/plugins/barCode.js", mode: "client", ssr: false },
   ],
 
   // Auto import components (https://go.nuxtjs.dev/config-components)
@@ -146,5 +148,7 @@ export default {
   // Build Configuration (https://go.nuxtjs.dev/config-build)
   build: {
     transpile: [/^vue2-google-maps($|\/)/],
+    vendor: ["vue-barcode-reader"],
   },
 };
+// "vue-barcode-reader"
