@@ -1,7 +1,7 @@
 "use strict";
 module.exports = {
   up: async (queryInterface, Sequelize) => {
-    await queryInterface.createTable("WebhookMaps", {
+    await queryInterface.createTable("Templates", {
       id: {
         allowNull: false,
         autoIncrement: true,
@@ -9,12 +9,7 @@ module.exports = {
         type: Sequelize.INTEGER,
       },
 
-      table_key: {
-        type: Sequelize.STRING,
-        allowNull: true,
-      },
-
-      json_key: {
+      body: {
         type: Sequelize.STRING,
         allowNull: true,
       },
@@ -30,6 +25,6 @@ module.exports = {
     });
   },
   down: async (queryInterface, Sequelize) => {
-    await queryInterface.dropTable("WebhookMaps");
+    await queryInterface.dropTable("Templates");
   },
 };
