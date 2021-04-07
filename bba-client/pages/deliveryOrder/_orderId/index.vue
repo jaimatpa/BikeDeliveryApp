@@ -265,9 +265,9 @@ export default {
       console.log('delivery information', this.deliveryOrderData)
       let dataToAdd = this.deliveryOrderData;
      
-  
-      let msg = `Hello ${dataToAdd.name}! Your bike is now available at ${dataToAdd.location}  Your deliver number is ${dataToAdd.orderid} Thank You.`
-      this.smsObject.message = msg;
+   
+      let message = `Hello ${dataToAdd.name}! Your bike is now available at ${dataToAdd.location}. Your deliver number is ${dataToAdd.orderid}, Bike Rack : ${dataToAdd.rack}, Color : ${dataToAdd.color}, Lock-Combo : ${dataToAdd.combination}. Thank You.`
+      this.smsObject.message = message;
 
 
       this.smsObject.to = dataToAdd.mobileNo;
