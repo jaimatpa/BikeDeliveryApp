@@ -24,7 +24,7 @@
     <v-select v-model="selectColor" :items="colors" label="Color" dense outlined>
       <template v-slot:selection="{ item, index }">
         <div class="d-flex align-center">
-          <div :style="lockSelectValueColor(item)"></div>
+          <div :style="delivarieselectValueColor(item)"></div>
           <span class="accent--text ml-1">{{ item }}</span>
         </div>
       </template>
@@ -32,28 +32,28 @@
 
     <v-data-table
       :headers="headers"
-      :items="locks"
+      :items="delivaries"
       :options.sync="options"
-      :server-items-length="totalLock"
+      :server-items-length="totalOrderDelivery"
       :loading="loading"
       :search="search"
       class="elevation-1"
-      :mobile-breakpoint="0"
+      :mobile-breakpoint='0'
     >
       <!-- Actions -->
       <template v-slot:item.actions="{ item }">
-        <v-icon
-          medium
-          color="primary"
-          @click.stop="
-            $router.push({
-              path: `/locking/${item.delivery}`,
-            })
-          "
-        >
-          mdi-page-next
-        </v-icon>
-      </template>
+  <v-icon
+    medium
+    color="primary"
+    @click.stop="
+      $router.push({
+        path: `/locking/${item.delivery}`,
+      })
+    "
+  >
+    mdi-page-next
+  </v-icon>
+</template>
     </v-data-table>
   </Page>
 </template>
@@ -61,7 +61,7 @@
 <script>
 import _ from "lodash";
 import Page from "@/components/paradym/Page";
-import lockMockData from "@/webHooks/LOCK_MOCK_DATA.json";
+import orderDeliveryMockData from "@/webHooks/ORDER_DELIVERY_MOCK_DATA.json";
 
 export default {
   name: "lock",
@@ -77,18 +77,22 @@ export default {
       return this.$vuetify.breakpoint.width < this.breakpoint;
     },
   },
-  data() {        
+  data() {
     return {
       breakpoint: 640,
-      totalLock: 0,
+      totalOrderDelivery: 0,
       showQrScanner: false,
       decodedResult: "",
       search: "",
-      locks: [],
+      delivaries: [],
       loading: true,
+      initialRender: true,
       options: {},
-      selectColor: 'Green',
-      colors: lockMockData.length > 0 ? _.map(lockMockData, "color") : [],
+      selectColor: "",
+      colors:
+        orderDeliveryMockData.length > 0
+          ? _.map(orderDeliveryMockData, "color")
+          : [],
       headers: [
         {
           text: "Lock",
@@ -97,12 +101,19 @@ export default {
         },
         { text: "Color", value: "color", sortable: false },
         { text: "Combination", value: "combination", sortable: false },
-        { text: "Delivery", value: "delivery", sortable: false },
+        { text: "Delivery", value: "order", sortable: false },
         { text: "Actions", value: "actions", sortable: false, align: "center" },
       ],
     };
   },
+  created() {
+    this.getDataFromApi();
+    this.initialRender = false;
+  },
   watch: {
+    selectColor: function (newValue) {
+      this.getDataFromApi();
+    },
     options: {
       handler() {
         this.getDataFromApi();
@@ -110,13 +121,9 @@ export default {
       deep: true,
     },
   },
-  mounted() {
-    this.getDataFromApi();
-    console.log('selectColor', this.selectColor);
-    
-  },
+
   methods: {
-    lockSelectValueColor(color) {
+    delivarieselectValueColor(color) {
       return {
         width: "20px",
         height: "20px",
@@ -134,8 +141,8 @@ export default {
     async getDataFromApi() {
       this.loading = true;
       this.apiCall().then((data) => {
-        this.locks = data.items;
-        this.totalLock = data.total;
+        this.delivaries = data.items;
+        this.totalOrderDelivery = data.total;
         this.loading = false;
       });
     },
@@ -143,10 +150,25 @@ export default {
       return new Promise(async (resolve, reject) => {
         const { sortBy, sortDesc, page, itemsPerPage } = this.options;
 
-        let items = lockMockData;
-        const total = lockMockData.length;
+        let items;
+        let total;
 
-        if (sortBy.length === 1 && sortDesc.length === 1) {
+        if (this.selectColor !== "") {
+          const res = _.filter(
+            orderDeliveryMockData,
+            (orderData) =>
+              orderData.color
+                .toLowerCase()
+                .indexOf(this.selectColor.toLowerCase()) !== -1
+          );
+          items = res;
+          total = res?.length;
+        } else {
+          items = orderDeliveryMockData;
+          total = orderDeliveryMockData?.length;
+        }
+
+        if (sortBy?.length === 1 && sortDesc?.length === 1) {
           items = items.sort((a, b) => {
             const sortA = a[sortBy[0]];
             const sortB = b[sortBy[0]];

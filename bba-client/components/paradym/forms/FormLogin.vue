@@ -94,13 +94,13 @@
     </template>
 
     <!-- Footer -->
-    <template v-slot:footer v-if="registerURL">
+    <!-- <template v-slot:footer v-if="registerURL">
       <div class="text-center">
         <p class="text--secondary mb-0">New User?</p>
         <v-btn text color="primary" :to="registerURL">Sign Up</v-btn>
       </div>
       <slot name="footer"></slot>
-    </template>
+    </template> -->
   </Form>
 </template>
 

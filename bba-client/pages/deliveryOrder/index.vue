@@ -1,7 +1,7 @@
 <template lang="html">
   <Page>
     <!-- Delivery Order Scan Button  -->
-    <v-btn v-if="isMobile" block depressed color="primary" class="mb-5">
+    <v-btn v-if="isMobile" block depressed color="primary" class="mb-5" @click.stop="dialog = true">
       <v-icon left medium color="white" class="mr-2">
         mdi-barcode-scan
       </v-icon>
@@ -48,13 +48,38 @@
         </v-icon>
       </template>
     </v-data-table>
+
+    <v-dialog
+      v-model="dialog"
+      max-width="330"
+    >
+      <v-card>
+        <v-card-title class="title primary--text">
+          Enter Barcode
+        </v-card-title>
+        <v-card-text>
+          <v-text-field
+            v-model="searchByBarcode"
+            append-icon="mdi-magnify"
+            label="Enter Barcode"
+            single-line
+            hide-details
+            outlined
+            dense
+            clearable
+            @click:clear="onClearClicked"
+             @keyup="onKeyUp"
+            class="mb-5"
+          ></v-text-field>
+        </v-card-text>
+      </v-card>
+    </v-dialog>
   </Page>
 </template>
 
 <script>
 import _ from "lodash";
 import Page from "@/components/paradym/Page";
-import orderDeliveryMockData from "@/webHooks/ORDER_DELIVERY_MOCK_DATA.json";
 
 export default {
   name: "deliveryOrder",
@@ -72,9 +97,11 @@ export default {
   },
   data() {
     return {
+      dialog: false,
       breakpoint: 640,
       totalOrderDelivery: 0,
       search: "",
+      searchByBarcode: "",
       delivaries: [],
       loading: true,
       initialRender: true,
@@ -90,7 +117,8 @@ export default {
         { text: "Bike Rack", value: "rack", sortable: false },
         { text: "Color", value: "color", sortable: false },
         { text: "Combination", value: "combination", sortable: false },
-        { text: "Order", value: "order" },
+        { text: "Barcode", value: "barcode", sortable: false },
+        { text: "Order", value: "orderid" },
         { text: "Actions", value: "actions", sortable: false, align: "center" },
       ],
     };
@@ -101,6 +129,9 @@ export default {
   },
   watch: {
     search: function (newValue) {
+      this.getDataFromApi();
+    },
+    searchByBarcode: function (newValue) {
       this.getDataFromApi();
     },
     options: {
@@ -115,8 +146,9 @@ export default {
   },
   methods: {
     onClearClicked() {
-      if (this.search !== "") {
+      if (this.search !== "" || this.searchByBarcode !== "") {
         this.search = "";
+        this.searchByBarcode = "";
       }
       this.getDataFromApi();
     },
@@ -138,26 +170,25 @@ export default {
       });
     },
     apiCall() {
-      return new Promise(async (resolve, reject) => {
+      return new Promise(async (resolve, reject) => {        
+        let param = this.search
+          ? { orderid: this.search }
+          : this.searchByBarcode
+          ? { barcodeid: this.searchByBarcode }
+          : {};
+
+        const orderDeliveryMockData = await this.$axios.$get(
+          "/api/user/deliveryOrder",
+          {
+            params: param,
+          }
+        );
         const { sortBy, sortDesc, page, itemsPerPage } = this.options;
 
-        let items;
-        let total;
+        let items = orderDeliveryMockData;
+        let total = orderDeliveryMockData?.length;
 
-        if (this.search !== "") {
-          const res = _.filter(
-            orderDeliveryMockData,
-            (orderData) =>
-              orderData.name
-                .toLowerCase()
-                .indexOf(this.search.toLowerCase()) !== -1
-          );
-          items = res;
-          total = res?.length;
-        } else {
-          items = orderDeliveryMockData;
-          total = orderDeliveryMockData?.length;
-        }
+        if(orderDeliveryMockData?.length === 1) this.dialog = false;
 
         if (sortBy?.length === 1 && sortDesc?.length === 1) {
           items = items.sort((a, b) => {

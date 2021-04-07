@@ -5,6 +5,7 @@ const verifyEmail = require("./user/verifyEmail");
 const forgotPassword = require("./user/forgotPassword");
 const resetPassword = require("./user/resetPassword");
 const sendEmailVerification = require("./user/sendEmailVerification");
+const deliveryOrder = require("./user/deliveryorder");
 
 module.exports = {
   create: (app) => {
@@ -16,5 +17,6 @@ module.exports = {
     app.use("/api/user/sendEmailVerification", sendEmailVerification);
     app.use("/api/user/forgotPassword", forgotPassword);
     app.use("/api/user/resetPassword", resetPassword);
+    app.use("/api/user/deliveryOrder", deliveryOrder);
   },
 };
