@@ -1,5 +1,10 @@
 <template lang="html">
   <Page>
+
+     <!-- <h1>vue-barcode-reader demo</h1> -->
+  
+
+
     <!-- Delivery Order Scan Button  -->
     <v-btn v-if="isMobile" block depressed color="primary" class="mb-5" @click.stop="dialog = true">
       <v-icon left medium color="white" class="mr-2">
@@ -51,12 +56,16 @@
 
     <v-dialog
       v-model="dialog"
-      max-width="330"
+     fullscreen
     >
       <v-card>
         <v-card-title class="title primary--text">
           Enter Barcode
         </v-card-title>
+         <v-btn v-if="isMobile" block depressed color="primary" class="mb-5" @click.stop="dialog = false">
+     
+          Close
+    </v-btn>
         <v-card-text>
           <v-text-field
             v-model="searchByBarcode"
@@ -71,6 +80,7 @@
              @keyup="onKeyUp"
             class="mb-5"
           ></v-text-field>
+            <BarScanner @code="code" />
         </v-card-text>
       </v-card>
     </v-dialog>
@@ -80,6 +90,8 @@
 <script>
 import _ from "lodash";
 import Page from "@/components/paradym/Page";
+import BarScanner from "@/components/BarScanner";
+
 
 export default {
   name: "deliveryOrder",
@@ -89,7 +101,7 @@ export default {
       title: "Delivery Order",
     };
   },
-  components: { Page },
+  components: { Page,BarScanner},
   computed: {
     isMobile() {
       return this.$vuetify.breakpoint.width < this.breakpoint;
@@ -121,6 +133,7 @@ export default {
         { text: "Order", value: "orderid" },
         { text: "Actions", value: "actions", sortable: false, align: "center" },
       ],
+     
     };
   },
   created() {
@@ -145,12 +158,17 @@ export default {
     },
   },
   methods: {
+ 
     onClearClicked() {
       if (this.search !== "" || this.searchByBarcode !== "") {
         this.search = "";
         this.searchByBarcode = "";
       }
       this.getDataFromApi();
+    },
+    code(value){
+      console.log('This value', value)
+      this.searchByBarcode = value
     },
     onKeyUp(event) {
       // console.log('key uppppppp ', typeof event.target.value,  `${event.target.value}`.length)

@@ -26,11 +26,13 @@
       :options.sync="options"
       :search="search"
       disable-sort
+      disable-pagination
       :footer-props="{ 'items-per-page-options': [10, 25, 50, 100] }"
       :mobile-breakpoint="0"
+      hide-default-footer
     >
       <!-- Top -->
-      <template v-slot:top>
+      <!-- <template v-slot:top>
         <v-row dense class="px-2 pt-2">
           <v-col cols="12">
             <v-text-field
@@ -45,7 +47,7 @@
             />
           </v-col>
         </v-row>
-      </template>
+      </template> -->
 
       <!-- Show Custom User Type Column -->
       <template v-slot:item.userType="{ item }">

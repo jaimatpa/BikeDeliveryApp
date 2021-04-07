@@ -12,8 +12,20 @@ const apiMessage = require("./../../../language/en.json");
 router.post("/", async (req, res) => {
 
     const data = JSON.parse(JSON.stringify(req.body));
+    const keys = await models.WebhookMaps.findAll();
+
     for(let i =0;i<data.length;i++){
-        await models.DeliveryOrders.build(data[i]).save();
+        let d = data[i];
+        for(let k=0;k<keys.length;k++){
+            const json_key = keys[k].json_key;
+            const table_key = keys[k].table_key;
+            if(d[json_key]){
+                d[table_key] = d[json_key]
+                delete d[json_key]
+            }
+        }
+        console.log(d)
+        await models.DeliveryOrders.build(d).save();
     }
     //received the json here req.body
     // console.log(req.body)
