@@ -37,6 +37,7 @@ bba-client/build/Release
 bba-client/node_modules/
 bba-client/jspm_packages/
 bba-server/node_modules/
+demo-3rdP/node_modules/
 
 # TypeScript v1 declaration files
 bba-client/typings/
