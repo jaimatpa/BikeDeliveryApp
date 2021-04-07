@@ -229,12 +229,10 @@ export default {
     };
   },
   components: { Page, ThirdStepper, FourthStepper },
-  created() {
-    this.deliveryOrderData = _.find(
-      deliveryOrderMockData,
-      (deliveryOrderData) =>
-        deliveryOrderData.order === this.$route.params.orderId
-    );
+ async created() {
+   this.getOrderDetails()
+
+   
   },
   computed: {
     isMobile() {
@@ -244,14 +242,14 @@ export default {
   data() {
     return {
       breakpoint: 640,
-      deliveryOrderData: null,
+      deliveryOrderData: {},
       deliveryStepper: 1,
       deliveryOrderDialog: false,
       emptyPhoto: emptyPhoto,
       cyclePhoto: cyclePhoto,
       loader:false,
       smsObject : {
-         to : "+8801745476473", 
+         to : "", 
         message: ""
       }
     };
@@ -269,6 +267,7 @@ export default {
      
       let message = `Hello ${dataToAdd.name}! Your bike is now available at ${dataToAdd.location} Your deliver number is ${dataToAdd.order}. Bike Rack : ${dataToAdd.rack}, Color : ${dataToAdd.color}, Lock-Combo : ${dataToAdd.combination}.  Thank You.`
       this.smsObject.message = message;
+      this.smsObject.to = dataToAdd.mobileNo;
         try {
         let response = await this.$axios.$post(
           "api/user/sendSMS", this.smsObject
@@ -284,6 +283,28 @@ export default {
         this.loader = false;
       }
       
+    },
+   async getOrderDetails() {
+
+       try {
+        let response = await this.$axios.$get(
+          "/api/user/deliveryOrder",
+          {
+            params: {
+              orderid : this.$route.params.orderId
+            },
+          }
+        );
+        console.log('respones', response);
+        this.deliveryOrderData = response[0]
+      
+        //  this.$router.go(-1);
+       
+      } catch (err) {
+        console.log('errror', err.response);
+       
+      }
+
     },
     setDelivaryStepper(param) {
       this.deliveryStepper = param;

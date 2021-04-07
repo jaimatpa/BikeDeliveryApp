@@ -40,7 +40,7 @@
           color="primary"
           @click.stop="
             $router.push({
-              path: `/deliveryOrder/${item.order}`,
+              path: `/deliveryOrder/${item.orderid}`,
             })
           "
         >
