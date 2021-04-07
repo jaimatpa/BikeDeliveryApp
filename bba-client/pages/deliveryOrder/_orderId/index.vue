@@ -199,6 +199,12 @@
         </v-card-text>
       </v-card>
     </v-dialog>
+      <v-overlay :value="loader">
+      <v-progress-circular
+        indeterminate
+        size="64"
+      ></v-progress-circular>
+    </v-overlay>
   </Page>
 </template>
 
@@ -243,14 +249,41 @@ export default {
       deliveryOrderDialog: false,
       emptyPhoto: emptyPhoto,
       cyclePhoto: cyclePhoto,
+      loader:false,
+      smsObject : {
+         to : "+8801745476473", 
+        message: ""
+      }
     };
   },
   methods: {
     ...mapActions("snackbar", { showSuccess: "success", showError: "error" }),
-    sendNotification() {
+    async sendNotification() {
       this.searchHistoryDialog = false;
-      this.showSuccess("Notification Sent.");
-      this.$router.go(-1);
+      this.deliveryOrderDialog = false
+      this.loader = true;
+      
+     
+      console.log('delivery information', this.deliveryOrderData)
+      let dataToAdd = this.deliveryOrderData;
+     
+      let message = `Hello ${dataToAdd.name}! Your bike is now available at ${dataToAdd.location} Your deliver number is ${dataToAdd.order}. Bike Rack : ${dataToAdd.rack}, Color : ${dataToAdd.color}, Lock-Combo : ${dataToAdd.combination}.  Thank You.`
+      this.smsObject.message = message;
+        try {
+        let response = await this.$axios.$post(
+          "api/user/sendSMS", this.smsObject
+        
+        );
+        console.log('respones', response.message);
+         this.loader = false;
+           this.showSuccess(response.message);
+        //  this.$router.go(-1);
+       
+      } catch (err) {
+        console.log('errror', err.response);
+        this.loader = false;
+      }
+      
     },
     setDelivaryStepper(param) {
       this.deliveryStepper = param;
