@@ -39,7 +39,7 @@
       </v-col>
       <v-col cols="12" xs="12" sm="12" md="6" xl="6">
         <v-text-field
-          v-model="orderData.order"
+          v-model="orderData.orderid"
           label="Order"
           placeholder="Order"
           readonly
@@ -137,11 +137,8 @@ export default {
     };
   },
   components: { Page },
-  created() {
-    this.orderData = _.find(
-      searchMockData,
-      (orderData) => orderData.order === this.$route.params.orderId
-    );
+  async created() {
+   this.getOrderDetails()
   },
   computed: {
     isMobile() {
@@ -152,7 +149,7 @@ export default {
     return {
       breakpoint: 640,
       searchHistoryDialog: false,
-      orderData: null,
+      orderData: {},
     };
   },
   methods: {
@@ -161,6 +158,28 @@ export default {
       this.searchHistoryDialog = false;
       this.showSuccess("Notification Sent.");
       this.$router.go(-1);
+    },
+    async getOrderDetails() {
+
+       try {
+        let response = await this.$axios.$get(
+          "/api/user/deliveryOrder",
+          {
+            params: {
+              search : this.$route.params.orderId
+            },
+          }
+        );
+        console.log('respones', response);
+        this.orderData = response[0]
+      
+        //  this.$router.go(-1);
+       
+      } catch (err) {
+        console.log('errror', err.response);
+       
+      }
+
     },
   },
 };

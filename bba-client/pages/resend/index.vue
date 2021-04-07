@@ -11,6 +11,8 @@
       dense
       clearable
       class="mb-5"
+       @keyup="onKeyUp"
+      @click:clear="onClearClicked"
     ></v-text-field>
 
     <v-data-table
@@ -109,6 +111,7 @@ export default {
       search: "",
       resends: [],
       loading: true,
+      initialRender: true,
       options: {},
       headers: [
         {
@@ -118,7 +121,7 @@ export default {
         },
         { text: "Name", value: "name", sortable: false },
         { text: "Location", value: "location", sortable: false },
-        { text: "Order", value: "order" },
+        { text: "Order", value: "orderid" },
         { text: "Actions", value: "actions", sortable: false, align: "center" },
       ],
       loader:false,
@@ -130,18 +133,40 @@ export default {
     };
   },
   watch: {
+    search: function (newValue) {
+      this.getDataFromApi();
+    },
     options: {
       handler() {
-        this.getDataFromApi();
+        // console.log('watch this.options: ', this.options)
+        if (this.initialRender === false) {
+          this.getDataFromApi();
+        }
       },
       deep: true,
     },
   },
-  mounted() {
+  created() {
     this.getDataFromApi();
+    this.initialRender = false;
   },
   methods: {
     ...mapActions("snackbar", { showSuccess: "success", showError: "error" }),
+    onClearClicked() {
+      if (this.search !== "") {
+        this.search = "";
+      }
+      this.getDataFromApi();
+    },
+    onKeyUp(event) {
+      // console.log('key uppppppp ', typeof event.target.value,  `${event.target.value}`.length)
+      if (event.key === "Enter") {
+        this.getDataFromApi();
+      } else if (`${event.target.value}`.length === 0) {
+        // if someone clears the input field.
+        this.getDataFromApi();
+      }
+    },
    async sendNotification() {
       this.resendDialog = false;
       // this.showSuccess("Notification Sent.");
@@ -178,12 +203,21 @@ export default {
     },
     apiCall() {
       return new Promise(async (resolve, reject) => {
+        let param = this.search ? { search: this.search } : {};
+
+        const orderDeliveryMockData = await this.$axios.$get(
+          "/api/user/deliveryOrder",
+          {
+            params: param,
+          }
+        );
+
         const { sortBy, sortDesc, page, itemsPerPage } = this.options;
 
-        let items = resendMockData;
-        const total = resendMockData.length;
+        let items = orderDeliveryMockData;
+        let total = orderDeliveryMockData?.length;
 
-        if (sortBy.length === 1 && sortDesc.length === 1) {
+        if (sortBy?.length === 1 && sortDesc?.length === 1) {
           items = items.sort((a, b) => {
             const sortA = a[sortBy[0]];
             const sortB = b[sortBy[0]];
