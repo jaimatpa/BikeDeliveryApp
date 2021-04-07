@@ -19,6 +19,8 @@
       dense
       clearable
       class="mb-5"
+       @keyup="onKeyUp"
+      @click:clear="onClearClicked"
     ></v-text-field>
 
     <v-data-table
@@ -50,6 +52,7 @@
 </template>
 
 <script>
+import _ from "lodash";
 import Page from "@/components/paradym/Page";
 import orderDeliveryMockData from "@/webHooks/ORDER_DELIVERY_MOCK_DATA.json";
 
@@ -74,6 +77,7 @@ export default {
       search: "",
       delivaries: [],
       loading: true,
+      initialRender: true,
       options: {},
       headers: [
         {
@@ -91,18 +95,40 @@ export default {
       ],
     };
   },
+  created() {
+    this.getDataFromApi();
+    this.initialRender = false;
+  },
   watch: {
+    search: function (newValue) {
+      this.getDataFromApi();
+    },
     options: {
       handler() {
-        this.getDataFromApi();
+        // console.log('watch this.options: ', this.options)
+        if (this.initialRender === false) {
+          this.getDataFromApi();
+        }
       },
       deep: true,
     },
   },
-  mounted() {
-    this.getDataFromApi();
-  },
   methods: {
+    onClearClicked() {
+      if (this.search !== "") {
+        this.search = "";
+      }
+      this.getDataFromApi();
+    },
+    onKeyUp(event) {
+      // console.log('key uppppppp ', typeof event.target.value,  `${event.target.value}`.length)
+      if (event.key === "Enter") {
+        this.getDataFromApi();
+      } else if (`${event.target.value}`.length === 0) {
+        // if someone clears the input field.
+        this.getDataFromApi();
+      }
+    },
     async getDataFromApi() {
       this.loading = true;
       this.apiCall().then((data) => {
@@ -115,10 +141,25 @@ export default {
       return new Promise(async (resolve, reject) => {
         const { sortBy, sortDesc, page, itemsPerPage } = this.options;
 
-        let items = orderDeliveryMockData;
-        const total = orderDeliveryMockData.length;
+        let items;
+        let total;
 
-        if (sortBy.length === 1 && sortDesc.length === 1) {
+        if (this.search !== "") {
+          const res = _.filter(
+            orderDeliveryMockData,
+            (orderData) =>
+              orderData.name
+                .toLowerCase()
+                .indexOf(this.search.toLowerCase()) !== -1
+          );
+          items = res;
+          total = res?.length;
+        } else {
+          items = orderDeliveryMockData;
+          total = orderDeliveryMockData?.length;
+        }
+
+        if (sortBy?.length === 1 && sortDesc?.length === 1) {
           items = items.sort((a, b) => {
             const sortA = a[sortBy[0]];
             const sortB = b[sortBy[0]];
