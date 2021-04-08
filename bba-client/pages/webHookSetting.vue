@@ -4,6 +4,7 @@
     :title="!isMobile ? 'List of Web Hooks' : ''"
     :fields="fields"
     endpoint="/api/webHooks"
+    :isShowWebHookMappingTable="true"
   />
 </template>
 
