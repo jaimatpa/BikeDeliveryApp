@@ -49,6 +49,7 @@ async function start () {
   // Set Body Parser Middleware
   app.use(express.json({ limit: '10mb' }))
   app.use(express.urlencoded({ extended: false, limit: '10mb' }))
+  app.use(express.static(__dirname + '/public'));
 
   // Initialize Finale
   finale.initialize({ app: app, sequelize: models.sequelize })

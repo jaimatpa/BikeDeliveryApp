@@ -157,6 +157,7 @@
             :cyclePhoto="cyclePhoto"
             @set-delivery-stepper="setDelivaryStepper"
             @set-delivery-order-dialog="setDelivaryDialog"
+            @setUploadFiles="setUploadFiles"
           />
         </v-stepper-content>
       </v-stepper-items>
@@ -231,6 +232,7 @@ export default {
   components: { Page, ThirdStepper, FourthStepper },
  async created() {
    this.getOrderDetails()
+   this.getMsgTemplate()
   },
   computed: {
     isMobile() {
@@ -249,73 +251,149 @@ export default {
       smsObject : {
          to : "", 
         message: ""
-      }
+      },
+      templateMsg:"",
+      
     };
   },
   methods: {
     ...mapActions("snackbar", { showSuccess: "success", showError: "error" }),
     async sendNotification() {
       this.searchHistoryDialog = false;
-      this.deliveryOrderDialog = false
+      this.deliveryOrderDialog = false;
       this.loader = true;
-      
-     
-      console.log('delivery information', this.deliveryOrderData)
+
+      console.log("delivery information", this.deliveryOrderData);
       let dataToAdd = this.deliveryOrderData;
      
    
-      let message = `Hello ${dataToAdd.name}! Your bike is now available at ${dataToAdd.location}. Your deliver number is ${dataToAdd.orderid}, Bike Rack : ${dataToAdd.rack}, Color : ${dataToAdd.color}, Lock-Combo : ${dataToAdd.combination}. Thank You.`
-      this.smsObject.message = message;
+      // let message = `Hello ${dataToAdd.name}! Your bike is now available at ${dataToAdd.location}. Your deliver number is ${dataToAdd.orderid}, Bike Rack : ${dataToAdd.rack}, Color : ${dataToAdd.color}, Lock-Combo : ${dataToAdd.combination}. Thank You.`
+      
+      // let newMSG = `Hello [customer-name]! \nJOY\n\n\n\nBANGLA\n\n\n\nYour bike is now available at [geo-lat] [geo-long] Your deliver number is [delivery-number] Thank You.`
+     
+      let infoMap = {
+          "[customer-name]": "name", 
+          "[location]": "location", 
+          "[lock-combo]": ['lock', 'combination'], 
+          "[lock]": "lock", 
+          "[combination]": "combination", 
+          "[delivery-number]": "orderid",
+          "[color]": "color",
+          "[rack]": "rack"
+        }
 
+
+        let output = this.getMessage( this.templateMsg, infoMap, dataToAdd)
+
+
+
+
+      
+
+      let message = `Hello ${dataToAdd.name}! Your bike is now available at ${dataToAdd.location}. Your deliver number is ${dataToAdd.orderid}, Bike Rack : ${dataToAdd.rack}, Color : ${dataToAdd.color}, Lock-Combo : ${dataToAdd.combination}. Thank You.`;
+      // this.smsObject.message = message;
 
       this.smsObject.to = dataToAdd.mobileNo;
+       this.smsObject.message = output;
+      // this.smsObject.to ="+8801745476473";
 
-
-      console.log('Data ready====>', this.smsObject)
-        try {
+      console.log("Data ready====>", this.smsObject);
+      try {
         let response = await this.$axios.$post(
-          "api/user/sendSMS", this.smsObject
-        
+          "api/user/sendSMS",
+          this.smsObject
         );
-        console.log('respones', response.message);
+        console.log("respones", response.message);
         this.loader = false;
         this.showSuccess(response.message);
         //  this.$router.go(-1);
-       
       } catch (err) {
-        console.log('errror', err.response);
+        console.log("errror", err.response);
         this.loader = false;
       }
-      
+
+      this.uploadFiles();
     },
-   async getOrderDetails() {
+    async getOrderDetails() {
+      try {
+        let response = await this.$axios.$get("/api/user/deliveryOrder", {
+          params: {
+            search: this.$route.params.orderId,
+          },
+        });
+        console.log("respones", response);
+        this.deliveryOrderData = response[0];
 
-       try {
-        let response = await this.$axios.$get(
-          "/api/user/deliveryOrder",
-          {
-            params: {
-              search : this.$route.params.orderId
-            },
-          }
-        );
-        console.log('respones', response);
-        this.deliveryOrderData = response[0]
-      
         //  this.$router.go(-1);
-       
       } catch (err) {
-        console.log('errror', err.response);
-       
+        console.log("errror", err.response);
       }
-
     },
     setDelivaryStepper(param) {
       this.deliveryStepper = param;
     },
+    async upload(upload) {
+      const blob = await fetch(upload.local_blob_url).then((r) => r.blob());
+      const newfileObj = new File([blob], `${upload.originalName}.jpeg`, {
+        type: blob.type,
+      });
+
+      let formData = new FormData();
+      formData.append("file", newfileObj);
+
+      try {
+        let result = await this.$axios.$post(
+          "/api/user/upload?orderid=" + this.deliveryOrderData.orderid,
+          formData
+        );
+
+        if (result.success) {
+          console.log("upload success!!!");
+        } else {
+          console.log("upload failed!!!");
+        }
+      } catch (err) {
+        console.log(err);
+      }
+    },
+    async uploadFiles() {
+      this.uploads.forEach((upload) => {
+        this.upload(upload);
+      });
+    },
+    async setUploadFiles(uploads) {
+      this.uploads = uploads;
+    },
+
     setDelivaryDialog(param) {
       this.deliveryOrderDialog = param;
     },
+    async getMsgTemplate() {
+       try {
+        let response = await this.$axios.$get(
+          "api/user/template"
+        
+        );
+        console.log('respones', response);
+        this.templateMsg = response.body
+       
+      } catch (err) {
+        console.log('errror', err.response);
+       
+      }
+    },
+    getMessage(template, infoMap, userObj) {
+        let result = template
+        for (let key in infoMap) {
+            if (key === "[lock-combo]") {
+              let key0 = infoMap[key][0]
+              let key1 = infoMap[key][1]
+              result = result.replaceAll(key, `${userObj[key0]}-${userObj[key1]}`)
+            }
+            result = result.replaceAll(key, userObj[infoMap[key]])
+          }
+        return result
+    }
   },
 };
 </script>

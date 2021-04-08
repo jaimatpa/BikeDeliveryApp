@@ -1,6 +1,6 @@
 <template>
   <Page title="Upload">
-    <FileUploader endpoint="/api/upload" :maxAtOnce="3" />
+    <FileUploader endpoint="/api/user/upload" :maxAtOnce="3" />
   </Page>
 </template>
 

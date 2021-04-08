@@ -27,7 +27,7 @@
           <p class="secondary--text mb-0">
             <span class="font-weight-bold">Order#:</span>
             <span class="font-weight-regular">{{
-              deliveryOrderData.order
+              deliveryOrderData.orderid
             }}</span>
           </p>
         </div>
@@ -160,6 +160,7 @@ export default {
       canvasWidth: 640,
       aspectRatio: null,
       reviewPhoto: false,
+      allImages: undefined
     };
   },
   computed: {
@@ -189,10 +190,13 @@ export default {
       handler: function(newVal, oldVal) {
         if (newVal !== undefined && newVal.length > 0) {
           this.clickedImage = { ...newVal[0], array_index: 0 };
-        } else {
+          // this.$emit('uploadFiles', this.clickedImage)
+
+          } else {
           this.clickedImage = {};
         }
-        console.log("hereeeeeeeeeeeeeee ........ ", newVal);
+        // console.log("hereeeeeeeeeeeeeee ........ ", newVal);
+        this.$emit('setUploadFiles', newVal)
       },
     },
   },

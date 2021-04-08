@@ -236,6 +236,8 @@ export default {
     },
 
     saveCameraImages(images) {
+      console.log('================= images', images);
+      
       const blob_urls = this.local_files_to_upload.map((o) => o.local_blob_url);
       const result = [...this.local_files_to_upload];
       for (let i = 0; i < images.length; i++) {

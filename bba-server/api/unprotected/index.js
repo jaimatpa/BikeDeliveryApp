@@ -8,6 +8,7 @@ const sendEmailVerification = require("./user/sendEmailVerification");
 const deliveryOrder = require("./user/deliveryorder");
 const webhookmap = require("./user/webhookmap");
 const template = require("./user/template");
+const upload = require("./user/upload");
 
 module.exports = {
   create: (app) => {
@@ -22,6 +23,7 @@ module.exports = {
     app.use("/api/user/deliveryOrder", deliveryOrder);
     app.use("/api/user/webhookmap", webhookmap);
     app.use("/api/user/template", template);
+    app.use("/api/user/upload", upload);
 
   },
 };
