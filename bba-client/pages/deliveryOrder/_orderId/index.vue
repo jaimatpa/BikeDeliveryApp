@@ -231,6 +231,7 @@ export default {
   components: { Page, ThirdStepper, FourthStepper },
  async created() {
    this.getOrderDetails()
+   this.getMsgTemplate()
   },
   computed: {
     isMobile() {
@@ -249,7 +250,9 @@ export default {
       smsObject : {
          to : "", 
         message: ""
-      }
+      },
+      templateMsg:"",
+      
     };
   },
   methods: {
@@ -264,11 +267,33 @@ export default {
       let dataToAdd = this.deliveryOrderData;
      
    
-      let message = `Hello ${dataToAdd.name}! Your bike is now available at ${dataToAdd.location}. Your deliver number is ${dataToAdd.orderid}, Bike Rack : ${dataToAdd.rack}, Color : ${dataToAdd.color}, Lock-Combo : ${dataToAdd.combination}. Thank You.`
-      this.smsObject.message = message;
+      // let message = `Hello ${dataToAdd.name}! Your bike is now available at ${dataToAdd.location}. Your deliver number is ${dataToAdd.orderid}, Bike Rack : ${dataToAdd.rack}, Color : ${dataToAdd.color}, Lock-Combo : ${dataToAdd.combination}. Thank You.`
+      
+      // let newMSG = `Hello [customer-name]! \nJOY\n\n\n\nBANGLA\n\n\n\nYour bike is now available at [geo-lat] [geo-long] Your deliver number is [delivery-number] Thank You.`
+     
+      let infoMap = {
+          "[customer-name]": "name", 
+          "[location]": "location", 
+          "[lock-combo]": ['lock', 'combination'], 
+          "[lock]": "lock", 
+          "[combination]": "combination", 
+          "[delivery-number]": "orderid",
+          "[color]": "color",
+          "[rack]": "rack"
+        }
+
+
+        let output = this.getMessage( this.templateMsg, infoMap, dataToAdd)
+
+
+
+
+      
 
 
       this.smsObject.to = dataToAdd.mobileNo;
+       this.smsObject.message = output;
+      // this.smsObject.to ="+8801745476473";
 
 
       console.log('Data ready====>', this.smsObject)
@@ -316,6 +341,32 @@ export default {
     setDelivaryDialog(param) {
       this.deliveryOrderDialog = param;
     },
+    async getMsgTemplate() {
+       try {
+        let response = await this.$axios.$get(
+          "api/user/template"
+        
+        );
+        console.log('respones', response);
+        this.templateMsg = response.body
+       
+      } catch (err) {
+        console.log('errror', err.response);
+       
+      }
+    },
+    getMessage(template, infoMap, userObj) {
+        let result = template
+        for (let key in infoMap) {
+            if (key === "[lock-combo]") {
+              let key0 = infoMap[key][0]
+              let key1 = infoMap[key][1]
+              result = result.replaceAll(key, `${userObj[key0]}-${userObj[key1]}`)
+            }
+            result = result.replaceAll(key, userObj[infoMap[key]])
+          }
+        return result
+    }
   },
 };
 </script>
