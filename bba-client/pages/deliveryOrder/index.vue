@@ -168,7 +168,7 @@ export default {
     },
     code(value){
       console.log('This value', value);
-      this.searchByBarcode = value;
+      this.search = value;
       this.dialog = false;
     },
     onKeyUp(event) {

@@ -14,15 +14,19 @@
         </div> -->
         <v-textarea
           outlined
+          v-model="templateMsg"
           name="textMessageTemplate"
           label="Message"
-          value="Hello [customer-name]! Your bike is now available at [geo-lat] [geo-long] Your deliver number is [delivery-number] Thank You."
+           auto-grow
         ></v-textarea>
+
+
+       
       </v-col>
     </v-row>
 
-    <v-btn block depressed color="primary">
-      Update
+    <v-btn @click="save()" block depressed color="primary">
+      Update 
     </v-btn>
 
     <v-row>
@@ -55,14 +59,23 @@
         <span class="subtitle-2 primary--text font-weight-bold text-lowercase"
           >[lock-combo]</span
         >
-        <span class="subtitle-2 primary--text font-weight-bold text-lowercase"
+        <!-- <span class="subtitle-2 primary--text font-weight-bold text-lowercase"
           >[geo-lat]</span
         >
         <span class="subtitle-2 primary--text font-weight-bold text-lowercase"
           >[geo-long]</span
+        > -->
+        <span class="subtitle-2 primary--text font-weight-bold text-lowercase"
+          >[location]</span
         >
         <span class="subtitle-2 primary--text font-weight-bold text-lowercase"
           >[delivery-number]</span
+        >
+        <span class="subtitle-2 primary--text font-weight-bold text-lowercase"
+          >[color]</span
+        >
+        <span class="subtitle-2 primary--text font-weight-bold text-lowercase"
+          >[rack]</span
         >
       </v-col>
     </v-row>
@@ -86,10 +99,52 @@ export default {
       return this.$vuetify.breakpoint.width < this.breakpoint;
     },
   },
+  created() {
+    this.getMsg()
+  },
   data() {
     return {
       breakpoint: 640,
+      templateMsg: "Hello [customer-name]! Your bike is now available at [geo-lat] [geo-long] Your deliver number is [delivery-number] Thank You.",
     };
+  },
+  methods: {
+   async save() {
+      console.log('Te saved data', this.templateMsg)
+
+       try {
+        let response = await this.$axios.$post(
+          "api/user/template",{
+            template : this.templateMsg
+          }
+        
+        );
+       
+        alert('Template Updated')
+        // this.loader = false;
+        // this.showSuccess(response.message);
+        //  this.$router.go(-1);
+       
+      } catch (err) {
+        console.log('errror', err.response);
+        // this.loader = false;
+      }
+    },
+   async getMsg() {
+       try {
+        let response = await this.$axios.$get(
+          "api/user/template"
+        
+        );
+        console.log('respones', response);
+        this.templateMsg = response.body
+       
+      } catch (err) {
+        console.log('errror', err.response);
+       
+      }
+    }
+    
   },
 };
 </script>
