@@ -157,7 +157,7 @@
             :cyclePhoto="cyclePhoto"
             @set-delivery-stepper="setDelivaryStepper"
             @set-delivery-order-dialog="setDelivaryDialog"
-            @uploadFiles="uploadFiles"
+            @setUploadFiles="setUploadFiles"
           />
         </v-stepper-content>
       </v-stepper-items>
@@ -230,8 +230,8 @@ export default {
     };
   },
   components: { Page, ThirdStepper, FourthStepper },
- async created() {
-   this.getOrderDetails()
+  async created() {
+    this.getOrderDetails();
   },
   computed: {
     isMobile() {
@@ -246,105 +246,95 @@ export default {
       deliveryOrderDialog: false,
       emptyPhoto: emptyPhoto,
       cyclePhoto: cyclePhoto,
-      loader:false,
-      smsObject : {
-         to : "", 
-        message: ""
-      }
+      loader: false,
+      uploads: [],
+      smsObject: {
+        to: "",
+        message: "",
+      },
     };
   },
   methods: {
     ...mapActions("snackbar", { showSuccess: "success", showError: "error" }),
     async sendNotification() {
       this.searchHistoryDialog = false;
-      this.deliveryOrderDialog = false
+      this.deliveryOrderDialog = false;
       this.loader = true;
-      
-     
-      console.log('delivery information', this.deliveryOrderData)
-      let dataToAdd = this.deliveryOrderData;
-     
-   
-      let message = `Hello ${dataToAdd.name}! Your bike is now available at ${dataToAdd.location}. Your deliver number is ${dataToAdd.orderid}, Bike Rack : ${dataToAdd.rack}, Color : ${dataToAdd.color}, Lock-Combo : ${dataToAdd.combination}. Thank You.`
-      this.smsObject.message = message;
 
+      console.log("delivery information", this.deliveryOrderData);
+      let dataToAdd = this.deliveryOrderData;
+
+      let message = `Hello ${dataToAdd.name}! Your bike is now available at ${dataToAdd.location}. Your deliver number is ${dataToAdd.orderid}, Bike Rack : ${dataToAdd.rack}, Color : ${dataToAdd.color}, Lock-Combo : ${dataToAdd.combination}. Thank You.`;
+      this.smsObject.message = message;
 
       this.smsObject.to = dataToAdd.mobileNo;
 
-
-      console.log('Data ready====>', this.smsObject)
-        try {
+      console.log("Data ready====>", this.smsObject);
+      try {
         let response = await this.$axios.$post(
-          "api/user/sendSMS", this.smsObject
-        
+          "api/user/sendSMS",
+          this.smsObject
         );
-        console.log('respones', response.message);
+        console.log("respones", response.message);
         this.loader = false;
         this.showSuccess(response.message);
         //  this.$router.go(-1);
-       
       } catch (err) {
-        console.log('errror', err.response);
+        console.log("errror", err.response);
         this.loader = false;
       }
-      
+
+      this.uploadFiles();
     },
-   async getOrderDetails() {
+    async getOrderDetails() {
+      try {
+        let response = await this.$axios.$get("/api/user/deliveryOrder", {
+          params: {
+            search: this.$route.params.orderId,
+          },
+        });
+        console.log("respones", response);
+        this.deliveryOrderData = response[0];
 
-       try {
-        let response = await this.$axios.$get(
-          "/api/user/deliveryOrder",
-          {
-            params: {
-              search : this.$route.params.orderId
-            },
-          }
-        );
-        console.log('respones', response);
-        this.deliveryOrderData = response[0]
-      
         //  this.$router.go(-1);
-       
       } catch (err) {
-        console.log('errror', err.response);
-       
+        console.log("errror", err.response);
       }
-
     },
     setDelivaryStepper(param) {
       this.deliveryStepper = param;
     },
     async upload(upload) {
-      
+      const blob = await fetch(upload.local_blob_url).then((r) => r.blob());
+      const newfileObj = new File([blob], `${upload.originalName}.jpeg`, {
+        type: blob.type,
+      });
+
       let formData = new FormData();
-      formData.append("file", upload.file);
-      upload.cancel = this.$axios.CancelToken.source();
+      formData.append("file", newfileObj);
+
       try {
-        let result = await this.$axios.$post(this.endpoint, formData, {
-          cancelToken: upload.cancel.token,
-          
-        });
+        let result = await this.$axios.$post("/api/user/upload", formData);
+
         if (result.success) {
-          console.log('upload success!!!')
+          console.log("upload success!!!");
         } else {
-          console.log('upload failed!!!')
+          console.log("upload failed!!!");
         }
       } catch (err) {
-        console.log(err)
+        console.log(err);
       }
     },
-    async uploadFiles(uploads) {
-      
-      uploads.forEach((upload) => {
+    async uploadFiles() {
+      this.uploads.forEach((upload) => {
         this.upload(upload);
       });
     },
+    async setUploadFiles(uploads) {
+      this.uploads = uploads;
+    },
 
     setDelivaryDialog(param) {
-      //upload here
-      this.uploads.forEach((upload) => {
-        if (upload.progress == -1) this.upload(upload);
-      });
       this.deliveryOrderDialog = param;
     },
   },

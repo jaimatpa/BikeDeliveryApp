@@ -122,6 +122,8 @@ export default {
       };
     },
     doUploads() {
+      console.log('this.files');
+      
       while (this.files.length && this.uploads.length < this.maxAtOnce) {
         let splicedFile = this.files.splice(0, 1);
         let queueIndex = this.uploads.push(this.createUpload(splicedFile[0]));
@@ -130,6 +132,8 @@ export default {
     },
     // Uploads all files in "uploads" that are not already uploading
     async uploadFiles() {
+      console.log('this.uploads', this.uploads);
+      
       this.uploads.forEach((upload) => {
         if (upload.progress == -1) this.upload(upload);
       });
