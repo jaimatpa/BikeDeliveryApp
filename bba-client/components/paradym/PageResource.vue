@@ -16,15 +16,19 @@
       color="primary"
     />
 
-    <v-simple-table>
+    <v-simple-table
+      v-if="isShowWebHookMappingTable"
+      dense
+      class="web-hook-mapping-table"
+    >
       <template v-slot:default>
-        <thead class="mb-2">
+        <thead>
           <tr>
             <th class="text-left">Table KEY</th>
             <th class="text-left">JSON KEY</th>
           </tr>
         </thead>
-        <tbody class="mt-2">
+        <tbody>
           <tr>
             <td>
               <v-text-field
@@ -41,6 +45,7 @@
                 outlined
                 dense
                 v-model="jsonKey1"
+                :rules="[rules.required]"
               ></v-text-field>
             </td>
           </tr>
@@ -60,6 +65,7 @@
                 outlined
                 dense
                 v-model="jsonKey2"
+                :rules="[rules.required]"
               ></v-text-field>
             </td>
           </tr>
@@ -79,6 +85,7 @@
                 outlined
                 dense
                 v-model="jsonKey3"
+                :rules="[rules.required]"
               ></v-text-field>
             </td>
           </tr>
@@ -98,6 +105,7 @@
                 outlined
                 dense
                 v-model="jsonKey4"
+                :rules="[rules.required]"
               ></v-text-field>
             </td>
           </tr>
@@ -117,6 +125,7 @@
                 outlined
                 dense
                 v-model="jsonKey5"
+                :rules="[rules.required]"
               ></v-text-field>
             </td>
           </tr>
@@ -136,6 +145,7 @@
                 outlined
                 dense
                 v-model="jsonKey6"
+                :rules="[rules.required]"
               ></v-text-field>
             </td>
           </tr>
@@ -155,6 +165,7 @@
                 outlined
                 dense
                 v-model="jsonKey7"
+                :rules="[rules.required]"
               ></v-text-field>
             </td>
           </tr>
@@ -174,6 +185,7 @@
                 outlined
                 dense
                 v-model="jsonKey8"
+                :rules="[rules.required]"
               ></v-text-field>
             </td>
           </tr>
@@ -193,6 +205,7 @@
                 outlined
                 dense
                 v-model="jsonKey9"
+                :rules="[rules.required]"
               ></v-text-field>
             </td>
           </tr>
@@ -212,6 +225,7 @@
                 outlined
                 dense
                 v-model="jsonKey10"
+                :rules="[rules.required]"
               ></v-text-field>
             </td>
           </tr>
@@ -219,7 +233,15 @@
       </template>
     </v-simple-table>
 
-    <v-btn block color="primary" @click="sendWebHookMapData()"> Update </v-btn>
+    <v-btn
+      block
+      color="primary"
+      @click="sendWebHookMapData()"
+      v-if="isShowWebHookMappingTable"
+      class="mt-4"
+    >
+      Update
+    </v-btn>
 
     <Dialog v-model="dialog" :title="addText" max-width="800" hideButtons>
       <FormGenerator
@@ -251,6 +273,7 @@ export default {
     title: String,
     name: String,
     endpoint: String,
+    isShowWebHookMappingTable: Boolean,
     fields: [Object, Array],
   },
   data() {
@@ -277,8 +300,14 @@ export default {
       mobileNo: "mobileNo",
       jsonKey9: "",
       barcode: "barcode",
-      jsonKey10: ""
+      jsonKey10: "",
+      rules: {
+        required: (value) => !!value || "Required.",
+      },
     };
+  },
+  created() {
+    this.getWebHookMapDataFromApi();
   },
   computed: {
     addText() {
@@ -291,52 +320,77 @@ export default {
   },
   methods: {
     ...mapActions("snackbar", { showSuccess: "success", showError: "error" }),
+    async getWebHookMapDataFromApi() {
+      const webHookMapData = await this.$axios.$get("/api/user/webhookmap");
+
+      this.jsonKey1 = webHookMapData.length ? webHookMapData[0].json_key : "";
+      this.jsonKey2 = webHookMapData.length ? webHookMapData[1].json_key : "";
+      this.jsonKey3 = webHookMapData.length ? webHookMapData[2].json_key : "";
+      this.jsonKey4 = webHookMapData.length ? webHookMapData[3].json_key : "";
+      this.jsonKey5 = webHookMapData.length ? webHookMapData[4].json_key : "";
+      this.jsonKey6 = webHookMapData.length ? webHookMapData[5].json_key : "";
+      this.jsonKey7 = webHookMapData.length ? webHookMapData[6].json_key : "";
+      this.jsonKey8 = webHookMapData.length ? webHookMapData[7].json_key : "";
+      this.jsonKey9 = webHookMapData.length ? webHookMapData[8].json_key : "";
+      this.jsonKey10 = webHookMapData.length ? webHookMapData[9].json_key : "";
+    },
     async sendWebHookMapData() {
       const webHookMapDataTable = [
         {
           table_key: this.date,
-          json_key: this.jsonKey1,
+          json_key: this.jsonKey1.replace(/\s/g, ""),
         },
         {
           table_key: this.tableKeyName,
-          json_key: this.jsonKey2,
+          json_key: this.jsonKey2.replace(/\s/g, ""),
         },
         {
           table_key: this.location,
-          json_key: this.jsonKey3,
+          json_key: this.jsonKey3.replace(/\s/g, ""),
         },
         {
           table_key: this.orderid,
-          json_key: this.jsonKey4,
+          json_key: this.jsonKey4.replace(/\s/g, ""),
         },
         {
           table_key: this.rack,
-          json_key: this.jsonKey5,
+          json_key: this.jsonKey5.replace(/\s/g, ""),
         },
         {
           table_key: this.color,
-          json_key: this.jsonKey6,
+          json_key: this.jsonKey6.replace(/\s/g, ""),
         },
         {
           table_key: this.combination,
-          json_key: this.jsonKey7,
+          json_key: this.jsonKey7.replace(/\s/g, ""),
         },
         {
           table_key: this.lock,
-          json_key: this.jsonKey8,
+          json_key: this.jsonKey8.replace(/\s/g, ""),
         },
         {
           table_key: this.mobileNo,
-          json_key: this.jsonKey9,
+          json_key: this.jsonKey9.replace(/\s/g, ""),
         },
         {
           table_key: this.barcode,
-          json_key: this.jsonKey10,
+          json_key: this.jsonKey10.replace(/\s/g, ""),
         },
-      ]
-      console.log('this.webHookMapDataTable', webHookMapDataTable)
+      ];
+      console.log("this.webHookMapDataTable", webHookMapDataTable);
 
-       await this.$axios.$post("/api/user/webhookmap", webHookMapDataTable);
+      try {
+        const response = await this.$axios.$post(
+          "/api/user/webhookmap",
+          webHookMapDataTable
+        );
+
+        if (response) {
+          this.showSuccess(`Updated Successfully Done!!!`);
+        }
+      } catch (error) {
+        console.log("error", error);
+      }
     },
     editItem(item) {
       this.itemToEdit = JSON.parse(JSON.stringify(item));
@@ -390,3 +444,16 @@ export default {
   },
 };
 </script>
+
+
+<style lang="scss" scoped>
+.web-hook-mapping-table {
+  tbody {
+    tr td {
+      .v-input {
+        height: 50% !important;
+      }
+    }
+  }
+}
+</style>
