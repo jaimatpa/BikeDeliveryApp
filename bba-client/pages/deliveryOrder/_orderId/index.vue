@@ -157,6 +157,7 @@
             :cyclePhoto="cyclePhoto"
             @set-delivery-stepper="setDelivaryStepper"
             @set-delivery-order-dialog="setDelivaryDialog"
+            @uploadFiles="uploadFiles"
           />
         </v-stepper-content>
       </v-stepper-items>
@@ -313,7 +314,37 @@ export default {
     setDelivaryStepper(param) {
       this.deliveryStepper = param;
     },
+    async upload(upload) {
+      
+      let formData = new FormData();
+      formData.append("file", upload.file);
+      upload.cancel = this.$axios.CancelToken.source();
+      try {
+        let result = await this.$axios.$post(this.endpoint, formData, {
+          cancelToken: upload.cancel.token,
+          
+        });
+        if (result.success) {
+          console.log('upload success!!!')
+        } else {
+          console.log('upload failed!!!')
+        }
+      } catch (err) {
+        console.log(err)
+      }
+    },
+    async uploadFiles(uploads) {
+      
+      uploads.forEach((upload) => {
+        this.upload(upload);
+      });
+    },
+
     setDelivaryDialog(param) {
+      //upload here
+      this.uploads.forEach((upload) => {
+        if (upload.progress == -1) this.upload(upload);
+      });
       this.deliveryOrderDialog = param;
     },
   },

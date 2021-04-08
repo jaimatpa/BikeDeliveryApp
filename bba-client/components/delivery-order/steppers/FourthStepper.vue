@@ -189,10 +189,12 @@ export default {
       handler: function(newVal, oldVal) {
         if (newVal !== undefined && newVal.length > 0) {
           this.clickedImage = { ...newVal[0], array_index: 0 };
-        } else {
+          this.$emit('uploadFiles', this.clickedImage)
+
+          } else {
           this.clickedImage = {};
         }
-        console.log("hereeeeeeeeeeeeeee ........ ", newVal);
+        // console.log("hereeeeeeeeeeeeeee ........ ", newVal);
       },
     },
   },
