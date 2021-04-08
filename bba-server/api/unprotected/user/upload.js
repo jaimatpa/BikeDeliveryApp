@@ -4,6 +4,7 @@ const { Op } = require("sequelize");
 const models = require("../../../models");
 const multer = require('multer');
 const path = require('path');
+const { async } = require("crypto-random-string");
 const imageFilter = function(req, file, cb) {
     // Accept images only
     if (!file.originalname.match(/\.(jpg|JPG|jpeg|JPEG|png|PNG|gif|GIF)$/)) {
@@ -25,9 +26,15 @@ const storage = multer.diskStorage({
 router.post("/", async (req, res) => {
     let upload = multer({ storage: storage, fileFilter: imageFilter }).single('file');
 
-    upload(req, res, function(err) {
+     upload(req, res, async function(err) {
         // req.file contains information of uploaded file
         // req.body contains information of text fields, if there were any
+        const orderid = req.query.orderid;
+        try{
+            if(orderid){
+                await models.Files.build({orderid:orderid,filepath:req.file.path}).save();
+            }
+        }catch(error){}
 
         if (req.fileValidationError) {
             return res.send(req.fileValidationError);

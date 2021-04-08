@@ -314,7 +314,10 @@ export default {
       formData.append("file", newfileObj);
 
       try {
-        let result = await this.$axios.$post("/api/user/upload", formData);
+        let result = await this.$axios.$post(
+          "/api/user/upload?orderid=" + this.deliveryOrderData.orderid,
+          formData
+        );
 
         if (result.success) {
           console.log("upload success!!!");
