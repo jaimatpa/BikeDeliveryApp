@@ -21,7 +21,7 @@
     </div>
 
     <!-- Lock Select Box -->
-    <v-select v-model="selectColor" :items="colors" label="Color" dense outlined>
+    <v-select v-model="selectColor" :items="colors" label="Color" dense outlined clearable>
       <template v-slot:selection="{ item, index }">
         <div class="d-flex align-center">
           <div :style="delivarieselectValueColor(item)"></div>
