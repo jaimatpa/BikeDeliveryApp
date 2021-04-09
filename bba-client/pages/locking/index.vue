@@ -118,9 +118,6 @@ export default {
       deep: true,
     },
   },
-  mounted() {
-    this.getDataFromApi();
-  },
   methods: {
     delivarieselectValueColor(color) {
       return {
