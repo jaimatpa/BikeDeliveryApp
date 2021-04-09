@@ -88,7 +88,7 @@ export default {
       initialRender: true,
       options: {},
       selectColor: "",
-      colors: undefined,
+      colors: [],
       headers: [
         {
           text: "Lock",
@@ -105,6 +105,7 @@ export default {
   created() {
     this.getDataFromApi();
     this.initialRender = false;
+    this.getColors();
   },
   watch: {
     selectColor: function (newValue) {
@@ -117,7 +118,9 @@ export default {
       deep: true,
     },
   },
-
+  mounted() {
+    this.getDataFromApi();
+  },
   methods: {
     delivarieselectValueColor(color) {
       return {
@@ -133,6 +136,10 @@ export default {
         this.search = decodedString;
         this.showQrScanner = false;
       }
+    },
+    async getColors() {
+      const orderData = await this.$axios.$get("/api/user/deliveryOrder");
+      this.colors = orderData.length ? _.map(orderData, "color") : [];
     },
     async getDataFromApi() {
       this.loading = true;
@@ -154,8 +161,6 @@ export default {
             },
           }
         );
-
-        this.colors = _.map(orderDeliveryMockData, "color");
 
         let items = orderDeliveryMockData;
         let total = orderDeliveryMockData?.length;
