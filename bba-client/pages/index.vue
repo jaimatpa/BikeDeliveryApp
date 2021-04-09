@@ -96,7 +96,7 @@ export default {
           text: "Order#",
           align: "start",
           sortable: false,
-          value: "order",
+          value: "orderid",
         },
         { text: "Name", value: "name" },
         { text: "Location", value: "location" },
@@ -133,7 +133,7 @@ export default {
       deep: true,
     },
   },
-  mounted() {
+  created() {
     this.getDataFromApi();
   },
   methods: {
@@ -149,10 +149,12 @@ export default {
       return new Promise(async (resolve, reject) => {
         const { sortBy, sortDesc, page, itemsPerPage } = this.options;
 
-        let items = orderMockData;
-        const total = orderMockData.length;
+        const orderMockData = await this.$axios.$get("/api/user/deliveryOrder");
 
-        if (sortBy.length === 1 && sortDesc.length === 1) {
+        let items = orderMockData;
+        const total = orderMockData?.length;
+
+        if (sortBy?.length === 1 && sortDesc?.length === 1) {
           items = items.sort((a, b) => {
             const sortA = a[sortBy[0]];
             const sortB = b[sortBy[0]];
