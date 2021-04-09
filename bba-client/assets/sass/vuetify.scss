@@ -42,9 +42,20 @@
     }
 
     .v-data-footer {
+      justify-content: space-between !important;
+
+      .v-data-footer__pagination {
+        margin: 0 6px 0 0 !important;
+      }
+
       .v-data-footer__icons-before,
       .v-data-footer__icons-after {
         margin-bottom: 5px;
+
+        .v-btn--icon.v-size--default {
+          height: 30px !important;
+          width: 30px !important;
+        }
 
         .v-btn--round {
           background-color: #4c9a2a !important;
