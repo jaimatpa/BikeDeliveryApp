@@ -19,7 +19,7 @@ router.post("/", async (req, res) => {
         for(let k=0;k<keys.length;k++){
             const json_key = keys[k].json_key;
             const table_key = keys[k].table_key;
-            if(d[json_key]){
+            if(json_key !== table_key && d[json_key]){
                 d[table_key] = d[json_key]
                 delete d[json_key]
             }
