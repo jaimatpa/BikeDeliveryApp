@@ -33,6 +33,12 @@
           background-color: #f2f2f2 !important;
         }
       }
+
+      .v-data-table__progress {
+        .column {
+          height: 0 !important;
+        }
+      }
     }
 
     .v-data-footer {
