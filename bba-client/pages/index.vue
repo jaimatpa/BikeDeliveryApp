@@ -12,7 +12,7 @@
         :class="isMobile ? 'custom-media-sm' : ''"
       >
         <v-card
-          height="120"
+          height="180"
           class="d-flex flex-column align-center justify-center cursor-pointer dashboard-card"
           elevation="2"
           :to="item.to"
@@ -61,6 +61,10 @@
           class="elevation-1"
           :mobile-breakpoint="0"
         >
+            <!-- Date -->
+          <template v-slot:item.date="{ item }">
+            {{getDateFormat(item.date)}}
+          </template>
         </v-data-table>
       </v-col>
     </v-row>
@@ -68,6 +72,7 @@
 </template>
 
 <script>
+import moment from 'moment';
 import Page from "@/components/paradym/Page";
 import PageSection from "@/components/paradym/PageSection";
 import orderMockData from "@/webHooks/ORDER_MOCK_DATA.json";
@@ -93,13 +98,18 @@ export default {
       options: {},
       headers: [
         {
+          text: "DATE",
+          align: "start",
+          value: "date",
+        },
+        {
           text: "ORDER#",
           align: "start",
           sortable: false,
           value: "orderid",
         },
-        { text: "NAME", value: "name" },
-        { text: "LOCATION", value: "location" },
+        { text: "NAME", value: "name", sortable: false, },
+        { text: "LOCATION", value: "location", sortable: false, },
       ],
       dashboardItems: [
         {
@@ -137,6 +147,9 @@ export default {
     this.getDataFromApi();
   },
   methods: {
+    getDateFormat(date){      
+      return moment(date).format('MM/DD/YYYY hh:mm A');
+    },
     async getDataFromApi() {
       this.loading = true;
       this.apiCall().then((data) => {
