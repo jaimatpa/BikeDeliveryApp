@@ -66,7 +66,7 @@
         </v-card-title>
         
         <v-card-text>
-           <v-btn  :block="isMobile" depressed color="primary" class="mb-5" @click.stop="dialog = false">
+           <v-btn  :block="isMobile" depressed color="primary" class="mb-5" @click.stop="closeScanner">
      
           Close
          </v-btn>
@@ -244,6 +244,26 @@ export default {
         }, 1000);
       });
     },
+    closeScanner() {
+      this.dialog = false
+      const video = document.querySelector('video');
+ 
+    // A video's MediaStream object is available through its srcObject attribute
+      const mediaStream = video.srcObject;
+
+      // Through the MediaStream, you can get the MediaStreamTracks with getTracks():
+      const tracks = mediaStream.getTracks();
+
+     
+
+      // Tracks are returned as an array, so if you know you only have one, you can stop it with: 
+      // tracks[0].stop();
+
+      // Or stop all like so:
+      tracks.forEach(track => track.stop())
+
+
+    }
   },
 };
 </script>
