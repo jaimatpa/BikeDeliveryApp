@@ -29,7 +29,7 @@ script<template lang="html">
     <p class="title text-center secondary--text font-weight-bold mt-5 mb-0">
       Your Lock Combination
     </p>
-    <p class="title text-center primary--text">{{deliveryOrderData.lock}}</p>
+    <p class="title text-center primary--text">{{deliveryOrderData.combination}}</p>
     <p class="title text-center secondary--text font-weight-bold mt-5 mb-0">
       Pick-up Location
     </p>

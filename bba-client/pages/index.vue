@@ -139,10 +139,10 @@ export default {
     options: {
       handler() {
         this.getDataFromApi();
-      },
+      },                                                                                                
       deep: true,
     },
-  },
+  },                                                                                  
   created() {
     this.getDataFromApi();
   },

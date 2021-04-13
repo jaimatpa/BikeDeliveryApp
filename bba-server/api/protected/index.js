@@ -105,7 +105,7 @@ module.exports = {
     // Web Hooks
     const webHookresource = finale.resource({
       model: models.WebHook,
-      excludeAttributes: ["id", "userId", "updatedAt"],
+      excludeAttributes: ["userId", "updatedAt"],
       endpoints: ["/api/webHooks", "/api/webHooks/:id"],
       sort: {
         default: "-createdAt",
