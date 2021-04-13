@@ -64,11 +64,12 @@
         <v-card-title class="title primary--text">
           Enter Barcode
         </v-card-title>
-         <v-btn v-if="isMobile" block depressed color="primary" class="mb-5" @click.stop="dialog = false">
+        
+        <v-card-text>
+           <v-btn  :block="isMobile" depressed color="primary" class="mb-5" @click.stop="dialog = false">
      
           Close
-    </v-btn>
-        <v-card-text>
+         </v-btn>
           <v-text-field
             v-model="searchByBarcode"
             append-icon="mdi-magnify"
