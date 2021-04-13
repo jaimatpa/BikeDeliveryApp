@@ -82,15 +82,15 @@ export default {
       options: {},
       headers: [
         {
-          text: "Date",
+          text: "DATE",
           align: "start",
           value: "date",
         },
-        { text: "Name", value: "name", sortable: false },
-        { text: "Location", value: "location", sortable: false },
-        { text: "Bike Rack", value: "rack", sortable: false },
-        { text: "Order", value: "orderid" },
-        { text: "Actions", value: "actions", sortable: false, align: "center" },
+        { text: "NAME", value: "name", sortable: false },
+        { text: "LOCATION", value: "location", sortable: false },
+        { text: "BIKE RACK", value: "rack", sortable: false },
+        { text: "ORDER", value: "orderid" },
+        { text: "ACTION", value: "actions", sortable: false, align: "center" },
       ],
     };
   },
