@@ -123,6 +123,7 @@
 
 <script>
 import _ from "lodash";
+import moment from "moment";
 import { mapActions } from "vuex";
 
 import Page from "@/components/paradym/Page";
@@ -171,7 +172,9 @@ export default {
           }
         );
         console.log('respones', response);
-        this.orderData = response[0]
+        const responseData = _.omit(response[0], "date");
+        this.orderData = responseData;
+        this.orderData.date = moment(response[0].date).format("MM/DD/YYYY");
       
         //  this.$router.go(-1);
        

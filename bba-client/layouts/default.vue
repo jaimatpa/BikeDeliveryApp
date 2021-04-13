@@ -142,13 +142,7 @@ export default {
           icon: "mdi-share-outline",
           iconSelected: "mdi-share",
           to: "/resend",
-        },
-        {
-          title: "Call For Help",
-          icon: "mdi-help-circle-outline",
-          iconSelected: "mdi-help-circle",
-          to: "/callForHelp",
-        },
+        }
       ],
       userItems: [
         {

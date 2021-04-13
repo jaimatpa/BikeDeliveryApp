@@ -26,6 +26,11 @@
       :mobile-breakpoint='0'
       :class="{mobile: isMobile}"
     >
+    <!-- Date -->
+      <template v-slot:item.date="{ item }">
+        {{getDateFormat(item.date)}}
+      </template>
+      
       <!-- Actions -->
       <template v-slot:item.actions="{ item }">
         <v-icon
@@ -53,6 +58,7 @@
 </template>
 
 <script>
+import moment from "moment";
 import Page from "@/components/paradym/Page";
 import searchMockData from "@/webHooks/SEARCH_MOCK_DATA.json";
 import moment from 'moment'
@@ -114,6 +120,9 @@ export default {
     this.initialRender = false;
   },
   methods: {
+    getDateFormat(date){      
+      return moment(date).format('MM/DD/YYYY');
+    },
     onClearClicked() {
       if (this.search !== "") {
         this.search = "";

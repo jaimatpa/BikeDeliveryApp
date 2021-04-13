@@ -93,13 +93,7 @@ export default {
           title: "RESEND",
           iconImage: require('./../../assets/images/resend.svg'),
           to: "/resend",
-        },
-        {
-          title: "Call For Help",
-          icon: "mdi-help-circle-outline",
-          iconSelected: "mdi-help-circle",
-          to: "/callForHelp",
-        },
+        }
       ],
     };
   },

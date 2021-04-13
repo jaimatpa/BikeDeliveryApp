@@ -25,6 +25,11 @@
       class="elevation-1"
       :mobile-breakpoint="0"
     >
+      <!-- Date -->
+      <template v-slot:item.date="{ item }">
+        {{getDateFormat(item.date)}}
+      </template>
+
       <!-- Actions -->
       <template v-slot:item.actions="{ item }">
         <v-icon
@@ -85,6 +90,7 @@
 </template>
 
 <script>
+import moment from 'moment';
 import { mapActions } from "vuex";
 import Page from "@/components/paradym/Page";
 import resendMockData from "@/webHooks/RESEND_MOCK_DATA.json";
@@ -152,6 +158,9 @@ export default {
   },
   methods: {
     ...mapActions("snackbar", { showSuccess: "success", showError: "error" }),
+    getDateFormat(date){      
+      return moment(date).format('MM/DD/YYYY');
+    },
     onClearClicked() {
       if (this.search !== "") {
         this.search = "";
