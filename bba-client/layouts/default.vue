@@ -8,6 +8,7 @@
       :color="$vuetify.theme.dark ? '' : '#444444'"
       :dark="true"
       :isMobileBreakPoint="isMobile"
+      class="appBar-title"
     >
       <!-- <IconButton
         @click="settings = true"
