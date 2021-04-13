@@ -321,7 +321,7 @@ export default {
 
         const responseData = _.omit(response[0], "date");
         this.deliveryOrderData = responseData;
-        this.deliveryOrderData.date = moment(response[0].date).format("MM/DD/YYYY");
+        this.deliveryOrderData.date = moment(response[0].date).format('MM/DD/YYYY hh:mm A');
 
         //  this.$router.go(-1);
       } catch (err) {
