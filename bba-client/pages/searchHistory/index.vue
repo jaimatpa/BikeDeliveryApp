@@ -40,6 +40,14 @@
           mdi-page-next
         </v-icon>
       </template>
+      <template v-slot:item.date="{ item }">
+     
+     <span >
+       {{ formatDate(item.date) }}
+       
+       </span>  
+     
+    </template>
     </v-data-table>
   </Page>
 </template>
@@ -47,6 +55,7 @@
 <script>
 import Page from "@/components/paradym/Page";
 import searchMockData from "@/webHooks/SEARCH_MOCK_DATA.json";
+import moment from 'moment'
 
 export default {
   name: "searchHistory",
@@ -173,6 +182,9 @@ export default {
         }, 1000);
       });
     },
+     formatDate  (date) {
+        return moment(date).format('MM/DD/YYYY hh:mm A');
+      }
   },
 };
 </script>
