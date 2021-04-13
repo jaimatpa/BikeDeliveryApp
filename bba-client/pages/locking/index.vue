@@ -91,14 +91,15 @@ export default {
       colors: [],
       headers: [
         {
-          text: "Lock",
+          text: "LOCK",
           align: "start",
           value: "lock",
+          sortable: false
         },
-        { text: "Color", value: "color", sortable: false },
-        { text: "Combination", value: "combination", sortable: false },
-        { text: "Delivery", value: "orderid", sortable: false },
-        { text: "Actions", value: "actions", sortable: false, align: "center" },
+        { text: "COLOR", value: "color", sortable: false },
+        { text: "COMBINATION", value: "combination", sortable: false },
+        { text: "DELIVERY", value: "orderid", sortable: false },
+        { text: "ACTION", value: "actions", sortable: false, align: "center" },
       ],
     };
   },

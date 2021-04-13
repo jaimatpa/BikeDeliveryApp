@@ -12,17 +12,17 @@
         :class="isMobile ? 'custom-media-sm' : ''"
       >
         <v-card
-          height="180"
+          height="120"
           class="d-flex flex-column align-center justify-center cursor-pointer dashboard-card"
           elevation="2"
           :to="item.to"
           outlined
         >
           <v-img
-            max-height="70"
-            max-width="170"
+            max-height="100"
+            max-width="100"
             :src="item.icon"
-            aspect-ratio="1.7"
+            aspect-ratio="1"
             contain
           ></v-img>
           <p class="title text--secondary mt-3">{{ item.title }}</p>
@@ -93,13 +93,13 @@ export default {
       options: {},
       headers: [
         {
-          text: "Order#",
+          text: "ORDER#",
           align: "start",
           sortable: false,
           value: "orderid",
         },
-        { text: "Name", value: "name" },
-        { text: "Location", value: "location" },
+        { text: "NAME", value: "name" },
+        { text: "LOCATION", value: "location" },
       ],
       dashboardItems: [
         {
@@ -190,6 +190,8 @@ export default {
 <style lang="scss">
 .custom-media-sm {
   flex-basis: 50% !important;
+  align-items: center !important;
+  justify-content: center  !important;
 
   .dashboard-card {
     height: 120px !important;

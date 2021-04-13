@@ -2,7 +2,7 @@
   <PageForm>
     <!-- Login Form -->
     <FormLogin
-      title="bike delivery app"
+      title="Bike Delivery App"
       :logo="bikeLogo"
       logoWidth="155"
       logoHeight="98"

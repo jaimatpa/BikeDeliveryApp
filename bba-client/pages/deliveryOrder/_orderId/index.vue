@@ -172,7 +172,7 @@
     >
       <v-card>
         <v-toolbar dense color="primary" dark elevation="0">
-          <v-toolbar-title>Resend</v-toolbar-title>
+          <v-toolbar-title>Send</v-toolbar-title>
           <v-spacer />
           <v-btn icon dark @click.stop="deliveryOrderDialog = false">
             <v-icon>mdi-close</v-icon>
@@ -181,7 +181,7 @@
 
         <v-card-text class="my-5 text-center">
           <p class="title mb-3 secondary--text sure-title">
-            Are you sure you want to resend this information?
+            Are you sure you want to send this information?
           </p>
 
           <div class="d-flex flex-column">

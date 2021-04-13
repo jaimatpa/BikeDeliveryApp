@@ -3,7 +3,7 @@
 
     <!-- <h1>vue-barcode-reader demo</h1> -->
     <!-- Delivery Order Scan Button  -->
-    <v-btn v-if="isMobile" block depressed color="primary" class="mb-5" @click.stop="dialog = true">
+    <v-btn block depressed color="primary" class="mb-5" @click.stop="dialog = true">
       <v-icon left medium color="white" class="mr-2">
         mdi-barcode-scan
       </v-icon>
@@ -123,18 +123,18 @@ export default {
       options: {},
       headers: [
         {
-          text: "Date",
+          text: "DATE",
           align: "start",
           value: "date",
         },
-        { text: "Name", value: "name", sortable: false },
-        { text: "Location", value: "location", sortable: false },
-        { text: "Bike Rack", value: "rack", sortable: false },
-        { text: "Color", value: "color", sortable: false },
-        { text: "Combination", value: "combination", sortable: false },
-        { text: "Barcode", value: "barcode", sortable: false },
-        { text: "Order", value: "orderid" },
-        { text: "Actions", value: "actions", sortable: false, align: "center" },
+        { text: "NAME", value: "name", sortable: false },
+        { text: "LOCATION", value: "location", sortable: false },
+        { text: "BIKE RACK", value: "rack", sortable: false },
+        { text: "COLOR", value: "color", sortable: false },
+        { text: "COMBINATION", value: "combination", sortable: false },
+        { text: "BARCODE", value: "barcode", sortable: false },
+        { text: "ORDER", value: "orderid" },
+        { text: "ACTION", value: "actions", sortable: false, align: "center" },
       ],
      
     };
