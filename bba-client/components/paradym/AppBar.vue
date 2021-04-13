@@ -18,9 +18,9 @@
       @click.stop="$emit('menuClick')"
     />
 
-    <v-toolbar-title v-if="title || logo" class="mx-1 pl-0">
+    <v-toolbar-title v-if="title || logo" class="mx-1 pl-0" :class="[isMobileBreakPoint ? 'full-width' : '']">
       <n-link to="/">
-        <div class="d-flex align-center">
+        <div class="d-flex align-center justify-center">
           <img
             v-if="logo"
             :src="logo"
@@ -104,5 +104,9 @@ export default {
 .v-toolbar__title a {
   text-decoration: none;
   color: unset !important;
+}
+
+.full-width {
+  width: 100% !important;
 }
 </style>
