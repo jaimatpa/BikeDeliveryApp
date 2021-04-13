@@ -29,6 +29,7 @@
     <!-- Date -->
       <template v-slot:item.date="{ item }">
         {{getDateFormat(item.date)}}
+       
       </template>
       
       <!-- Actions -->
@@ -45,6 +46,7 @@
           mdi-page-next
         </v-icon>
       </template>
+ 
     </v-data-table>
   </Page>
 </template>
@@ -112,7 +114,7 @@ export default {
   },
   methods: {
     getDateFormat(date){      
-      return moment(date).format('MM/DD/YYYY');
+       return moment(date).format('MM/DD/YYYY hh:mm A');
     },
     onClearClicked() {
       if (this.search !== "") {
@@ -182,6 +184,7 @@ export default {
         }, 1000);
       });
     },
+   
   },
 };
 </script>

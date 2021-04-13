@@ -159,7 +159,7 @@ export default {
   methods: {
     ...mapActions("snackbar", { showSuccess: "success", showError: "error" }),
     getDateFormat(date){      
-      return moment(date).format('MM/DD/YYYY');
+      return moment(date).format('MM/DD/YYYY hh:mm A');
     },
     onClearClicked() {
       if (this.search !== "") {
