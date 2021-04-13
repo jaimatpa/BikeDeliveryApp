@@ -1,10 +1,7 @@
 <template lang="html">
   <Page>
 
-     <!-- <h1>vue-barcode-reader demo</h1> -->
-  
-
-
+    <!-- <h1>vue-barcode-reader demo</h1> -->
     <!-- Delivery Order Scan Button  -->
     <v-btn v-if="isMobile" block depressed color="primary" class="mb-5" @click.stop="dialog = true">
       <v-icon left medium color="white" class="mr-2">
@@ -38,6 +35,11 @@
       class="elevation-1"
       :mobile-breakpoint='0'
     >
+      <!-- Date -->
+      <template v-slot:item.date="{ item }">
+        {{getDateFormat(item.date)}}
+      </template>
+
       <!-- Actions -->
       <template v-slot:item.actions="{ item }">
         <v-icon
@@ -89,6 +91,7 @@
 
 <script>
 import _ from "lodash";
+import moment from 'moment';
 import Page from "@/components/paradym/Page";
 import BarScanner from "@/components/BarScanner";
 
@@ -158,7 +161,9 @@ export default {
     },
   },
   methods: {
- 
+    getDateFormat(date){      
+      return moment(date).format('MM/DD/YYYY');
+    },
     onClearClicked() {
       if (this.search !== "" || this.searchByBarcode !== "") {
         this.search = "";
