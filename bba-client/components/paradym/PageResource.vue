@@ -258,6 +258,7 @@
 <script>
 import _ from "lodash";
 import { mapActions } from "vuex";
+import moment from "moment";
 
 import Page from "./Page";
 import ServerDataTable from "./ServerDataTable";
@@ -265,6 +266,7 @@ import FloatingButton from "./FloatingButton";
 import Dialog from "./Dialog";
 import FormGenerator from "./FormGenerator";
 import { NUMBER_0 } from "@/constants";
+import mapData from '../../data.json';
 
 export default {
   name: "pageResource",
@@ -307,7 +309,8 @@ export default {
     };
   },
   created() {
-    this.getWebHookMapDataFromApi();
+    // this.getWebHookMapDataFromApi();
+    this.getWebHookMapDataFromFile();
   },
   computed: {
     addText() {
@@ -322,7 +325,6 @@ export default {
     ...mapActions("snackbar", { showSuccess: "success", showError: "error" }),
     async getWebHookMapDataFromApi() {
       const webHookMapData = await this.$axios.$get("/api/user/webhookmap");
-
       this.jsonKey1 = webHookMapData.length ? webHookMapData[0].json_key : "";
       this.jsonKey2 = webHookMapData.length ? webHookMapData[1].json_key : "";
       this.jsonKey3 = webHookMapData.length ? webHookMapData[2].json_key : "";
@@ -333,6 +335,24 @@ export default {
       this.jsonKey8 = webHookMapData.length ? webHookMapData[7].json_key : "";
       this.jsonKey9 = webHookMapData.length ? webHookMapData[8].json_key : "";
       this.jsonKey10 = webHookMapData.length ? webHookMapData[9].json_key : "";
+    },
+    getWebHookMapDataFromFile() {
+      const webHookMapData = mapData.data;
+      this.jsonKey1 = webHookMapData.hasOwnProperty("created_ts") ? moment(webHookMapData.created_ts).format(
+          "MM/DD/YYYY"
+        ) : "";
+      this.jsonKey2 = webHookMapData.hasOwnProperty("customer_first_name") && 
+        webHookMapData.hasOwnProperty("customer_last_name")
+        ? webHookMapData.customer_first_name + webHookMapData.customer_last_name
+        : "";
+      this.jsonKey3 = webHookMapData.hasOwnProperty("start_location") ? webHookMapData.start_location : "";
+      this.jsonKey4 = webHookMapData.hasOwnProperty("orderid") ? webHookMapData.orderid : ""
+      this.jsonKey5 = webHookMapData.hasOwnProperty("rack") ? webHookMapData.rack : "";
+      this.jsonKey6 = webHookMapData.hasOwnProperty("color") ? webHookMapData.color : "";
+      this.jsonKey7 = webHookMapData.hasOwnProperty("combination") ? webHookMapData.combination : ""
+      this.jsonKey8 = webHookMapData.hasOwnProperty("lock") ? webHookMapData.lock : ""
+      this.jsonKey9 = webHookMapData.hasOwnProperty("customer_phone_number") ? webHookMapData.customer_phone_number : "";
+      this.jsonKey10 = webHookMapData.hasOwnProperty("barcode") ? webHookMapData.barcode : ""
     },
     async sendWebHookMapData() {
       const webHookMapDataTable = [
