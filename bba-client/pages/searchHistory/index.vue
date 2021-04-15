@@ -87,8 +87,8 @@ export default {
         },
         { text: "NAME", value: "name", sortable: false },
         { text: "LOCATION", value: "location", sortable: false },
-        { text: "BIKE RACK", value: "rack", sortable: false },
-        { text: "ORDER", value: "orderid" },
+        { text: "RACK", value: "rack", sortable: false },
+        { text: "ORDER#", value: "orderid" },
         { text: "ACTION", value: "actions", sortable: false, align: "center" },
       ],
     };

@@ -130,11 +130,11 @@ export default {
         },
         { text: "NAME", value: "name", sortable: false },
         { text: "LOCATION", value: "location", sortable: false },
-        { text: "BIKE RACK", value: "rack", sortable: false },
+        { text: "RACK", value: "rack", sortable: false },
         { text: "COLOR", value: "color", sortable: false },
         { text: "COMBINATION", value: "combination", sortable: false },
         { text: "BARCODE", value: "barcode", sortable: false },
-        { text: "ORDER", value: "orderid" },
+        { text: "ORDER#", value: "orderid" },
         { text: "ACTION", value: "actions", sortable: false, align: "center" },
       ],
      
