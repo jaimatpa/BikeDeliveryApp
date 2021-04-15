@@ -290,19 +290,19 @@ export default {
       // this.smsObject.to ="+8801745476473";
 
       console.log("Data ready====>", this.smsObject);
-      try {
-        let response = await this.$axios.$post(
-          "api/user/sendSMS",
-          this.smsObject
-        );
-        console.log("respones", response.message);
-        this.loader = false;
-        this.showSuccess(response.message);
-        //  this.$router.go(-1);
-      } catch (err) {
-        console.log("errror", err.response);
-        this.loader = false;
-      }
+      // try {
+      //   let response = await this.$axios.$post(
+      //     "api/user/sendSMS",
+      //     this.smsObject
+      //   );
+      //   console.log("respones", response.message);
+      //   this.loader = false;
+      //   this.showSuccess(response.message);
+      //   //  this.$router.go(-1);
+      // } catch (err) {
+      //   console.log("errror", err.response);
+      //   this.loader = false;
+      // }
 
       try {
         this.uploadFiles();
