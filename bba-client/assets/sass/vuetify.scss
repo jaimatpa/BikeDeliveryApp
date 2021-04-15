@@ -88,4 +88,20 @@
   .v-chip.v-size--default {
     height: 25px !important;
   }
+
+
+  .v-list-item__action {
+    .v-image {
+      max-width: 30px !important;
+      max-height: 30px !important;
+    }
+  }
+
+
+  .v-text-field__slot {
+    .v-label {
+      color: #4c9a2a !important;
+      font-weight: bold !important;
+    }
+  }
 }

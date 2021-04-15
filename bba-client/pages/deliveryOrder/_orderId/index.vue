@@ -147,7 +147,7 @@
 
         <!-- Third Stepper -->
         <v-stepper-content step="3">
-          <ThirdStepper @set-delivery-stepper="setDelivaryStepper" />
+          <ThirdStepper @set-delivery-stepper="setDelivaryStepper"  :deliveryOrderData="deliveryOrderData" />
         </v-stepper-content>
 
         <!-- Fourth Stepper -->
@@ -215,7 +215,6 @@ import moment from "moment";
 import { mapActions } from "vuex";
 
 import Page from "@/components/paradym/Page";
-import deliveryOrderMockData from "@/webHooks/ORDER_DELIVERY_MOCK_DATA.json";
 import emptyPhoto from "@/assets/images/empty.jpg";
 import cyclePhoto from "@/assets/images/cycle@2x.png";
 
@@ -291,19 +290,19 @@ export default {
       // this.smsObject.to ="+8801745476473";
 
       console.log("Data ready====>", this.smsObject);
-      try {
-        let response = await this.$axios.$post(
-          "api/user/sendSMS",
-          this.smsObject
-        );
-        console.log("respones", response.message);
-        this.loader = false;
-        this.showSuccess(response.message);
-        //  this.$router.go(-1);
-      } catch (err) {
-        console.log("errror", err.response);
-        this.loader = false;
-      }
+      // try {
+      //   let response = await this.$axios.$post(
+      //     "api/user/sendSMS",
+      //     this.smsObject
+      //   );
+      //   console.log("respones", response.message);
+      //   this.loader = false;
+      //   this.showSuccess(response.message);
+      //   //  this.$router.go(-1);
+      // } catch (err) {
+      //   console.log("errror", err.response);
+      //   this.loader = false;
+      // }
 
       try {
         this.uploadFiles();

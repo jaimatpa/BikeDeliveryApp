@@ -7,12 +7,13 @@ const axios = require('axios');
 app.get('/webhook', (req, res) => {
   //read JSON and send to the /delivery endpoint  
   try{
-    fs.readFile('data.json', 'utf8', async function (err,data) {
+    fs.readFile('log.json', 'utf8', async function (err,data) {
         if (err) {
             return res.send(err)
         }
         try{
-            const request = await axios.post("http://localhost:3100/api/user/deliveryorder",data, { headers: {'Content-Type': 'application/json'} }); 
+            let payload = JSON.parse(data);
+            const request = await axios.post("http://localhost:3100/api/user/deliveryorder", payload, { headers: {'Content-Type': 'application/json'} }); 
         }catch(error){
             
         }

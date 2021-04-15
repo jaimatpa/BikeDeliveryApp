@@ -1,6 +1,8 @@
 <template lang="html">
   <Page :title="!isMobile ? 'Order Details' : ''">
-    <v-row>
+    <div class="d-flex flex-column justify-space-between" style="height: 100%">
+      <div>
+        <v-row>
       <v-col cols="12" xs="12" sm="12" md="6" xl="6">
         <v-text-field
           v-model="orderData.date"
@@ -63,8 +65,10 @@
         </v-text-field>
       </v-col>
     </v-row>
+      </div>
 
-    <!-- Notification Send Button -->
+    <div>
+      <!-- Notification Send Button -->
     <v-row>
       <v-col cols="12" xs="12" sm="12" md="6" xl="6">
         <v-btn
@@ -80,6 +84,8 @@
         </v-btn>
       </v-col>
     </v-row>
+    </div>
+    </div>
 
     <!-- Search History Dialog -->
     <v-dialog
@@ -127,7 +133,6 @@ import moment from "moment";
 import { mapActions } from "vuex";
 
 import Page from "@/components/paradym/Page";
-import searchMockData from "@/webHooks/SEARCH_MOCK_DATA.json";
 
 export default {
   name: "searchHistoryDetails",
@@ -139,7 +144,7 @@ export default {
   },
   components: { Page },
   async created() {
-   this.getOrderDetails()
+    this.getOrderDetails();
   },
   computed: {
     isMobile() {
@@ -161,28 +166,23 @@ export default {
       this.$router.go(-1);
     },
     async getOrderDetails() {
-
-       try {
-        let response = await this.$axios.$get(
-          "/api/user/deliveryOrder",
-          {
-            params: {
-              search : this.$route.params.orderId
-            },
-          }
-        );
-        console.log('respones', response);
+      try {
+        let response = await this.$axios.$get("/api/user/deliveryOrder", {
+          params: {
+            search: this.$route.params.orderId,
+          },
+        });
+        console.log("respones", response);
         const responseData = _.omit(response[0], "date");
         this.orderData = responseData;
-        this.orderData.date = moment(response[0].date).format('MM/DD/YYYY hh:mm A');
-       
-        //  this.$router.go(-1);
-       
-      } catch (err) {
-        console.log('errror', err.response);
-       
-      }
+        this.orderData.date = moment(response[0].date).format(
+          "MM/DD/YYYY hh:mm A"
+        );
 
+        //  this.$router.go(-1);
+      } catch (err) {
+        console.log("errror", err.response);
+      }
     },
   },
 };

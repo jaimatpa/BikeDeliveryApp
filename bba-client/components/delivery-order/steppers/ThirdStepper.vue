@@ -16,9 +16,9 @@
           :src="emptyPhoto"
         ></v-img>
         <div v-else>
-          <div class="slider-img-container py-0 my-0" style="display:flex;">
+          <div class="slider-img-container py-0 my-0" style="display: flex">
             <img
-              style="align-self: flex-end;"
+              style="align-self: flex-end"
               ref="currentImgRef"
               :src="clickedImage.local_blob_url"
               :width="innerWindowWidth > 800 ? 600 : 300"
@@ -27,7 +27,7 @@
               class="img-cross-btn"
               @click="deleteImage(clickedImage.array_index)"
             >
-              <v-icon color="black" style="font-size: 20px;cursor: pointer;">
+              <v-icon color="black" style="font-size: 20px; cursor: pointer">
                 mdi-close
               </v-icon>
             </span>
@@ -38,7 +38,7 @@
               <v-icon class="white--text">mdi-arrow-right-bold</v-icon>
             </span>
           </div>
-          <div style="text-align:center; margin-top: 5px;">
+          <div style="text-align: center; margin-top: 5px">
             Photo {{ clickedImage.array_index + 1 }} of
             {{ local_files_to_upload.length }}
           </div>
@@ -54,7 +54,13 @@
           Take Photo
         </v-btn>
         <p class="primary--text mt-5 mb-0">Location</p>
-        <p class="body-2 secondary--text">No Location Found</p>
+        <p class="body-2 secondary--text">
+          {{
+            deliveryOrderData
+              ? deliveryOrderData.location
+              : "No Location Found"
+          }}
+        </p>
       </v-col>
     </v-row>
 
@@ -104,6 +110,12 @@ import CameraModal from "../photo-capture/CameraModal";
 import { mapState, mapMutations } from "vuex";
 export default {
   name: "ThirdStepper",
+  props: {
+    deliveryOrderData: {
+      type: Object,
+      default: {},
+    },
+  },
   components: {
     CameraModal,
   },
@@ -161,7 +173,7 @@ export default {
     capturedImagesFromVuex: {
       deep: true,
       immediate: true,
-      handler: function(newVal, oldVal) {
+      handler: function (newVal, oldVal) {
         if (newVal.length > 0) {
           this.local_files_to_upload = [...newVal];
           this.clickedImage = {
@@ -236,8 +248,8 @@ export default {
     },
 
     saveCameraImages(images) {
-      console.log('================= images', images);
-      
+      console.log("================= images", images);
+
       const blob_urls = this.local_files_to_upload.map((o) => o.local_blob_url);
       const result = [...this.local_files_to_upload];
       for (let i = 0; i < images.length; i++) {

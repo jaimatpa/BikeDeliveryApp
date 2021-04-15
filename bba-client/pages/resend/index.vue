@@ -93,7 +93,6 @@
 import moment from 'moment';
 import { mapActions } from "vuex";
 import Page from "@/components/paradym/Page";
-import resendMockData from "@/webHooks/RESEND_MOCK_DATA.json";
 
 export default {
   name: "resend",
