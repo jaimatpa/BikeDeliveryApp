@@ -10,23 +10,33 @@ const apiMessage = require("./../../../language/en.json");
 
 
 router.post("/", async (req, res) => {
+    
+    try{
 
-    const data = JSON.parse(JSON.stringify(req.body));
-    const keys = await models.WebhookMaps.findAll();
+        await models.Logs.build({json:JSON.stringify(req.body)}).save();
 
-    for(let i =0;i<data.length;i++){
-        let d = data[i];
-        for(let k=0;k<keys.length;k++){
-            const json_key = keys[k].json_key;
-            const table_key = keys[k].table_key;
-            if(json_key !== table_key && d[json_key]){
-                d[table_key] = d[json_key]
-                delete d[json_key]
-            }
-        }
-        console.log(d)
-        await models.DeliveryOrders.build(d).save();
+    }catch(error){
+        console.log(error)
     }
+    try{
+        const data = JSON.parse(JSON.stringify(req.body));
+        const keys = await models.WebhookMaps.findAll();
+    
+        for(let i =0;i<data.length;i++){
+            let d = data[i];
+            for(let k=0;k<keys.length;k++){
+                const json_key = keys[k].json_key;
+                const table_key = keys[k].table_key;
+                if(json_key !== table_key && d[json_key]){
+                    d[table_key] = d[json_key]
+                    delete d[json_key]
+                }
+            }
+            console.log(d)
+            await models.DeliveryOrders.build(d).save();
+        }
+    }catch(error){}
+    
     //received the json here req.body
     // console.log(req.body)
     res.send(req.body);

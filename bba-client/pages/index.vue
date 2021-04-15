@@ -12,20 +12,25 @@
         :class="isMobile ? 'custom-media-sm' : ''"
       >
         <v-card
-          height="180"
+          :height="isMobile ? '120' : '180'"
           class="d-flex flex-column align-center justify-center cursor-pointer dashboard-card"
-          elevation="2"
+          elevation="0"
           :to="item.to"
           outlined
         >
           <v-img
-            max-height="100"
-            max-width="100"
+            :max-height="isMobile ? '40' : '60'"
+            :max-width="isMobile ? '80' : '120'"
             :src="item.icon"
             aspect-ratio="1"
             contain
           ></v-img>
-          <p class="title text--secondary mt-3">{{ item.title }}</p>
+          <p
+            class="title text--secondary"
+            :class="[isMobile ? 'mt-0 mb-0' : 'mt-3 mb-0']"
+          >
+            {{ item.title }}
+          </p>
         </v-card>
       </v-col>
     </v-row>
@@ -61,9 +66,9 @@
           class="elevation-1"
           :mobile-breakpoint="0"
         >
-            <!-- Date -->
+          <!-- Date -->
           <template v-slot:item.date="{ item }">
-            {{getDateFormat(item.date)}}
+            {{ getDateFormat(item.date) }}
           </template>
         </v-data-table>
       </v-col>
@@ -72,10 +77,9 @@
 </template>
 
 <script>
-import moment from 'moment';
+import moment from "moment";
 import Page from "@/components/paradym/Page";
 import PageSection from "@/components/paradym/PageSection";
-import orderMockData from "@/webHooks/ORDER_MOCK_DATA.json";
 
 export default {
   name: "pageIndex",
@@ -108,8 +112,8 @@ export default {
           sortable: false,
           value: "orderid",
         },
-        { text: "NAME", value: "name", sortable: false, },
-        { text: "LOCATION", value: "location", sortable: false, },
+        { text: "NAME", value: "name", sortable: false },
+        { text: "LOCATION", value: "location", sortable: false },
       ],
       dashboardItems: [
         {
@@ -139,16 +143,16 @@ export default {
     options: {
       handler() {
         this.getDataFromApi();
-      },                                                                                                
+      },
       deep: true,
     },
-  },                                                                                  
+  },
   created() {
     this.getDataFromApi();
   },
   methods: {
-    getDateFormat(date){      
-      return moment(date).format('MM/DD/YYYY hh:mm A');
+    getDateFormat(date) {
+      return moment(date).format("MM/DD/YYYY hh:mm A");
     },
     async getDataFromApi() {
       this.loading = true;
@@ -204,21 +208,14 @@ export default {
 .custom-media-sm {
   flex-basis: 50% !important;
   align-items: center !important;
-  justify-content: center  !important;
+  justify-content: center !important;
 
   .dashboard-card {
-    height: 120px !important;
     background-color: #f5f6fa;
     border: 2px solid #4c9a2a;
 
-    .v-image {
-      max-height: 40px !important;
-      max-width: 120px !important;
-    }
-
     .title {
-      font-size: 1rem !important;
-      margin-top: 5px !important;
+      font-size: 14px !important;
     }
   }
 }
