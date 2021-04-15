@@ -71,6 +71,11 @@
           <!-- First Stepper Button -->
           <v-row>
             <v-col cols="12" xs="12" sm="12" md="6" xl="6">
+              <v-btn block depressed color="error" @click.stop="$router.go(-1)">
+                Cancel
+              </v-btn>
+            </v-col>
+            <v-col cols="12" xs="12" sm="12" md="6" xl="6">
               <v-btn
                 block
                 depressed
@@ -78,11 +83,6 @@
                 @click.stop="deliveryStepper = 2"
               >
                 Next
-              </v-btn>
-            </v-col>
-            <v-col cols="12" xs="12" sm="12" md="6" xl="6">
-              <v-btn block depressed color="error" @click.stop="$router.go(-1)">
-                Cancel
               </v-btn>
             </v-col>
           </v-row>
@@ -121,16 +121,6 @@
               <v-btn
                 block
                 depressed
-                color="primary"
-                @click.stop="deliveryStepper = 3"
-              >
-                Next
-              </v-btn>
-            </v-col>
-            <v-col cols="12" xs="12" sm="12" md="4" xl="4">
-              <v-btn
-                block
-                depressed
                 color="accent"
                 @click.stop="deliveryStepper = 1"
               >
@@ -140,6 +130,16 @@
             <v-col cols="12" xs="12" sm="12" md="4" xl="4">
               <v-btn block depressed color="error" @click.stop="$router.go(-1)">
                 Cancel
+              </v-btn>
+            </v-col>
+            <v-col cols="12" xs="12" sm="12" md="4" xl="4">
+              <v-btn
+                block
+                depressed
+                color="primary"
+                @click.stop="deliveryStepper = 3"
+              >
+                Next
               </v-btn>
             </v-col>
           </v-row>

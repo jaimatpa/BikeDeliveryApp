@@ -110,16 +110,6 @@
         <v-btn
           block
           depressed
-          color="primary"
-          @click.stop="$emit('set-delivery-order-dialog', true)"
-        >
-          Complete
-        </v-btn>
-      </v-col>
-      <v-col cols="12" xs="12" sm="12" md="4" xl="4">
-        <v-btn
-          block
-          depressed
           color="accent"
           @click.stop="$emit('set-delivery-stepper', 3)"
         >
@@ -129,6 +119,16 @@
       <v-col cols="12" xs="12" sm="12" md="4" xl="4">
         <v-btn block depressed color="error" @click.stop="$router.go(-1)">
           Cancel
+        </v-btn>
+      </v-col>
+      <v-col cols="12" xs="12" sm="12" md="4" xl="4">
+        <v-btn
+          block
+          depressed
+          color="primary"
+          @click.stop="$emit('set-delivery-order-dialog', true)"
+        >
+          Complete
         </v-btn>
       </v-col>
     </v-row>
