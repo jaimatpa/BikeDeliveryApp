@@ -147,7 +147,7 @@
 
         <!-- Third Stepper -->
         <v-stepper-content step="3">
-          <ThirdStepper @set-delivery-stepper="setDelivaryStepper" />
+          <ThirdStepper @set-delivery-stepper="setDelivaryStepper"  :deliveryOrderData="deliveryOrderData" />
         </v-stepper-content>
 
         <!-- Fourth Stepper -->
