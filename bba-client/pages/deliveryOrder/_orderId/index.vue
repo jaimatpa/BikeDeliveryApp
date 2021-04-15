@@ -215,7 +215,6 @@ import moment from "moment";
 import { mapActions } from "vuex";
 
 import Page from "@/components/paradym/Page";
-import deliveryOrderMockData from "@/webHooks/ORDER_DELIVERY_MOCK_DATA.json";
 import emptyPhoto from "@/assets/images/empty.jpg";
 import cyclePhoto from "@/assets/images/cycle@2x.png";
 

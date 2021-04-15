@@ -127,7 +127,6 @@ import moment from "moment";
 import { mapActions } from "vuex";
 
 import Page from "@/components/paradym/Page";
-import searchMockData from "@/webHooks/SEARCH_MOCK_DATA.json";
 
 export default {
   name: "searchHistoryDetails",
