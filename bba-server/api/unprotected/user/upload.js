@@ -61,10 +61,15 @@ router.get("/", async (req, res) => {
 
     let sendData = [];
     _.forEach(data, val => {
+
+        let uploadLocalFilePath;
+        if (val.filepath.startsWith("public/")) uploadLocalFilePath = val.filepath.replace(`public/`, '');
+        else uploadLocalFilePath = val.filepath.replace(`public\\`, '');
+
         let tempData = {
             id: val.id,
             orderid: val.orderid,
-            filepath: process.env.BASE_URL + "/" + val.filepath.replace(`public\\`, ''),
+            filepath: process.env.BASE_URL + "/" + uploadLocalFilePath,
             createdAt: val.createdAt,
             updatedAt: val.updatedAt
         }
