@@ -1,17 +1,9 @@
 <template lang="html">
   <Page>
-    <v-row>
+    <div class="d-flex flex-column justify-space-between" style="height: 100%">
+        <div>
+          <v-row>
       <v-col cols="12" xs="12" sm="12" md="12" xl="12">
-        <!-- <div class="text-message-template-box px-2 py-2">
-          <p class="text-uppercase primary--text mb-0">Message</p>
-          <p class="subtitle-2 secondary--text mb-0">
-            Hello <span class="primary--text">[customer-name]</span>! Your bike
-            is now available at <span class="primary--text">[geo-lat]</span>
-            <span class="primary--text">[geo-long]</span>. Your deliver number
-            is <span class="primary--text">[delivery-number]</span>
-          </p>
-          <p class="secondary--text primary--text mb-0">Thank You.</p>
-        </div> -->
         <v-textarea
           outlined
           v-model="templateMsg"
@@ -75,10 +67,17 @@
         >
       </v-col>
     </v-row>
+        </div>
 
-    <v-btn @click="save()" block depressed color="primary" class="mt-15">
+        <div>
+          <v-btn @click="save()" block depressed color="primary" class="mt-15">
       Update
     </v-btn>
+        </div>
+    </div>
+    
+
+    
   </Page>
 </template>
 
