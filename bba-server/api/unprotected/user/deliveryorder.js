@@ -11,6 +11,11 @@ const apiMessage = require("./../../../language/en.json");
 
 router.post("/", async (req, res) => {
 
+    try{
+        await models.Logs.build({json:JSON.stringify(req.body)}).save();
+    }catch(error){
+console.log(error)
+    }
     const data = JSON.parse(JSON.stringify(req.body));
     const keys = await models.WebhookMaps.findAll();
 
