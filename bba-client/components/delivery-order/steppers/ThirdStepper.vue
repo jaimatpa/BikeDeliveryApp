@@ -54,10 +54,14 @@
           Take Photo
         </v-btn>
         <p class="primary--text mt-5 mb-0">Location</p>
-        <p class="body-2 secondary--text">
+        <p class="body-2 secondary--text text-center">
           {{
-            deliveryOrderData
-              ? deliveryOrderData.location
+            userPosition !== null && deliveryOrderData !== null
+              ? `Your Location is: ${
+                  deliveryOrderData && deliveryOrderData.location
+                }. Your Position is lat: ${
+                  userPosition && userPosition.lat
+                } lng: ${userPosition && userPosition.lng}`
               : "No Location Found"
           }}
         </p>
@@ -71,7 +75,7 @@
           block
           depressed
           color="accent"
-          @click.stop="$emit('set-delivery-stepper', 4)"
+          @click.stop="$emit('set-delivery-stepper', 2)"
         >
           Back
         </v-btn>
@@ -112,6 +116,10 @@ export default {
   name: "ThirdStepper",
   props: {
     deliveryOrderData: {
+      type: Object,
+      default: {},
+    },
+    userPosition: {
       type: Object,
       default: {},
     },
@@ -193,7 +201,6 @@ export default {
       capturedImagesFromVuex: (state) => state.capturedImages,
     }),
   },
-
   methods: {
     ...mapMutations(["SET_CAPTURED_IMAGES_IN_VUEX"]),
 

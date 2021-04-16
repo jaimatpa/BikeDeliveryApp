@@ -86,7 +86,7 @@ export default {
         const response = await this.$auth.loginWith("local", {
           data: credentials,
         });        
-
+        
         if (response.status == 200) {
           this.$auth.setUser(response.data.user);
           this.$auth.$storage.setLocalStorage("user", response.data);

@@ -126,7 +126,7 @@ export default {
         },
         { text: "NAME", value: "name", sortable: false },
         { text: "LOCATION", value: "location", sortable: false },
-        { text: "ORDER", value: "orderid" },
+        { text: "ORDER#", value: "orderid" },
         { text: "ACTION", value: "actions", sortable: false, align: "center" },
       ],
       loader:false,

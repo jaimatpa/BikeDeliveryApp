@@ -11,6 +11,8 @@
                 label="Date"
                 placeholder="Date"
                 readonly
+                disabled
+                filled
                 dense
                 outlined
               >
@@ -22,6 +24,8 @@
                 label="Name"
                 placeholder="Name"
                 readonly
+                disabled
+                filled
                 dense
                 outlined
               >
@@ -36,6 +40,8 @@
                 label="Location"
                 placeholder="Location"
                 readonly
+                disabled
+                filled
                 dense
                 outlined
               >
@@ -44,9 +50,11 @@
             <v-col cols="12" xs="12" sm="12" md="6" xl="6">
               <v-text-field
                 v-model="deliveryOrderData.orderid"
-                label="Order"
+                label="Order#"
                 placeholder="Order"
                 readonly
+                disabled
+                filled
                 dense
                 outlined
               >
@@ -61,6 +69,8 @@
                 label="Bike Rack"
                 placeholder="Bike Rack"
                 readonly
+                disabled
+                filled
                 dense
                 outlined
               >
@@ -97,6 +107,8 @@
                 label="Color"
                 placeholder="Color"
                 readonly
+                disabled
+                filled
                 dense
                 outlined
               >
@@ -108,6 +120,8 @@
                 label="Combination"
                 placeholder="Combination"
                 readonly
+                disabled
+                filled
                 dense
                 outlined
               >
@@ -147,7 +161,7 @@
 
         <!-- Third Stepper -->
         <v-stepper-content step="3">
-          <ThirdStepper @set-delivery-stepper="setDelivaryStepper"  :deliveryOrderData="deliveryOrderData" />
+          <ThirdStepper @set-delivery-stepper="setDelivaryStepper"  :deliveryOrderData="deliveryOrderData" :userPosition="userPosition" />
         </v-stepper-content>
 
         <!-- Fourth Stepper -->
@@ -233,6 +247,7 @@ export default {
   async created() {
     this.getOrderDetails();
     this.getMsgTemplate();
+    this.getUserlocation();
   },
   computed: {
     isMobile() {
@@ -253,10 +268,33 @@ export default {
         message: "",
       },
       templateMsg: "",
+      userPosition: null,
     };
   },
   methods: {
     ...mapActions("snackbar", { showSuccess: "success", showError: "error" }),
+    getUserlocation() {
+      if (process.client) {
+        if (navigator.geolocation) {
+          navigator.geolocation.getCurrentPosition(
+            (position) => {
+              console.log("Clicked on pointer, position === ", position);
+              const pos = {
+                lat: position.coords.latitude,
+                lng: position.coords.longitude,
+              };
+              console.log("pos ==== ", pos);
+              this.userPosition = pos;
+            },
+            (error) => {
+              // handle error here.
+              console.log("error =========== ", error);
+            }
+          );
+        }
+      }
+    },
+
     async sendNotification() {
       this.searchHistoryDialog = false;
       this.deliveryOrderDialog = false;
@@ -264,6 +302,7 @@ export default {
 
       console.log("delivery information", this.deliveryOrderData);
       let dataToAdd = this.deliveryOrderData;
+      let userPositionData = this.userPosition;
 
       // let message = `Hello ${dataToAdd.name}! Your bike is now available at ${dataToAdd.location}. Your deliver number is ${dataToAdd.orderid}, Bike Rack : ${dataToAdd.rack}, Color : ${dataToAdd.color}, Lock-Combo : ${dataToAdd.combination}. Thank You.`
 
@@ -278,9 +317,11 @@ export default {
         "[delivery-number]": "orderid",
         "[color]": "color",
         "[rack]": "rack",
+        "[geo-lat]": "geo-lat",
+        "[geo-long]": "geo-long"
       };
 
-      let output = this.getMessage(this.templateMsg, infoMap, dataToAdd);
+      let output = this.getMessage(this.templateMsg, infoMap, dataToAdd, userPositionData);
 
       // let message = `Hello ${dataToAdd.name}! Your bike is now available at ${dataToAdd.location}. Your deliver number is ${dataToAdd.orderid}, Bike Rack : ${dataToAdd.rack}, Color : ${dataToAdd.color}, Lock-Combo : ${dataToAdd.combination}. Thank You.`;
       // this.smsObject.message = message;
@@ -290,19 +331,19 @@ export default {
       // this.smsObject.to ="+8801745476473";
 
       console.log("Data ready====>", this.smsObject);
-      // try {
-      //   let response = await this.$axios.$post(
-      //     "api/user/sendSMS",
-      //     this.smsObject
-      //   );
-      //   console.log("respones", response.message);
-      //   this.loader = false;
-      //   this.showSuccess(response.message);
-      //   //  this.$router.go(-1);
-      // } catch (err) {
-      //   console.log("errror", err.response);
-      //   this.loader = false;
-      // }
+      try {
+        let response = await this.$axios.$post(
+          "api/user/sendSMS",
+          this.smsObject
+        );
+        console.log("respones", response.message);
+        this.loader = false;
+        this.showSuccess(response.message);
+        //  this.$router.go(-1);
+      } catch (err) {
+        console.log("errror", err.response);
+        this.loader = false;
+      }
 
       try {
         this.uploadFiles();
@@ -320,7 +361,7 @@ export default {
 
         const responseData = _.omit(response[0], "date");
         this.deliveryOrderData = responseData;
-        this.deliveryOrderData.date = moment(response[0].date).format('MM/DD/YYYY hh:mm A');
+        this.deliveryOrderData.date = moment(response[0].date).format('MM/DD/YYYY hh:mm A');        
 
         //  this.$router.go(-1);
       } catch (err) {
@@ -376,7 +417,7 @@ export default {
         console.log("errror", err.response);
       }
     },
-    getMessage(template, infoMap, userObj) {
+    getMessage(template, infoMap, userObj, userPosition) {
       let result = template;
       for (let key in infoMap) {
         if (key === "[lock-combo]") {
@@ -384,6 +425,14 @@ export default {
           let key1 = infoMap[key][1];
           result = result.replaceAll(key, `${userObj[key0]}-${userObj[key1]}`);
         }
+
+        if(key === "[geo-lat]") {
+          result = result.replaceAll(key, userPosition.lat)
+        }
+        if(key === "[geo-long]") {
+          result = result.replaceAll(key, userPosition.lng)
+        }
+        
         result = result.replaceAll(key, userObj[infoMap[key]]);
       }
       return result;

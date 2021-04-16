@@ -65,6 +65,12 @@
         <span class="subtitle-2 primary--text font-weight-bold text-lowercase"
           >[rack]</span
         >
+        <span class="subtitle-2 primary--text font-weight-bold text-lowercase"
+          >[geo-lat]</span
+        >
+        <span class="subtitle-2 primary--text font-weight-bold text-lowercase"
+          >[geo-long]</span
+        >
       </v-col>
     </v-row>
         </div>
