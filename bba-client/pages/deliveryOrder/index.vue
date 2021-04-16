@@ -147,7 +147,6 @@ export default {
   watch: {
     search: function (newValue) {
       this.getDataFromApi();
-      this.closeScanner();
     },
     searchByBarcode: function (newValue) {
       this.getDataFromApi();

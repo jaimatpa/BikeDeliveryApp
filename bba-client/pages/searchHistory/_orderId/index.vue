@@ -8,6 +8,8 @@
           v-model="orderData.date"
           label="Date"
           placeholder="Date"
+          disabled
+          filled
           readonly
           dense
           outlined
@@ -19,7 +21,9 @@
           v-model="orderData.name"
           label="Name"
           placeholder="Name"
+          disabled
           readonly
+          filled
           dense
           outlined
         >
@@ -33,8 +37,10 @@
           v-model="orderData.location"
           label="Location"
           placeholder="Location"
+          disabled
           readonly
           dense
+          filled
           outlined
         >
         </v-text-field>
@@ -42,9 +48,11 @@
       <v-col cols="12" xs="12" sm="12" md="6" xl="6">
         <v-text-field
           v-model="orderData.orderid"
-          label="Order"
-          placeholder="Order"
+          label="Order#"
+          placeholder="Order#"
+          disabled
           readonly
+          filled
           dense
           outlined
         >
@@ -58,7 +66,9 @@
           v-model="orderData.rack"
           label="Bike Rack"
           placeholder="Bike Rack"
+          disabled
           readonly
+          filled
           dense
           outlined
         >

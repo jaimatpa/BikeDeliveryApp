@@ -1,12 +1,16 @@
 <template lang="html">
   <Page :title="!isMobile ? 'Lock Details' : ''">
-    <v-row>
+    <div class="d-flex flex-column justify-space-between" style="height: 100%">
+      <div>
+        <v-row>
       <v-col cols="12" xs="12" sm="12" md="6" xl="6">
         <v-text-field
           v-model="lockData.lock"
           label="Lock"
           placeholder="Lock"
           readonly
+          disabled
+          filled
           dense
           outlined
         >
@@ -19,6 +23,8 @@
           placeholder="Color"
           readonly
           dense
+          disabled
+          filled
           outlined
         >
         </v-text-field>
@@ -33,13 +39,17 @@
           placeholder="Combination"
           readonly
           dense
+          disabled
+          filled
           outlined
         >
         </v-text-field>
       </v-col>
     </v-row>
+      </div>
 
-    <!-- Notification Send Button -->
+      <div>
+        <!-- Notification Send Button -->
     <v-row>
       <v-col cols="12" xs="12" sm="12" md="6" xl="6">
         <v-btn block depressed color="primary" @click.stop="$router.go(-1)">
@@ -47,6 +57,8 @@
         </v-btn>
       </v-col>
     </v-row>
+      </div>
+    </div>
   </Page>
 </template>
 
@@ -65,7 +77,7 @@ export default {
   },
   components: { Page },
   created() {
-    this.getOrderDetails()
+    this.getOrderDetails();
   },
   computed: {
     isMobile() {
@@ -80,28 +92,21 @@ export default {
   },
   methods: {
     async getOrderDetails() {
+      try {
+        let response = await this.$axios.$get("/api/user/deliveryOrder", {
+          params: {
+            search: this.$route.params.orderId,
+          },
+        });
+        console.log("respones", response);
+        this.lockData = response[0];
 
-       try {
-        let response = await this.$axios.$get(
-          "/api/user/deliveryOrder",
-          {
-            params: {
-              search : this.$route.params.orderId
-            },
-          }
-        );
-        console.log('respones', response);
-        this.lockData = response[0]
-      
         //  this.$router.go(-1);
-       
       } catch (err) {
-        console.log('errror', err.response);
-       
+        console.log("errror", err.response);
       }
-
     },
-  }
+  },
 };
 </script>
 
