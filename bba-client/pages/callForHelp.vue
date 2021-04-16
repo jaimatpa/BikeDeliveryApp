@@ -39,11 +39,17 @@ script<template lang="html">
 
     <div class="mb-10 mt-1">
       <GmapMap
-        :center="{ lat: 10, lng: 10 }"
+        :center="{ lat: userPosition && userPosition.lat, lng: userPosition && userPosition.lng }"
         :zoom="10"
         map-type-id="terrain"
         style="width: 100%; height: 200px"
       >
+        <GmapMarker
+            :position="userPosition"
+            :clickable="true"
+            :draggable="true"
+            @click="center=userPosition"
+          />
       </GmapMap>
     </div>
 
@@ -70,11 +76,12 @@ export default {
   computed: {
     isMobile() {
       return this.$vuetify.breakpoint.width < this.breakpoint;
-    }
+    },
   },
   created() {
     this.getUploadDetails();
     this.getOrderDetails();
+    this.getUserlocation();
   },
   data() {
     return {
@@ -84,9 +91,31 @@ export default {
       markers: [],
       uploadFilesData: [],
       deliveryOrderData: {},
+      userPosition: null,
     };
   },
   methods: {
+    getUserlocation() {
+      if (process.client) {
+        if (navigator.geolocation) {
+          navigator.geolocation.getCurrentPosition(
+            (position) => {
+              console.log("Clicked on pointer, position === ", position);
+              const pos = {
+                lat: position.coords.latitude,
+                lng: position.coords.longitude,
+              };
+              console.log("pos ==== ", pos);
+              this.userPosition = pos;
+            },
+            (error) => {
+              // handle error here.
+              console.log("error =========== ", error);
+            }
+          );
+        }
+      }
+    },
     async getUploadDetails() {
       try {
         let response = await this.$axios.$get("/api/user/upload", {
