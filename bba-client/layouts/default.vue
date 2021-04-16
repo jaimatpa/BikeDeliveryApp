@@ -155,7 +155,7 @@ export default {
           to: "/users",
         },
         {
-          title: "TEXT MESSAGE TEMPLATE",
+          title: "TEXT MSG TEMPLATE",
           to: "/textMessageTemplate",
         },
         {

@@ -4,7 +4,7 @@
     <FormRegister
       v-if="!registrationCompleteEmail"
       confirm
-      title="bike delivery app"
+      title="Bike Delivery App"
       :logo="bikeLogo"
       width="340"
       logoWidth="155"
