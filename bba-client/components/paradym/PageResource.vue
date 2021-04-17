@@ -16,7 +16,74 @@
       color="primary"
     />
 
-    <v-simple-table
+    <v-card>
+      <v-card-title>
+        <v-text-field
+          v-model="search"
+          append-icon="mdi-magnify"
+          label="Search"
+          single-line
+          hide-details
+        ></v-text-field>
+      </v-card-title>
+      <v-data-table
+        :headers="headers"
+        :items="webHookMapDataTable"
+        v-if="isShowWebHookMappingTable"
+        :search="search"
+        :loading="isLoding"
+        loading-text="Loading... Please wait"
+        class="elevation-1 web-hook-mapping-table"
+      >
+        <template v-slot:item.json_key="props">
+          <v-edit-dialog
+            :return-value.sync="props.item.json_key"
+            large
+            persistent
+            @save="change"
+            @cancel="cancel"
+            @open="open"
+            @close="close"
+          >
+            <div>{{ props.item.json_key }}</div>
+            <template v-slot:input>
+              <div class="mt-4 title">
+                Update Json Key
+              </div>
+              <v-text-field
+                v-model="props.item.json_key"
+                :label="props.item.table_key"
+                autofocus
+                :rules="[rules.required, rules.max25chars]"
+                outlined
+                dense
+                filled
+              ></v-text-field>
+            </template>
+          </v-edit-dialog>
+        </template>
+      </v-data-table>
+
+      <v-snackbar
+        v-model="snack"
+        :timeout="3000"
+        :color="snackColor"
+      >
+        {{ snackText }}
+
+        <template v-slot:action="{ attrs }">
+          <v-btn
+            v-bind="attrs"
+            text
+            @click="snack = false"
+          >
+            Close
+          </v-btn>
+        </template>
+      </v-snackbar>
+    </v-card>
+
+    <!-- <v-simple-table
       v-if="isShowWebHookMappingTable"
       dense
       class="web-hook-mapping-table"
@@ -231,7 +298,7 @@
           </tr>
         </tbody>
       </template>
-    </v-simple-table>
+    </v-simple-table> -->
 
     <v-btn
       block
@@ -305,12 +372,31 @@ export default {
       jsonKey10: "",
       rules: {
         required: (value) => !!value || "Required.",
+        max25chars: (value) => value.length <= 25 || 'Input too long!',
       },
+      snack: false,
+      snackColor: '',
+      snackText: '',
+      pagination: {},
+      headers: [
+        {
+          text: 'TABLE KEY',
+          value: 'table_key',
+        },
+        { 
+          text: 'JSON KEY', 
+          value: 'json_key',
+        },
+      ],
+      webHookMapDataTable: [],
+      search: '',
+      isLoding: true
     };
   },
   created() {
     // this.getWebHookMapDataFromApi();
     this.getWebHookMapDataFromFile();
+    // this.sendWebHookMapData();
   },
   computed: {
     addText() {
@@ -335,9 +421,10 @@ export default {
       this.jsonKey8 = webHookMapData.length ? webHookMapData[7].json_key : "";
       this.jsonKey9 = webHookMapData.length ? webHookMapData[8].json_key : "";
       this.jsonKey10 = webHookMapData.length ? webHookMapData[9].json_key : "";
+      this.mappingData();
     },
-    getWebHookMapDataFromFile() {
-      const webHookMapData = mapData.data;
+    async getWebHookMapDataFromFile() {
+      const webHookMapData = await mapData.data;
       this.jsonKey1 = webHookMapData.hasOwnProperty("created_ts") ? moment(webHookMapData.created_ts).format(
           "MM/DD/YYYY"
         ) : "";
@@ -353,9 +440,10 @@ export default {
       this.jsonKey8 = webHookMapData.hasOwnProperty("lock") ? webHookMapData.lock : ""
       this.jsonKey9 = webHookMapData.hasOwnProperty("customer_phone_number") ? webHookMapData.customer_phone_number : "";
       this.jsonKey10 = webHookMapData.hasOwnProperty("barcode") ? webHookMapData.barcode : ""
+      this.mappingData();
     },
-    async sendWebHookMapData() {
-      const webHookMapDataTable = [
+    mappingData() {
+      this.webHookMapDataTable = [
         {
           table_key: this.date,
           json_key: this.jsonKey1.replace(/\s/g, ""),
@@ -397,12 +485,13 @@ export default {
           json_key: this.jsonKey10.replace(/\s/g, ""),
         },
       ];
-      console.log("this.webHookMapDataTable", webHookMapDataTable);
-
+      this.isLoding = false;
+    },
+    async sendWebHookMapData() {
       try {
         const response = await this.$axios.$post(
           "/api/user/webhookmap",
-          webHookMapDataTable
+          this.webHookMapDataTable
         );
 
         if (response) {
@@ -460,6 +549,24 @@ export default {
       } catch (err) {
         this.showError(err?.response?.data?.errors[NUMBER_0].message);
       }
+    },
+    change () {
+      this.snack = true
+      this.snackColor = 'success'
+      this.snackText = 'Data changed'
+    },
+    cancel () {
+      this.snack = true
+      this.snackColor = 'error'
+      this.snackText = 'Canceled'
+    },
+    open () {
+      this.snack = true
+      this.snackColor = 'info'
+      this.snackText = 'Dialog opened'
+    },
+    close () {
+      console.log('Dialog closed')
     },
   },
 };
