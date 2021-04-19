@@ -1,101 +1,110 @@
 <template>
-  <div>
-    <v-row>
-      <v-col
-        cols="12"
-        xs="12"
-        sm="12"
-        md="12"
-        xl="12"
-        class="d-flex flex-column justify-center align-center"
-      >
-        <v-img
-          v-if="local_files_to_upload.length === 0"
-          max-height="180"
-          max-width="220"
-          :src="emptyPhoto"
-        ></v-img>
-        <div v-else>
-          <div class="slider-img-container py-0 my-0" style="display: flex">
-            <img
-              style="align-self: flex-end"
-              ref="currentImgRef"
-              :src="clickedImage.local_blob_url"
-              :width="innerWindowWidth > 800 ? 600 : 300"
-            />
-            <span
-              class="img-cross-btn"
-              @click="deleteImage(clickedImage.array_index)"
-            >
-              <v-icon color="black" style="font-size: 20px; cursor: pointer">
-                mdi-close
-              </v-icon>
-            </span>
-            <span class="img-left-btn" @click="goToNextImage('left')">
-              <v-icon class="white--text">mdi-arrow-left-bold</v-icon>
-            </span>
-            <span class="img-right-btn" @click="goToNextImage('right')">
-              <v-icon class="white--text">mdi-arrow-right-bold</v-icon>
-            </span>
+  <div class="d-flex flex-column justify-space-between" style="height: 100%">
+    <div>
+      <v-row>
+        <v-col
+          cols="12"
+          xs="12"
+          sm="12"
+          md="12"
+          xl="12"
+          class="d-flex flex-column justify-center align-center"
+        >
+          <v-img
+            v-if="local_files_to_upload.length === 0"
+            max-height="180"
+            max-width="220"
+            :src="emptyPhoto"
+          ></v-img>
+          <div v-else>
+            <div class="slider-img-container py-0 my-0" style="display: flex">
+              <img
+                style="align-self: flex-end"
+                ref="currentImgRef"
+                :src="clickedImage.local_blob_url"
+                :width="innerWindowWidth > 800 ? 600 : 300"
+              />
+              <span
+                class="img-cross-btn"
+                @click="deleteImage(clickedImage.array_index)"
+              >
+                <v-icon color="black" style="font-size: 20px; cursor: pointer">
+                  mdi-close
+                </v-icon>
+              </span>
+              <span class="img-left-btn" @click="goToNextImage('left')">
+                <v-icon class="white--text">mdi-arrow-left-bold</v-icon>
+              </span>
+              <span class="img-right-btn" @click="goToNextImage('right')">
+                <v-icon class="white--text">mdi-arrow-right-bold</v-icon>
+              </span>
+            </div>
+            <div style="text-align: center; margin-top: 5px">
+              Photo {{ clickedImage.array_index + 1 }} of
+              {{ local_files_to_upload.length }}
+            </div>
           </div>
-          <div style="text-align: center; margin-top: 5px">
-            Photo {{ clickedImage.array_index + 1 }} of
-            {{ local_files_to_upload.length }}
-          </div>
-        </div>
 
-        <v-btn
-          block
-          depressed
-          color="secondary"
-          class="mt-5"
-          @click="open_camera_module = !open_camera_module"
-        >
-          Take Photo
-        </v-btn>
-        <p class="primary--text mt-5 mb-0">Location</p>
-        <p class="body-2 secondary--text text-center">
-          {{
-            userPosition !== null && deliveryOrderData !== null
-              ? `Your Location is: ${
-                  deliveryOrderData && deliveryOrderData.location
-                }. Your Position is lat: ${
-                  userPosition && userPosition.lat
-                } lng: ${userPosition && userPosition.lng}`
-              : "No Location Found"
-          }}
-        </p>
-      </v-col>
-    </v-row>
+          <v-btn
+            block
+            depressed
+            color="secondary"
+            class="mt-5"
+            @click="open_camera_module = !open_camera_module"
+          >
+            {{ local_files_to_upload.length ? "Add" : "Take" }}
+            Photo
+          </v-btn>
+          <p class="primary--text mt-5 mb-0">Location</p>
+          <p class="body-2 secondary--text text-center">
+            {{
+              userPosition !== null && deliveryOrderData !== null
+                ? `Your Location is: ${deliveryOrderData &&
+                    deliveryOrderData.location}. Your Position is lat: ${userPosition &&
+                    userPosition.lat} lng: ${userPosition && userPosition.lng}`
+                : "No Location Found"
+            }}
+          </p>
+        </v-col>
+      </v-row>
+    </div>
 
-    <!-- Third Stepper Button -->
-    <v-row>
-      <v-col cols="12" xs="12" sm="12" md="4" xl="4">
-        <v-btn
-          block
-          depressed
-          color="primary"
-          @click.stop="handleGoToNextStepper"
-        >
-          Next
-        </v-btn>
-      </v-col>
-      <v-col cols="12" xs="12" sm="12" md="4" xl="4">
-        <v-btn
-          block
-          depressed
-          color="accent"
-          @click.stop="$emit('set-delivery-stepper', 2)"
-        >
-          Back
-        </v-btn>
-      </v-col>
-      <v-col cols="12" xs="12" sm="12" md="4" xl="4">
-        <v-btn block depressed color="error" @click.stop="$router.go(-1)">
-          Cancel
-        </v-btn>
-      </v-col>
-    </v-row>
+    <div>
+      <!-- Third Stepper Button -->
+      <v-row>
+        <v-col cols="12" xs="12" sm="12" md="4" xl="4">
+          <v-btn
+            block
+            depressed
+            color="primary"
+            @click.stop="handleGoToNextStepper"
+          >
+            Next
+            <v-icon dark>
+              mdi-chevron-right
+            </v-icon>
+          </v-btn>
+        </v-col>
+        <v-col cols="12" xs="12" sm="12" md="4" xl="4">
+          <v-btn
+            block
+            depressed
+            color="accent"
+            @click.stop="$emit('set-delivery-stepper', 2)"
+          >
+            <v-icon dark>
+              mdi-chevron-left
+            </v-icon>
+            Back
+          </v-btn>
+        </v-col>
+        <v-col cols="12" xs="12" sm="12" md="4" xl="4">
+          <v-btn block depressed color="error" @click.stop="$router.go(-1)">
+            Cancel
+          </v-btn>
+        </v-col>
+      </v-row>
+    </div>
 
     <CameraModal
       v-if="open_camera_module"
@@ -181,7 +190,7 @@ export default {
     capturedImagesFromVuex: {
       deep: true,
       immediate: true,
-      handler: function (newVal, oldVal) {
+      handler: function(newVal, oldVal) {
         if (newVal.length > 0) {
           this.local_files_to_upload = [...newVal];
           this.clickedImage = {

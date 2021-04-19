@@ -14,13 +14,13 @@
     <v-text-field
       v-model="search"
       append-icon="mdi-magnify"
-      label="Search by Order#"
+      label="Search by Order #, Name, Location"
       single-line
       hide-details
       outlined
       dense
       clearable
-      class="mb-5"
+      class="mb-5 order-search-text-field"
        @keyup="onKeyUp"
       @click:clear="onClearClicked"
     ></v-text-field>
@@ -42,18 +42,18 @@
 
       <!-- Actions -->
       <template v-slot:item.actions="{ item }">
-        <v-icon
-          medium
-          color="primary"
-          @click.stop="
-            $router.push({
-              path: `/deliveryOrder/${item.orderid}`,
-            })
-          "
-        >
-          mdi-page-next
-        </v-icon>
-      </template>
+  <v-icon
+    medium
+    color="primary"
+    @click.stop="
+      $router.push({
+        path: `/deliveryOrder/${item.orderid}`,
+      })
+    "
+  >
+    mdi-page-next
+  </v-icon>
+</template>
     </v-data-table>
 
     <v-dialog
@@ -92,10 +92,9 @@
 
 <script>
 import _ from "lodash";
-import moment from 'moment';
+import moment from "moment";
 import Page from "@/components/paradym/Page";
 import BarScanner from "@/components/BarScanner";
-
 
 export default {
   name: "deliveryOrder",
@@ -105,7 +104,7 @@ export default {
       title: "Delivery Order",
     };
   },
-  components: { Page,BarScanner},
+  components: { Page, BarScanner },
   computed: {
     isMobile() {
       return this.$vuetify.breakpoint.width < this.breakpoint;
@@ -137,7 +136,6 @@ export default {
         { text: "ORDER#", value: "orderid" },
         { text: "ACTION", value: "actions", sortable: false, align: "center" },
       ],
-     
     };
   },
   created() {
@@ -162,8 +160,8 @@ export default {
     },
   },
   methods: {
-    getDateFormat(date){      
-      return moment(date).format('MM/DD/YYYY hh:mm A');
+    getDateFormat(date) {
+      return moment(date).format("MM/DD/YYYY hh:mm A");
     },
     onClearClicked() {
       if (this.search !== "" || this.searchByBarcode !== "") {
@@ -172,8 +170,8 @@ export default {
       }
       this.getDataFromApi();
     },
-    code(value){
-      console.log('This value', value);
+    code(value) {
+      console.log("This value", value);
       this.search = value;
       this.dialog = false;
     },
@@ -245,25 +243,31 @@ export default {
       });
     },
     closeScanner() {
-      this.dialog = false
-      const video = document.querySelector('video');
- 
-    // A video's MediaStream object is available through its srcObject attribute
+      this.dialog = false;
+      const video = document.querySelector("video");
+
+      // A video's MediaStream object is available through its srcObject attribute
       const mediaStream = video.srcObject;
 
       // Through the MediaStream, you can get the MediaStreamTracks with getTracks():
       const tracks = mediaStream.getTracks();
 
-     
-
-      // Tracks are returned as an array, so if you know you only have one, you can stop it with: 
+      // Tracks are returned as an array, so if you know you only have one, you can stop it with:
       // tracks[0].stop();
 
       // Or stop all like so:
-      tracks.forEach(track => track.stop())
-
-
-    }
+      tracks.forEach((track) => track.stop());
+    },
   },
 };
 </script>
+
+
+<style lang="scss">
+.order-search-text-field {
+  .v-label {
+    font-size: 14px !important;
+    color: #B5B5B5 !important;
+  }
+}
+</style>

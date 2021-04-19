@@ -10,7 +10,7 @@
       outlined
       dense
       clearable
-      class="mb-5"
+      class="mb-5 order-search-text-field"
       @keyup="onKeyUp"
       @click:clear="onClearClicked"
     ></v-text-field>
@@ -187,3 +187,12 @@ export default {
   },
 };
 </script>
+
+<style lang="scss">
+.order-search-text-field {
+  .v-label {
+    font-size: 14px !important;
+    color: #B5B5B5 !important;
+  }
+}
+</style>

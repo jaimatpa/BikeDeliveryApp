@@ -1,137 +1,145 @@
 <template>
-  <div>
-    <v-row>
-      <v-col cols="12" xs="12" sm="12" md="12" xl="12">
-        <div class="d-flex justify-space-between align-center flex-wrap">
-          <p class="secondary--text mb-0">
-            <span class="font-weight-bold">Date:</span>
-            <span class="font-weight-regular">{{
-              deliveryOrderData.date
-            }}</span>
-          </p>
-          <p class="secondary--text mb-0">
-            <span class="font-weight-bold">Name:</span>
-            <span class="font-weight-regular">{{
-              deliveryOrderData.name
-            }}</span>
-          </p>
-        </div>
-
-        <div class="d-flex justify-space-between align-center flex-wrap">
-          <p class="secondary--text mb-0">
-            <span class="font-weight-bold">Location:</span>
-            <span class="font-weight-regular">{{
-              deliveryOrderData.location
-            }}</span>
-          </p>
-          <p class="secondary--text mb-0">
-            <span class="font-weight-bold">Order#:</span>
-            <span class="font-weight-regular">{{
-              deliveryOrderData.orderid
-            }}</span>
-          </p>
-        </div>
-
-        <div class="d-flex justify-space-between align-center flex-wrap">
-          <p class="secondary--text mb-0">
-            <span class="font-weight-bold">Color:</span>
-            <span class="font-weight-regular">{{
-              deliveryOrderData.color
-            }}</span>
-          </p>
-          <p class="secondary--text mb-0">
-            <span class="font-weight-bold">Combination:</span>
-            <span class="font-weight-regular">{{
-              deliveryOrderData.combination
-            }}</span>
-          </p>
-        </div>
-
-        <div class="d-flex justify-space-between align-center flex-wrap">
-          <p class="secondary--text mb-0">
-            <span class="font-weight-bold">Bike Rack:</span>
-            <span class="font-weight-regular">{{
-              deliveryOrderData.rack
-            }}</span>
-          </p>
-        </div>
-      </v-col>
-    </v-row>
-
-    <v-row>
-      <v-col
-        cols="12"
-        xs="12"
-        sm="12"
-        md="12"
-        xl="12"
-        class="d-flex flex-column justify-center align-center"
-      >
-        <div v-if="Object.keys(clickedImage).length > 0">
-          <div class="slider-img-container py-0 my-0" style="display:flex;">
-            <img
-              style="align-self: flex-end;"
-              ref="currentImgRef"
-              :src="clickedImage.local_blob_url"
-              :width="innerWindowWidth > 800 ? 600 : 300"
-            />
-            <span
-              class="img-cross-btn"
-              @click="deleteImage(clickedImage.array_index)"
-            >
-              <v-icon color="black" style="font-size: 20px;cursor: pointer;">
-                mdi-close
-              </v-icon>
-            </span>
-            <span class="img-left-btn" @click="goToNextImage('left')">
-              <v-icon class="white--text">mdi-arrow-left-bold</v-icon>
-            </span>
-            <span class="img-right-btn" @click="goToNextImage('right')">
-              <v-icon class="white--text">mdi-arrow-right-bold</v-icon>
-            </span>
+  <div class="d-flex flex-column justify-space-between" style="height: 100%">
+    <div>
+      <v-row>
+        <v-col cols="12" xs="12" sm="12" md="12" xl="12">
+          <div class="d-flex justify-space-between align-center flex-wrap">
+            <p class="secondary--text mb-0">
+              <span class="font-weight-bold">Date:</span>
+              <span class="font-weight-regular">{{
+                deliveryOrderData.date
+              }}</span>
+            </p>
+            <p class="secondary--text mb-0">
+              <span class="font-weight-bold">Name:</span>
+              <span class="font-weight-regular">{{
+                deliveryOrderData.name
+              }}</span>
+            </p>
           </div>
-          <div style="text-align:center; margin-top: 5px;">
-            Photo {{ clickedImage.array_index + 1 }} of
-            {{ capturedImagesFromVuex.length }}
-          </div>
-        </div>
 
-        <v-img
-          v-else
-          max-height="180"
-          max-width="220"
-          :src="cyclePhoto"
-        ></v-img>
-      </v-col>
-    </v-row>
-    <!-- Fourth Stepper Button -->
-    <v-row>
-      <v-col cols="12" xs="12" sm="12" md="4" xl="4">
-        <v-btn
-          block
-          depressed
-          color="primary"
-          @click.stop="$emit('set-delivery-order-dialog', true)"
+          <div class="d-flex justify-space-between align-center flex-wrap">
+            <p class="secondary--text mb-0">
+              <span class="font-weight-bold">Location:</span>
+              <span class="font-weight-regular">{{
+                deliveryOrderData.location
+              }}</span>
+            </p>
+            <p class="secondary--text mb-0">
+              <span class="font-weight-bold">Order#:</span>
+              <span class="font-weight-regular">{{
+                deliveryOrderData.orderid
+              }}</span>
+            </p>
+          </div>
+
+          <div class="d-flex justify-space-between align-center flex-wrap">
+            <p class="secondary--text mb-0">
+              <span class="font-weight-bold">Color:</span>
+              <span class="font-weight-regular">{{
+                deliveryOrderData.color
+              }}</span>
+            </p>
+            <p class="secondary--text mb-0">
+              <span class="font-weight-bold">Combination:</span>
+              <span class="font-weight-regular">{{
+                deliveryOrderData.combination
+              }}</span>
+            </p>
+          </div>
+
+          <div class="d-flex justify-space-between align-center flex-wrap">
+            <p class="secondary--text mb-0">
+              <span class="font-weight-bold">Bike Rack:</span>
+              <span class="font-weight-regular">{{
+                deliveryOrderData.rack
+              }}</span>
+            </p>
+          </div>
+        </v-col>
+      </v-row>
+
+      <v-row>
+        <v-col
+          cols="12"
+          xs="12"
+          sm="12"
+          md="12"
+          xl="12"
+          class="d-flex flex-column justify-center align-center"
         >
-          Complete
-        </v-btn>
-      </v-col>
-      <v-col cols="12" xs="12" sm="12" md="4" xl="4">
-        <v-btn
-          block
-          depressed
-          color="accent"
-          @click.stop="$emit('set-delivery-stepper', 3)"
-        >
-          Back
-        </v-btn>
-      </v-col>
-      <v-col cols="12" xs="12" sm="12" md="4" xl="4">
-        <v-btn block depressed color="error" @click.stop="$router.go(-1)">
-          Cancel
-        </v-btn>
-      </v-col>
-    </v-row>
+          <div v-if="Object.keys(clickedImage).length > 0">
+            <div class="slider-img-container py-0 my-0" style="display:flex;">
+              <img
+                style="align-self: flex-end;"
+                ref="currentImgRef"
+                :src="clickedImage.local_blob_url"
+                :width="innerWindowWidth > 800 ? 600 : 300"
+              />
+              <span
+                class="img-cross-btn"
+                @click="deleteImage(clickedImage.array_index)"
+              >
+                <v-icon color="black" style="font-size: 20px;cursor: pointer;">
+                  mdi-close
+                </v-icon>
+              </span>
+              <span class="img-left-btn" @click="goToNextImage('left')">
+                <v-icon class="white--text">mdi-arrow-left-bold</v-icon>
+              </span>
+              <span class="img-right-btn" @click="goToNextImage('right')">
+                <v-icon class="white--text">mdi-arrow-right-bold</v-icon>
+              </span>
+            </div>
+            <div style="text-align:center; margin-top: 5px;">
+              Photo {{ clickedImage.array_index + 1 }} of
+              {{ capturedImagesFromVuex.length }}
+            </div>
+          </div>
+
+          <v-img
+            v-else
+            max-height="180"
+            max-width="220"
+            :src="cyclePhoto"
+          ></v-img>
+        </v-col>
+      </v-row>
+    </div>
+
+    <div>
+      <!-- Fourth Stepper Button -->
+      <v-row>
+        <v-col cols="12" xs="12" sm="12" md="4" xl="4">
+          <v-btn
+            block
+            depressed
+            color="primary"
+            @click.stop="$emit('set-delivery-order-dialog', true)"
+          >
+            Complete
+          </v-btn>
+        </v-col>
+        <v-col cols="12" xs="12" sm="12" md="4" xl="4">
+          <v-btn
+            block
+            depressed
+            color="accent"
+            @click.stop="$emit('set-delivery-stepper', 3)"
+          >
+            <v-icon dark>
+              mdi-chevron-left
+            </v-icon>
+            Back
+          </v-btn>
+        </v-col>
+        <v-col cols="12" xs="12" sm="12" md="4" xl="4">
+          <v-btn block depressed color="error" @click.stop="$router.go(-1)">
+            Cancel
+          </v-btn>
+        </v-col>
+      </v-row>
+    </div>
   </div>
 </template>
 <script>
@@ -160,7 +168,7 @@ export default {
       canvasWidth: 640,
       aspectRatio: null,
       reviewPhoto: false,
-      allImages: undefined
+      allImages: undefined,
     };
   },
   computed: {
@@ -191,12 +199,11 @@ export default {
         if (newVal !== undefined && newVal.length > 0) {
           this.clickedImage = { ...newVal[0], array_index: 0 };
           // this.$emit('uploadFiles', this.clickedImage)
-
-          } else {
+        } else {
           this.clickedImage = {};
         }
         // console.log("hereeeeeeeeeeeeeee ........ ", newVal);
-        this.$emit('setUploadFiles', newVal)
+        this.$emit("setUploadFiles", newVal);
       },
     },
   },

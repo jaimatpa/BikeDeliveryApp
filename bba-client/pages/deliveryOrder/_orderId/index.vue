@@ -4,164 +4,200 @@
       <v-stepper-items>
         <!-- First Stepper -->
         <v-stepper-content step="1">
-          <v-row>
-            <v-col cols="12" xs="12" sm="12" md="6" xl="6">
-              <v-text-field
-                v-model="deliveryOrderData.date"
-                label="Date"
-                placeholder="Date"
-                readonly
-                disabled
-                filled
-                dense
-                outlined
-              >
-              </v-text-field>
-            </v-col>
-            <v-col cols="12" xs="12" sm="12" md="6" xl="6">
-              <v-text-field
-                v-model="deliveryOrderData.name"
-                label="Name"
-                placeholder="Name"
-                readonly
-                disabled
-                filled
-                dense
-                outlined
-              >
-              </v-text-field>
-            </v-col>
-          </v-row>
+          <div
+            class="d-flex flex-column justify-space-between"
+            style="height: 100%"
+          >
+            <div>
+              <v-row>
+                <v-col cols="12" xs="12" sm="12" md="6" xl="6">
+                  <v-text-field
+                    v-model="deliveryOrderData.date"
+                    label="Date"
+                    placeholder="Date"
+                    readonly
+                    disabled
+                    filled
+                    dense
+                    outlined
+                  >
+                  </v-text-field>
+                </v-col>
+                <v-col cols="12" xs="12" sm="12" md="6" xl="6">
+                  <v-text-field
+                    v-model="deliveryOrderData.name"
+                    label="Name"
+                    placeholder="Name"
+                    readonly
+                    disabled
+                    filled
+                    dense
+                    outlined
+                  >
+                  </v-text-field>
+                </v-col>
+              </v-row>
 
-          <v-row>
-            <v-col cols="12" xs="12" sm="12" md="6" xl="6">
-              <v-text-field
-                v-model="deliveryOrderData.location"
-                label="Location"
-                placeholder="Location"
-                readonly
-                disabled
-                filled
-                dense
-                outlined
-              >
-              </v-text-field>
-            </v-col>
-            <v-col cols="12" xs="12" sm="12" md="6" xl="6">
-              <v-text-field
-                v-model="deliveryOrderData.orderid"
-                label="Order#"
-                placeholder="Order"
-                readonly
-                disabled
-                filled
-                dense
-                outlined
-              >
-              </v-text-field>
-            </v-col>
-          </v-row>
+              <v-row>
+                <v-col cols="12" xs="12" sm="12" md="6" xl="6">
+                  <v-text-field
+                    v-model="deliveryOrderData.location"
+                    label="Location"
+                    placeholder="Location"
+                    readonly
+                    disabled
+                    filled
+                    dense
+                    outlined
+                  >
+                  </v-text-field>
+                </v-col>
+                <v-col cols="12" xs="12" sm="12" md="6" xl="6">
+                  <v-text-field
+                    v-model="deliveryOrderData.orderid"
+                    label="Order#"
+                    placeholder="Order"
+                    readonly
+                    disabled
+                    filled
+                    dense
+                    outlined
+                  >
+                  </v-text-field>
+                </v-col>
+              </v-row>
 
-          <v-row>
-            <v-col cols="12" xs="12" sm="12" md="6" xl="6">
-              <v-text-field
-                v-model="deliveryOrderData.rack"
-                label="Bike Rack"
-                placeholder="Bike Rack"
-                readonly
-                disabled
-                filled
-                dense
-                outlined
-              >
-              </v-text-field>
-            </v-col>
-          </v-row>
-
-          <!-- First Stepper Button -->
-          <v-row>
-            <v-col cols="12" xs="12" sm="12" md="6" xl="6">
-              <v-btn
-                block
-                depressed
-                color="primary"
-                @click.stop="deliveryStepper = 2"
-              >
-                Next
-              </v-btn>
-            </v-col>
-            <v-col cols="12" xs="12" sm="12" md="6" xl="6">
-              <v-btn block depressed color="error" @click.stop="$router.go(-1)">
-                Cancel
-              </v-btn>
-            </v-col>
-          </v-row>
+              <v-row>
+                <v-col cols="12" xs="12" sm="12" md="6" xl="6">
+                  <v-text-field
+                    v-model="deliveryOrderData.rack"
+                    label="Bike Rack"
+                    placeholder="Bike Rack"
+                    readonly
+                    disabled
+                    filled
+                    dense
+                    outlined
+                  >
+                  </v-text-field>
+                </v-col>
+              </v-row>
+            </div>
+            <div>
+              <!-- First Stepper Button -->
+              <v-row>
+                <v-col cols="12" xs="12" sm="12" md="6" xl="6">
+                  <v-btn
+                    block
+                    depressed
+                    color="primary"
+                    @click.stop="deliveryStepper = 2"
+                  >
+                    Next
+                    <v-icon dark>
+                      mdi-chevron-right
+                    </v-icon>
+                  </v-btn>
+                </v-col>
+                <v-col cols="12" xs="12" sm="12" md="6" xl="6">
+                  <v-btn
+                    block
+                    depressed
+                    color="error"
+                    @click.stop="$router.go(-1)"
+                  >
+                    Cancel
+                  </v-btn>
+                </v-col>
+              </v-row>
+            </div>
+          </div>
         </v-stepper-content>
 
         <!-- Second Stepper -->
         <v-stepper-content step="2">
-          <v-row>
-            <v-col cols="12" xs="12" sm="12" md="6" xl="6">
-              <v-text-field
-                v-model="deliveryOrderData.color"
-                label="Color"
-                placeholder="Color"
-                readonly
-                disabled
-                filled
-                dense
-                outlined
-              >
-              </v-text-field>
-            </v-col>
-            <v-col cols="12" xs="12" sm="12" md="6" xl="6">
-              <v-text-field
-                v-model="deliveryOrderData.combination"
-                label="Combination"
-                placeholder="Combination"
-                readonly
-                disabled
-                filled
-                dense
-                outlined
-              >
-              </v-text-field>
-            </v-col>
-          </v-row>
-
-          <!-- Second Stepper Button -->
-          <v-row>
-            <v-col cols="12" xs="12" sm="12" md="4" xl="4">
-              <v-btn
-                block
-                depressed
-                color="primary"
-                @click.stop="deliveryStepper = 3"
-              >
-                Next
-              </v-btn>
-            </v-col>
-            <v-col cols="12" xs="12" sm="12" md="4" xl="4">
-              <v-btn
-                block
-                depressed
-                color="accent"
-                @click.stop="deliveryStepper = 1"
-              >
-                Back
-              </v-btn>
-            </v-col>
-            <v-col cols="12" xs="12" sm="12" md="4" xl="4">
-              <v-btn block depressed color="error" @click.stop="$router.go(-1)">
-                Cancel
-              </v-btn>
-            </v-col>
-          </v-row>
+          <div class="d-flex flex-column justify-space-between" style="height: 100%">
+            <div>
+              <v-row>
+                <v-col cols="12" xs="12" sm="12" md="6" xl="6">
+                  <v-text-field
+                    v-model="deliveryOrderData.color"
+                    label="Color"
+                    placeholder="Color"
+                    readonly
+                    disabled
+                    filled
+                    dense
+                    outlined
+                  >
+                  </v-text-field>
+                </v-col>
+                <v-col cols="12" xs="12" sm="12" md="6" xl="6">
+                  <v-text-field
+                    v-model="deliveryOrderData.combination"
+                    label="Combination"
+                    placeholder="Combination"
+                    readonly
+                    disabled
+                    filled
+                    dense
+                    outlined
+                  >
+                  </v-text-field>
+                </v-col>
+              </v-row>
+            </div>
+            <div>
+              <!-- Second Stepper Button -->
+              <v-row>
+                <v-col cols="12" xs="12" sm="12" md="4" xl="4">
+                  <v-btn
+                    block
+                    depressed
+                    color="primary"
+                    @click.stop="deliveryStepper = 3"
+                  >
+                    Next
+                    <v-icon dark>
+                      mdi-chevron-right
+                    </v-icon>
+                  </v-btn>
+                </v-col>
+                <v-col cols="12" xs="12" sm="12" md="4" xl="4">
+                  <v-btn
+                    block
+                    depressed
+                    color="accent"
+                    @click.stop="deliveryStepper = 1"
+                  >
+                    <v-icon dark>
+                      mdi-chevron-left
+                    </v-icon>
+                    Back
+                  </v-btn>
+                </v-col>
+                <v-col cols="12" xs="12" sm="12" md="4" xl="4">
+                  <v-btn
+                    block
+                    depressed
+                    color="error"
+                    @click.stop="$router.go(-1)"
+                  >
+                    Cancel
+                  </v-btn>
+                </v-col>
+              </v-row>
+            </div>
+          </div>
         </v-stepper-content>
 
         <!-- Third Stepper -->
         <v-stepper-content step="3">
-          <ThirdStepper @set-delivery-stepper="setDelivaryStepper"  :deliveryOrderData="deliveryOrderData" :userPosition="userPosition" />
+          <ThirdStepper
+            @set-delivery-stepper="setDelivaryStepper"
+            :deliveryOrderData="deliveryOrderData"
+            :userPosition="userPosition"
+          />
         </v-stepper-content>
 
         <!-- Fourth Stepper -->
@@ -214,11 +250,8 @@
         </v-card-text>
       </v-card>
     </v-dialog>
-      <v-overlay :value="loader">
-      <v-progress-circular
-        indeterminate
-        size="64"
-      ></v-progress-circular>
+    <v-overlay :value="loader">
+      <v-progress-circular indeterminate size="64"></v-progress-circular>
     </v-overlay>
   </Page>
 </template>
@@ -318,10 +351,15 @@ export default {
         "[color]": "color",
         "[rack]": "rack",
         "[geo-lat]": "geo-lat",
-        "[geo-long]": "geo-long"
+        "[geo-long]": "geo-long",
       };
 
-      let output = this.getMessage(this.templateMsg, infoMap, dataToAdd, userPositionData);
+      let output = this.getMessage(
+        this.templateMsg,
+        infoMap,
+        dataToAdd,
+        userPositionData
+      );
 
       // let message = `Hello ${dataToAdd.name}! Your bike is now available at ${dataToAdd.location}. Your deliver number is ${dataToAdd.orderid}, Bike Rack : ${dataToAdd.rack}, Color : ${dataToAdd.color}, Lock-Combo : ${dataToAdd.combination}. Thank You.`;
       // this.smsObject.message = message;
@@ -348,7 +386,7 @@ export default {
       try {
         this.uploadFiles();
       } catch (error) {
-        console.log('error', error);
+        console.log("error", error);
       }
     },
     async getOrderDetails() {
@@ -361,7 +399,9 @@ export default {
 
         const responseData = _.omit(response[0], "date");
         this.deliveryOrderData = responseData;
-        this.deliveryOrderData.date = moment(response[0].date).format('MM/DD/YYYY hh:mm A');        
+        this.deliveryOrderData.date = moment(response[0].date).format(
+          "MM/DD/YYYY hh:mm A"
+        );
 
         //  this.$router.go(-1);
       } catch (err) {
@@ -388,7 +428,10 @@ export default {
 
         if (result.success) {
           console.log(`upload success!!! ${this.deliveryOrderData.orderid}`);
-          this.$router.push({path: "/callForHelp", query: {orderid: this.deliveryOrderData.orderid}})
+          this.$router.push({
+            path: "/callForHelp",
+            query: { orderid: this.deliveryOrderData.orderid },
+          });
         } else {
           console.log("upload failed!!!");
         }
@@ -426,13 +469,13 @@ export default {
           result = result.replaceAll(key, `${userObj[key0]}-${userObj[key1]}`);
         }
 
-        if(key === "[geo-lat]") {
-          result = result.replaceAll(key, userPosition.lat)
+        if (key === "[geo-lat]") {
+          result = result.replaceAll(key, userPosition.lat);
         }
-        if(key === "[geo-long]") {
-          result = result.replaceAll(key, userPosition.lng)
+        if (key === "[geo-long]") {
+          result = result.replaceAll(key, userPosition.lng);
         }
-        
+
         result = result.replaceAll(key, userObj[infoMap[key]]);
       }
       return result;
@@ -442,14 +485,6 @@ export default {
 </script>
 
 <style lang="scss">
-.order-details-stepper {
-  .v-stepper__wrapper {
-    .v-input {
-      padding: 5px 0 !important;
-    }
-  }
-}
-
 .order-details-dialog {
   box-shadow: none !important;
 
