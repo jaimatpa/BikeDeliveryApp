@@ -104,7 +104,7 @@
                     block
                     depressed
                     color="error"
-                    @click.stop="$router.go(-1)"
+                    @click.stop="deliveryCancelOrderDialog = true"
                   >
                     Cancel
                   </v-btn>
@@ -116,7 +116,10 @@
 
         <!-- Second Stepper -->
         <v-stepper-content step="2">
-          <div class="d-flex flex-column justify-space-between" style="height: 100%">
+          <div
+            class="d-flex flex-column justify-space-between"
+            style="height: 100%"
+          >
             <div>
               <v-row>
                 <v-col cols="12" xs="12" sm="12" md="6" xl="6">
@@ -181,7 +184,7 @@
                     block
                     depressed
                     color="error"
-                    @click.stop="$router.go(-1)"
+                    @click.stop="deliveryCancelOrderDialog = true"
                   >
                     Cancel
                   </v-btn>
@@ -250,6 +253,44 @@
         </v-card-text>
       </v-card>
     </v-dialog>
+
+    <!-- Delivery Cancel Dialog -->
+    <v-dialog
+      v-model="deliveryCancelOrderDialog"
+      transition="dialog-bottom-transition"
+      max-width="350"
+      content-class="order-details-dialog"
+    >
+      <v-card>
+        <v-toolbar dense color="error" dark elevation="0">
+          <v-toolbar-title>Cancel Delivery</v-toolbar-title>
+          <v-spacer />
+          <v-btn icon dark @click.stop="deliveryCancelOrderDialog = false">
+            <v-icon>mdi-close</v-icon>
+          </v-btn>
+        </v-toolbar>
+
+        <v-card-text class="my-5 text-center">
+          <p class="title mb-3 secondary--text sure-title">
+            Are you sure you want to cancel this delivery order?
+          </p>
+
+          <div class="d-flex flex-column">
+            <v-btn class="ma-2" color="primary" @click.stop="$router.go(-1)">
+              Yes
+            </v-btn>
+            <v-btn
+              class="ma-2"
+              outlined
+              color="error"
+              @click.stop="deliveryCancelOrderDialog = false"
+            >
+              No
+            </v-btn>
+          </div>
+        </v-card-text>
+      </v-card>
+    </v-dialog>
     <v-overlay :value="loader">
       <v-progress-circular indeterminate size="64"></v-progress-circular>
     </v-overlay>
@@ -293,6 +334,7 @@ export default {
       deliveryOrderData: {},
       deliveryStepper: 1,
       deliveryOrderDialog: false,
+      deliveryCancelOrderDialog: false,
       emptyPhoto: emptyPhoto,
       cyclePhoto: cyclePhoto,
       loader: false,
