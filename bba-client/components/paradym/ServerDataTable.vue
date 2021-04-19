@@ -93,7 +93,7 @@
       :title="`Delete ${name}`"
       :message="
         itemToDelete
-          ? `Delete ${name} <strong>${itemToDelete.id}</strong>?`
+          ? `Delete ${name} <strong>${itemToDelete && itemToDelete.name ? itemToDelete.name : itemToDelete.id}</strong>?`
           : `Delete ${name}`
       "
       confirmText="Yes"
@@ -191,7 +191,7 @@ export default {
         value: "actions",
         sortable: false,
         width: "76px",
-      };
+      };      
       if (this.headers && this.headers.length)
         return [...this.headers, actionHeader];
       else return [...this.headersFromItems(), actionHeader];
@@ -254,9 +254,9 @@ export default {
       let result = [];
       if (this.items && this.items.length) {
         let obj = this.items[0];
-        for (const prop in obj) {
+        for (const prop in obj) {          
           result.push({
-            text: prop,
+            text: prop.replace(/\b\w/g, l => l.toUpperCase()),
             value: prop,
           });
         }

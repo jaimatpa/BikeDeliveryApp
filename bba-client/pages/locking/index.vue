@@ -94,11 +94,11 @@ export default {
           text: "LOCK",
           align: "start",
           value: "lock",
-          sortable: false
+          sortable: false,
         },
         { text: "COLOR", value: "color", sortable: false },
         { text: "COMBINATION", value: "combination", sortable: false },
-        { text: "DELIVERY", value: "orderid", sortable: false },
+        { text: "DELIVERY#", value: "orderid", sortable: false },
         { text: "ACTION", value: "actions", sortable: false, align: "center" },
       ],
     };
