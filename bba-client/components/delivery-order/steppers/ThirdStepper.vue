@@ -99,7 +99,12 @@
           </v-btn>
         </v-col>
         <v-col cols="12" xs="12" sm="12" md="4" xl="4">
-          <v-btn block depressed color="error" @click.stop="$router.go(-1)">
+          <v-btn
+            block
+            depressed
+            color="error"
+            @click.stop="deliveryCancelOrderDialog = true"
+          >
             Cancel
           </v-btn>
         </v-col>
