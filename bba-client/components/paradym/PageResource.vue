@@ -16,22 +16,21 @@
       color="primary"
     />
 
-    <v-card>
-      <v-card-title>
-        <v-text-field
-          v-model="search"
-          append-icon="mdi-magnify"
-          label="Search"
-          single-line
-          hide-details
-        ></v-text-field>
-      </v-card-title>
+    <div>
+      <v-text-field
+        v-model="search"
+        append-icon="mdi-magnify"
+        label="Search Key"
+        single-line
+        hide-details
+        class="mb-5"
+      ></v-text-field>
       <v-data-table
         :headers="headers"
         :items="webHookMapDataTable"
         v-if="isShowWebHookMappingTable"
         :search="search"
-        :loading="isLoding"
+        :loading="loading"
         loading-text="Loading... Please wait"
         class="elevation-1 web-hook-mapping-table"
       >
@@ -81,225 +80,7 @@
           </v-btn>
         </template>
       </v-snackbar>
-    </v-card>
-
-    <!-- <v-simple-table
-      v-if="isShowWebHookMappingTable"
-      dense
-      class="web-hook-mapping-table"
-    >
-      <template v-slot:default>
-        <thead>
-          <tr>
-            <th class="text-left">Table KEY</th>
-            <th class="text-left">JSON KEY</th>
-          </tr>
-        </thead>
-        <tbody>
-          <tr>
-            <td>
-              <v-text-field
-                label="date"
-                outlined
-                dense
-                readonly
-                v-model="date"
-              ></v-text-field>
-            </td>
-            <td>
-              <v-text-field
-                label="Key 1"
-                outlined
-                dense
-                v-model="jsonKey1"
-                :rules="[rules.required]"
-              ></v-text-field>
-            </td>
-          </tr>
-          <tr>
-            <td>
-              <v-text-field
-                label="Name"
-                outlined
-                dense
-                readonly
-                v-model="tableKeyName"
-              ></v-text-field>
-            </td>
-            <td>
-              <v-text-field
-                label="Key 2"
-                outlined
-                dense
-                v-model="jsonKey2"
-                :rules="[rules.required]"
-              ></v-text-field>
-            </td>
-          </tr>
-          <tr>
-            <td>
-              <v-text-field
-                label="Location"
-                outlined
-                dense
-                readonly
-                v-model="location"
-              ></v-text-field>
-            </td>
-            <td>
-              <v-text-field
-                label="Key 3"
-                outlined
-                dense
-                v-model="jsonKey3"
-                :rules="[rules.required]"
-              ></v-text-field>
-            </td>
-          </tr>
-          <tr>
-            <td>
-              <v-text-field
-                label="OrderId"
-                outlined
-                dense
-                readonly
-                v-model="orderid"
-              ></v-text-field>
-            </td>
-            <td>
-              <v-text-field
-                label="Key 4"
-                outlined
-                dense
-                v-model="jsonKey4"
-                :rules="[rules.required]"
-              ></v-text-field>
-            </td>
-          </tr>
-          <tr>
-            <td>
-              <v-text-field
-                label="Rack"
-                outlined
-                dense
-                readonly
-                v-model="rack"
-              ></v-text-field>
-            </td>
-            <td>
-              <v-text-field
-                label="Key 5"
-                outlined
-                dense
-                v-model="jsonKey5"
-                :rules="[rules.required]"
-              ></v-text-field>
-            </td>
-          </tr>
-          <tr>
-            <td>
-              <v-text-field
-                label="Color"
-                outlined
-                dense
-                readonly
-                v-model="color"
-              ></v-text-field>
-            </td>
-            <td>
-              <v-text-field
-                label="Key 6"
-                outlined
-                dense
-                v-model="jsonKey6"
-                :rules="[rules.required]"
-              ></v-text-field>
-            </td>
-          </tr>
-          <tr>
-            <td>
-              <v-text-field
-                label="Combination"
-                outlined
-                dense
-                readonly
-                v-model="combination"
-              ></v-text-field>
-            </td>
-            <td>
-              <v-text-field
-                label="Key 7"
-                outlined
-                dense
-                v-model="jsonKey7"
-                :rules="[rules.required]"
-              ></v-text-field>
-            </td>
-          </tr>
-          <tr>
-            <td>
-              <v-text-field
-                label="Lock"
-                outlined
-                dense
-                readonly
-                v-model="lock"
-              ></v-text-field>
-            </td>
-            <td>
-              <v-text-field
-                label="Key 8"
-                outlined
-                dense
-                v-model="jsonKey8"
-                :rules="[rules.required]"
-              ></v-text-field>
-            </td>
-          </tr>
-          <tr>
-            <td>
-              <v-text-field
-                label="Mobile No"
-                outlined
-                dense
-                readonly
-                v-model="mobileNo"
-              ></v-text-field>
-            </td>
-            <td>
-              <v-text-field
-                label="Key 9"
-                outlined
-                dense
-                v-model="jsonKey9"
-                :rules="[rules.required]"
-              ></v-text-field>
-            </td>
-          </tr>
-          <tr>
-            <td>
-              <v-text-field
-                label="Barcode"
-                outlined
-                dense
-                readonly
-                v-model="barcode"
-              ></v-text-field>
-            </td>
-            <td>
-              <v-text-field
-                label="Key 10"
-                outlined
-                dense
-                v-model="jsonKey10"
-                :rules="[rules.required]"
-              ></v-text-field>
-            </td>
-          </tr>
-        </tbody>
-      </template>
-    </v-simple-table> -->
-
+    </div>
     <v-btn
       block
       color="primary"
@@ -388,15 +169,16 @@ export default {
           value: 'json_key',
         },
       ],
-      webHookMapDataTable: [],
       search: '',
-      isLoding: true
+      loading: true,
+      webHookMapDataTable: [],
+      deliveryOrderDataTable: [],
     };
   },
   created() {
     // this.getWebHookMapDataFromApi();
     this.getWebHookMapDataFromFile();
-    // this.sendWebHookMapData();
+    this.sendWebHookMapData();
   },
   computed: {
     addText() {
@@ -485,7 +267,7 @@ export default {
           json_key: this.jsonKey10.replace(/\s/g, ""),
         },
       ];
-      this.isLoding = false;
+      this.loading = false;
     },
     async sendWebHookMapData() {
       try {
@@ -493,12 +275,31 @@ export default {
           "/api/user/webhookmap",
           this.webHookMapDataTable
         );
-
         if (response) {
           this.showSuccess(`Updated Successfully Done!!!`);
         }
       } catch (error) {
         console.log("error", error);
+      } finally {
+        try {
+          let tempData={}
+          this.webHookMapDataTable.map(data => {
+            let key = data.table_key;
+            let value = data.json_key;
+            tempData[key] = value;
+          })
+          this.deliveryOrderDataTable[0] = tempData;
+          const res = await this.$axios.$post(
+            "/api/user/deliveryorder",
+            this.deliveryOrderDataTable
+          );
+          if (res) {
+            console.log('response', res)
+            this.showSuccess(`Updated Successfully Done!!!`);
+          }
+        } catch (error) {
+          console.log("error", error);
+        }
       }
     },
     editItem(item) {
