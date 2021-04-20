@@ -243,9 +243,7 @@ export default {
   data() {
     return {
       clickedImage: {},
-
       innerWindowWidth: 0,
-
       canvasHeight: 480,
       canvasWidth: 640,
       aspectRatio: null,
