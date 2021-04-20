@@ -213,6 +213,7 @@ export default {
             params: param,
           }
         );
+        
         const { sortBy, sortDesc, page, itemsPerPage } = this.options;
 
         let items = orderDeliveryMockData;
