@@ -4,14 +4,14 @@
       <v-row>
         <v-col cols="12" xs="12" sm="12" md="12" xl="12">
           <div class="d-flex justify-space-between align-center flex-wrap">
-            <p class="font-weight-black text--secondary mb-0">
-              <span class="font-weight-bold">DATE:</span>
+            <p class="secondary--text mb-0">
+              <span class="font-weight-bold">Date:</span>
               <span class="font-weight-regular">{{
                 deliveryOrderData.date
               }}</span>
             </p>
-            <p class="font-weight-black text--secondary mb-0">
-              <span class="font-weight-bold">NAME:</span>
+            <p class="secondary--text mb-0">
+              <span class="font-weight-bold">Name:</span>
               <span class="font-weight-regular">{{
                 deliveryOrderData.name
               }}</span>
@@ -19,14 +19,14 @@
           </div>
 
           <div class="d-flex justify-space-between align-center flex-wrap">
-            <p class="font-weight-black text--secondary mb-0">
-              <span class="font-weight-bold">LOCATION:</span>
+            <p class="secondary--text mb-0">
+              <span class="font-weight-bold">Location:</span>
               <span class="font-weight-regular">{{
                 deliveryOrderData.location
               }}</span>
             </p>
-            <p class="font-weight-black text--secondary mb-0">
-              <span class="font-weight-bold">ORDER#:</span>
+            <p class="secondary--text mb-0">
+              <span class="font-weight-bold">Order#:</span>
               <span class="font-weight-regular">{{
                 deliveryOrderData.orderid
               }}</span>
@@ -34,14 +34,14 @@
           </div>
 
           <div class="d-flex justify-space-between align-center flex-wrap">
-            <p class="font-weight-black text--secondary mb-0">
-              <span class="font-weight-bold">COLOR:</span>
+            <p class="secondary--text mb-0">
+              <span class="font-weight-bold">Color:</span>
               <span class="font-weight-regular">{{
                 deliveryOrderData.color
               }}</span>
             </p>
-            <p class="font-weight-black text--secondary mb-0">
-              <span class="font-weight-bold">COMBINATION:</span>
+            <p class="secondary--text mb-0">
+              <span class="font-weight-bold">Combination:</span>
               <span class="font-weight-regular">{{
                 deliveryOrderData.combination
               }}</span>
@@ -49,8 +49,8 @@
           </div>
 
           <div class="d-flex justify-space-between align-center flex-wrap">
-            <p class="font-weight-black text--secondary mb-0">
-              <span class="font-weight-bold">RACK:</span>
+            <p class="secondary--text mb-0">
+              <span class="font-weight-bold">Bike Rack:</span>
               <span class="font-weight-regular">{{
                 deliveryOrderData.rack
               }}</span>
@@ -134,94 +134,12 @@
           </v-btn>
         </v-col>
         <v-col cols="12" xs="12" sm="12" md="4" xl="4">
-          <v-btn
-            block
-            depressed
-            color="error"
-            @click.stop="deliveryCancelOrderDialog = true"
-          >
+          <v-btn block depressed color="error" @click.stop="$router.go(-1)">
             Cancel
           </v-btn>
         </v-col>
       </v-row>
     </div>
-
-    <!-- Delivery Cancel Dialog -->
-    <v-dialog
-      v-model="deliveryCancelOrderDialog"
-      transition="dialog-bottom-transition"
-      max-width="350"
-      content-class="order-details-dialog"
-    >
-      <v-card>
-        <v-toolbar dense color="error" dark elevation="0">
-          <v-toolbar-title>Cancel Delivery</v-toolbar-title>
-          <v-spacer />
-          <v-btn icon dark @click.stop="deliveryCancelOrderDialog = false">
-            <v-icon>mdi-close</v-icon>
-          </v-btn>
-        </v-toolbar>
-
-        <v-card-text class="my-5 text-center">
-          <p class="title mb-3 secondary--text sure-title">
-            Are you sure you want to cancel this delivery order?
-          </p>
-
-          <div class="d-flex flex-column">
-            <v-btn class="ma-2" color="primary" @click.stop="$router.go(-1)">
-              Yes
-            </v-btn>
-            <v-btn
-              class="ma-2"
-              outlined
-              color="error"
-              @click.stop="deliveryCancelOrderDialog = false"
-            >
-              No
-            </v-btn>
-          </div>
-          <div style="text-align:center; margin-top: 5px;">
-            Photo {{ clickedImage.array_index + 1 }} of
-            {{ capturedImagesFromVuex.length }}
-          </div>
-        </div>
-
-        <v-img
-          v-else
-          max-height="180"
-          max-width="220"
-          :src="cyclePhoto"
-        ></v-img>
-      </v-col>
-    </v-row>
-    <!-- Fourth Stepper Button -->
-    <v-row>
-      <v-col cols="12" xs="12" sm="12" md="4" xl="4">
-        <v-btn
-          block
-          depressed
-          color="accent"
-          @click.stop="$emit('set-delivery-stepper', 3)"
-        >
-          Back
-        </v-btn>
-      </v-col>
-      <v-col cols="12" xs="12" sm="12" md="4" xl="4">
-        <v-btn block depressed color="error" @click.stop="$router.go(-1)">
-          Cancel
-        </v-btn>
-      </v-col>
-      <v-col cols="12" xs="12" sm="12" md="4" xl="4">
-        <v-btn
-          block
-          depressed
-          color="primary"
-          @click.stop="$emit('set-delivery-order-dialog', true)"
-        >
-          Complete
-        </v-btn>
-      </v-col>
-    </v-row>
   </div>
 </template>
 <script>
@@ -249,7 +167,6 @@ export default {
       aspectRatio: null,
       reviewPhoto: false,
       allImages: undefined,
-      deliveryCancelOrderDialog: false
     };
   },
   computed: {

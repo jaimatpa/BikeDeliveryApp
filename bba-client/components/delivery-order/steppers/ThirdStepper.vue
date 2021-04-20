@@ -69,34 +69,42 @@
       </v-row>
     </div>
 
-    <!-- Third Stepper Button -->
-    <v-row>
-      <v-col cols="12" xs="12" sm="12" md="4" xl="4">
-        <v-btn
-          block
-          depressed
-          color="accent"
-          @click.stop="$emit('set-delivery-stepper', 4)"
-        >
-          Back
-        </v-btn>
-      </v-col>
-      <v-col cols="12" xs="12" sm="12" md="4" xl="4">
-        <v-btn block depressed color="error" @click.stop="$router.go(-1)">
-          Cancel
-        </v-btn>
-      </v-col>
-      <v-col cols="12" xs="12" sm="12" md="4" xl="4">
-        <v-btn
-          block
-          depressed
-          color="primary"
-          @click.stop="handleGoToNextStepper"
-        >
-          Next
-        </v-btn>
-      </v-col>
-    </v-row>
+    <div>
+      <!-- Third Stepper Button -->
+      <v-row>
+        <v-col cols="12" xs="12" sm="12" md="4" xl="4">
+          <v-btn
+            block
+            depressed
+            color="primary"
+            @click.stop="handleGoToNextStepper"
+          >
+            Next
+            <v-icon dark>
+              mdi-chevron-right
+            </v-icon>
+          </v-btn>
+        </v-col>
+        <v-col cols="12" xs="12" sm="12" md="4" xl="4">
+          <v-btn
+            block
+            depressed
+            color="accent"
+            @click.stop="$emit('set-delivery-stepper', 2)"
+          >
+            <v-icon dark>
+              mdi-chevron-left
+            </v-icon>
+            Back
+          </v-btn>
+        </v-col>
+        <v-col cols="12" xs="12" sm="12" md="4" xl="4">
+          <v-btn block depressed color="error" @click.stop="$router.go(-1)">
+            Cancel
+          </v-btn>
+        </v-col>
+      </v-row>
+    </div>
 
     <CameraModal
       v-if="open_camera_module"

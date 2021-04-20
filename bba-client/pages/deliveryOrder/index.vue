@@ -213,7 +213,7 @@ export default {
             params: param,
           }
         );
-        
+
         const { sortBy, sortDesc, page, itemsPerPage } = this.options;
 
         let items = orderDeliveryMockData;
@@ -276,6 +276,5 @@ export default {
     font-size: 14px !important;
     color: #b5b5b5 !important;
   }
-  
 }
 </style>
