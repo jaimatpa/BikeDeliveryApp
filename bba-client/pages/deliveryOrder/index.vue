@@ -276,5 +276,6 @@ export default {
     font-size: 14px !important;
     color: #b5b5b5 !important;
   }
+  
 }
 </style>
