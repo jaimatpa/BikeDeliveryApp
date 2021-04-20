@@ -100,6 +100,86 @@
           </v-row>
         </v-stepper-content>
 
+        <!-- Second Stepper -->
+        <v-stepper-content step="2">
+          <div
+            class="d-flex flex-column justify-space-between"
+            style="height: 100%"
+          >
+            <div>
+              <v-row>
+                <v-col cols="12" xs="12" sm="12" md="6" xl="6">
+                  <v-text-field
+                    v-model="deliveryOrderData.color"
+                    label="Color"
+                    placeholder="Color"
+                    readonly
+                    disabled
+                    filled
+                    dense
+                    outlined
+                  >
+                  </v-text-field>
+                </v-col>
+                <v-col cols="12" xs="12" sm="12" md="6" xl="6">
+                  <v-text-field
+                    v-model="deliveryOrderData.combination"
+                    label="Combination"
+                    placeholder="Combination"
+                    readonly
+                    disabled
+                    filled
+                    dense
+                    outlined
+                  >
+                  </v-text-field>
+                </v-col>
+              </v-row>
+            </div>
+            <div>
+              <!-- Second Stepper Button -->
+              <v-row>
+                <v-col cols="12" xs="12" sm="12" md="4" xl="4">
+                  <v-btn
+                    block
+                    depressed
+                    color="accent"
+                    @click.stop="deliveryStepper = 1"
+                  >
+                    <v-icon dark>
+                      mdi-chevron-left
+                    </v-icon>
+                    Back
+                  </v-btn>
+                </v-col>
+                <v-col cols="12" xs="12" sm="12" md="4" xl="4">
+                  <v-btn
+                    block
+                    depressed
+                    color="error"
+                    @click.stop="deliveryCancelOrderDialog = true"
+                  >
+                    Cancel
+                  </v-btn>
+                </v-col>
+                <v-col cols="12" xs="12" sm="12" md="4" xl="4">
+                  <v-btn
+                    block
+                    depressed
+                    color="primary"
+                    @click.stop="deliveryStepper = 3"
+                  >
+                    Next
+                    <v-icon dark>
+                      mdi-chevron-right
+                    </v-icon>
+                  </v-btn>
+                </v-col>
+              </v-row>
+            </div>
+          </div>
+        </v-stepper-content>
+
         <!-- Third Stepper -->
         <v-stepper-content step="3">
           <ThirdStepper

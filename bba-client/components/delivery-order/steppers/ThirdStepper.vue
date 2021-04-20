@@ -80,20 +80,6 @@
           <v-btn
             block
             depressed
-            color="primary"
-            :disabled="local_files_to_upload.length ? false : true"
-            @click.stop="handleGoToNextStepper"
-          >
-            Next
-            <v-icon dark>
-              mdi-chevron-right
-            </v-icon>
-          </v-btn>
-        </v-col>
-        <v-col cols="12" xs="12" sm="12" md="4" xl="4">
-          <v-btn
-            block
-            depressed
             color="accent"
             @click.stop="$emit('set-delivery-stepper', 1)"
           >
@@ -111,6 +97,19 @@
             @click.stop="deliveryCancelOrderDialog = true"
           >
             Cancel
+          </v-btn>
+        </v-col>
+        <v-col cols="12" xs="12" sm="12" md="4" xl="4">
+          <v-btn
+            block
+            depressed
+            color="primary"
+            @click.stop="handleGoToNextStepper"
+          >
+            Next
+            <v-icon dark>
+              mdi-chevron-right
+            </v-icon>
           </v-btn>
         </v-col>
       </v-row>
