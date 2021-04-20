@@ -244,6 +244,9 @@ export default {
         case "callForHelp":
           return "mdi-help-circle";
           break;
+        case "backupPhotos":
+          return "mdi-backup-restore";
+          break;
 
         default:
           return "";
@@ -284,6 +287,9 @@ export default {
           break;
         case "callForHelp":
           return "Call For Help";
+          break;
+        case "backupPhotos":
+          return "Backup Photos";
           break;
 
         default:
