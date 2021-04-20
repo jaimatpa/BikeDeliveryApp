@@ -3,7 +3,11 @@ const router = express.Router();
 const { Op } = require("sequelize");
 
 const models = require("./../../../models");
-
+const apiError = require("./../../../libs/apiError");
+const constVariables = require("./../../../constants");
+const apiMessage = require("./../../../language/en.json");
+const iterate = require("../../../libs/iterate");
+ 
 router.post("/", async (req, res) => {
     
     try{
@@ -13,24 +17,20 @@ router.post("/", async (req, res) => {
     }
 
     try{
-        const data = JSON.parse(JSON.stringify(req.body));
+        const data = JSON.parse(JSON.stringify(req.body)).data;
         const keys = await models.WebhookMaps.findAll();
-    
-        for(let i =0;i<data.length;i++){
-            let d = data[i];
-            for(let k=0;k<keys.length;k++){
-                const json_key = keys[k].json_key;
-                const table_key = keys[k].table_key;
-                if(json_key !== table_key && d[json_key]){
-                    d[table_key] = d[json_key]
-                    delete d[json_key]
-                }
+        let d = data;
+        for(let k=0;k<keys.length;k++){
+            const json_key = keys[k].json_key;
+            const table_key = keys[k].table_key;
+            const temp = iterate(d, json_key);
+            if(json_key !== table_key && temp !== 'undefined'){
+                d[table_key] = temp
             }
-            await models.DeliveryOrders.build(d).save();
         }
-    }catch(error){
-        console.log(error)
-    }
+        await models.DeliveryOrders.build(d).save();
+
+    }catch(error){}
     
     //received the json here req.body
     res.send(req.body);

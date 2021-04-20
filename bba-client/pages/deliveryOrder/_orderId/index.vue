@@ -4,146 +4,100 @@
       <v-stepper-items>
         <!-- First Stepper -->
         <v-stepper-content step="1">
-          <v-form ref="form" v-model="valid" lazy-validation>
-            <div
-              class="d-flex flex-column justify-space-between"
-              style="height: 100%"
-            >
-              <div>
-                <v-row>
-                  <v-col cols="12" xs="12" sm="12" md="6" xl="6">
-                    <v-text-field
-                      v-model="deliveryOrderData.orderid"
-                      label="ORDER #"
-                      placeholder="Order"
-                      readonly
-                      disabled
-                      filled
-                      dense
-                      outlined
-                    >
-                    </v-text-field>
-                  </v-col>
+          <div
+            class="d-flex flex-column justify-space-between"
+            style="height: 100%"
+          >              
+            <v-row>
+              <v-col cols="12" xs="12" sm="12" md="6" xl="6">
+                <v-text-field
+                  v-model="deliveryOrderData.date"
+                  label="Date"
+                  placeholder="Date"
+                  readonly
+                  disabled
+                  filled
+                  dense
+                  outlined
+                >
+                </v-text-field>
+              </v-col>
+              <v-col cols="12" xs="12" sm="12" md="6" xl="6">
+                <v-text-field
+                  v-model="deliveryOrderData.name"
+                  label="Name"
+                  placeholder="Name"
+                  readonly
+                  disabled
+                  filled
+                  dense
+                  outlined
+                >
+                </v-text-field>
+              </v-col>
+            </v-row>
 
-                  <v-col cols="12" xs="12" sm="12" md="6" xl="6">
-                    <v-datetime-picker
-                      label="DATE"
-                      v-model="datetime"
-                      dateFormat="MM/dd/yyyy"
-                      timeFormat="HH:mm a"
-                      :textFieldProps="{ outlined: 'outlined', dense: 'dense' }"
-                    >
-                      <template v-slot:dateIcon>
-                        <v-icon>mdi-calendar</v-icon>
-                      </template>
-
-                      <template v-slot:timeIcon>
-                        <v-icon>mdi-clock-time-four-outline</v-icon>
-                      </template>
-                    </v-datetime-picker>
-                  </v-col>
-                </v-row>
-
-                <v-row>
-                  <v-col cols="12" xs="12" sm="12" md="6" xl="6">
-                    <v-text-field
-                      v-model="deliveryOrderData.name"
-                      label="NAME"
-                      placeholder="Name"
-                      dense
-                      outlined
-                      :counter="30"
-                      :rules="nameRules"
-                    >
-                    </v-text-field>
-                  </v-col>
-
-                  <v-col cols="12" xs="12" sm="12" md="6" xl="6">
-                    <v-text-field
-                      v-model="deliveryOrderData.location"
-                      label="LOCATION"
-                      placeholder="Location"
-                      dense
-                      outlined
-                      :counter="30"
-                      :rules="locationRules"
-                    >
-                    </v-text-field>
-                  </v-col>
-                </v-row>
-
-                <v-row>
-                  <v-col cols="12" xs="12" sm="12" md="6" xl="6">
-                    <v-select
-                      :items="colorItems"
-                      v-model="defaultColorValue"
-                      label="COLOR"
-                      dense
-                      outlined
-                    ></v-select>
-                  </v-col>
-                  <v-col cols="12" xs="12" sm="12" md="6" xl="6">
-                    <v-text-field
-                      v-model="defaultCombinationValue"
-                      label="COMBINATION"
-                      placeholder="Combination"
-                      disabled
-                      readonly
-                      filled
-                      dense
-                      outlined
-                    >
-                    </v-text-field>
-                  </v-col>
-                </v-row>
-
-                <!-- <v-row>
-                <v-col cols="12" xs="12" sm="12" md="6" xl="6">
-                  <v-text-field
-                    v-model="deliveryOrderData.rack"
-                    label="BIKE RACK"
-                    placeholder="Bike Rack"
-                    readonly
-                    disabled
-                    filled
-                    dense
-                    outlined
-                  >
-                  </v-text-field>
-                </v-col>
-              </v-row> -->
-              </div>
-              <div>
-                <!-- First Stepper Button -->
-                <v-row>
-                  <v-col cols="12" xs="12" sm="12" md="6" xl="6">
-                    <v-btn
-                      block
-                      depressed
-                      color="primary"
-                      :disabled="!valid"
-                      @click.stop="deliveryStepper = 3"
-                    >
-                      Next
-                      <v-icon dark>
-                        mdi-chevron-right
-                      </v-icon>
-                    </v-btn>
-                  </v-col>
-                  <v-col cols="12" xs="12" sm="12" md="6" xl="6">
-                    <v-btn
-                      block
-                      depressed
-                      color="error"
-                      @click.stop="deliveryCancelOrderDialog = true"
-                    >
-                      Cancel
-                    </v-btn>
-                  </v-col>
-                </v-row>
-              </div>
-            </div>
-          </v-form>
+            <v-row>
+              <v-col cols="12" xs="12" sm="12" md="6" xl="6">
+                <v-text-field
+                  v-model="deliveryOrderData.location"
+                  label="Location"
+                  placeholder="Location"
+                  readonly
+                  disabled
+                  filled
+                  dense
+                  outlined
+                >
+                </v-text-field>
+              </v-col>
+              <v-col cols="12" xs="12" sm="12" md="6" xl="6">
+                <v-text-field
+                  v-model="deliveryOrderData.orderid"
+                  label="Order#"
+                  placeholder="Order"
+                  readonly
+                  disabled
+                  filled
+                  dense
+                  outlined
+                >
+                </v-text-field>
+              </v-col>
+            </v-row>
+          
+            <v-row>
+              <v-col cols="12" xs="12" sm="12" md="6" xl="6">
+                <v-text-field
+                  v-model="deliveryOrderData.rack"
+                  label="Bike Rack"
+                  placeholder="Bike Rack"
+                  readonly
+                  dense
+                  outlined
+                >
+                </v-text-field>
+              </v-col>
+            </v-row>
+          </div>
+          <!-- First Stepper Button -->
+          <v-row>
+            <v-col cols="12" xs="12" sm="12" md="6" xl="6">
+              <v-btn block depressed color="error" @click.stop="$router.go(-1)">
+                Cancel
+              </v-btn>
+            </v-col>
+            <v-col cols="12" xs="12" sm="12" md="6" xl="6">
+              <v-btn
+                block
+                depressed
+                color="primary"
+                @click.stop="deliveryStepper = 2"
+              >
+                Next
+              </v-btn>
+            </v-col>
+          </v-row>
         </v-stepper-content>
 
         <!-- Third Stepper -->

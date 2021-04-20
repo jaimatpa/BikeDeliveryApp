@@ -353,9 +353,7 @@ export default {
       this.jsonKey8 = webHookMapData.length ? webHookMapData[7].json_key : "";
       this.jsonKey9 = webHookMapData.length ? webHookMapData[8].json_key : "";
       this.jsonKey10 = webHookMapData.length ? webHookMapData[9].json_key : "";
-    },
-    async sendWebHookMapData() {
-      const webHookMapDataTable = [
+      this.webHookMapDataTable = [
         {
           table_key: this.date,
           json_key: this.jsonKey1.replace(/\s/g, ""),
@@ -397,8 +395,10 @@ export default {
           json_key: this.jsonKey10.replace(/\s/g, ""),
         },
       ];
-      console.log("this.webHookMapDataTable", webHookMapDataTable);
-
+      this.sendWebHookMapData();
+      this.loading = false;
+    },
+    async sendWebHookMapData() {
       try {
         const response = await this.$axios.$post(
           "/api/user/webhookmap",
