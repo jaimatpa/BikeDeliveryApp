@@ -180,48 +180,9 @@
               No
             </v-btn>
           </div>
-          <div style="text-align:center; margin-top: 5px;">
-            Photo {{ clickedImage.array_index + 1 }} of
-            {{ capturedImagesFromVuex.length }}
-          </div>
-        </div>
-
-        <v-img
-          v-else
-          max-height="180"
-          max-width="220"
-          :src="cyclePhoto"
-        ></v-img>
-      </v-col>
-    </v-row>
-    <!-- Fourth Stepper Button -->
-    <v-row>
-      <v-col cols="12" xs="12" sm="12" md="4" xl="4">
-        <v-btn
-          block
-          depressed
-          color="accent"
-          @click.stop="$emit('set-delivery-stepper', 3)"
-        >
-          Back
-        </v-btn>
-      </v-col>
-      <v-col cols="12" xs="12" sm="12" md="4" xl="4">
-        <v-btn block depressed color="error" @click.stop="$router.go(-1)">
-          Cancel
-        </v-btn>
-      </v-col>
-      <v-col cols="12" xs="12" sm="12" md="4" xl="4">
-        <v-btn
-          block
-          depressed
-          color="primary"
-          @click.stop="$emit('set-delivery-order-dialog', true)"
-        >
-          Complete
-        </v-btn>
-      </v-col>
-    </v-row>
+        </v-card-text>
+      </v-card>
+    </v-dialog>
   </div>
 </template>
 <script>
