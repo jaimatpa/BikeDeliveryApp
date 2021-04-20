@@ -15,7 +15,6 @@
   Events:
     edit() - fires when the edit action button is clicked on a row item
 -->
-
 <template>
   <div>
     <v-data-table
