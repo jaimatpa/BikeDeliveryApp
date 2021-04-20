@@ -16,243 +16,71 @@
       color="primary"
     />
 
-    <v-simple-table
-      v-if="isShowWebHookMappingTable"
-      dense
-      class="web-hook-mapping-table"
-    >
-      <template v-slot:default>
-        <thead>
-          <tr>
-            <th class="text-left">Table KEY</th>
-            <th class="text-left">JSON KEY</th>
-          </tr>
-        </thead>
-        <tbody>
-          <tr>
-            <td>
+    <div>
+      <v-text-field
+        v-model="search"
+        append-icon="mdi-magnify"
+        label="Search Key"
+        single-line
+        hide-details
+        class="mb-5"
+      ></v-text-field>
+      <v-data-table
+        :headers="headers"
+        :items="webHookMapDataTable"
+        v-if="isShowWebHookMappingTable"
+        :search="search"
+        :loading="loading"
+        loading-text="Loading... Please wait"
+        class="elevation-1 web-hook-mapping-table"
+      >
+        <template v-slot:item.json_key="props">
+          <v-edit-dialog
+            :return-value.sync="props.item.json_key"
+            large
+            persistent
+            @save="change"
+            @cancel="cancel"
+            @open="open"
+            @close="close"
+          >
+            <div>{{ props.item.json_key }}</div>
+            <template v-slot:input>
+              <div class="mt-4 title">
+                Update Json Key
+              </div>
               <v-text-field
-                label="date"
+                v-model="props.item.json_key"
+                :label="props.item.table_key"
+                autofocus
+                :rules="[rules.required, rules.max25chars]"
                 outlined
                 dense
                 filled
-                disabled
-                readonly
-                v-model="date"
               ></v-text-field>
-            </td>
-            <td>
-              <v-text-field
-                label="Key 1"
-                outlined
-                dense
-                v-model="jsonKey1"
-                :rules="[rules.required]"
-              ></v-text-field>
-            </td>
-          </tr>
-          <tr>
-            <td>
-              <v-text-field
-                label="Name"
-                outlined
-                dense
-                filled
-                disabled
-                readonly
-                v-model="tableKeyName"
-              ></v-text-field>
-            </td>
-            <td>
-              <v-text-field
-                label="Key 2"
-                outlined
-                dense
-                v-model="jsonKey2"
-                :rules="[rules.required]"
-              ></v-text-field>
-            </td>
-          </tr>
-          <tr>
-            <td>
-              <v-text-field
-                label="Location"
-                outlined
-                dense
-                filled
-                disabled
-                readonly
-                v-model="location"
-              ></v-text-field>
-            </td>
-            <td>
-              <v-text-field
-                label="Key 3"
-                outlined
-                dense
-                v-model="jsonKey3"
-                :rules="[rules.required]"
-              ></v-text-field>
-            </td>
-          </tr>
-          <tr>
-            <td>
-              <v-text-field
-                label="OrderId"
-                outlined
-                dense
-                filled
-                disabled
-                readonly
-                v-model="orderid"
-              ></v-text-field>
-            </td>
-            <td>
-              <v-text-field
-                label="Key 4"
-                outlined
-                dense
-                v-model="jsonKey4"
-                :rules="[rules.required]"
-              ></v-text-field>
-            </td>
-          </tr>
-          <tr>
-            <td>
-              <v-text-field
-                label="Rack"
-                outlined
-                dense
-                filled
-                disabled
-                readonly
-                v-model="rack"
-              ></v-text-field>
-            </td>
-            <td>
-              <v-text-field
-                label="Key 5"
-                outlined
-                dense
-                v-model="jsonKey5"
-                :rules="[rules.required]"
-              ></v-text-field>
-            </td>
-          </tr>
-          <tr>
-            <td>
-              <v-text-field
-                label="Color"
-                outlined
-                dense
-                filled
-                disabled
-                readonly
-                v-model="color"
-              ></v-text-field>
-            </td>
-            <td>
-              <v-text-field
-                label="Key 6"
-                outlined
-                dense
-                v-model="jsonKey6"
-                :rules="[rules.required]"
-              ></v-text-field>
-            </td>
-          </tr>
-          <tr>
-            <td>
-              <v-text-field
-                label="Combination"
-                outlined
-                dense
-                filled
-                disabled
-                readonly
-                v-model="combination"
-              ></v-text-field>
-            </td>
-            <td>
-              <v-text-field
-                label="Key 7"
-                outlined
-                dense
-                v-model="jsonKey7"
-                :rules="[rules.required]"
-              ></v-text-field>
-            </td>
-          </tr>
-          <tr>
-            <td>
-              <v-text-field
-                label="Lock"
-                outlined
-                dense
-                filled
-                disabled
-                readonly
-                v-model="lock"
-              ></v-text-field>
-            </td>
-            <td>
-              <v-text-field
-                label="Key 8"
-                outlined
-                dense
-                v-model="jsonKey8"
-                :rules="[rules.required]"
-              ></v-text-field>
-            </td>
-          </tr>
-          <tr>
-            <td>
-              <v-text-field
-                label="Mobile No"
-                outlined
-                dense
-                filled
-                disabled
-                readonly
-                v-model="mobileNo"
-              ></v-text-field>
-            </td>
-            <td>
-              <v-text-field
-                label="Key 9"
-                outlined
-                dense
-                v-model="jsonKey9"
-                :rules="[rules.required]"
-              ></v-text-field>
-            </td>
-          </tr>
-          <tr>
-            <td>
-              <v-text-field
-                label="Barcode"
-                outlined
-                dense
-                filled
-                disabled
-                readonly
-                v-model="barcode"
-              ></v-text-field>
-            </td>
-            <td>
-              <v-text-field
-                label="Key 10"
-                outlined
-                dense
-                v-model="jsonKey10"
-                :rules="[rules.required]"
-              ></v-text-field>
-            </td>
-          </tr>
-        </tbody>
-      </template>
-    </v-simple-table>
+            </template>
+          </v-edit-dialog>
+        </template>
+      </v-data-table>
 
+      <v-snackbar
+        v-model="snack"
+        :timeout="3000"
+        :color="snackColor"
+      >
+        {{ snackText }}
+
+        <template v-slot:action="{ attrs }">
+          <v-btn
+            v-bind="attrs"
+            text
+            @click="snack = false"
+          >
+            Close
+          </v-btn>
+        </template>
+      </v-snackbar>
+    </div>
     <v-btn
       block
       color="primary"
@@ -278,6 +106,7 @@
 <script>
 import _ from "lodash";
 import { mapActions } from "vuex";
+import moment from "moment";
 
 import Page from "./Page";
 import ServerDataTable from "./ServerDataTable";
@@ -323,7 +152,26 @@ export default {
       jsonKey10: "",
       rules: {
         required: (value) => !!value || "Required.",
+        max25chars: (value) => value.length <= 25 || 'Input too long!',
       },
+      snack: false,
+      snackColor: '',
+      snackText: '',
+      pagination: {},
+      headers: [
+        {
+          text: 'TABLE KEY',
+          value: 'table_key',
+        },
+        { 
+          text: 'JSON KEY', 
+          value: 'json_key',
+        },
+      ],
+      search: '',
+      loading: true,
+      webHookMapDataTable: [],
+      deliveryOrderDataTable: [],
     };
   },
   created() {
@@ -342,7 +190,6 @@ export default {
     ...mapActions("snackbar", { showSuccess: "success", showError: "error" }),
     async getWebHookMapDataFromApi() {
       const webHookMapData = await this.$axios.$get("/api/user/webhookmap");
-
       this.jsonKey1 = webHookMapData.length ? webHookMapData[0].json_key : "";
       this.jsonKey2 = webHookMapData.length ? webHookMapData[1].json_key : "";
       this.jsonKey3 = webHookMapData.length ? webHookMapData[2].json_key : "";
@@ -404,7 +251,6 @@ export default {
           "/api/user/webhookmap",
           webHookMapDataTable
         );
-
         if (response) {
           this.showSuccess(`Updated Successfully Done!!!`);
         }
@@ -460,6 +306,24 @@ export default {
       } catch (err) {
         this.showError(err?.response?.data?.errors[NUMBER_0].message);
       }
+    },
+    change () {
+      this.snack = true
+      this.snackColor = 'success'
+      this.snackText = 'Data changed'
+    },
+    cancel () {
+      this.snack = true
+      this.snackColor = 'error'
+      this.snackText = 'Canceled'
+    },
+    open () {
+      this.snack = true
+      this.snackColor = 'info'
+      this.snackText = 'Dialog opened'
+    },
+    close () {
+      console.log('Dialog closed')
     },
   },
 };
