@@ -1,9 +1,14 @@
 <template lang="html">
   <Page>
-
     <!-- <h1>vue-barcode-reader demo</h1> -->
     <!-- Delivery Order Scan Button  -->
-    <v-btn block depressed color="primary" class="mb-5" @click.stop="dialog = true">
+    <v-btn
+      block
+      depressed
+      color="primary"
+      class="mb-5"
+      @click.stop="dialog = true"
+    >
       <v-icon left medium color="white" class="mr-2">
         mdi-barcode-scan
       </v-icon>
@@ -21,7 +26,7 @@
       dense
       clearable
       class="mb-5 order-search-text-field"
-       @keyup="onKeyUp"
+      @keyup="onKeyUp"
       @click:clear="onClearClicked"
     ></v-text-field>
 
@@ -33,43 +38,45 @@
       :loading="loading"
       :search="search"
       class="elevation-1"
-      :mobile-breakpoint='0'
+      :mobile-breakpoint="0"
     >
       <!-- Date -->
       <template v-slot:item.date="{ item }">
-        {{getDateFormat(item.date)}}
+        {{ getDateFormat(item.date) }}
       </template>
 
       <!-- Actions -->
       <template v-slot:item.actions="{ item }">
-  <v-icon
-    medium
-    color="primary"
-    @click.stop="
-      $router.push({
-        path: `/deliveryOrder/${item.orderid}`,
-      })
-    "
-  >
-    mdi-page-next
-  </v-icon>
-</template>
+        <v-icon
+          medium
+          color="primary"
+          @click.stop="
+            $router.push({
+              path: `/deliveryOrder/${item.orderid}`,
+            })
+          "
+        >
+          mdi-page-next
+        </v-icon>
+      </template>
     </v-data-table>
 
-    <v-dialog
-      v-model="dialog"
-     fullscreen
-    >
+    <v-dialog v-model="dialog" fullscreen>
       <v-card>
         <v-card-title class="title primary--text">
           Enter Barcode
         </v-card-title>
-        
+
         <v-card-text>
-           <v-btn  :block="isMobile" depressed color="primary" class="mb-5" @click.stop="closeScanner">
-     
-          Close
-         </v-btn>
+          <v-btn
+            :block="isMobile"
+            depressed
+            color="primary"
+            class="mb-5"
+            @click.stop="closeScanner"
+          >
+            Close
+          </v-btn>
           <v-text-field
             v-model="searchByBarcode"
             append-icon="mdi-magnify"
@@ -80,10 +87,10 @@
             dense
             clearable
             @click:clear="onClearClicked"
-             @keyup="onKeyUp"
+            @keyup="onKeyUp"
             class="mb-5"
           ></v-text-field>
-            <BarScanner @code="code" />
+          <BarScanner @code="code" />
         </v-card-text>
       </v-card>
     </v-dialog>
@@ -143,10 +150,10 @@ export default {
     this.initialRender = false;
   },
   watch: {
-    search: function (newValue) {
+    search: function(newValue) {
       this.getDataFromApi();
     },
-    searchByBarcode: function (newValue) {
+    searchByBarcode: function(newValue) {
       this.getDataFromApi();
     },
     options: {
@@ -262,12 +269,11 @@ export default {
 };
 </script>
 
-
 <style lang="scss">
 .order-search-text-field {
   .v-label {
     font-size: 14px !important;
-    color: #B5B5B5 !important;
+    color: #b5b5b5 !important;
   }
 }
 </style>
