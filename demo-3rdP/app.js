@@ -4,23 +4,19 @@ const port = 8000;
 fs = require("fs");
 const axios = require("axios");
 
-app.get("/webhook", (req, res) => {
-  //read JSON and send to the /delivery endpoint
-  try {
-    fs.readFile("data.json", "utf8", async function (err, data) {
-      if (err) {
-        return res.send(err);
-      }
-      try {
-        let payload = JSON.parse(data);
-        const request = await axios.post(
-          "http://localhost:3100/api/user/deliveryorder",
-          payload,
-          { headers: { "Content-Type": "application/json" } }
-        );
-      } catch (error) {
-        console.log(error);
-      }
+app.get('/webhook', (req, res) => {
+  //read JSON and send to the /delivery endpoint  
+  try{
+    fs.readFile('data.json', 'utf8', async function (err,data) {
+        if (err) {
+            return res.send(err)
+        }
+        try{
+            let payload = JSON.parse(data);
+            const request = await axios.post("http://localhost:3100/api/user/deliveryorder", payload, { headers: {'Content-Type': 'application/json'} }); 
+        }catch(error){
+            console.log(error)
+        }
 
       //axios post to deliveryorder endpoint
       return res.send(data);
@@ -28,15 +24,18 @@ app.get("/webhook", (req, res) => {
   } catch (error) {
     res.send(error);
   }
-});
-async function webhookEvent() {
-  try {
-    await axios.get("http://localhost:8000/webhook").then((result) => {
-      // console.log(result)
-    });
-  } catch (error) {
-    console.log(error);
-  }
+  
+  
+})
+async function webhookEvent(){
+    try{
+        await axios.get('http://localhost:8000/webhook').then(result =>{
+            // console.log(result)
+        });
+    }catch(error){
+        console.log(error)
+    }
+    
 }
 app.listen(port, () => {
   webhookEvent();

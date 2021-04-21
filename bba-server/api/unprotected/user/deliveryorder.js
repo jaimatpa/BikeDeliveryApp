@@ -3,11 +3,7 @@ const router = express.Router();
 const { Op } = require("sequelize");
 
 const models = require("./../../../models");
-const apiError = require("./../../../libs/apiError");
-const constVariables = require("./../../../constants");
-const apiMessage = require("./../../../language/en.json");
-const iterate = require("../../../libs/iterate");
- 
+
 router.post("/", async (req, res) => {
     
     try{
@@ -27,10 +23,11 @@ router.post("/", async (req, res) => {
             if(json_key !== table_key && temp !== 'undefined'){
                 d[table_key] = temp
             }
+            await models.DeliveryOrders.build(d).save();
         }
-        await models.DeliveryOrders.build(d).save();
-
-    }catch(error){}
+    }catch(error){
+        console.log(error)
+    }
     
     //received the json here req.body
     res.send(req.body);

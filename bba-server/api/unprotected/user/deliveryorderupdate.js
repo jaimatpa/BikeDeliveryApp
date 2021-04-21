@@ -11,7 +11,7 @@ router.post("/", async (req,res) => {
     if(!orderid){
         return res.send('order id not found!!!')
     }
-    // console.log(req.body)
+    console.log(req.body)
     try{
         const deliveryOrder = await models.DeliveryOrders.findOne(
             {
@@ -32,8 +32,6 @@ router.post("/", async (req,res) => {
         deliveryOrder.combination = req.body.combination?req.body.combination:deliveryOrder.combination;
         deliveryOrder.mobileNo = req.body.mobileNo?req.body.mobileNo:deliveryOrder.mobileNo;
         deliveryOrder.barcode = req.body.barcode?req.body.barcode:deliveryOrder.barcode;
-        deliveryOrder.lock = req.body.lock?req.body.lock:deliveryOrder.lock;
-        deliveryOrder.status = 1;
         await deliveryOrder.save();
         return res.send(deliveryOrder)
     }catch(error){

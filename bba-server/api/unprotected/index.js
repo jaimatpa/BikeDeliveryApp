@@ -6,7 +6,6 @@ const forgotPassword = require("./user/forgotPassword");
 const resetPassword = require("./user/resetPassword");
 const sendEmailVerification = require("./user/sendEmailVerification");
 const deliveryOrder = require("./user/deliveryorder");
-const searchHistory = require("./user/searchhistory");
 const locking = require("./user/locking");
 const deliveryOrderUpdate = require("./user/deliveryorderupdate");
 const webhookmap = require("./user/webhookmap");
@@ -25,7 +24,6 @@ module.exports = {
     app.use("/api/user/forgotPassword", forgotPassword);
     app.use("/api/user/resetPassword", resetPassword);
     app.use("/api/user/deliveryOrder", deliveryOrder);
-    app.use("/api/user/searchHistory", searchHistory);
     app.use("/api/user/locking", locking);
     app.use("/api/user/deliveryOrderUpdate", deliveryOrderUpdate);
     app.use("/api/user/webhookmap", webhookmap);
