@@ -7,78 +7,110 @@
           <div
             class="d-flex flex-column justify-space-between"
             style="height: 100%"
-          >              
-            <v-row>
-              <v-col cols="12" xs="12" sm="12" md="6" xl="6">
-                <v-text-field
-                  v-model="deliveryOrderData.date"
-                  label="Date"
-                  placeholder="Date"
-                  readonly
-                  disabled
-                  filled
-                  dense
-                  outlined
-                >
-                </v-text-field>
-              </v-col>
-              <v-col cols="12" xs="12" sm="12" md="6" xl="6">
-                <v-text-field
-                  v-model="deliveryOrderData.name"
-                  label="Name"
-                  placeholder="Name"
-                  readonly
-                  disabled
-                  filled
-                  dense
-                  outlined
-                >
-                </v-text-field>
-              </v-col>
-            </v-row>
+          >
+            <div>
+              <v-row>
+                <v-col cols="12" xs="12" sm="12" md="6" xl="6">
+                  <v-text-field
+                    v-model="deliveryOrderData.date"
+                    label="DATE"
+                    placeholder="Date"
+                    readonly
+                    disabled
+                    filled
+                    dense
+                    outlined
+                  >
+                  </v-text-field>
+                </v-col>
+                <v-col cols="12" xs="12" sm="12" md="6" xl="6">
+                  <v-text-field
+                    v-model="deliveryOrderData.name"
+                    label="NAME"
+                    placeholder="Name"
+                    readonly
+                    disabled
+                    filled
+                    dense
+                    outlined
+                  >
+                  </v-text-field>
+                </v-col>
+              </v-row>
 
-            <v-row>
-              <v-col cols="12" xs="12" sm="12" md="6" xl="6">
-                <v-text-field
-                  v-model="deliveryOrderData.location"
-                  label="Location"
-                  placeholder="Location"
-                  readonly
-                  disabled
-                  filled
-                  dense
-                  outlined
-                >
-                </v-text-field>
-              </v-col>
-              <v-col cols="12" xs="12" sm="12" md="6" xl="6">
-                <v-text-field
-                  v-model="deliveryOrderData.orderid"
-                  label="Order#"
-                  placeholder="Order"
-                  readonly
-                  disabled
-                  filled
-                  dense
-                  outlined
-                >
-                </v-text-field>
-              </v-col>
-            </v-row>
-          
-            <v-row>
-              <v-col cols="12" xs="12" sm="12" md="6" xl="6">
-                <v-text-field
-                  v-model="deliveryOrderData.rack"
-                  label="Bike Rack"
-                  placeholder="Bike Rack"
-                  readonly
-                  dense
-                  outlined
-                >
-                </v-text-field>
-              </v-col>
-            </v-row>
+              <v-row>
+                <v-col cols="12" xs="12" sm="12" md="6" xl="6">
+                  <v-text-field
+                    v-model="deliveryOrderData.location"
+                    label="LOCATION"
+                    placeholder="Location"
+                    readonly
+                    disabled
+                    filled
+                    dense
+                    outlined
+                  >
+                  </v-text-field>
+                </v-col>
+                <v-col cols="12" xs="12" sm="12" md="6" xl="6">
+                  <v-text-field
+                    v-model="deliveryOrderData.orderid"
+                    label="ORDER #"
+                    placeholder="Order"
+                    readonly
+                    disabled
+                    filled
+                    dense
+                    outlined
+                  >
+                  </v-text-field>
+                </v-col>
+              </v-row>
+
+              <v-row>
+                <v-col cols="12" xs="12" sm="12" md="6" xl="6">
+                  <v-text-field
+                    v-model="deliveryOrderData.rack"
+                    label="BIKE RACK"
+                    placeholder="Bike Rack"
+                    readonly
+                    disabled
+                    filled
+                    dense
+                    outlined
+                  >
+                  </v-text-field>
+                </v-col>
+              </v-row>
+            </div>
+            <div>
+              <!-- First Stepper Button -->
+              <v-row>
+                <v-col cols="12" xs="12" sm="12" md="6" xl="6">
+                  <v-btn
+                    block
+                    depressed
+                    color="primary"
+                    @click.stop="deliveryStepper = 2"
+                  >
+                    Next
+                    <v-icon dark>
+                      mdi-chevron-right
+                    </v-icon>
+                  </v-btn>
+                </v-col>
+                <v-col cols="12" xs="12" sm="12" md="6" xl="6">
+                  <v-btn
+                    block
+                    depressed
+                    color="error"
+                    @click.stop="deliveryCancelOrderDialog = true"
+                  >
+                    Cancel
+                  </v-btn>
+                </v-col>
+              </v-row>
+            </div>
           </div>
           <!-- First Stepper Button -->
           <v-row>
@@ -111,7 +143,7 @@
                 <v-col cols="12" xs="12" sm="12" md="6" xl="6">
                   <v-text-field
                     v-model="deliveryOrderData.color"
-                    label="Color"
+                    label="COLOR"
                     placeholder="Color"
                     readonly
                     disabled
@@ -124,7 +156,7 @@
                 <v-col cols="12" xs="12" sm="12" md="6" xl="6">
                   <v-text-field
                     v-model="deliveryOrderData.combination"
-                    label="Combination"
+                    label="COMBINATION"
                     placeholder="Combination"
                     readonly
                     disabled
