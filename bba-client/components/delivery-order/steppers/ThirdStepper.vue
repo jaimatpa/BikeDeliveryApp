@@ -90,8 +90,8 @@
           <v-btn
             block
             depressed
-            color="error"
-            @click.stop="deliveryCancelOrderDialog = true"
+            color="accent"
+            @click.stop="$emit('set-delivery-stepper', 1)"
           >
             Cancel
           </v-btn>

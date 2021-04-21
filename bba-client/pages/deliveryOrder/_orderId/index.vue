@@ -12,9 +12,9 @@
               <v-row>
                 <v-col cols="12" xs="12" sm="12" md="6" xl="6">
                   <v-text-field
-                    v-model="deliveryOrderData.date"
-                    label="DATE"
-                    placeholder="Date"
+                    v-model="deliveryOrderData.orderid"
+                    label="ORDER #"
+                    placeholder="Order"
                     readonly
                     disabled
                     filled
@@ -24,13 +24,48 @@
                   </v-text-field>
                 </v-col>
                 <v-col cols="12" xs="12" sm="12" md="6" xl="6">
+                  <!-- <v-text-field
+                    v-model="deliveryOrderData.date"
+                    label="DATE"
+                    placeholder="Date"
+                    dense
+                    outlined
+                  >
+                  </v-text-field> -->
+                  <v-menu
+                    ref="menu1"
+                    v-model="menu1"
+                    :close-on-content-click="false"
+                    transition="scale-transition"
+                    offset-y
+                    max-width="290px"
+                    min-width="auto"
+                  >
+                    <template v-slot:activator="{ on, attrs }">
+                      <v-text-field
+                        v-model="dateFormatted"
+                        label="Date"
+                        hint="MM/DD/YYYY format"
+                        persistent-hint
+                        v-bind="attrs"
+                        @blur="date = parseDate(dateFormatted)"
+                        v-on="on"
+                        outlined
+                        dense
+                      ></v-text-field>
+                    </template>
+                    <v-date-picker
+                      v-model="date"
+                      no-title
+                      @input="menu1 = false"
+                    ></v-date-picker>
+                  </v-menu>
+                </v-col>
+                <v-col cols="12" xs="12" sm="12" md="6" xl="6">
                   <v-text-field
                     v-model="deliveryOrderData.name"
                     label="NAME"
                     placeholder="Name"
-                    readonly
-                    disabled
-                    filled
                     dense
                     outlined
                   >
@@ -44,22 +79,6 @@
                     v-model="deliveryOrderData.location"
                     label="LOCATION"
                     placeholder="Location"
-                    readonly
-                    disabled
-                    filled
-                    dense
-                    outlined
-                  >
-                  </v-text-field>
-                </v-col>
-                <v-col cols="12" xs="12" sm="12" md="6" xl="6">
-                  <v-text-field
-                    v-model="deliveryOrderData.orderid"
-                    label="ORDER #"
-                    placeholder="Order"
-                    readonly
-                    disabled
-                    filled
                     dense
                     outlined
                   >
@@ -68,6 +87,44 @@
               </v-row>
 
               <v-row>
+                <v-col cols="12" xs="12" sm="12" md="6" xl="6">
+                  <!-- <v-text-field
+                    v-model="deliveryOrderData.color"
+                    label="COLOR"
+                    placeholder="Color"
+                    readonly
+                    disabled
+                    filled
+                    dense
+                    outlined
+                  >
+                  </v-text-field> -->
+                  <v-select
+                    :items="colors"
+                    v-model="deliveryOrderData.color"
+                    item-text="color"
+                    item-value="combination"
+                    label="Color"
+                    dense
+                    outlined
+                  ></v-select>
+                </v-col>
+                <v-col cols="12" xs="12" sm="12" md="6" xl="6">
+                  <v-text-field
+                    v-model="deliveryOrderData.combination"
+                    label="COMBINATION"
+                    placeholder="Combination"
+                    disabled
+                    readonly
+                    filled
+                    dense
+                    outlined
+                  >
+                  </v-text-field>
+                </v-col>
+              </v-row>
+
+              <!-- <v-row>
                 <v-col cols="12" xs="12" sm="12" md="6" xl="6">
                   <v-text-field
                     v-model="deliveryOrderData.rack"
@@ -81,7 +138,7 @@
                   >
                   </v-text-field>
                 </v-col>
-              </v-row>
+              </v-row> -->
             </div>
             <div>
               <!-- First Stepper Button -->
@@ -91,7 +148,7 @@
                     block
                     depressed
                     color="primary"
-                    @click.stop="deliveryStepper = 2"
+                    @click.stop="deliveryStepper = 3"
                   >
                     Next
                     <v-icon dark>
@@ -100,91 +157,6 @@
                   </v-btn>
                 </v-col>
                 <v-col cols="12" xs="12" sm="12" md="6" xl="6">
-                  <v-btn
-                    block
-                    depressed
-                    color="error"
-                    @click.stop="deliveryCancelOrderDialog = true"
-                  >
-                    Cancel
-                  </v-btn>
-                </v-col>
-              </v-row>
-            </div>
-          </div>
-          <!-- First Stepper Button -->
-          <v-row>
-            <v-col cols="12" xs="12" sm="12" md="6" xl="6">
-              <v-btn block depressed color="error" @click.stop="$router.go(-1)">
-                Cancel
-              </v-btn>
-            </v-col>
-            <v-col cols="12" xs="12" sm="12" md="6" xl="6">
-              <v-btn
-                block
-                depressed
-                color="primary"
-                @click.stop="deliveryStepper = 2"
-              >
-                Next
-              </v-btn>
-            </v-col>
-          </v-row>
-        </v-stepper-content>
-
-        <!-- Second Stepper -->
-        <v-stepper-content step="2">
-          <div
-            class="d-flex flex-column justify-space-between"
-            style="height: 100%"
-          >
-            <div>
-              <v-row>
-                <v-col cols="12" xs="12" sm="12" md="6" xl="6">
-                  <v-text-field
-                    v-model="deliveryOrderData.color"
-                    label="COLOR"
-                    placeholder="Color"
-                    readonly
-                    disabled
-                    filled
-                    dense
-                    outlined
-                  >
-                  </v-text-field>
-                </v-col>
-                <v-col cols="12" xs="12" sm="12" md="6" xl="6">
-                  <v-text-field
-                    v-model="deliveryOrderData.combination"
-                    label="COMBINATION"
-                    placeholder="Combination"
-                    readonly
-                    disabled
-                    filled
-                    dense
-                    outlined
-                  >
-                  </v-text-field>
-                </v-col>
-              </v-row>
-            </div>
-            <div>
-              <!-- Second Stepper Button -->
-              <v-row>
-                <v-col cols="12" xs="12" sm="12" md="4" xl="4">
-                  <v-btn
-                    block
-                    depressed
-                    color="accent"
-                    @click.stop="deliveryStepper = 1"
-                  >
-                    <v-icon dark>
-                      mdi-chevron-left
-                    </v-icon>
-                    Back
-                  </v-btn>
-                </v-col>
-                <v-col cols="12" xs="12" sm="12" md="4" xl="4">
                   <v-btn
                     block
                     depressed
@@ -401,48 +373,84 @@ export default {
         message: "",
       },
       templateMsg: "",
-      editNumber: false,
-
-      // Current User Data
-      userPosition: {},
-
-      //Rules
-      rules: {
-        required: (value) => !!value || "Required.",
-      },
-      nameRules: [
-        (v) => !!v || "Name is required",
-        (v) =>
-          (v && v.length <= 30) ||
-          "Name must be less than or equal 30 characters",
+      userPosition: null,
+      defaultColorValue: { color: "Orange", combination: "4521" },
+      colorItems: [
+        { color: "Orange", combination: "4521" },
+        { color: "Red", combination: "1236" },
+        { color: "Green", combination: "9654" },
+        { color: "Teal", combination: "6325" },
+        { color: "Gray", combination: "7521" },
       ],
-      locationRules: [
-        (v) => !!v || "Location is required",
-        (v) =>
-          (v && v.length <= 30) ||
-          "Location must be less than or equal 30 characters",
+      colors: [
+        "Red",
+        "Green",
+        "Teal",
+        "Pink",
+        "Goldenrod",
+        "Blue",
+        "Gray",
+        "Purple",
       ],
+
+      // Date field
+      date: new Date().toISOString().substr(0, 10),
+      dateFormatted: this.formatDate(new Date().toISOString().substr(0, 10)),
+      menu1: false,
     };
   },
   computed: {
     isMobile() {
       return this.$vuetify.breakpoint.width < this.breakpoint;
     },
+    computedDateFormatted() {
+      return this.formatDate(this.date);
+    },
   },
   watch: {
-    defaultColorValue(newVal, oldVal) {
-      if (oldVal) {
-        const data = _.find(this.lockingData, (o) => o.color === newVal);
-        this.defaultCombinationValue = data && data.combination;
-      }
+    date(val) {
+      this.dateFormatted = this.formatDate(this.date);
+    },
+    menu1(val) {
+      console.log("menu1", this.menu1);
     },
   },
   methods: {
     ...mapActions("snackbar", { showSuccess: "success", showError: "error" }),
-    async getLockingDetails() {
-      const lockingDataResponse = await this.$axios.$get("/api/user/locking");
-      this.lockingData = lockingDataResponse;
-      this.colorItems = _.map(lockingDataResponse, "color");
+    formatDate(date) {
+      console.log("formate dated", date);
+
+      if (!date) return null;
+
+      const [year, month, day] = date.split("-");
+      return `${month}/${day}/${year}`;
+    },
+    parseDate(date) {
+      if (!date) return null;
+
+      const [month, day, year] = date.split("/");
+      return `${year}-${month.padStart(2, "0")}-${day.padStart(2, "0")}`;
+    },
+    getUserlocation() {
+      if (process.client) {
+        if (navigator.geolocation) {
+          navigator.geolocation.getCurrentPosition(
+            (position) => {
+              console.log("Clicked on pointer, position === ", position);
+              const pos = {
+                lat: position.coords.latitude,
+                lng: position.coords.longitude,
+              };
+              console.log("pos ==== ", pos);
+              this.userPosition = pos;
+            },
+            (error) => {
+              // handle error here.
+              console.log("error =========== ", error);
+            }
+          );
+        }
+      }
     },
     async sendNotification() {
       this.searchHistoryDialog = false;
@@ -521,10 +529,8 @@ export default {
 
         this.deliveryOrderData = response[0];
 
-        this.datetime = new Date(response[0].date);
-        this.defaultColorValue = response[0].color;
-        this.defaultCombinationValue = response[0].combination;
-        this.smsObject.to = this.deliveryOrderData.mobileNo;
+        console.log("this.deliveryOrderData", this.deliveryOrderData);
+
         //  this.$router.go(-1);
       } catch (err) {
         console.log("errror", err.response);
@@ -557,26 +563,7 @@ export default {
           //   path: "/callForHelp",
           //   query: { orderid: this.deliveryOrderData.orderid },
           // });
-
-          const saveData = {
-            date: this.datetime,
-            name: this.deliveryOrderData.name,
-            location: this.deliveryOrderData.location,
-            color: this.defaultColorValue,
-            combination: this.defaultCombinationValue,
-          };
-
-          const result = await this.$axios.$post(
-            "/api/user/deliveryorderupdate",
-            saveData,
-            {
-              params: {
-                orderid: this.deliveryOrderData.orderid,
-              },
-            }
-          );
-
-          if (result) this.$router.push("/deliveryOrder");
+          this.$router.go(-1);
         } else {
           console.log("upload failed!!!");
         }

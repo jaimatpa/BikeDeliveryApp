@@ -2,10 +2,7 @@
   <Page>
     <!-- Lock Scan Button  -->
     <v-btn
-      @click.stop="
-        dialog = true;
-        cameraRender += 1;
-      "
+      @click="showQrScanner = true"
       block
       depressed
       color="primary"

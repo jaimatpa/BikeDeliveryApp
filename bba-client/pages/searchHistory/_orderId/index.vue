@@ -3,78 +3,78 @@
     <div class="d-flex flex-column justify-space-between" style="height: 100%">
       <div>
         <v-row>
-      <v-col cols="12" xs="12" sm="12" md="6" xl="6">
-        <v-text-field
-          v-model="orderData.date"
-          label="DATE"
-          placeholder="Date"
-          disabled
-          filled
-          readonly
-          dense
-          outlined
-        >
-        </v-text-field>
-      </v-col>
-      <v-col cols="12" xs="12" sm="12" md="6" xl="6">
-        <v-text-field
-          v-model="orderData.name"
-          label="NAME"
-          placeholder="Name"
-          disabled
-          readonly
-          filled
-          dense
-          outlined
-        >
-        </v-text-field>
-      </v-col>
-    </v-row>
+          <v-col cols="12" xs="12" sm="12" md="6" xl="6">
+            <v-text-field
+              v-model="orderData.date"
+              label="DATE"
+              placeholder="Date"
+              disabled
+              filled
+              readonly
+              dense
+              outlined
+            >
+            </v-text-field>
+          </v-col>
+          <v-col cols="12" xs="12" sm="12" md="6" xl="6">
+            <v-text-field
+              v-model="orderData.name"
+              label="NAME"
+              placeholder="Name"
+              disabled
+              readonly
+              filled
+              dense
+              outlined
+            >
+            </v-text-field>
+          </v-col>
+        </v-row>
 
-    <v-row>
-      <v-col cols="12" xs="12" sm="12" md="6" xl="6">
-        <v-text-field
-          v-model="orderData.location"
-          label="LOCATION"
-          placeholder="Location"
-          disabled
-          readonly
-          dense
-          filled
-          outlined
-        >
-        </v-text-field>
-      </v-col>
-      <v-col cols="12" xs="12" sm="12" md="6" xl="6">
-        <v-text-field
-          v-model="orderData.orderid"
-          label="ORDER #"
-          placeholder="Order#"
-          disabled
-          readonly
-          filled
-          dense
-          outlined
-        >
-        </v-text-field>
-      </v-col>
-    </v-row>
+        <v-row>
+          <v-col cols="12" xs="12" sm="12" md="6" xl="6">
+            <v-text-field
+              v-model="orderData.location"
+              label="LOCATION"
+              placeholder="Location"
+              disabled
+              readonly
+              dense
+              filled
+              outlined
+            >
+            </v-text-field>
+          </v-col>
+          <v-col cols="12" xs="12" sm="12" md="6" xl="6">
+            <v-text-field
+              v-model="orderData.orderid"
+              label="ORDER #"
+              placeholder="Order#"
+              disabled
+              readonly
+              filled
+              dense
+              outlined
+            >
+            </v-text-field>
+          </v-col>
+        </v-row>
 
-    <v-row>
-      <v-col cols="12" xs="12" sm="12" md="6" xl="6">
-        <v-text-field
-          v-model="orderData.rack"
-          label="BIKE RACK"
-          placeholder="Bike Rack"
-          disabled
-          readonly
-          filled
-          dense
-          outlined
-        >
-        </v-text-field>
-      </v-col>
-    </v-row>
+        <!-- <v-row>
+          <v-col cols="12" xs="12" sm="12" md="6" xl="6">
+            <v-text-field
+              v-model="orderData.rack"
+              label="BIKE RACK"
+              placeholder="Bike Rack"
+              disabled
+              readonly
+              filled
+              dense
+              outlined
+            >
+            </v-text-field>
+          </v-col>
+        </v-row> -->
       </div>
 
       <div>
@@ -85,7 +85,6 @@
               block
               depressed
               color="primary"
-              class="mt-5"
               @click.stop="searchHistoryDialog = true"
             >
               <v-icon left medium color="white">
