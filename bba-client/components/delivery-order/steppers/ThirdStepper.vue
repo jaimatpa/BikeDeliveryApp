@@ -56,10 +56,7 @@
             Photo
           </v-btn>
           <p class="primary--text mt-5 mb-0">LOCATION</p>
-          <p
-            v-if="local_files_to_upload.length"
-            class="body-2 secondary--text text-center"
-          >
+          <p class="body-2 secondary--text text-center">
             {{
               userPosition !== null && deliveryOrderData !== null
                 ? `Your Location is: ${deliveryOrderData &&
