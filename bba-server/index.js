@@ -18,7 +18,7 @@ const seed = require('./seed.js') // Seeding
 // Import unprotected & protected routes
 const apiRoutesUnprotected = require('./api/unprotected/index.js')
 const apiRoutesProtected = require('./api/protected/index.js')
-
+const webHookRoutes = require('./webHook/index.js');
 // Import auth middleware
 const auth = require('./middleware/auth');
 
@@ -27,6 +27,7 @@ const app = express()
 
 // Create Sequelize Models
 const models = require('./models');
+const { webhook } = require('twilio')
 
 // Configure & Initialize Sentry
 Sentry.init({
@@ -63,6 +64,7 @@ async function start () {
   // Create protected routes
   apiRoutesProtected.create(app)
 
+  webHookRoutes.create(app)
   // Seed the database
   if (process.env.SEED && process.env.SEED == 1) {
     consola.log('Seeding database...')

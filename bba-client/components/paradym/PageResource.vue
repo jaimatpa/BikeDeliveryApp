@@ -242,7 +242,6 @@ export default {
           json_key: this.jsonKey10.replace(/\s/g, ""),
         },
       ];
-      this.sendWebHookMapData();
       this.loading = false;
     },
     async sendWebHookMapData() {
@@ -256,6 +255,22 @@ export default {
         }
       } catch (error) {
         console.log("error", error);
+      } finally {
+        try {
+          const response = await this.$axios.$get('/api/webHook/allWebHooks');
+          const getWebHookUrls = response.allWebHooks;
+          getWebHookUrls.forEach(async url => {
+            try {
+              const webHookUrl = url.webHookUrl;
+              await this.$axios.$get(webHookUrl);
+            } catch (error) {
+              console.log("error", error);
+            }
+          });
+          this.showSuccess(`Updated Successfully Done!!!`)
+        } catch (error) {
+          console.log("error", error);
+        }
       }
     },
     editItem(item) {
