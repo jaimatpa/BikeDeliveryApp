@@ -22,8 +22,8 @@ const storage = multer.diskStorage({
 
     // By default, multer removes file extensions so let's add them back
     filename: function (req, file, cb) {
-        const orderid = req.query.orderid;
-        cb(null, file.fieldname + '-' + orderid + '-' + Date.now() + path.extname(file.originalname));
+        console.log("FILE NAME:", file.originalname);
+        cb(null, file.originalname);
     }
 });
 router.post("/", async (req, res) => {
