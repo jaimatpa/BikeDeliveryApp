@@ -143,12 +143,16 @@ export default {
           icon: "mdi-share-outline",
           iconSelected: "mdi-share",
           to: "/resend",
-        }
+        },
       ],
       userItems: [
         {
           title: "WEB HOOK SETTINGS",
           to: "/webHookSetting",
+        },
+        {
+          title: "COLOR COMBINATION SETTINGS",
+          to: "/colorCombinationSetting",
         },
         {
           title: "USER MANAGEMENT",
@@ -217,6 +221,9 @@ export default {
         case "webHookSetting":
           return "mdi-hook";
           break;
+        case "colorCombinationSetting":
+          return "mdi-format-color-fill";
+          break;
         case "users":
           return "mdi-account-group";
           break;
@@ -269,6 +276,9 @@ export default {
           break;
         case "webHookSetting":
           return "Web Hook Settings";
+          break;
+        case "colorCombinationSetting":
+          return "Color Combination Settings";
           break;
         case "users":
           return "User Management";

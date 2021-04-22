@@ -11,7 +11,7 @@
       dense
       clearable
       class="mb-5 order-search-text-field"
-       @keyup="onKeyUp"
+      @keyup="onKeyUp"
       @click:clear="onClearClicked"
     ></v-text-field>
 
@@ -24,10 +24,12 @@
       :search="search"
       class="elevation-1"
       :mobile-breakpoint="0"
+      sort-by="date"
+      :sort-desc="true"
     >
       <!-- Date -->
       <template v-slot:item.date="{ item }">
-        {{getDateFormat(item.date)}}
+        {{ getDateFormat(item.date) }}
       </template>
 
       <!-- Actions -->
@@ -80,17 +82,14 @@
         </v-card-text>
       </v-card>
     </v-dialog>
-      <v-overlay :value="loader">
-      <v-progress-circular
-        indeterminate
-        size="64"
-      ></v-progress-circular>
+    <v-overlay :value="loader">
+      <v-progress-circular indeterminate size="64"></v-progress-circular>
     </v-overlay>
   </Page>
 </template>
 
 <script>
-import moment from 'moment';
+import moment from "moment";
 import { mapActions } from "vuex";
 import Page from "@/components/paradym/Page";
 
@@ -129,16 +128,16 @@ export default {
         { text: "ORDER#", value: "orderid" },
         { text: "ACTION", value: "actions", sortable: false, align: "center" },
       ],
-      loader:false,
-      dataToSent : {},
-      smsObject : {
-         to : "+8801745476473", 
-        message: ""
-      }
+      loader: false,
+      dataToSent: {},
+      smsObject: {
+        to: "+8801745476473",
+        message: "",
+      },
     };
   },
   watch: {
-    search: function (newValue) {
+    search: function(newValue) {
       this.getDataFromApi();
     },
     options: {
@@ -157,8 +156,8 @@ export default {
   },
   methods: {
     ...mapActions("snackbar", { showSuccess: "success", showError: "error" }),
-    getDateFormat(date){      
-      return moment(date).format('MM/DD/YYYY hh:mm A');
+    getDateFormat(date) {
+      return moment(date).format("MM/DD/YYYY hh:mm A");
     },
     onClearClicked() {
       if (this.search !== "") {
@@ -175,29 +174,27 @@ export default {
         this.getDataFromApi();
       }
     },
-   async sendNotification() {
+    async sendNotification() {
       this.resendDialog = false;
       // this.showSuccess("Notification Sent.");
       this.loader = true;
-      
-     
-      console.log('delivery information', this.dataToSent)
+
+      console.log("delivery information", this.dataToSent);
       let dataToAdd = this.dataToSent;
-     
-      let message = `Hello ${dataToAdd.name}! Your bike is now available at ${dataToAdd.location}.  Your Order number is ${dataToAdd.order}. Thank You.`
+
+      let message = `Hello ${dataToAdd.name}! Your bike is now available at ${dataToAdd.location}.  Your Order number is ${dataToAdd.order}. Thank You.`;
       this.smsObject.message = message;
-        try {
+      try {
         let response = await this.$axios.$post(
-          "api/user/sendSMS", this.smsObject
-        
+          "api/user/sendSMS",
+          this.smsObject
         );
-        console.log('respones', response.message);
-         this.loader = false;
+        console.log("respones", response.message);
+        this.loader = false;
         this.showSuccess(response.message);
         //  this.$router.go(-1);
-       
       } catch (err) {
-        console.log('errror', err.response);
+        console.log("errror", err.response);
         this.loader = false;
       }
     },
@@ -255,10 +252,10 @@ export default {
       });
     },
     handleData(item) {
-      console.log('Data to send sms', item)
+      console.log("Data to send sms", item);
       this.resendDialog = true;
-      this.dataToSent = item
-    }
+      this.dataToSent = item;
+    },
   },
 };
 </script>
@@ -279,11 +276,10 @@ export default {
   border-radius: 5px;
 }
 
-
 .order-search-text-field {
   .v-label {
     font-size: 14px !important;
-    color: #B5B5B5 !important;
+    color: #b5b5b5 !important;
   }
 }
 </style>

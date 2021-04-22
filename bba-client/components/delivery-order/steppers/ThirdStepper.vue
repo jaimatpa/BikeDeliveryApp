@@ -55,7 +55,7 @@
             {{ local_files_to_upload.length ? "Add" : "Take" }}
             Photo
           </v-btn>
-          <p class="primary--text mt-5 mb-0">Location</p>
+          <p class="primary--text mt-5 mb-0">LOCATION</p>
           <p class="body-2 secondary--text text-center">
             {{
               userPosition !== null && deliveryOrderData !== null
@@ -90,7 +90,7 @@
             block
             depressed
             color="accent"
-            @click.stop="$emit('set-delivery-stepper', 2)"
+            @click.stop="$emit('set-delivery-stepper', 1)"
           >
             <v-icon dark>
               mdi-chevron-left

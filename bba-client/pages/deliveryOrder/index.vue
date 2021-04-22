@@ -7,13 +7,14 @@
       depressed
       color="primary"
       class="mb-5"
-      @click.stop="dialog = true"
+     @click.stop="dialog = true;cameraRender += 1"
     >
       <v-icon left medium color="white" class="mr-2">
         mdi-barcode-scan
       </v-icon>
       Scan Barcode
     </v-btn>
+ 
 
     <!-- Order Search Field -->
     <v-text-field
@@ -39,6 +40,8 @@
       :search="search"
       class="elevation-1"
       :mobile-breakpoint="0"
+      sort-by="date"
+      :sort-desc="true"
     >
       <!-- Date -->
       <template v-slot:item.date="{ item }">
@@ -62,22 +65,14 @@
     </v-data-table>
 
     <v-dialog v-model="dialog" fullscreen>
-      <v-card>
+      <v-card style="background-color: rgba(0, 0, 0, 0.95);">
         <v-card-title class="title primary--text">
-          Enter Barcode
+          <!-- Scanning Barcode -->
         </v-card-title>
 
         <v-card-text>
-          <v-btn
-            :block="isMobile"
-            depressed
-            color="primary"
-            class="mb-5"
-            @click.stop="closeScanner"
-          >
-            Close
-          </v-btn>
-          <v-text-field
+      
+          <!-- <v-text-field
             v-model="searchByBarcode"
             append-icon="mdi-magnify"
             label="Enter Barcode"
@@ -89,8 +84,21 @@
             @click:clear="onClearClicked"
             @keyup="onKeyUp"
             class="mb-5"
-          ></v-text-field>
-          <BarScanner @code="code" />
+          ></v-text-field> -->
+          
+          <BarScanner @code="code" :key="cameraRender" />
+            <div class="scan-close-button">
+               <v-btn
+            :block="isMobile"
+            depressed
+            color="primary"
+            class="mb-5"
+            @click.stop="closeScanner"
+          >
+            Close
+          </v-btn>
+          </div>
+           
         </v-card-text>
       </v-card>
     </v-dialog>
@@ -120,6 +128,7 @@ export default {
   data() {
     return {
       dialog: false,
+      cameraRender: 0,
       breakpoint: 640,
       totalOrderDelivery: 0,
       search: "",
@@ -136,11 +145,11 @@ export default {
         },
         { text: "NAME", value: "name", sortable: false },
         { text: "LOCATION", value: "location", sortable: false },
-        { text: "RACK", value: "rack", sortable: false },
-        { text: "COLOR", value: "color", sortable: false },
-        { text: "COMBINATION", value: "combination", sortable: false },
-        { text: "BARCODE", value: "barcode", sortable: false },
-        { text: "ORDER#", value: "orderid" },
+        // { text: "RACK", value: "rack", sortable: false },
+        // { text: "COLOR", value: "color", sortable: false },
+        // { text: "COMBINATION", value: "combination", sortable: false },
+        // { text: "BARCODE", value: "barcode", sortable: false },
+        { text: "ORDER#", value: "orderid", sortable: false },
         { text: "ACTION", value: "actions", sortable: false, align: "center" },
       ],
     };
@@ -178,10 +187,15 @@ export default {
       this.getDataFromApi();
     },
     code(value) {
-      console.log("This value", value);
+     
       this.search = value;
-      this.dialog = false;
+      // this.dialog = false;
+      this.closeScanner()
+      this.$router.push(`/deliveryOrder/${value}`);
+      
+      
     },
+ 
     onKeyUp(event) {
       // console.log('key uppppppp ', typeof event.target.value,  `${event.target.value}`.length)
       if (event.key === "Enter") {

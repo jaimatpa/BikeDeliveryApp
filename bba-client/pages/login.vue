@@ -97,7 +97,7 @@ export default {
           this.showSuccess("Login Successfully Done!!!");
         }
       } catch (err) {
-        console.log('err', err);
+        console.log('err', err.response);
         
         try {
           let error = err.response.data.message;

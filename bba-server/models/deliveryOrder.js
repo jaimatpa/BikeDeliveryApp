@@ -20,6 +20,7 @@ module.exports = (sequelize, DataTypes) => {
       lock: DataTypes.STRING,
       mobileNo: DataTypes.STRING,
       barcode: DataTypes.STRING,
+      status: DataTypes.INTEGER,
       updatedAt: DataTypes.DATE,
     },
     {

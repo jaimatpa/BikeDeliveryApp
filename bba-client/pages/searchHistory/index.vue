@@ -4,7 +4,7 @@
     <v-text-field
       v-model="search"
       append-icon="mdi-magnify"
-      label="Search by Order#"
+      label="Search by Order #"
       single-line
       hide-details
       outlined
@@ -25,6 +25,8 @@
       class="elevation-1"
       :mobile-breakpoint='0'
       :class="{mobile: isMobile}"
+      sort-by="date"
+      :sort-desc="true"
     >
     <!-- Date -->
       <template v-slot:item.date="{ item }">
@@ -52,6 +54,7 @@
 </template>
 
 <script>
+import _ from "lodash";
 import moment from "moment";
 import Page from "@/components/paradym/Page";
 
@@ -87,8 +90,8 @@ export default {
         },
         { text: "NAME", value: "name", sortable: false },
         { text: "LOCATION", value: "location", sortable: false },
-        { text: "RACK", value: "rack", sortable: false },
-        { text: "ORDER#", value: "orderid" },
+        // { text: "RACK", value: "rack", sortable: false },
+        { text: "ORDER#", value: "orderid", sortable: false },
         { text: "ACTION", value: "actions", sortable: false, align: "center" },
       ],
     };
@@ -143,7 +146,7 @@ export default {
         let param = this.search ? { search: this.search } : {};
 
         const orderDeliveryMockData = await this.$axios.$get(
-          "/api/user/deliveryOrder",
+          "/api/user/searchhistory",
           {
             params: param,
           }
