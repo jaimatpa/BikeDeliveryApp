@@ -1,11 +1,22 @@
 <template>
   <div class="">
+
+    <div class="scan-container">
+      <div>
+      <stream-barcode-reader
+            @decode="(a, b, c) => onDecode(a, b, c)"
+            @loaded="() => onLoaded()"
+          ></stream-barcode-reader>
+      </div>
+      
+    </div>
+
+    <div class="text-center white--text" >
+       Align the Bar Code within the frame to scan
+    </div>
      
-    <stream-barcode-reader
-      @decode="(a, b, c) => onDecode(a, b, c)"
-      @loaded="() => onLoaded()"
-    ></stream-barcode-reader>
-    Input Value: {{ text  }}
+   
+  
   </div>
 </template>
 
@@ -51,4 +62,17 @@ export default {
 };
 </script>
 <style scoped>
+.scan-container {
+    display: flex;
+    justify-content: center;
+    padding-top: 40%;
+  
+}
+@media (min-width: 767.98px){
+ .scan-container {
+   
+    padding-top: 10%;
+  
+}
+}
 </style>

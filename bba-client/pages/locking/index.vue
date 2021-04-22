@@ -2,8 +2,7 @@
   <Page>
     <!-- Lock Scan Button  -->
     <v-btn
-      v-if="isMobile"
-      @click="showQrScanner = true"
+      @click.stop="dialog = true;cameraRender += 1"
       block
       depressed
       color="primary"
@@ -16,12 +15,19 @@
     </v-btn>
 
     <!-- QRCode Scanner Reader -->
-    <div class="qr-code mb-5" v-if="isMobile && showQrScanner">
+    <!-- <div class="qr-code mb-5" v-if="isMobile && showQrScanner">
       <qrcode-stream @decode="onDecode"></qrcode-stream>
-    </div>
+    </div> -->
 
     <!-- Lock Select Box -->
-    <v-select v-model="selectColor" :items="colors" label="Color" dense outlined clearable>
+    <v-select
+      v-model="selectColor"
+      :items="colors"
+      label="Color"
+      dense
+      outlined
+      clearable
+    >
       <template v-slot:selection="{ item, index }">
         <div class="d-flex align-center">
           <div :style="delivarieselectValueColor(item)"></div>
@@ -38,29 +44,65 @@
       :loading="loading"
       :search="search"
       class="elevation-1"
-      :mobile-breakpoint='0'
+      :mobile-breakpoint="0"
     >
       <!-- Actions -->
       <template v-slot:item.actions="{ item }">
-  <v-icon
-    medium
-    color="primary"
-    @click.stop="
-      $router.push({
-        path: `/locking/${item.orderid}`,
-      })
-    "
-  >
-    mdi-page-next
-  </v-icon>
-</template>
+        <v-icon
+          medium
+          color="primary"
+          @click.stop="
+            $router.push({
+              path: `/locking/${item.orderid}`,
+            })
+          "
+        >
+          mdi-page-next
+        </v-icon>
+      </template>
     </v-data-table>
+       <v-dialog v-model="dialog" fullscreen>
+      <v-card>
+        <v-card-title class="title primary--text">
+          <!-- Scanning Barcode -->
+        </v-card-title>
+
+        <v-card-text>
+      
+          <!-- <v-text-field
+            v-model="searchByBarcode"
+            append-icon="mdi-magnify"
+            label="Enter Barcode"
+            single-line
+            hide-details
+            outlined
+            dense
+            clearable
+            @click:clear="onClearClicked"
+            @keyup="onKeyUp"
+            class="mb-5"
+          ></v-text-field> -->
+          
+          <BarScanner @code="code" :key="cameraRender" />
+              <v-btn
+            :block="isMobile"
+            depressed
+            color="primary"
+            class="mb-5"
+            @click.stop="closeScanner"
+          >
+            Close
+          </v-btn>
+        </v-card-text>
+      </v-card>
+    </v-dialog>
   </Page>
 </template>
 
 <script>
 import _ from "lodash";
 import Page from "@/components/paradym/Page";
+import BarScanner from "@/components/BarScanner";
 
 export default {
   name: "lock",
@@ -70,7 +112,7 @@ export default {
       title: "Lock",
     };
   },
-  components: { Page },
+  components: { Page,BarScanner },
   computed: {
     isMobile() {
       return this.$vuetify.breakpoint.width < this.breakpoint;
@@ -101,6 +143,9 @@ export default {
         { text: "DELIVERY#", value: "orderid", sortable: false },
         { text: "ACTION", value: "actions", sortable: false, align: "center" },
       ],
+      searchByBarcode:"",
+      dialog: false,
+      cameraRender: 0,
     };
   },
   created() {
@@ -109,7 +154,7 @@ export default {
     this.getColors();
   },
   watch: {
-    selectColor: function (newValue) {
+    selectColor: function(newValue) {
       this.getDataFromApi();
     },
     options: {
@@ -133,6 +178,31 @@ export default {
         this.decodedResult = decodedString;
         this.search = decodedString;
         this.showQrScanner = false;
+      }
+    },
+    onClearClicked() {
+      if (this.search !== "" || this.searchByBarcode !== "") {
+        this.search = "";
+        this.searchByBarcode = "";
+      }
+      this.getDataFromApi();
+    },
+    code(value) {
+     
+      this.search = value;
+      this.closeScanner()
+      this.$router.push(`/deliveryOrder/${value}`);
+      
+      
+    },
+ 
+    onKeyUp(event) {
+      // console.log('key uppppppp ', typeof event.target.value,  `${event.target.value}`.length)
+      if (event.key === "Enter") {
+        this.getDataFromApi();
+      } else if (`${event.target.value}`.length === 0) {
+        // if someone clears the input field.
+        this.getDataFromApi();
       }
     },
     async getColors() {
@@ -191,6 +261,24 @@ export default {
           });
         }, 1000);
       });
+    },
+    closeScanner() {
+      this.dialog = false;
+     
+      const video = document.querySelector("video");
+
+      // A video's MediaStream object is available through its srcObject attribute
+      const mediaStream = video.srcObject;
+
+      // Through the MediaStream, you can get the MediaStreamTracks with getTracks():
+      const tracks = mediaStream.getTracks();
+
+      // Tracks are returned as an array, so if you know you only have one, you can stop it with:
+      // tracks[0].stop();
+
+      // Or stop all like so:
+      tracks.forEach((track) => track.stop());
+    
     },
   },
 };

@@ -3,60 +3,74 @@
     <div class="d-flex flex-column justify-space-between" style="height: 100%">
       <div>
         <v-row>
-      <v-col cols="12" xs="12" sm="12" md="6" xl="6">
-        <v-text-field
-          v-model="lockData.lock"
-          label="Lock"
-          placeholder="Lock"
-          readonly
-          disabled
-          filled
-          dense
-          outlined
-        >
-        </v-text-field>
-      </v-col>
-      <v-col cols="12" xs="12" sm="12" md="6" xl="6">
-        <v-text-field
-          v-model="lockData.color"
-          label="Color"
-          placeholder="Color"
-          readonly
-          dense
-          disabled
-          filled
-          outlined
-        >
-        </v-text-field>
-      </v-col>
-    </v-row>
+          <v-col cols="12" xs="12" sm="12" md="6" xl="6">
+            <v-text-field
+              v-model="lockData.orderid"
+              label="DELIVERY #"
+              placeholder="DELIVERY Id"
+              readonly
+              disabled
+              filled
+              dense
+              outlined
+            >
+            </v-text-field>
+          </v-col>
 
-    <v-row>
-      <v-col cols="12" xs="12" sm="12" md="6" xl="6">
-        <v-text-field
-          v-model="lockData.combination"
-          label="Combination"
-          placeholder="Combination"
-          readonly
-          dense
-          disabled
-          filled
-          outlined
-        >
-        </v-text-field>
-      </v-col>
-    </v-row>
+          <v-col cols="12" xs="12" sm="12" md="6" xl="6">
+            <v-select
+              :items="colorItems"
+              v-model="defaultColorValue"
+              label="COLOR"
+              dense
+              outlined
+            ></v-select>
+          </v-col>
+
+          <v-col cols="12" xs="12" sm="12" md="6" xl="6">
+            <v-text-field
+              v-model="defaultLockingValue"
+              label="Lock"
+              placeholder="Lock"
+              readonly
+              disabled
+              filled
+              dense
+              outlined
+            >
+            </v-text-field>
+          </v-col>
+
+          <v-col cols="12" xs="12" sm="12" md="6" xl="6">
+            <v-text-field
+              v-model="defaultCombinationValue"
+              label="COMBINATION"
+              placeholder="Combination"
+              disabled
+              readonly
+              filled
+              dense
+              outlined
+            >
+            </v-text-field>
+          </v-col>
+        </v-row>
       </div>
 
       <div>
         <!-- Notification Send Button -->
-    <v-row>
-      <v-col cols="12" xs="12" sm="12" md="6" xl="6">
-        <v-btn block depressed color="primary" @click.stop="$router.go(-1)">
-          Save
-        </v-btn>
-      </v-col>
-    </v-row>
+        <v-row>
+          <v-col cols="12" xs="12" sm="12" md="6" xl="6">
+            <v-btn
+              block
+              depressed
+              color="primary"
+              @click.stop="saveLockingData()"
+            >
+              Save
+            </v-btn>
+          </v-col>
+        </v-row>
       </div>
     </div>
   </Page>
@@ -78,32 +92,74 @@ export default {
   components: { Page },
   created() {
     this.getOrderDetails();
+    this.getLockingDetails();
   },
   computed: {
     isMobile() {
       return this.$vuetify.breakpoint.width < this.breakpoint;
     },
   },
+  watch: {
+    defaultColorValue(newVal, oldVal) {
+      if (oldVal) {
+        const data = _.find(this.lockingData, (o) => o.color === newVal);
+        this.defaultCombinationValue = data && data.combination;
+        this.defaultLockingValue = data && data.lockId;
+      }
+    },
+  },
   data() {
     return {
       breakpoint: 640,
+      defaultColorValue: "",
+      defaultCombinationValue: "",
+      defaultLockingValue: "",
+      colorItems: [],
+      lockingData: [],
       lockData: {},
     };
   },
   methods: {
+    async getLockingDetails() {
+      const lockingDataResponse = await this.$axios.$get("/api/user/locking");
+      this.lockingData = lockingDataResponse;
+      this.colorItems = _.map(lockingDataResponse, "color");
+    },
     async getOrderDetails() {
       try {
         let response = await this.$axios.$get("/api/user/deliveryOrder", {
           params: {
-            search: this.$route.params.orderId,
+            search: this.$route.params.deliveryId,
           },
         });
         console.log("respones", response);
         this.lockData = response[0];
+        this.defaultColorValue = response[0].color;
+        this.defaultCombinationValue = response[0].combination;
+        this.defaultLockingValue = response[0].lock;
 
         //  this.$router.go(-1);
       } catch (err) {
         console.log("errror", err.response);
+      }
+    },
+    saveLockingData() {
+      const res = this.$axios.$post(
+        "/api/user/deliveryorderupdate",
+        {
+          color: this.defaultColorValue,
+          combination: this.defaultCombinationValue,
+          lock: this.defaultLockingValue,
+        },
+        {
+          params: {
+            orderid: this.lockData.orderid,
+          },
+        }
+      );
+
+      if (res) {
+        this.$router.go(-1);
       }
     },
   },

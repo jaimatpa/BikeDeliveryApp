@@ -2,39 +2,7 @@ const express = require("express");
 const router = express.Router();
 const { Op } = require("sequelize");
 
-const models = require("./../../../models");
-
-router.post("/", async (req, res) => {
-    
-    try{
-        await models.Logs.build({json:JSON.stringify(req.body)}).save();
-    }catch(error){
-        console.log(error)
-    }
-
-    try{
-        const data = JSON.parse(JSON.stringify(req.body));
-        const keys = await models.WebhookMaps.findAll();
-    
-        for(let i =0;i<data.length;i++){
-            let d = data[i];
-            for(let k=0;k<keys.length;k++){
-                const json_key = keys[k].json_key;
-                const table_key = keys[k].table_key;
-                if(json_key !== table_key && d[json_key]){
-                    d[table_key] = d[json_key]
-                    delete d[json_key]
-                }
-            }
-            await models.DeliveryOrders.build(d).save();
-        }
-    }catch(error){
-        console.log(error)
-    }
-    
-    //received the json here req.body
-    res.send(req.body);
-});
+const models = require("../../../models");
 
 router.get("/", async (req, res) => {
     let data = [];
@@ -44,7 +12,7 @@ router.get("/", async (req, res) => {
         try{
             data = await models.DeliveryOrders.findAll({
                 where:{
-                    status:0,
+                    status:1,
                     [Op.or]:{
                         name: {
                             [Op.like]: `%${search}%`
@@ -88,7 +56,7 @@ router.get("/", async (req, res) => {
             try{
                 data = await models.DeliveryOrders.findAll({
                     where:{
-                        status:0,
+                        status:1,
                         barcode: {
                             [Op.like]: `%${barcodeid}%`
                         }
@@ -101,7 +69,7 @@ router.get("/", async (req, res) => {
         }
     }
     else{
-        data = await models.DeliveryOrders.findAll({where:{status:0}});
+        data = await models.DeliveryOrders.findAll({where:{status:1}});
     }
     return res.send(data);
 });

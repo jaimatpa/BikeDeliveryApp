@@ -35,6 +35,8 @@
                 label="date"
                 outlined
                 dense
+                filled
+                disabled
                 readonly
                 v-model="date"
               ></v-text-field>
@@ -55,6 +57,8 @@
                 label="Name"
                 outlined
                 dense
+                filled
+                disabled
                 readonly
                 v-model="tableKeyName"
               ></v-text-field>
@@ -75,6 +79,8 @@
                 label="Location"
                 outlined
                 dense
+                filled
+                disabled
                 readonly
                 v-model="location"
               ></v-text-field>
@@ -95,6 +101,8 @@
                 label="OrderId"
                 outlined
                 dense
+                filled
+                disabled
                 readonly
                 v-model="orderid"
               ></v-text-field>
@@ -115,6 +123,8 @@
                 label="Rack"
                 outlined
                 dense
+                filled
+                disabled
                 readonly
                 v-model="rack"
               ></v-text-field>
@@ -135,6 +145,8 @@
                 label="Color"
                 outlined
                 dense
+                filled
+                disabled
                 readonly
                 v-model="color"
               ></v-text-field>
@@ -155,6 +167,8 @@
                 label="Combination"
                 outlined
                 dense
+                filled
+                disabled
                 readonly
                 v-model="combination"
               ></v-text-field>
@@ -175,6 +189,8 @@
                 label="Lock"
                 outlined
                 dense
+                filled
+                disabled
                 readonly
                 v-model="lock"
               ></v-text-field>
@@ -195,6 +211,8 @@
                 label="Mobile No"
                 outlined
                 dense
+                filled
+                disabled
                 readonly
                 v-model="mobileNo"
               ></v-text-field>
@@ -215,6 +233,8 @@
                 label="Barcode"
                 outlined
                 dense
+                filled
+                disabled
                 readonly
                 v-model="barcode"
               ></v-text-field>
@@ -444,7 +464,6 @@ export default {
   },
 };
 </script>
-
 
 <style lang="scss" scoped>
 .web-hook-mapping-table {
