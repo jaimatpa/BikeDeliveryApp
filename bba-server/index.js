@@ -41,11 +41,11 @@ Sentry.init({
 async function start () {
 
   // Use CORS middleware
-  let corsOptions = {
-    origin: '*',
-    exposedHeaders: ['Content-Range'],
-  }
-  app.use(cors(corsOptions))
+  // let corsOptions = {
+  //   origin: '*',
+  // }
+  // app.use(cors(corsOptions))
+  app.use(cors());
 
   // Set Body Parser Middleware
   app.use(express.json({ limit: '10mb' }))
