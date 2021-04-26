@@ -34,10 +34,10 @@
 
                         <v-row>
                             <v-col cols="12" xs="12" sm="12" md="6" xl="6">
-                                <v-select :items="colors" v-model="deliveryOrderData.color" item-text="color" item-value="combination" label="Color" dense outlined></v-select>
+                                <v-select :items="colorItems" v-model="defaultColorValue" label="Color" dense outlined></v-select>
                             </v-col>
                             <v-col cols="12" xs="12" sm="12" md="6" xl="6">
-                                <v-text-field v-model="deliveryOrderData.combination" label="COMBINATION" placeholder="Combination" disabled readonly filled dense outlined>
+                                <v-text-field v-model="defaultCombinationValue" label="COMBINATION" placeholder="Combination" disabled readonly filled dense outlined>
                                 </v-text-field>
                             </v-col>
                         </v-row>
@@ -45,7 +45,7 @@
                     <div>
                         <!-- First Stepper Button -->
                         <v-row>
-                            <v-col cols="12" xs="12" sm="12" md="6" xl="6">
+                          <v-col cols="12" xs="12" sm="12" md="6" xl="6">
                                 <v-btn block depressed color="error" @click.stop="deliveryCancelOrderDialog = true">
                                     Cancel
                                 </v-btn>
@@ -88,11 +88,18 @@
 
             <v-card-text class="my-5 text-center">
                 <p class="title mb-3 secondary--text sure-title">
-                    Are you sure you want to send this information?
+                    Are you sure you want to send this information to this number?
+                    {{smsObject.to}}
+                    <v-btn class="mx-2" icon color="primary" @click="editNumber=!editNumber">
+                        <v-icon small dark>
+                            mdi-pencil
+                        </v-icon>
+                    </v-btn>
                 </p>
+                <v-text-field v-if="editNumber" v-model="smsObject.to" append-icon="mdi-mobile" label="You can change the number" single-line outlined dense clearable class="mb-5 order-search-text-field" :rules="[rules.required]"></v-text-field>
 
                 <div class="d-flex flex-column">
-                    <v-btn class="ma-2" color="primary" @click="sendNotification()">
+                    <v-btn :disabled="smsObject.to==='' ||smsObject.to===null " class="ma-2" color="primary" @click="sendNotification()">
                         Confirm
                     </v-btn>
                     <v-btn class="ma-2" outlined color="error" @click.stop="deliveryOrderDialog = false">
@@ -167,9 +174,11 @@ export default {
         this.getOrderDetails();
         this.getMsgTemplate();
         this.getUserlocation();
+        this.getLockingDetails();
     },
     data() {
         return {
+
             breakpoint: 640,
             deliveryOrderData: {},
             deliveryStepper: 1,
@@ -178,38 +187,12 @@ export default {
             emptyPhoto: emptyPhoto,
             cyclePhoto: cyclePhoto,
             loader: false,
-            smsObject: {
-                to: "",
-                message: "",
-                mediaUrl: [],
-            },
-            templateMsg: "",
+
             userPosition: null,
-            defaultColorValue: {
-                color: "Orange",
-                combination: "4521"
-            },
-            colorItems: [{
-                    color: "Orange",
-                    combination: "4521"
-                },
-                {
-                    color: "Red",
-                    combination: "1236"
-                },
-                {
-                    color: "Green",
-                    combination: "9654"
-                },
-                {
-                    color: "Teal",
-                    combination: "6325"
-                },
-                {
-                    color: "Gray",
-                    combination: "7521"
-                },
-            ],
+            defaultColorValue: "",
+            defaultCombinationValue: "",
+            colorItems: [],
+            lockingData: [],
             colors: [
                 "Red",
                 "Green",
@@ -222,9 +205,19 @@ export default {
             ],
 
             // Date field
-            date: new Date().toISOString().substr(0, 10),
-            dateFormatted: this.formatDate(new Date().toISOString().substr(0, 10)),
+            date: null,
+            dateFormatted: null,
             menu1: false,
+            smsObject: {
+                to: "",
+                message: "",
+            },
+            templateMsg: "",
+            editNumber: false,
+            rules: {
+                required: (value) => !!value || "Required.",
+
+            },
         };
     },
     computed: {
@@ -239,8 +232,11 @@ export default {
         date(val) {
             this.dateFormatted = this.formatDate(this.date);
         },
-        menu1(val) {
-            console.log("menu1", this.menu1);
+        defaultColorValue(newVal, oldVal) {
+            if (oldVal) {
+                const data = _.find(this.lockingData, (o) => o.color === newVal);
+                this.defaultCombinationValue = data && data.combination;
+            }
         },
     },
     methods: {
@@ -249,8 +245,6 @@ export default {
             showError: "error"
         }),
         formatDate(date) {
-            console.log("formate dated", date);
-
             if (!date) return null;
 
             const [year, month, day] = date.split("-");
@@ -261,6 +255,12 @@ export default {
 
             const [month, day, year] = date.split("/");
             return `${year}-${month.padStart(2, "0")}-${day.padStart(2, "0")}`;
+        },
+        async getLockingDetails() {
+            const lockingDataResponse = await this.$axios.$get("/api/user/locking");
+            this.lockingData = lockingDataResponse;
+            console.log(lockingDataResponse);
+            this.colorItems = _.map(lockingDataResponse, "color");
         },
         getUserlocation() {
             if (process.client) {
@@ -284,8 +284,7 @@ export default {
             }
         },
 
-        sendNotification() {
-            console.log("In Send Notification");
+        async sendNotification() {
             this.searchHistoryDialog = false;
             this.deliveryOrderDialog = false;
             this.loader = true;
@@ -318,34 +317,20 @@ export default {
                 userPositionData
             );
 
-            console.log(this.templateMsg, "!!!!!", infoMap, "!!!!!", dataToAdd, "!!!!!", userPositionData);
-
             // let message = `Hello ${dataToAdd.name}! Your bike is now available at ${dataToAdd.location}. Your deliver number is ${dataToAdd.orderid}, Bike Rack : ${dataToAdd.rack}, Color : ${dataToAdd.color}, Lock-Combo : ${dataToAdd.combination}. Thank You.`;
             // this.smsObject.message = message;
 
-            this.smsObject.to = dataToAdd.mobileNo;
+            // this.smsObject.to = dataToAdd.mobileNo;
             this.smsObject.message = output;
-
             // this.smsObject.to ="+8801745476473";
 
-            try {
-                this.uploadFiles();
-            } catch (error) {
-                console.log("error", error);
-            }
-
-            this.uploads.forEach((upload) => {
-                console.log("IN THE UPLOAD FOR EACH",`localhost:3100/file-${upload.originalName}.jpeg`)
-                this.smsObject.mediaUrl.push(`https://bikeappstaging.hiretheproz.com/${upload.originalName}.jpeg`);
-            });
-
             console.log("Data ready====>", this.smsObject);
-            console.log(this.smsObject);
             try {
-                let response = this.$axios.$post(
+                let response = await this.$axios.$post(
                     "api/user/sendSMS",
                     this.smsObject
                 );
+                console.log("respones", response.message);
                 this.loader = false;
                 this.showSuccess(response.message);
                 //  this.$router.go(-1);
@@ -354,7 +339,11 @@ export default {
                 this.loader = false;
             }
 
-            this.loader = false;
+            try {
+                this.uploadFiles();
+            } catch (error) {
+                console.log("error", error);
+            }
         },
         async getOrderDetails() {
             try {
@@ -372,8 +361,11 @@ export default {
 
                 this.deliveryOrderData = response[0];
 
-                console.log("this.deliveryOrderData", this.deliveryOrderData);
-
+                this.date = response[0].date.substr(0, 10);
+                this.dateFormatted = this.formatDate(response[0].date.substr(0, 10));
+                this.defaultColorValue = response[0].color;
+                this.defaultCombinationValue = response[0].combination;
+                this.smsObject.to = this.deliveryOrderData.mobileNo
                 //  this.$router.go(-1);
             } catch (err) {
                 console.log("errror", err.response);
@@ -398,12 +390,29 @@ export default {
                 );
 
                 if (result.success) {
-                    console.log(`Upload was successful!!! ${this.deliveryOrderData.orderid}`);
+                    console.log(`upload success!!! ${this.deliveryOrderData.orderid}`);
                     // this.$router.push({
                     //   path: "/callForHelp",
                     //   query: { orderid: this.deliveryOrderData.orderid },
                     // });
-                    this.$router.go(-1);
+
+                    const saveData = {
+                        date: this.dateFormatted,
+                        name: this.deliveryOrderData.name,
+                        location: this.deliveryOrderData.location,
+                        color: this.defaultColorValue,
+                        combination: this.defaultCombinationValue,
+                    };
+
+                    let result = await this.$axios.$post(
+                        "/api/user/deliveryorderupdate",
+                        saveData, {
+                            params: {
+                                orderid: this.deliveryOrderData.orderid,
+                            },
+                        }
+                    );
+                    if (result) this.$router.go(-1);
                 } else {
                     console.log("upload failed!!!");
                 }
@@ -426,7 +435,6 @@ export default {
         async getMsgTemplate() {
             try {
                 let response = await this.$axios.$get("api/user/template");
-                console.log("respones", response);
                 this.templateMsg = response.body;
             } catch (err) {
                 console.log("errror", err.response);
@@ -434,23 +442,29 @@ export default {
         },
         getMessage(template, infoMap, userObj, userPosition) {
             let result = template;
-            for (let key in infoMap) {
-                if (key === "[lock-combo]") {
-                    let key0 = infoMap[key][0];
-                    let key1 = infoMap[key][1];
-                    result = result.replaceAll(key, `${userObj[key0]}-${userObj[key1]}`);
-                }
+            try {
+                for (let key in infoMap) {
+                    if (key === "[lock-combo]") {
+                        let key0 = infoMap[key][0];
+                        let key1 = infoMap[key][1];
+                        result = result.replaceAll(key, `${userObj[key0]}-${userObj[key1]}`);
+                    }
 
-                if (key === "[geo-lat]") {
-                    result = result.replaceAll(key, userPosition.lat);
-                }
-                if (key === "[geo-long]") {
-                    result = result.replaceAll(key, userPosition.lng);
-                }
+                    if (key === "[geo-lat]" && userPosition) {
+                        result = result.replaceAll(key, userPosition.lat);
+                    }
+                    if (key === "[geo-long]" && userPosition) {
+                        result = result.replaceAll(key, userPosition.lng);
+                    }
 
-                result = result.replaceAll(key, userObj[infoMap[key]]);
+                    result = result.replaceAll(key, userObj[infoMap[key]]);
+                }
+                return result;
+            } catch (error) {
+                console.log(error)
             }
-            return result;
+
+            return '';
         },
     },
 };
