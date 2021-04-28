@@ -4,27 +4,28 @@
       <v-stepper-items>
         <!-- First Stepper -->
         <v-stepper-content step="1">
-          <div
-            class="d-flex flex-column justify-space-between"
-            style="height: 100%"
-          >
-            <div>
-              <v-row>
-                <v-col cols="12" xs="12" sm="12" md="6" xl="6">
-                  <v-text-field
-                    v-model="deliveryOrderData.orderid"
-                    label="ORDER #"
-                    placeholder="Order"
-                    readonly
-                    disabled
-                    filled
-                    dense
-                    outlined
-                  >
-                  </v-text-field>
-                </v-col>
-                <v-col cols="12" xs="12" sm="12" md="6" xl="6">
-                  <!-- <v-text-field
+          <v-form ref="form" v-model="valid" lazy-validation>
+            <div
+              class="d-flex flex-column justify-space-between"
+              style="height: 100%"
+            >
+              <div>
+                <v-row>
+                  <v-col cols="12" xs="12" sm="12" md="6" xl="6">
+                    <v-text-field
+                      v-model="deliveryOrderData.orderid"
+                      label="ORDER #"
+                      placeholder="Order"
+                      readonly
+                      disabled
+                      filled
+                      dense
+                      outlined
+                    >
+                    </v-text-field>
+                  </v-col>
+                  <v-col cols="12" xs="12" sm="12" md="6" xl="6">
+                    <!-- <v-text-field
                     v-model="deliveryOrderData.date"
                     label="DATE"
                     placeholder="Date"
@@ -32,97 +33,91 @@
                     outlined
                   >
                   </v-text-field> -->
-                  <v-menu
-                    ref="menu1"
-                    v-model="menu1"
-                    :close-on-content-click="false"
-                    transition="scale-transition"
-                    offset-y
-                    max-width="290px"
-                    min-width="auto"
-                  >
-                    <template v-slot:activator="{ on, attrs }">
-                      <v-text-field
-                        v-model="dateFormatted"
-                        label="Date"
-                        hint="MM/DD/YYYY format"
-                        persistent-hint
-                        v-bind="attrs"
-                        @blur="date = parseDate(dateFormatted)"
-                        v-on="on"
-                        outlined
-                        dense
-                      ></v-text-field>
-                    </template>
-                    <v-date-picker
-                      v-model="date"
-                      no-title
-                      @input="menu1 = false"
-                    ></v-date-picker>
-                  </v-menu>
-                </v-col>
-                <v-col cols="12" xs="12" sm="12" md="6" xl="6">
-                  <v-text-field
-                    v-model="deliveryOrderData.name"
-                    label="NAME"
-                    placeholder="Name"
-                    dense
-                    outlined
-                  >
-                  </v-text-field>
-                </v-col>
-              </v-row>
+                    <v-menu
+                      ref="menu1"
+                      v-model="menu1"
+                      :close-on-content-click="false"
+                      transition="scale-transition"
+                      offset-y
+                      max-width="290px"
+                      min-width="auto"
+                    >
+                      <template v-slot:activator="{ on, attrs }">
+                        <v-text-field
+                          v-model="dateFormatted"
+                          label="DATE"
+                          hint="MM/DD/YYYY"
+                          readonly
+                          persistent-hint
+                          v-bind="attrs"
+                          @blur="date = parseDate(dateFormatted)"
+                          v-on="on"
+                          outlined
+                          dense
+                        ></v-text-field>
+                      </template>
+                      <v-date-picker
+                        v-model="date"
+                        no-title
+                        @input="menu1 = false"
+                      ></v-date-picker>
+                    </v-menu>
+                  </v-col>
+                  <v-col cols="12" xs="12" sm="12" md="6" xl="6">
+                    <v-text-field
+                      v-model="deliveryOrderData.name"
+                      label="NAME"
+                      placeholder="Name"
+                      dense
+                      outlined
+                      :counter="30"
+                      :rules="nameRules"
+                    >
+                    </v-text-field>
+                  </v-col>
+                </v-row>
 
-              <v-row>
-                <v-col cols="12" xs="12" sm="12" md="6" xl="6">
-                  <v-text-field
-                    v-model="deliveryOrderData.location"
-                    label="LOCATION"
-                    placeholder="Location"
-                    dense
-                    outlined
-                  >
-                  </v-text-field>
-                </v-col>
-              </v-row>
+                <v-row>
+                  <v-col cols="12" xs="12" sm="12" md="6" xl="6">
+                    <v-text-field
+                      v-model="deliveryOrderData.location"
+                      label="LOCATION"
+                      placeholder="Location"
+                      dense
+                      outlined
+                      :counter="30"
+                      :rules="locationRules"
+                    >
+                    </v-text-field>
+                  </v-col>
+                </v-row>
 
-              <v-row>
-                <v-col cols="12" xs="12" sm="12" md="6" xl="6">
-                  <!-- <v-text-field
-                    v-model="deliveryOrderData.color"
-                    label="COLOR"
-                    placeholder="Color"
-                    readonly
-                    disabled
-                    filled
-                    dense
-                    outlined
-                  >
-                  </v-text-field> -->
-                  <v-select
-                    :items="colorItems"
-                    v-model="defaultColorValue"
-                    label="Color"
-                    dense
-                    outlined
-                  ></v-select>
-                </v-col>
-                <v-col cols="12" xs="12" sm="12" md="6" xl="6">
-                  <v-text-field
-                    v-model="defaultCombinationValue"
-                    label="COMBINATION"
-                    placeholder="Combination"
-                    disabled
-                    readonly
-                    filled
-                    dense
-                    outlined
-                  >
-                  </v-text-field>
-                </v-col>
-              </v-row>
+                <v-row>
+                  <v-col cols="12" xs="12" sm="12" md="6" xl="6">
+                    <v-select
+                      :items="colorItems"
+                      v-model="defaultColorValue"
+                      label="COLOR"
+                      dense
+                      outlined
+                    ></v-select>
+                  </v-col>
+                  <v-col cols="12" xs="12" sm="12" md="6" xl="6">
+                    <v-text-field
+                      v-model="defaultCombinationValue"
+                      label="COMBINATION"
+                      placeholder="Combination"
+                      disabled
+                      readonly
+                      filled
+                      dense
+                      outlined
+                    >
+                    </v-text-field>
+                  </v-col>
+                </v-row>
 
-              <!-- <v-row>
+                <!-- <v-row>
                 <v-col cols="12" xs="12" sm="12" md="6" xl="6">
                   <v-text-field
                     v-model="deliveryOrderData.rack"
@@ -137,44 +132,46 @@
                   </v-text-field>
                 </v-col>
               </v-row> -->
+              </div>
+              <div>
+                <!-- First Stepper Button -->
+                <v-row>
+                  <v-col cols="12" xs="12" sm="12" md="6" xl="6">
+                    <v-btn
+                      block
+                      depressed
+                      color="primary"
+                      :disabled="!valid"
+                      @click.stop="deliveryStepper = 3"
+                    >
+                      Next
+                      <v-icon dark>
+                        mdi-chevron-right
+                      </v-icon>
+                    </v-btn>
+                  </v-col>
+                  <v-col cols="12" xs="12" sm="12" md="6" xl="6">
+                    <v-btn
+                      block
+                      depressed
+                      color="error"
+                      @click.stop="deliveryCancelOrderDialog = true"
+                    >
+                      Cancel
+                    </v-btn>
+                  </v-col>
+                </v-row>
+              </div>
             </div>
-            <div>
-              <!-- First Stepper Button -->
-              <v-row>
-                <v-col cols="12" xs="12" sm="12" md="6" xl="6">
-                  <v-btn
-                    block
-                    depressed
-                    color="primary"
-                    @click.stop="deliveryStepper = 3"
-                  >
-                    Next
-                    <v-icon dark>
-                      mdi-chevron-right
-                    </v-icon>
-                  </v-btn>
-                </v-col>
-                <v-col cols="12" xs="12" sm="12" md="6" xl="6">
-                  <v-btn
-                    block
-                    depressed
-                    color="error"
-                    @click.stop="deliveryCancelOrderDialog = true"
-                  >
-                    Cancel
-                  </v-btn>
-                </v-col>
-              </v-row>
-            </div>
-          </div>
+          </v-form>
         </v-stepper-content>
 
         <!-- Third Stepper -->
         <v-stepper-content step="3">
           <ThirdStepper
             @set-delivery-stepper="setDelivaryStepper"
+            @set-current-user-position="setCurrentUserPosition"
             :deliveryOrderData="deliveryOrderData"
-            :userPosition="userPosition"
           />
         </v-stepper-content>
 
@@ -182,7 +179,11 @@
         <v-stepper-content step="4">
           <FourthStepper
             :deliveryOrderData="deliveryOrderData"
-            :cyclePhoto="cyclePhoto"
+            :emptyPhoto="emptyPhoto"
+            :userPosition="userPosition"
+            :dateFormatted="dateFormatted"
+            :defaultColorValue="defaultColorValue"
+            :defaultCombinationValue="defaultCombinationValue"
             @set-delivery-stepper="setDelivaryStepper"
             @set-delivery-order-dialog="setDelivaryDialog"
             @setUploadFiles="setUploadFiles"
@@ -210,34 +211,38 @@
         <v-card-text class="my-5 text-center">
           <p class="title mb-3 secondary--text sure-title">
             Are you sure you want to send this information to this number?
-            {{smsObject.to}}
-          <v-btn
-            class="mx-2"
-            icon
-            color="primary"
-            @click="editNumber=!editNumber"
-          >
-            <v-icon small dark>
-              mdi-pencil
-            </v-icon>
-          </v-btn>
+            {{ smsObject.to }}
+            <v-btn
+              class="mx-2"
+              icon
+              color="primary"
+              @click="editNumber = !editNumber"
+            >
+              <v-icon small dark>
+                mdi-pencil
+              </v-icon>
+            </v-btn>
           </p>
-              <v-text-field
-              v-if="editNumber"
-              v-model="smsObject.to"
-              append-icon="mdi-mobile"
-              label="You can change the number"
-              single-line
-              outlined
-              dense
-              clearable
-              class="mb-5 order-search-text-field"
-               :rules="[rules.required]"
-            ></v-text-field>
-
+          <v-text-field
+            v-if="editNumber"
+            v-model="smsObject.to"
+            append-icon="mdi-mobile"
+            label="You can change the number"
+            single-line
+            outlined
+            dense
+            clearable
+            class="mb-5 order-search-text-field"
+            :rules="[rules.required]"
+          ></v-text-field>
 
           <div class="d-flex flex-column">
-            <v-btn :disabled="smsObject.to==='' ||smsObject.to===null " class="ma-2" color="primary" @click="sendNotification()">
+            <v-btn
+              :disabled="smsObject.to === '' || smsObject.to === null"
+              class="ma-2"
+              color="primary"
+              @click="sendNotification()"
+            >
               Confirm
             </v-btn>
             <v-btn
@@ -261,7 +266,7 @@
       content-class="order-details-dialog"
     >
       <v-card>
-        <v-toolbar dense color="error" dark elevation="0">
+        <v-toolbar dense color="primary" dark elevation="0">
           <v-toolbar-title>Cancel Delivery</v-toolbar-title>
           <v-spacer />
           <v-btn icon dark @click.stop="deliveryCancelOrderDialog = false">
@@ -275,7 +280,7 @@
           </p>
 
           <div class="d-flex flex-column">
-            <v-btn class="ma-2" color="primary" @click.stop="$router.go(-1)">
+            <v-btn class="ma-2" color="error" @click.stop="$router.go(-1)">
               Yes
             </v-btn>
             <v-btn
@@ -320,12 +325,11 @@ export default {
   async created() {
     this.getOrderDetails();
     this.getMsgTemplate();
-    this.getUserlocation();
     this.getLockingDetails();
   },
   data() {
     return {
-    
+      valid: true,
       breakpoint: 640,
       deliveryOrderData: {},
       deliveryStepper: 1,
@@ -334,37 +338,39 @@ export default {
       emptyPhoto: emptyPhoto,
       cyclePhoto: cyclePhoto,
       loader: false,
-    
-      userPosition: null,
+
       defaultColorValue: "",
       defaultCombinationValue: "",
       colorItems: [],
       lockingData: [],
-      colors: [
-        "Red",
-        "Green",
-        "Teal",
-        "Pink",
-        "Goldenrod",
-        "Blue",
-        "Gray",
-        "Purple",
-      ],
 
       // Date field
       date: null,
       dateFormatted: null,
       menu1: false,
       smsObject: {
-      to: "",
-      message: "",
+        to: "",
+        message: "",
       },
       templateMsg: "",
       editNumber: false,
+
+      // Current User Data
+      userPosition: {},
+
+      //Rules
       rules: {
-      required: (value) => !!value || "Required.",
-     
-    },
+        required: (value) => !!value || "Required.",
+      },
+      nameRules: [
+        (v) => !!v || "Name is required",
+        (v) => (v && v.length <= 30) || "Name must be less than or equal 30 characters",
+      ],
+      locationRules: [
+        (v) => !!v || "Location is required",
+        (v) =>
+          (v && v.length <= 30) || "Location must be less than or equal 30 characters",
+      ],
     };
   },
   computed: {
@@ -391,8 +397,7 @@ export default {
     formatDate(date) {
       if (!date) return null;
 
-      const [year, month, day] = date.split("-");
-      return `${month}/${day}/${year}`;
+      return moment(date).format("MM/DD/YYYY");
     },
     parseDate(date) {
       if (!date) return null;
@@ -405,28 +410,6 @@ export default {
       this.lockingData = lockingDataResponse;
       this.colorItems = _.map(lockingDataResponse, "color");
     },
-    getUserlocation() {
-      if (process.client) {
-        if (navigator.geolocation) {
-          navigator.geolocation.getCurrentPosition(
-            (position) => {
-              console.log("Clicked on pointer, position === ", position);
-              const pos = {
-                lat: position.coords.latitude,
-                lng: position.coords.longitude,
-              };
-              console.log("pos ==== ", pos);
-              this.userPosition = pos;
-            },
-            (error) => {
-              // handle error here.
-              console.log("error =========== ", error);
-            }
-          );
-        }
-      }
-    },
-
     async sendNotification() {
       this.searchHistoryDialog = false;
       this.deliveryOrderDialog = false;
@@ -508,7 +491,7 @@ export default {
         this.dateFormatted = this.formatDate(response[0].date.substr(0, 10));
         this.defaultColorValue = response[0].color;
         this.defaultCombinationValue = response[0].combination;
-        this.smsObject.to= this.deliveryOrderData.mobileNo
+        this.smsObject.to = this.deliveryOrderData.mobileNo;
         //  this.$router.go(-1);
       } catch (err) {
         console.log("errror", err.response);
@@ -516,6 +499,9 @@ export default {
     },
     setDelivaryStepper(param) {
       this.deliveryStepper = param;
+    },
+    setCurrentUserPosition(currentUserData) {
+      this.userPosition = currentUserData;
     },
     async upload(upload) {
       const blob = await fetch(upload.local_blob_url).then((r) => r.blob());
@@ -587,12 +573,15 @@ export default {
     },
     getMessage(template, infoMap, userObj, userPosition) {
       let result = template;
-      try{
+      try {
         for (let key in infoMap) {
           if (key === "[lock-combo]") {
             let key0 = infoMap[key][0];
             let key1 = infoMap[key][1];
-            result = result.replaceAll(key, `${userObj[key0]}-${userObj[key1]}`);
+            result = result.replaceAll(
+              key,
+              `${userObj[key0]}-${userObj[key1]}`
+            );
           }
 
           if (key === "[geo-lat]" && userPosition) {
@@ -604,12 +593,13 @@ export default {
 
           result = result.replaceAll(key, userObj[infoMap[key]]);
         }
+
         return result;
-      }catch(error){
-        console.log(error)
+      } catch (error) {
+        console.log(error);
       }
-      
-      return '';
+
+      return "";
     },
   },
 };

@@ -157,7 +157,7 @@ export default {
   methods: {
     ...mapActions("snackbar", { showSuccess: "success", showError: "error" }),
     getDateFormat(date) {
-      return moment(date).format("MM/DD/YYYY hh:mm A");
+      return moment(date, 'YYYY-MM-DD').format("MM/DD/YYYY hh:mm A");
     },
     onClearClicked() {
       if (this.search !== "") {

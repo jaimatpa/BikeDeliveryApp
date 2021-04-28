@@ -2,7 +2,10 @@
   <Page>
     <!-- Lock Scan Button  -->
     <v-btn
-      @click.stop="dialog = true;cameraRender += 1"
+      @click.stop="
+        dialog = true;
+        cameraRender += 1;
+      "
       block
       depressed
       color="primary"
@@ -61,30 +64,12 @@
         </v-icon>
       </template>
     </v-data-table>
-       <v-dialog v-model="dialog" fullscreen>
-      <v-card>
-        <v-card-title class="title primary--text">
-          <!-- Scanning Barcode -->
-        </v-card-title>
+    <v-dialog v-model="dialog" fullscreen>
+      <div class="custom-locking-bar-scanner">
+        <BarScanner @code="code" :key="cameraRender" />
 
-        <v-card-text>
-      
-          <!-- <v-text-field
-            v-model="searchByBarcode"
-            append-icon="mdi-magnify"
-            label="Enter Barcode"
-            single-line
-            hide-details
-            outlined
-            dense
-            clearable
-            @click:clear="onClearClicked"
-            @keyup="onKeyUp"
-            class="mb-5"
-          ></v-text-field> -->
-          
-          <BarScanner @code="code" :key="cameraRender" />
-              <v-btn
+        <div class="scan-close-button">
+          <v-btn
             :block="isMobile"
             depressed
             color="primary"
@@ -93,14 +78,16 @@
           >
             Close
           </v-btn>
-        </v-card-text>
-      </v-card>
+        </div>
+      </div>
     </v-dialog>
   </Page>
 </template>
 
 <script>
 import _ from "lodash";
+import { mapActions } from "vuex";
+
 import Page from "@/components/paradym/Page";
 import BarScanner from "@/components/BarScanner";
 
@@ -112,7 +99,7 @@ export default {
       title: "Lock",
     };
   },
-  components: { Page,BarScanner },
+  components: { Page, BarScanner },
   computed: {
     isMobile() {
       return this.$vuetify.breakpoint.width < this.breakpoint;
@@ -140,10 +127,10 @@ export default {
         },
         { text: "COLOR", value: "color", sortable: false },
         { text: "COMBINATION", value: "combination", sortable: false },
-        { text: "DELIVERY#", value: "orderid", sortable: false },
+        { text: "ORDER#", value: "orderid", sortable: false },
         { text: "ACTION", value: "actions", sortable: false, align: "center" },
       ],
-      searchByBarcode:"",
+      searchByBarcode: "",
       dialog: false,
       cameraRender: 0,
     };
@@ -165,6 +152,7 @@ export default {
     },
   },
   methods: {
+    ...mapActions("snackbar", { showSuccess: "success", showError: "error" }),
     delivarieselectValueColor(color) {
       return {
         width: "20px",
@@ -187,15 +175,22 @@ export default {
       }
       this.getDataFromApi();
     },
-    code(value) {
-     
+    async code(value) {
       this.search = value;
-      this.closeScanner()
-      this.$router.push(`/deliveryOrder/${value}`);
-      
-      
+      this.closeScanner();
+
+      const data = await this.apiCall();
+      try {
+        if (data && data.items.length) {
+          this.$router.push(`/deliveryOrder/${value}`);
+        } else {
+          this.showError("Order Id is not found");
+        }
+      } catch (error) {
+        console.log("error=> ", error);
+      }
     },
- 
+
     onKeyUp(event) {
       // console.log('key uppppppp ', typeof event.target.value,  `${event.target.value}`.length)
       if (event.key === "Enter") {
@@ -264,7 +259,7 @@ export default {
     },
     closeScanner() {
       this.dialog = false;
-     
+
       const video = document.querySelector("video");
 
       // A video's MediaStream object is available through its srcObject attribute
@@ -278,22 +273,84 @@ export default {
 
       // Or stop all like so:
       tracks.forEach((track) => track.stop());
-    
     },
   },
 };
 </script>
 
-<style lang="scss" scoped>
-// .qr-code {
-//   background: #4c9a2a;
-//   color: #fff;
-//   display: flex;
-//   align-items: center;
-//   justify-content: center;
-//   text-align: center;
-//   height: 40px;
-//   width: 100%;
-//   border-radius: 10px;
-// }
+<style lang="scss">
+.custom-locking-bar-scanner {
+  height: 100%;
+  background-color: hsla(0, 0%, 13%, 0.95);
+  padding: 0 20px;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  .scan-container {
+    padding: 0 !important;
+
+    .scanner-container {
+      .overlay-element {
+        border: 0.1rem solid rgba(75, 152, 42, 0.2);
+      }
+
+      .overlay-element::before,
+      .overlay-element::after {
+        content: "";
+        display: block;
+        position: absolute;
+        width: 10vw;
+        height: 10vw;
+
+        border: 0.2rem solid transparent;
+
+        bottom: 0;
+        border-bottom-color: #4c9a2a;
+      }
+
+      .overlay-element::before {
+        left: 0;
+        border-left-color: #4c9a2a;
+      }
+
+      .overlay-element::after {
+        right: 0;
+        border-right-color: #4c9a2a;
+      }
+    }
+
+    .scanner-container::after,
+    .scanner-container::before {
+      content: "";
+      display: block;
+      position: absolute;
+      width: 10vw;
+      height: 10vw;
+
+      border: 0.2rem solid transparent;
+
+      top: 0;
+      border-top-color: #4c9a2a;
+    }
+
+    .scanner-container::after {
+      right: 0;
+      border-right-color: #4c9a2a;
+    }
+    .scanner-container::before {
+      left: 0;
+      border-left-color: #4c9a2a;
+    }
+  }
+
+  .scan-close-button {
+    position: absolute;
+    bottom: 0px;
+    width: 100%;
+    left: 0px;
+    padding: 10px 20px;
+  }
+}
 </style>

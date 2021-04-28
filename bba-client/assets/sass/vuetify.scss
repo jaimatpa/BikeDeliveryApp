@@ -103,6 +103,13 @@
     }
   }
 
+  .v-select__slot {
+    .v-label {
+      color: #4c9a2a !important;
+      font-weight: bold !important;
+    }
+  }
+
   // stepper-override
   .order-details-stepper {
     height: 100%;
@@ -122,6 +129,17 @@
           }
         }
       }
+    }
+  }
+
+  //Date Picker override
+  .v-date-picker-table {
+    .v-btn--active {
+      background-color: #4c9a2a !important;
+    }
+
+    .v-date-picker-table__current {
+      color: #4c9a2a !important;
     }
   }
 }

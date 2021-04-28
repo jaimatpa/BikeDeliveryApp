@@ -13,16 +13,16 @@
           <v-img
             v-if="local_files_to_upload.length === 0"
             max-height="180"
-            max-width="220"
+            max-width="100%"
             :src="emptyPhoto"
           ></v-img>
-          <div v-else>
+          <div v-else style="width: 100%">
             <div class="slider-img-container py-0 my-0" style="display: flex">
               <img
                 style="align-self: flex-end"
                 ref="currentImgRef"
                 :src="clickedImage.local_blob_url"
-                :width="innerWindowWidth > 800 ? 600 : 300"
+                :width="innerWindowWidth > 800 ? 600 : '100%'"
               />
               <span
                 class="img-cross-btn"
@@ -56,7 +56,10 @@
             Photo
           </v-btn>
           <p class="primary--text mt-5 mb-0">LOCATION</p>
-          <p class="body-2 secondary--text text-center">
+          <p
+            v-if="local_files_to_upload.length"
+            class="body-2 secondary--text text-center"
+          >
             {{
               userPosition !== null && deliveryOrderData !== null
                 ? `Your Location is: ${deliveryOrderData &&
@@ -65,6 +68,7 @@
                 : "No Location Found"
             }}
           </p>
+          <p v-else class="secondary--text mb-0">No Location Found</p>
         </v-col>
       </v-row>
     </div>
@@ -77,6 +81,7 @@
             block
             depressed
             color="primary"
+            :disabled="local_files_to_upload.length ? false : true"
             @click.stop="handleGoToNextStepper"
           >
             Next
@@ -127,7 +132,7 @@
       content-class="order-details-dialog"
     >
       <v-card>
-        <v-toolbar dense color="error" dark elevation="0">
+        <v-toolbar dense color="primary" dark elevation="0">
           <v-toolbar-title>Cancel Delivery</v-toolbar-title>
           <v-spacer />
           <v-btn icon dark @click.stop="deliveryCancelOrderDialog = false">
@@ -141,7 +146,7 @@
           </p>
 
           <div class="d-flex flex-column">
-            <v-btn class="ma-2" color="primary" @click.stop="$router.go(-1)">
+            <v-btn class="ma-2" color="error" @click.stop="$router.go(-1)">
               Yes
             </v-btn>
             <v-btn
@@ -171,13 +176,12 @@ export default {
       type: Object,
       default: {},
     },
-    userPosition: {
-      type: Object,
-      default: {},
-    },
   },
   components: {
     CameraModal,
+  },
+  created() {
+    this.local_files_to_upload = []
   },
   data() {
     return {
@@ -212,6 +216,7 @@ export default {
         isDirty: false,
         isRetake: false,
       },
+      userPosition: {},
     };
   },
 
@@ -260,6 +265,7 @@ export default {
     handleGoToNextStepper() {
       this.SET_CAPTURED_IMAGES_IN_VUEX(this.local_files_to_upload);
       this.$emit("set-delivery-stepper", 4);
+      this.$emit("set-current-user-position", this.userPosition);
     },
 
     handleCancel(obj) {
@@ -325,6 +331,9 @@ export default {
       }
 
       console.log("saveCameraImages result ==========> ", result);
+
+      // Get User Current Position
+      this.getUserlocation();
     },
 
     resize() {
@@ -359,6 +368,27 @@ export default {
             array_index: array_index + 1,
           };
           this.clickedImage = result;
+        }
+      }
+    },
+    getUserlocation() {
+      if (process.client) {
+        if (navigator.geolocation) {
+          navigator.geolocation.getCurrentPosition(
+            (position) => {
+              console.log("Clicked on pointer, position === ", position);
+              const pos = {
+                lat: position.coords.latitude,
+                lng: position.coords.longitude,
+              };
+              console.log("pos ==== ", pos);
+              this.userPosition = pos;
+            },
+            (error) => {
+              // handle error here.
+              console.log("error =========== ", error);
+            }
+          );
         }
       }
     },
