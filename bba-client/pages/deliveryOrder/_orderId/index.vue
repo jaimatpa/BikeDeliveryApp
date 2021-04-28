@@ -24,45 +24,25 @@
                     >
                     </v-text-field>
                   </v-col>
+
                   <v-col cols="12" xs="12" sm="12" md="6" xl="6">
-                    <!-- <v-text-field
-                    v-model="deliveryOrderData.date"
-                    label="DATE"
-                    placeholder="Date"
-                    dense
-                    outlined
-                  >
-                  </v-text-field> -->
-                    <v-menu
-                      ref="menu1"
-                      v-model="menu1"
-                      :close-on-content-click="false"
-                      transition="scale-transition"
-                      offset-y
-                      max-width="290px"
-                      min-width="auto"
+                    <v-datetime-picker
+                      label="DATE"
+                      v-model="datetime"
+                      :textFieldProps="{ outlined: 'outlined', dense: 'dense' }"
                     >
-                      <template v-slot:activator="{ on, attrs }">
-                        <v-text-field
-                          v-model="dateFormatted"
-                          label="DATE"
-                          hint="MM/DD/YYYY"
-                          readonly
-                          persistent-hint
-                          v-bind="attrs"
-                          @blur="date = parseDate(dateFormatted)"
-                          v-on="on"
-                          outlined
-                          dense
-                        ></v-text-field>
+                      <template v-slot:dateIcon>
+                        <v-icon>mdi-calendar</v-icon>
                       </template>
-                      <v-date-picker
-                        v-model="date"
-                        no-title
-                        @input="menu1 = false"
-                      ></v-date-picker>
-                    </v-menu>
+
+                      <template v-slot:timeIcon>
+                        <v-icon>mdi-clock-time-four-outline</v-icon>
+                      </template>
+                    </v-datetime-picker>
                   </v-col>
+                </v-row>
+
+                <v-row>
                   <v-col cols="12" xs="12" sm="12" md="6" xl="6">
                     <v-text-field
                       v-model="deliveryOrderData.name"
@@ -75,9 +55,7 @@
                     >
                     </v-text-field>
                   </v-col>
-                </v-row>
 
-                <v-row>
                   <v-col cols="12" xs="12" sm="12" md="6" xl="6">
                     <v-text-field
                       v-model="deliveryOrderData.location"
@@ -181,7 +159,7 @@
             :deliveryOrderData="deliveryOrderData"
             :emptyPhoto="emptyPhoto"
             :userPosition="userPosition"
-            :dateFormatted="dateFormatted"
+            :dateTime="datetime"
             :defaultColorValue="defaultColorValue"
             :defaultCombinationValue="defaultCombinationValue"
             @set-delivery-stepper="setDelivaryStepper"
@@ -321,7 +299,11 @@ export default {
       title: "Delivery Order Details",
     };
   },
-  components: { Page, ThirdStepper, FourthStepper },
+  components: {
+    Page,
+    ThirdStepper,
+    FourthStepper,
+  },
   async created() {
     this.getOrderDetails();
     this.getMsgTemplate();
@@ -345,9 +327,7 @@ export default {
       lockingData: [],
 
       // Date field
-      date: null,
-      dateFormatted: null,
-      menu1: false,
+      datetime: null,
       smsObject: {
         to: "",
         message: "",
@@ -364,12 +344,15 @@ export default {
       },
       nameRules: [
         (v) => !!v || "Name is required",
-        (v) => (v && v.length <= 30) || "Name must be less than or equal 30 characters",
+        (v) =>
+          (v && v.length <= 30) ||
+          "Name must be less than or equal 30 characters",
       ],
       locationRules: [
         (v) => !!v || "Location is required",
         (v) =>
-          (v && v.length <= 30) || "Location must be less than or equal 30 characters",
+          (v && v.length <= 30) ||
+          "Location must be less than or equal 30 characters",
       ],
     };
   },
@@ -377,14 +360,8 @@ export default {
     isMobile() {
       return this.$vuetify.breakpoint.width < this.breakpoint;
     },
-    computedDateFormatted() {
-      return this.formatDate(this.date);
-    },
   },
   watch: {
-    date(val) {
-      this.dateFormatted = this.formatDate(this.date);
-    },
     defaultColorValue(newVal, oldVal) {
       if (oldVal) {
         const data = _.find(this.lockingData, (o) => o.color === newVal);
@@ -394,17 +371,6 @@ export default {
   },
   methods: {
     ...mapActions("snackbar", { showSuccess: "success", showError: "error" }),
-    formatDate(date) {
-      if (!date) return null;
-
-      return moment(date).format("MM/DD/YYYY");
-    },
-    parseDate(date) {
-      if (!date) return null;
-
-      const [month, day, year] = date.split("/");
-      return `${year}-${month.padStart(2, "0")}-${day.padStart(2, "0")}`;
-    },
     async getLockingDetails() {
       const lockingDataResponse = await this.$axios.$get("/api/user/locking");
       this.lockingData = lockingDataResponse;
@@ -487,8 +453,7 @@ export default {
 
         this.deliveryOrderData = response[0];
 
-        this.date = response[0].date.substr(0, 10);
-        this.dateFormatted = this.formatDate(response[0].date.substr(0, 10));
+        this.datetime = new Date(response[0].date);
         this.defaultColorValue = response[0].color;
         this.defaultCombinationValue = response[0].combination;
         this.smsObject.to = this.deliveryOrderData.mobileNo;
@@ -526,14 +491,14 @@ export default {
           // });
 
           const saveData = {
-            date: this.dateFormatted,
+            date: this.datetime,
             name: this.deliveryOrderData.name,
             location: this.deliveryOrderData.location,
             color: this.defaultColorValue,
             combination: this.defaultCombinationValue,
           };
 
-          let result = await this.$axios.$post(
+          const result = await this.$axios.$post(
             "/api/user/deliveryorderupdate",
             saveData,
             {
@@ -542,7 +507,8 @@ export default {
               },
             }
           );
-          if (result) this.$router.go(-1);
+
+          if (result) this.$router.push("/deliveryOrder");
         } else {
           console.log("upload failed!!!");
         }

@@ -42,6 +42,7 @@ export default {
     { src: "~/plugins/google-maps.js", ssr: true },
     { src: "~/plugins/QReader.js", mode: "client" },
     { src: "~/plugins/barCode.js", ssr: false, mode: "client" },
+    { src: "~/plugins/dateTimePicker.js", ssr: false, mode: "client" },
     // { src: "~/plugins/barCode.js", mode: "client", ssr: false },
   ],
 

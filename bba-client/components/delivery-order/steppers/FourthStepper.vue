@@ -7,7 +7,7 @@
             <p class="font-weight-black text--secondary mb-0">
               <span class="font-weight-bold">DATE:</span>
               <span class="font-weight-regular">{{
-                getDateFormat(dateFormatted)
+                getDateFormat(dateTime)
               }}</span>
             </p>
             <p class="font-weight-black text--secondary mb-0">
@@ -212,9 +212,9 @@ export default {
       type: String,
       default: "",
     },
-    dateFormatted: {
-      type: String,
-      default: "",
+    dateTime: {
+      type: Date,
+      default: new Date(),
     },
     defaultColorValue: {
       type: String,
@@ -277,7 +277,7 @@ export default {
     ...mapMutations(["SET_CAPTURED_IMAGES_IN_VUEX"]),
 
     getDateFormat(date) {
-      return moment(date).format("MM/DD/YYYY");
+      return moment(date).format("MM/DD/YYYY hh:mm A");
     },
 
     resize() {
