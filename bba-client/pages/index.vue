@@ -152,7 +152,7 @@ export default {
   },
   methods: {
     getDateFormat(date) {
-      return moment(date).format("MM/DD/YYYY hh:mm A");
+      return moment(date, 'YYYY-MM-DD').format("MM/DD/YYYY hh:mm A");
     },
     async getDataFromApi() {
       this.loading = true;

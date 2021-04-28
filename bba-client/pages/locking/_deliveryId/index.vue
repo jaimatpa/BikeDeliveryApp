@@ -6,7 +6,7 @@
           <v-col cols="12" xs="12" sm="12" md="6" xl="6">
             <v-text-field
               v-model="lockData.orderid"
-              label="DELIVERY #"
+              label="ORDER #"
               placeholder="DELIVERY Id"
               readonly
               disabled
@@ -30,7 +30,7 @@
           <v-col cols="12" xs="12" sm="12" md="6" xl="6">
             <v-text-field
               v-model="defaultLockingValue"
-              label="Lock"
+              label="LOCK"
               placeholder="Lock"
               readonly
               disabled

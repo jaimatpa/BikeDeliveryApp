@@ -7,7 +7,7 @@
             <p class="font-weight-black text--secondary mb-0">
               <span class="font-weight-bold">DATE:</span>
               <span class="font-weight-regular">{{
-                deliveryOrderData.date
+                getDateFormat(dateFormatted)
               }}</span>
             </p>
             <p class="font-weight-black text--secondary mb-0">
@@ -36,26 +36,33 @@
           <div class="d-flex justify-space-between align-center flex-wrap">
             <p class="font-weight-black text--secondary mb-0">
               <span class="font-weight-bold">COLOR:</span>
-              <span class="font-weight-regular">{{
-                deliveryOrderData.color
-              }}</span>
+              <span class="font-weight-regular">{{ defaultColorValue }}</span>
             </p>
             <p class="font-weight-black text--secondary mb-0">
               <span class="font-weight-bold">COMBINATION:</span>
               <span class="font-weight-regular">{{
-                deliveryOrderData.combination
+                defaultCombinationValue
               }}</span>
             </p>
           </div>
 
           <div class="d-flex justify-space-between align-center flex-wrap">
             <p class="font-weight-black text--secondary mb-0">
+              <span class="font-weight-bold">USER LOCATION:</span>
+              <span class="font-weight-regular"
+                >lat: {{ userPosition && userPosition.lat }} lng:
+                {{ userPosition && userPosition.lng }}</span
+              >
+            </p>
+          </div>
+          <!-- <div class="d-flex justify-space-between align-center flex-wrap">
+            <p class="font-weight-black text--secondary mb-0">
               <span class="font-weight-bold">RACK:</span>
               <span class="font-weight-regular">{{
                 deliveryOrderData.rack
               }}</span>
             </p>
-          </div>
+          </div> -->
         </v-col>
       </v-row>
 
@@ -74,7 +81,7 @@
                 style="align-self: flex-end;"
                 ref="currentImgRef"
                 :src="clickedImage.local_blob_url"
-                :width="innerWindowWidth > 800 ? 600 : 300"
+                :width="innerWindowWidth > 800 ? 600 : '100%'"
               />
               <span
                 class="img-cross-btn"
@@ -97,12 +104,12 @@
             </div>
           </div>
 
-          <v-img
-            v-else
-            max-height="180"
-            max-width="220"
-            :src="cyclePhoto"
-          ></v-img>
+          <div v-else style="width: 100%">
+            <v-img max-height="180" max-width="100%" :src="emptyPhoto"></v-img>
+            <p class="body-2 mt-2 secondary--text text-center">
+              No Picture Available
+            </p>
+          </div>
         </v-col>
       </v-row>
     </div>
@@ -154,7 +161,7 @@
       content-class="order-details-dialog"
     >
       <v-card>
-        <v-toolbar dense color="error" dark elevation="0">
+        <v-toolbar dense color="primary" dark elevation="0">
           <v-toolbar-title>Cancel Delivery</v-toolbar-title>
           <v-spacer />
           <v-btn icon dark @click.stop="deliveryCancelOrderDialog = false">
@@ -168,7 +175,7 @@
           </p>
 
           <div class="d-flex flex-column">
-            <v-btn class="ma-2" color="primary" @click.stop="$router.go(-1)">
+            <v-btn class="ma-2" color="error" @click.stop="$router.go(-1)">
               Yes
             </v-btn>
             <v-btn
@@ -186,6 +193,7 @@
   </div>
 </template>
 <script>
+import moment from "moment";
 import { mapState, mapMutations } from "vuex";
 import touchScreen from "../../../service/touchScreen";
 
@@ -196,7 +204,23 @@ export default {
       type: Object,
       default: {},
     },
-    cyclePhoto: {
+    userPosition: {
+      type: Object,
+      default: {},
+    },
+    emptyPhoto: {
+      type: String,
+      default: "",
+    },
+    dateFormatted: {
+      type: String,
+      default: "",
+    },
+    defaultColorValue: {
+      type: String,
+      default: "",
+    },
+    defaultCombinationValue: {
       type: String,
       default: "",
     },
@@ -210,7 +234,7 @@ export default {
       aspectRatio: null,
       reviewPhoto: false,
       allImages: undefined,
-      deliveryCancelOrderDialog: false
+      deliveryCancelOrderDialog: false,
     };
   },
   computed: {
@@ -251,6 +275,10 @@ export default {
   },
   methods: {
     ...mapMutations(["SET_CAPTURED_IMAGES_IN_VUEX"]),
+
+    getDateFormat(date) {
+      return moment(date).format("MM/DD/YYYY");
+    },
 
     resize() {
       let windowAspectRatio = window.innerWidth / window.innerHeight;
