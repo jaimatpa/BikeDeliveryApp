@@ -22,6 +22,7 @@
     "vue-barcode-reader": "0.0.3",
     "vue-qrcode-reader": "^2.3.18",
     "vue2-google-maps": "^0.10.7",
+    "vuetify-datetime-picker": "^2.1.1",
     "wavesurfer.js": "^4.5.0"
   },
   "devDependencies": {
