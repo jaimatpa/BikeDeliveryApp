@@ -29,6 +29,8 @@
                     <v-datetime-picker
                       label="DATE"
                       v-model="datetime"
+                      dateFormat="MM/dd/yyyy"
+                      timeFormat="HH:mm a"
                       :textFieldProps="{ outlined: 'outlined', dense: 'dense' }"
                     >
                       <template v-slot:dateIcon>
