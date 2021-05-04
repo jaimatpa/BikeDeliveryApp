@@ -35,6 +35,8 @@ router.get("/", async (req, res) => {
       where: condition,
     });
 
+    console.log(allUsers);
+
     if (!allUsers)
       return apiError(
         res,

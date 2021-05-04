@@ -1,5 +1,7 @@
 const express = require("express");
+const cors = require('cors');
 const router = express.Router();
+router.use(cors());
 const { Op } = require("sequelize");
 const models = require("../../../models");
 const multer = require('multer');
@@ -22,8 +24,10 @@ const storage = multer.diskStorage({
 
     // By default, multer removes file extensions so let's add them back
     filename: function (req, file, cb) {
-        console.log("FILE NAME:", file.originalname);
-        cb(null, file.originalname);
+        console.log(req);
+        const orderid = req.query.orderid;
+        cb(null, `${orderid}${path.extname(file.originalname)}`);
+        // cb(null, file.fieldname + '-' + orderid + '-' + Date.now() + path.extname(file.originalname));
     }
 });
 router.post("/", async (req, res) => {
@@ -37,7 +41,9 @@ router.post("/", async (req, res) => {
             if (orderid) {
                 await models.Files.build({ orderid: orderid, filepath: req.file.path }).save();
             }
-        } catch (error) { }
+        } catch (error) {
+            console.log("ERROR BUILDING FILE");
+         }
 
         if (req.fileValidationError) {
             return res.send(req.fileValidationError);
@@ -53,6 +59,7 @@ router.post("/", async (req, res) => {
         }
 
         // Display uploaded image for user validation
+        res.header("Access-Control-Allow-Origin", "*");
         res.send({ success: true, body: `You have uploaded this image: <hr/><img src="${req.file.path}" width="500"><hr /><a href="./">Upload another image</a>` });
     });
 });
@@ -77,7 +84,7 @@ router.get("/", async (req, res) => {
 
         sendData.push(tempData)
     })
-
+    res.header("Access-Control-Allow-Origin", "*");
     return res.send(sendData);
 });
 

@@ -132,7 +132,6 @@ import {
     mapActions
 } from "vuex";
 import moment from "moment";
-
 import Page from "./Page";
 import ServerDataTable from "./ServerDataTable";
 import FloatingButton from "./FloatingButton";

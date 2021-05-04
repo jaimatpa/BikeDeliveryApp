@@ -1,88 +1,55 @@
 <template lang="html">
-  <Page>
+<Page>
     <!-- <h1>vue-barcode-reader demo</h1> -->
     <!-- Delivery Order Scan Button  -->
-    <v-btn
-      block
-      depressed
-      color="primary"
-      class="mb-5"
-      @click.stop="
-        dialog = true;
-        cameraRender += 1;
-      "
-    >
-      <v-icon left medium color="white" class="mr-2">
-        mdi-barcode-scan
-      </v-icon>
-      Scan Barcode
+    <v-btn block depressed color="primary" class="mb-5" @click.stop="dialog = true;cameraRender += 1">
+        <v-icon left medium color="white" class="mr-2">
+            mdi-barcode-scan
+        </v-icon>
+        Scan Barcode
     </v-btn>
 
     <!-- Order Search Field -->
-    <v-text-field
-      v-model="search"
-      append-icon="mdi-magnify"
-      label="Search by Order #, Name, Location"
-      single-line
-      hide-details
-      outlined
-      dense
-      clearable
-      class="mb-5 order-search-text-field"
-      @keyup="onKeyUp"
-      @click:clear="onClearClicked"
-    ></v-text-field>
+    <v-text-field v-model="search" append-icon="mdi-magnify" label="Search by Order #, Name, Location" single-line hide-details outlined dense clearable class="mb-5 order-search-text-field" @keyup="onKeyUp" @click:clear="onClearClicked"></v-text-field>
 
-    <v-data-table
-      :headers="headers"
-      :items="delivaries"
-      :options.sync="options"
-      :server-items-length="totalOrderDelivery"
-      :loading="loading"
-      :search="search"
-      class="elevation-1"
-      :mobile-breakpoint="0"
-      sort-by="date"
-      :sort-desc="true"
-    >
-      <!-- Date -->
-      <template v-slot:item.date="{ item }">
-        {{ getDateFormat(item.date) }}
-      </template>
+    <v-data-table :headers="headers" :items="delivaries" :options.sync="options" :server-items-length="totalOrderDelivery" :loading="loading" :search="search" class="elevation-1" :mobile-breakpoint="0" sort-by="date" :sort-desc="false">
+        <!-- Date -->
+        <template v-slot:item.date="{ item }">
+            {{ getDateFormat(item.date) }}
+        </template>
 
-      <!-- Actions -->
-      <template v-slot:item.actions="{ item }">
-        <v-icon
-          medium
-          color="primary"
-          @click.stop="
+       
+
+        <!-- Actions -->
+        <template v-slot:item.actions="{ item }">
+            <v-icon medium color="primary" @click.stop="
             $router.push({
               path: `/deliveryOrder/${item.orderid}`,
             })
-          "
-        >
-          mdi-page-next
-        </v-icon>
-      </template>
+          ">
+                mdi-page-next
+            </v-icon>
+        </template>
     </v-data-table>
 
     <v-dialog v-model="dialog" fullscreen>
-      <div class="custom-delivery-bar-scanner">
-        <BarScanner @code="code" :key="cameraRender" />
+        <v-card style="background-color: rgba(0, 0, 0, 0.95);">
+            <v-card-title class="title primary--text">
+                <!-- Scanning Barcode -->
+            </v-card-title>
 
-        <div class="scan-close-button">
-          <v-btn
-            :block="isMobile"
-            depressed
-            color="primary"
-            @click.stop="closeScanner"
-          >
-            Close
-          </v-btn>
-        </div>
-      </div>
+            <v-card-text>
+                <BarScanner @code="code" :key="cameraRender" />
+                <div class="scan-close-button">
+                    <v-btn :block="isMobile" depressed color="primary" class="mb-5" @click.stop="closeScanner">
+                        Close
+                    </v-btn>
+                </div>
+
+            </v-card-text>
+        </v-card>
     </v-dialog>
-  </Page>
+</Page>
 </template>
 
 <script>
@@ -94,196 +61,204 @@ import Page from "@/components/paradym/Page";
 import BarScanner from "@/components/BarScanner";
 
 export default {
-  name: "deliveryOrder",
-  auth: true,
-  head() {
-    return {
-      title: "Delivery Order",
-    };
-  },
-  components: { Page, BarScanner },
-  computed: {
-    isMobile() {
-      return this.$vuetify.breakpoint.width < this.breakpoint;
+    name: "deliveryOrder",
+    auth: true,
+    head() {
+        return {
+            title: "Delivery Order",
+        };
     },
-  },
-  data() {
-    return {
-      dialog: false,
-      cameraRender: 0,
-      breakpoint: 640,
-      totalOrderDelivery: 0,
-      search: "",
-      searchByBarcode: "",
-      delivaries: [],
-      delivariesUpdated: [],
-      loading: true,
-      initialRender: true,
-      options: {},
-      headers: [
-        {
-          text: "DATE",
-          align: "start",
-          value: "date",
+    components: {
+        Page,
+        BarScanner
+    },
+    computed: {
+        isMobile() {
+            return this.$vuetify.breakpoint.width < this.breakpoint;
         },
-        { text: "NAME", value: "name", sortable: false },
-        { text: "LOCATION", value: "location", sortable: false },
-        // { text: "RACK", value: "rack", sortable: false },
-        // { text: "COLOR", value: "color", sortable: false },
-        // { text: "COMBINATION", value: "combination", sortable: false },
-        // { text: "BARCODE", value: "barcode", sortable: false },
-        { text: "ORDER#", value: "orderid", sortable: false },
-        { text: "ACTION", value: "actions", sortable: false, align: "center" },
-      ],
-    };
-  },
-  created() {
-    this.getDataFromApi();
-    this.initialRender = false;
-  },
-  watch: {
-    search: function(newValue, oldValue) {
-      this.getDataFromApi();
     },
-    searchByBarcode: function(newValue) {
-      this.getDataFromApi();
+    data() {
+        return {
+            dialog: false,
+            cameraRender: 0,
+            breakpoint: 640,
+            totalOrderDelivery: 0,
+            search: "",
+            searchByBarcode: "",
+            delivaries: [],
+            loading: true,
+            initialRender: true,
+            options: {},
+            headers: [{
+                    text: "DATE",
+                    align: "start",
+                    value: "date",
+                },
+                {
+                    text: "NAME",
+                    value: "name",
+                    sortable: false
+                },
+                {
+                    text: "LOCATION",
+                    value: "location",
+                    sortable: false
+                },
+                {
+                    text: "ORDER#",
+                    value: "orderid",
+                    sortable: false
+                },
+                {
+                    text: "ACTION",
+                    value: "actions",
+                    sortable: false,
+                    align: "center"
+                },
+            ],
+        };
     },
-    options: {
-      handler() {
-        // console.log('watch this.options: ', this.options)
-        if (this.initialRender === false) {
-          this.getDataFromApi();
-        }
-      },
-      deep: true,
-    },
-  },
-  methods: {
-    ...mapActions("snackbar", { showSuccess: "success", showError: "error" }),
-    getDateFormat(date) {
-      // return moment(date, "YYYY-MM-DD").format("MM/DD/YYYY hh:mm A");
-      return moment(date).format("MM/DD/YYYY hh:mm A");
-    },
-    onClearClicked() {
-      if (this.search !== "" || this.searchByBarcode !== "") {
-        this.search = "";
-        this.searchByBarcode = "";
-      }
-      this.getDataFromApi();
-    },
-    async code(value) {
-      this.search = value;
-      this.closeScanner();
-
-      const data = await this.apiCall();
-      try {
-        if (data && data.items.length) {
-          this.$router.push(`/deliveryOrder/${value}`);
-        } else {
-          this.showError("Order Id is not found");
-        }
-      } catch (error) {
-        console.log("error=> ", error);
-      }
-    },
-
-    onKeyUp(event) {
-      // console.log('key uppppppp ', typeof event.target.value,  `${event.target.value}`.length)
-      if (event.key === "Enter") {
+    created() {
         this.getDataFromApi();
-      } else if (`${event.target.value}`.length === 0) {
-        // if someone clears the input field.
-        this.getDataFromApi();
-      }
+        this.initialRender = false;
     },
-
-    async getDataFromApi() {
-      this.loading = true;
-
-      this.apiCall().then((data) => {
-        // console.log('data from api', data)
-        this.delivaries = data.items;
-        this.totalOrderDelivery = data.total;
-        this.loading = false;
-      });
+    watch: {
+        search: function (newValue) {
+            this.getDataFromApi();
+        },
+        searchByBarcode: function (newValue) {
+            this.getDataFromApi();
+        },
+        options: {
+            handler() {
+                // console.log('watch this.options: ', this.options)
+                if (this.initialRender === false) {
+                    this.getDataFromApi();
+                }
+            },
+            deep: true,
+        },
     },
-    apiCall() {
-      return new Promise(async (resolve, reject) => {
-        let param = this.search
-          ? { search: this.search }
-          : this.searchByBarcode
-          ? { barcodeid: this.searchByBarcode }
-          : {};
-
-        const orderDeliveryMockData = await this.$axios.$get(
-          "/api/user/deliveryOrder",
-          {
-            params: param,
-          }
-        );
-
-        const { sortBy, sortDesc, page, itemsPerPage } = this.options;
-
-        let items = orderDeliveryMockData;
-        let total = orderDeliveryMockData?.length;
-
-        if (orderDeliveryMockData?.length === 1) this.dialog = false;
-
-        if (sortBy?.length === 1 && sortDesc?.length === 1) {
-          items = items.sort((a, b) => {
-            const sortA = a[sortBy[0]];
-            const sortB = b[sortBy[0]];
-
-            if (sortDesc[0]) {
-              if (sortA < sortB) return 1;
-              if (sortA > sortB) return -1;
-              return 0;
-            } else {
-              if (sortA < sortB) return -1;
-              if (sortA > sortB) return 1;
-              return 0;
+    methods: {
+        getDateFormat(date) {
+            return moment(date).add(4, 'hours').format("MM/DD/YYYY hh:mm A");
+        },
+        onClearClicked() {
+            if (this.search !== "" || this.searchByBarcode !== "") {
+                this.search = "";
+                this.searchByBarcode = "";
             }
-          });
-        }
+            this.getDataFromApi();
+        },
+        code(value) {
+            this.search = value;
+            this.closeScanner();
+            var stringWithoutDash = value.substring(1);
+            this.$router.push(`/deliveryOrder/${stringWithoutDash}`);
+        },
 
-        if (itemsPerPage > 0) {
-          items = items.slice((page - 1) * itemsPerPage, page * itemsPerPage);
-        }
+        onKeyUp(event) {
+            // console.log('key uppppppp ', typeof event.target.value,  `${event.target.value}`.length)
+            if (event.key === "Enter") {
+                this.getDataFromApi();
+            } else if (`${event.target.value}`.length === 0) {
+                // if someone clears the input field.
+                this.getDataFromApi();
+            }
+        },
+        async getDataFromApi() {
+            this.loading = true;
+            this.apiCall().then((data) => {
+                this.delivaries = data.items;
+                this.totalOrderDelivery = data.total;
+                this.loading = false;
+            });
+        },
+        apiCall() {
+            return new Promise(async (resolve, reject) => {
+                let param = this.search ? {
+                        search: this.search,
+                        type: "DeliveryOrders",
+                    } :
+                    this.searchByBarcode ? {
+                        barcodeid: this.searchByBarcode
+                    } : {
+                        type: "DeliveryOrders",
+                    };
 
-        setTimeout(() => {
-          resolve({
-            items,
-            total,
-          });
-        }, 1000);
-      });
+                const orderDeliveryMockData = await this.$axios.$get(
+                    "/api/user/deliveryOrder", {
+                        params: param,
+                    }
+                );
+
+                const {
+                    sortBy,
+                    sortDesc,
+                    page,
+                    itemsPerPage
+                } = this.options;
+
+                let items = orderDeliveryMockData;
+                let total = orderDeliveryMockData?.length;
+
+                if (orderDeliveryMockData?.length === 1) this.dialog = false;
+
+                if (sortBy?.length === 1 && sortDesc?.length === 1) {
+                    items = items.sort((a, b) => {
+                        const sortA = a[sortBy[0]];
+                        const sortB = b[sortBy[0]];
+
+                        if (sortDesc[0]) {
+                            if (sortA < sortB) return 1;
+                            if (sortA > sortB) return -1;
+                            return 0;
+                        } else {
+                            if (sortA < sortB) return -1;
+                            if (sortA > sortB) return 1;
+                            return 0;
+                        }
+                    });
+                }
+
+                if (itemsPerPage > 0) {
+                    items = items.slice((page - 1) * itemsPerPage, page * itemsPerPage);
+                }
+
+                setTimeout(() => {
+                    resolve({
+                        items,
+                        total,
+                    });
+                }, 1000);
+            });
+        },
+        closeScanner() {
+            this.dialog = false;
+            const video = document.querySelector("video");
+
+            // A video's MediaStream object is available through its srcObject attribute
+            const mediaStream = video.srcObject;
+
+            // Through the MediaStream, you can get the MediaStreamTracks with getTracks():
+            const tracks = mediaStream.getTracks();
+
+            // Tracks are returned as an array, so if you know you only have one, you can stop it with:
+            // tracks[0].stop();
+
+            // Or stop all like so:
+            tracks.forEach((track) => track.stop());
+        },
     },
-    closeScanner() {
-      this.dialog = false;
-      const video = document.querySelector("video");
-
-      // A video's MediaStream object is available through its srcObject attribute
-      const mediaStream = video.srcObject;
-
-      // Through the MediaStream, you can get the MediaStreamTracks with getTracks():
-      const tracks = mediaStream.getTracks();
-
-      // Tracks are returned as an array, so if you know you only have one, you can stop it with:
-      // tracks[0].stop();
-
-      // Or stop all like so:
-      tracks.forEach((track) => track.stop());
-    },
-  },
 };
 </script>
 
 <style lang="scss">
 .order-search-text-field {
-  .v-label {
-    font-size: 14px !important;
-    color: #b5b5b5 !important;
-  }
+    .v-label {
+        font-size: 14px !important;
+        color: #b5b5b5 !important;
+    }
 }
 
 .custom-delivery-bar-scanner {

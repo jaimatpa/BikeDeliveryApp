@@ -12,9 +12,12 @@ const webhookmap = require("./user/webhookmap");
 const template = require("./user/template");
 const upload = require("./user/upload");
 const downloadBackUpPhotos = require("./user/downloadBackUpPhotos");
+const resend = require("./user/resend");
+const cors = require('cors')
 
 module.exports = {
   create: (app) => {
+    app.use(cors());
     // Create the routes
     app.use("/api/user/login", login);
     app.use("/api/user/register", register);
@@ -30,5 +33,6 @@ module.exports = {
     app.use("/api/user/template", template);
     app.use("/api/user/upload", upload);
     app.use("/api/user/downloadBackUpPhotos", downloadBackUpPhotos);
+    app.use("/api/user/resend", resend);
   },
 };

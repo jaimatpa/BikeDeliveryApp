@@ -104,11 +104,8 @@ export default {
         savePhoto(canvas) {
             canvas.toBlob(
                 (blob) => {
-                    console.log("blobbbbbbb ===== ", blob);
-
+                    console.log("IN SAVE PHOTO");
                     const originalName = `${this.deliveryNumber}`;
-                    console.log(originalName);
-                    console.log();
                     const savedfileObj = new File([blob], originalName, {
                         type: blob.type,
                     });
@@ -134,8 +131,6 @@ export default {
                 "image/jpeg",
                 1
             );
-
-            // console.log('this.capturedImages ------------>>>>> ', canvas, this.capturedImages)
         },
         handleChangeCameraMode(value) {
             this.cameraMode = value;

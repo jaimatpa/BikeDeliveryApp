@@ -105,7 +105,6 @@
 <script>
 import ModalConfirm from "./modals/ModalConfirm";
 import moment from "moment";
-
 export default {
   name: "serverDataTable",
   components: { ModalConfirm },
@@ -288,7 +287,7 @@ export default {
     },
     formatDate(date) {
       let d = new Date(date);
-     return moment(date).format('MM/DD/YYYY hh:mm A');
+     return moment(date).add(4, 'hours').format('MM/DD/YYYY hh:mm A');
     },
     debounce(func, delay) {
       clearTimeout(this.timer);

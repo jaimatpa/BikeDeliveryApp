@@ -129,14 +129,7 @@ export default {
             deliveryCancelOrderDialog: false,
             emptyPhoto: emptyPhoto,
             open_camera_module: false,
-            local_files_to_upload: [
-                // {
-                //   local_blob_url: "",
-                //   originalName: "",
-                //   mimetype: ""
-                // }
-            ], // As we have work with multiple photo upload.
-
+            local_files_to_upload: [],
             local_files_to_upload_copy: [],
 
             canvasHeight: 480,

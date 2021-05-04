@@ -23,8 +23,8 @@ const webHookRoutes = require('./webHook/index.js');
 const auth = require('./middleware/auth');
 
 // Create the express server
-const app = express()
-
+const app = express();
+app.use(cors());
 // Create Sequelize Models
 const models = require('./models');
 const { webhook } = require('twilio')
@@ -39,18 +39,8 @@ Sentry.init({
 });
 
 async function start () {
-
-  // Use CORS middleware
-  // let corsOptions = {
-  //   origin: '*',
-  // }
-  // app.use(cors(corsOptions))
-  app.use(cors());
-
-  // Set Body Parser Middleware
   app.use(express.json({ limit: '10mb' }))
   app.use(express.urlencoded({ extended: false, limit: '10mb' }))
-  app.use(express.static(__dirname + '/public'));
 
   // Initialize Finale
   finale.initialize({ app: app, sequelize: models.sequelize })

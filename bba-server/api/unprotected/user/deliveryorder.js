@@ -1,8 +1,10 @@
 const express = require("express");
 const router = express.Router();
 const { Op } = require("sequelize");
+const moment = require("moment");
 
 const models = require("./../../../models");
+const { RecordingSettingsContext } = require("twilio/lib/rest/video/v1/recordingSettings");
 
 router.post("/", async (req, res) => {
     
@@ -36,12 +38,12 @@ router.post("/", async (req, res) => {
 router.get("/", async (req, res) => {
     let data = [];
     const search = req.query.search;
+    const type = req.query.type;
     const barcodeid = req.query.barcodeid;
     if(search){
         try{
             data = await models.DeliveryOrders.findAll({
                 where:{
-                    status:0,
                     [Op.or]:{
                         name: {
                             [Op.like]: `%${search}%`
@@ -76,6 +78,47 @@ router.get("/", async (req, res) => {
                     
                 }
             });
+            if (type === "DeliveryOrders") {
+                data = data.filter((record => {
+                    var d = moment(record.date).add(4, 'hours').format('LL');
+                    var today = moment().format('LL');
+                    if (d >= today && record.status == 0) {
+                        return true;
+                    } else {
+                        return false;
+                    }
+                }));
+            }
+            else if (type === "Locking") {
+                data = data.filter((record => {
+                    var d = moment(record.date).add(4, 'hours').format('LL');
+                    var today = moment().format('LL');
+                    if (d >= today) {
+                        return true;
+                    } else {
+                        return false;
+                    }
+                }));
+            } else if (type === "SearchHistory") {
+                data = data.filter((record => {
+                    if (record.status === 1) {
+                        return true;
+                    } else {
+                        return false;
+                    }
+                }));
+            } else if (type === "Dashboard") {
+                console.log("IN DASHBOARD");
+                data = data.filter((record => {
+                    var d = moment(record.date).add(4, 'hours').format('LL');
+                    var today = moment().format('LL');
+                    if (d == today) {
+                        return true;
+                    } else {
+                        return false;
+                    }
+                }));
+            }
             console.log(data)
         }catch(error){
             console.log(error)
@@ -98,7 +141,47 @@ router.get("/", async (req, res) => {
         }
     }
     else{
-        data = await models.DeliveryOrders.findAll({where:{status:0}});
+        data = await models.DeliveryOrders.findAll();
+        if (type === "DeliveryOrders") {
+            data = data.filter((record => {
+                var d = moment(record.date).add(4, 'hours').format('LL');
+                var today = moment().format('LL');
+                if (d >= today && record.status == 0) {
+                    return true;
+                } else {
+                    return false;
+                }
+            }));
+        } else if (type === "Locking") {
+            data = data.filter((record => {
+                var d = moment(record.date).add(4, 'hours').format('LL');
+                var today = moment().format('LL');
+                if (d >= today) {
+                    return true;
+                } else {
+                    return false;
+                }
+            }));
+        } else if (type === "SearchHistory") {
+            data = data.filter((record => {
+                if (data.status === 1) {
+                    return true;
+                } else {
+                    return false;
+                }
+            }));
+        } else if (type === "Dashboard") {
+            console.log("IN DASHBOARD");
+            data = data.filter((record => {
+                var d = moment(record.date).add(4, 'hours').format('LL');
+                var today = moment().format('LL');
+                if (d == today) {
+                    return true;
+                } else {
+                    return false;
+                }
+            }));
+        }
     }
     return res.send(data);
 });

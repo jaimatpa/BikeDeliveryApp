@@ -6,12 +6,13 @@ const { Op } = require("sequelize");
 const models = require("./../../../models");
 
 router.post("/", async (req,res) => {
-    // res.send('hello')
+    console.log("IN ROUTER POST");
     const orderid = req.query.orderid;
+    const status = req.query.status;
+    console.log(req.query.status);
     if(!orderid){
         return res.send('order id not found!!!')
     }
-    console.log(req.body)
     try{
         const deliveryOrder = await models.DeliveryOrders.findOne(
             {
@@ -32,6 +33,9 @@ router.post("/", async (req,res) => {
         deliveryOrder.combination = req.body.combination?req.body.combination:deliveryOrder.combination;
         deliveryOrder.mobileNo = req.body.mobileNo?req.body.mobileNo:deliveryOrder.mobileNo;
         deliveryOrder.barcode = req.body.barcode?req.body.barcode:deliveryOrder.barcode;
+        deliveryOrder.lock = req.body.lock?req.body.lock:deliveryOrder.lock;
+        deliveryOrder.status = status;
+        
         await deliveryOrder.save();
         return res.send(deliveryOrder)
     }catch(error){

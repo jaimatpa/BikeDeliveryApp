@@ -1,84 +1,47 @@
 <template lang="html">
-  <Page>
+<Page>
     <!-- Lock Scan Button  -->
-    <v-btn
-      @click="showQrScanner = true"
-      block
-      depressed
-      color="primary"
-      class="mb-5"
-    >
-      <v-icon left medium color="white" class="mr-2">
-        mdi-barcode-scan
-      </v-icon>
-      Scan Barcode
+    <v-btn @click.stop="dialog = true;cameraRender += 1" block depressed color="primary" class="mb-5">
+        <v-icon left medium color="white" class="mr-2">
+            mdi-barcode-scan
+        </v-icon>
+        Scan Barcode
     </v-btn>
 
-    <!-- QRCode Scanner Reader -->
-    <!-- <div class="qr-code mb-5" v-if="isMobile && showQrScanner">
-      <qrcode-stream @decode="onDecode"></qrcode-stream>
-    </div> -->
+    <v-text-field v-model="search" append-icon="mdi-magnify" label="Search by Order #, Name, Location" single-line hide-details outlined dense clearable class="mb-5 order-search-text-field" @keyup="onKeyUp" @click:clear="onClearClicked"></v-text-field>
 
-    <!-- Lock Select Box -->
-    <v-select
-      v-model="selectColor"
-      :items="colors"
-      label="Color"
-      dense
-      outlined
-      clearable
-    >
-      <template v-slot:selection="{ item, index }">
-        <div class="d-flex align-center">
-          <div :style="delivarieselectValueColor(item)"></div>
-          <span class="accent--text ml-1">{{ item }}</span>
-        </div>
-      </template>
-    </v-select>
+    <v-data-table :headers="headers" :items="delivaries" :options.sync="options" :server-items-length="totalOrderDelivery" :loading="loading" :search="search" class="elevation-1" :mobile-breakpoint="0">
+        <!-- Date -->
+        <template v-slot:item.date="{ item }">
+            {{ getDateFormat(item.date) }}
+        </template>
 
-    <v-data-table
-      :headers="headers"
-      :items="delivaries"
-      :options.sync="options"
-      :server-items-length="totalOrderDelivery"
-      :loading="loading"
-      :search="search"
-      class="elevation-1"
-      :mobile-breakpoint="0"
-    >
-      <!-- Actions -->
-      <template v-slot:item.actions="{ item }">
-        <v-icon
-          medium
-          color="primary"
-          @click.stop="
+        <!-- Actions -->
+        <template v-slot:item.actions="{ item }">
+            <v-icon medium color="primary" @click.stop="
             $router.push({
               path: `/locking/${item.orderid}`,
             })
-          "
-        >
-          mdi-page-next
-        </v-icon>
-      </template>
+          ">
+                mdi-page-next
+            </v-icon>
+        </template>
     </v-data-table>
     <v-dialog v-model="dialog" fullscreen>
-      <div class="custom-locking-bar-scanner">
-        <BarScanner @code="code" :key="cameraRender" />
+        <v-card>
+            <v-card-title class="title primary--text">
+                <!-- Scanning Barcode -->
+            </v-card-title>
 
-        <div class="scan-close-button">
-          <v-btn
-            :block="isMobile"
-            depressed
-            color="primary"
-            class="mb-5"
-            @click.stop="closeScanner"
-          >
-            Close
-          </v-btn>
-        </div>
-      </div>
+            <v-card-text>
+                <BarScanner @code="code" :key="cameraRender" />
+                <v-btn :block="isMobile" depressed color="primary" class="mb-5" @click.stop="closeScanner">
+                    Close
+                </v-btn>
+            </v-card-text>
+        </v-card>
     </v-dialog>
-  </Page>
+</Page>
 </template>
 
 <script>
@@ -87,191 +50,233 @@ import { mapActions } from "vuex";
 
 import Page from "@/components/paradym/Page";
 import BarScanner from "@/components/BarScanner";
-
+import moment from "moment";
 export default {
-  name: "lock",
-  auth: true,
-  head() {
-    return {
-      title: "Lock",
-    };
-  },
-  components: { Page, BarScanner },
-  computed: {
-    isMobile() {
-      return this.$vuetify.breakpoint.width < this.breakpoint;
+    name: "lock",
+    auth: true,
+    head() {
+        return {
+            title: "Lock",
+        };
     },
-  },
-  data() {
-    return {
-      breakpoint: 640,
-      totalOrderDelivery: 0,
-      showQrScanner: false,
-      decodedResult: "",
-      search: "",
-      delivaries: [],
-      loading: true,
-      initialRender: true,
-      options: {},
-      selectColor: "",
-      colors: [],
-      headers: [
-        {
-          text: "LOCK",
-          align: "start",
-          value: "lock",
-          sortable: false,
+    components: {
+        Page,
+        BarScanner
+    },
+    computed: {
+        isMobile() {
+            return this.$vuetify.breakpoint.width < this.breakpoint;
         },
-        { text: "COLOR", value: "color", sortable: false },
-        { text: "COMBINATION", value: "combination", sortable: false },
-        { text: "ORDER#", value: "orderid", sortable: false },
-        { text: "ACTION", value: "actions", sortable: false, align: "center" },
-      ],
-      searchByBarcode: "",
-      dialog: false,
-      cameraRender: 0,
-    };
-  },
-  created() {
-    this.getDataFromApi();
-    this.initialRender = false;
-    this.getColors();
-  },
-  watch: {
-    selectColor: function(newValue) {
-      this.getDataFromApi();
     },
-    options: {
-      handler() {
+    data() {
+        return {
+            breakpoint: 640,
+            totalOrderDelivery: 0,
+            showQrScanner: false,
+            decodedResult: "",
+            search: "",
+            delivaries: [],
+            lockingData: [],
+            loading: true,
+            initialRender: true,
+            options: {},
+            selectColor: "",
+            colors: [],
+            headers: [{
+                    text: "DATE",
+                    align: "start",
+                    value: "date",
+                },
+                {
+                    text: "NAME",
+                    value: "name",
+                    sortable: false
+                },
+                {
+                    text: "COLOR",
+                    value: "color",
+                    sortable: false
+                },
+                {
+                    text: "LOCATION",
+                    value: "location",
+                    sortable: false
+                },
+                {
+                    text: "ORDER#",
+                    value: "orderid",
+                    sortable: false
+                },
+                {
+                    text: "ACTION",
+                    value: "actions",
+                    sortable: false,
+                    align: "center"
+                },
+            ],
+            searchByBarcode: "",
+            dialog: false,
+            cameraRender: 0,
+        };
+    },
+    created() {
         this.getDataFromApi();
-      },
-      deep: true,
+        this.initialRender = false;
+        this.getColors();
+        this.getLockingDetails();
     },
-  },
-  methods: {
-    ...mapActions("snackbar", { showSuccess: "success", showError: "error" }),
-    delivarieselectValueColor(color) {
-      return {
-        width: "20px",
-        height: "20px",
-        "background-color": color,
-      };
-    },
-    onDecode(decodedString) {
-      console.log("decodedString", decodedString);
-      if (decodedString) {
-        this.decodedResult = decodedString;
-        this.search = decodedString;
-        this.showQrScanner = false;
-      }
-    },
-    onClearClicked() {
-      if (this.search !== "" || this.searchByBarcode !== "") {
-        this.search = "";
-        this.searchByBarcode = "";
-      }
-      this.getDataFromApi();
-    },
-    async code(value) {
-      this.search = value;
-      this.closeScanner();
-
-      const data = await this.apiCall();
-      try {
-        if (data && data.items.length) {
-          this.$router.push(`/deliveryOrder/${value}`);
-        } else {
-          this.showError("Order Id is not found");
-        }
-      } catch (error) {
-        console.log("error=> ", error);
-      }
-    },
-
-    onKeyUp(event) {
-      // console.log('key uppppppp ', typeof event.target.value,  `${event.target.value}`.length)
-      if (event.key === "Enter") {
-        this.getDataFromApi();
-      } else if (`${event.target.value}`.length === 0) {
-        // if someone clears the input field.
-        this.getDataFromApi();
-      }
-    },
-    async getColors() {
-      const orderData = await this.$axios.$get("/api/user/deliveryOrder");
-      this.colors = orderData.length ? _.map(orderData, "color") : [];
-    },
-    async getDataFromApi() {
-      this.loading = true;
-      this.apiCall().then((data) => {
-        this.delivaries = data.items;
-        this.totalOrderDelivery = data.total;
-        this.loading = false;
-      });
-    },
-    apiCall() {
-      return new Promise(async (resolve, reject) => {
-        const { sortBy, sortDesc, page, itemsPerPage } = this.options;
-
-        const orderDeliveryMockData = await this.$axios.$get(
-          "/api/user/deliveryOrder",
-          {
-            params: {
-              search: this.selectColor,
+    watch: {
+        selectColor: function (newValue) {
+            this.getDataFromApi();
+        },
+        options: {
+            handler() {
+                this.getDataFromApi();
             },
-          }
-        );
-
-        let items = orderDeliveryMockData;
-        let total = orderDeliveryMockData?.length;
-
-        if (sortBy?.length === 1 && sortDesc?.length === 1) {
-          items = items.sort((a, b) => {
-            const sortA = a[sortBy[0]];
-            const sortB = b[sortBy[0]];
-
-            if (sortDesc[0]) {
-              if (sortA < sortB) return 1;
-              if (sortA > sortB) return -1;
-              return 0;
-            } else {
-              if (sortA < sortB) return -1;
-              if (sortA > sortB) return 1;
-              return 0;
+            deep: true,
+        },
+    },
+    methods: {
+        getDateFormat(date) {
+            return moment(date).add(4, 'hours').format("MM/DD/YYYY hh:mm A");
+        },
+        delivarieselectValueColor(color) {
+            return {
+                width: "20px",
+                height: "20px",
+                "background-color": color,
+            };
+        },
+        async getLockingDetails() {
+            const lockingDataResponse = await this.$axios.$get("/api/user/locking");
+            this.lockingData = lockingDataResponse;
+            console.log(this.lockingData);
+            this.colors = this.lockingData.filter(fil => fil.color != null).map(x => x.color);
+        },
+        onDecode(decodedString) {
+            console.log("decodedString", decodedString);
+            if (decodedString) {
+                this.decodedResult = decodedString;
+                this.search = decodedString;
+                this.showQrScanner = false;
             }
-          });
-        }
+        },
+        onClearClicked() {
+            if (this.search !== "" || this.searchByBarcode !== "") {
+                this.search = "";
+                this.searchByBarcode = "";
+            }
+            this.getDataFromApi();
+        },
+        code(value) {
 
-        if (itemsPerPage > 0) {
-          items = items.slice((page - 1) * itemsPerPage, page * itemsPerPage);
-        }
+            this.search = value;
+            this.closeScanner()
+            var stringWithoutDash = value.substring(1);
+            this.$router.push(`/deliveryOrder/${stringWithoutDash}`);
 
-        setTimeout(() => {
-          resolve({
-            items,
-            total,
-          });
-        }, 1000);
-      });
+        },
+
+        onKeyUp(event) {
+            // console.log('key uppppppp ', typeof event.target.value,  `${event.target.value}`.length)
+            if (event.key === "Enter") {
+                this.getDataFromApi();
+            } else if (`${event.target.value}`.length === 0) {
+                // if someone clears the input field.
+                this.getDataFromApi();
+            }
+        },
+        async getColors() {
+            console.log("In Color");
+            const orderData = await this.$axios.$get("/api/user/deliveryOrder");
+            console.log(orderData);
+            // this.colors = orderData.filter(fil => fil.color != null).map(x => x.color);
+            // this.colors = orderData.length ? _.map(orderData, "color") : [];
+        },
+        async getDataFromApi() {
+            this.loading = true;
+            this.apiCall().then((data) => {
+                this.delivaries = data.items;
+                this.totalOrderDelivery = data.total;
+                this.loading = false;
+            });
+        },
+        apiCall() {
+            return new Promise(async (resolve, reject) => {
+                let param = this.search ? {
+                        search: this.search,
+                        type: "Locking",
+                    } :
+                    this.searchByBarcode ? {
+                        barcodeid: this.searchByBarcode
+                    } : {
+                        type: "Locking",
+                    };
+
+                const {
+                    sortBy,
+                    sortDesc,
+                    page,
+                    itemsPerPage
+                } = this.options;
+
+                const orderDeliveryMockData = await this.$axios.$get(
+                    "/api/user/deliveryOrder", {
+                        params: param
+                    }
+                );
+
+                let items = orderDeliveryMockData;
+                let total = orderDeliveryMockData?.length;
+
+                if (sortBy?.length === 1 && sortDesc?.length === 1) {
+                    items = items.sort((a, b) => {
+                        const sortA = a[sortBy[0]];
+                        const sortB = b[sortBy[0]];
+
+                        if (sortDesc[0]) {
+                            if (sortA < sortB) return 1;
+                            if (sortA > sortB) return -1;
+                            return 0;
+                        } else {
+                            if (sortA < sortB) return -1;
+                            if (sortA > sortB) return 1;
+                            return 0;
+                        }
+                    });
+                }
+
+                if (itemsPerPage > 0) {
+                    items = items.slice((page - 1) * itemsPerPage, page * itemsPerPage);
+                }
+
+                setTimeout(() => {
+                    resolve({
+                        items,
+                        total,
+                    });
+                }, 1000);
+            });
+        },
+        closeScanner() {
+            this.dialog = false;
+
+            const video = document.querySelector("video");
+
+            // A video's MediaStream object is available through its srcObject attribute
+            const mediaStream = video.srcObject;
+
+            // Through the MediaStream, you can get the MediaStreamTracks with getTracks():
+            const tracks = mediaStream.getTracks();
+
+            // Tracks are returned as an array, so if you know you only have one, you can stop it with:
+            // tracks[0].stop();
+
+            // Or stop all like so:
+            tracks.forEach((track) => track.stop());
+
+        },
     },
-    closeScanner() {
-      this.dialog = false;
-
-      const video = document.querySelector("video");
-
-      // A video's MediaStream object is available through its srcObject attribute
-      const mediaStream = video.srcObject;
-
-      // Through the MediaStream, you can get the MediaStreamTracks with getTracks():
-      const tracks = mediaStream.getTracks();
-
-      // Tracks are returned as an array, so if you know you only have one, you can stop it with:
-      // tracks[0].stop();
-
-      // Or stop all like so:
-      tracks.forEach((track) => track.stop());
-    },
-  },
 };
 </script>
 

@@ -6,7 +6,6 @@ const { Op } = require("sequelize");
 const models = require("./../../../models");
 
 router.post("/", async (req,res) => {
-    
     try{
         const lock = await models.Locks.build(req.body);
         await lock.save();

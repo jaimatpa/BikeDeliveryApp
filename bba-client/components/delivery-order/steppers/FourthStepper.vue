@@ -49,67 +49,6 @@
                 </div>
             </v-col>
         </v-row>
-
-        <!-- <v-row>
-            <v-col cols="12" xs="12" sm="12" md="12" xl="12" class="d-flex flex-column justify-center align-center">
-                <div v-if="Object.keys(clickedImage).length > 0">
-                    <div class="slider-img-container py-0 my-0" style="display:flex;">
-                        <img style="align-self: flex-end;" ref="currentImgRef" :src="clickedImage.local_blob_url" :width="innerWindowWidth > 800 ? 600 : 300" />
-                        <span class="img-cross-btn" @click="deleteImage(clickedImage.array_index)">
-                            <v-icon color="black" style="font-size: 20px;cursor: pointer;">
-                                mdi-close
-                            </v-icon>
-                        </span>
-                        <span class="img-left-btn" @click="goToNextImage('left')">
-                            <v-icon class="white--text">mdi-arrow-left-bold</v-icon>
-                        </span>
-                        <span class="img-right-btn" @click="goToNextImage('right')">
-                            <v-icon class="white--text">mdi-arrow-right-bold</v-icon>
-                        </span>
-                    </div>
-                    <div style="text-align:center; margin-top: 5px;">
-                        Photo {{ clickedImage.array_index + 1 }} of
-                        {{ capturedImagesFromVuex.length }}
-                    </div>
-                </div>
-
-                <v-img v-else max-height="180" max-width="220" :src="cyclePhoto"></v-img>
-            </v-col>
-        </v-row> -->
-
-        <!-- Delivery Cancel Dialog -->
-        <!-- <v-dialog v-model="deliveryCancelOrderDialog" transition="dialog-bottom-transition" max-width="350" content-class="order-details-dialog">
-            <v-card>
-                <v-toolbar dense color="error" dark elevation="0">
-                    <v-toolbar-title>Cancel Delivery</v-toolbar-title>
-                    <v-spacer />
-                    <v-btn icon dark @click.stop="deliveryCancelOrderDialog = false">
-                        <v-icon>mdi-close</v-icon>
-                    </v-btn>
-                </v-toolbar>
-
-                <v-card-text class="my-5 text-center">
-                    <p class="title mb-3 secondary--text sure-title">
-                        Are you sure you want to cancel this delivery order?
-                    </p>
-
-                    <div class="d-flex flex-column">
-                        <v-btn class="ma-2" color="primary" @click.stop="$router.go(-1)">
-                            Yes
-                        </v-btn>
-                        <v-btn class="ma-2" outlined color="error" @click.stop="deliveryCancelOrderDialog = false">
-                            No
-                        </v-btn>
-                    </div>
-                    <div style="text-align:center; margin-top: 5px;">
-                        Photo {{ clickedImage.array_index + 1 }} of
-                        {{ capturedImagesFromVuex.length }}
-                    </div>
-                    <v-img max-height="180" max-width="220" :src="cyclePhoto"></v-img>
-                </v-card-text>
-            </v-card>
-        </v-dialog> -->
-        <!-- Fourth Stepper Button -->
         <v-row>
             <v-col cols="12" xs="12" sm="12" md="4" xl="4">
                 <v-btn block depressed color="accent" @click.stop="$emit('set-delivery-stepper', 3)">
@@ -196,7 +135,6 @@ export default {
                 } else {
                     this.clickedImage = {};
                 }
-                // console.log("hereeeeeeeeeeeeeee ........ ", newVal);
                 console.log(newVal);
                 console.log("Hellooooo");
                 this.$emit("setUploadFiles", newVal);

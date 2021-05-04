@@ -5,39 +5,38 @@
             <!-- First Stepper -->
             <v-stepper-content step="1">
                 <div class="d-flex flex-column justify-space-between" style="height: 100%">
-                    <div>
+                    <div class="mt-1">
                         <v-row>
                             <v-col cols="12" xs="12" sm="12" md="6" xl="6">
-                                <v-text-field v-model="deliveryOrderData.orderid" label="ORDER #" placeholder="Order" readonly disabled filled dense outlined>
+                                <v-text-field v-model="deliveryOrderData.orderid" label="ORDER #" placeholder="Order" readonly disabled dense outlined>
                                 </v-text-field>
                             </v-col>
                             <v-col cols="12" xs="12" sm="12" md="6" xl="6">
                                 <v-menu ref="menu1" v-model="menu1" :close-on-content-click="false" transition="scale-transition" offset-y max-width="290px" min-width="auto">
                                     <template v-slot:activator="{ on, attrs }">
-                                        <v-text-field v-model="dateFormatted" label="Date" hint="MM/DD/YYYY format" persistent-hint v-bind="attrs" @blur="date = parseDate(dateFormatted)" v-on="on" outlined dense></v-text-field>
+                                        <v-text-field v-model="dateFormatted" label="Date" hint="MM/DD/YYYY format" persistent-hint v-bind="attrs" @blur="date = parseDate(dateFormatted)" v-on="on" disabled readonly outlined dense></v-text-field>
                                     </template>
                                     <v-date-picker v-model="date" no-title @input="menu1 = false"></v-date-picker>
                                 </v-menu>
                             </v-col>
+                        </v-row>
+                        <v-row>
                             <v-col cols="12" xs="12" sm="12" md="6" xl="6">
-                                <v-text-field v-model="deliveryOrderData.name" label="NAME" placeholder="Name" dense outlined>
+                                <v-text-field v-model="deliveryOrderData.name" label="NAME" placeholder="Name" disabled readonly dense outlined>
+                                </v-text-field>
+                            </v-col>
+
+                            <v-col cols="12" xs="12" sm="12" md="6" xl="6">
+                                <v-text-field v-model="deliveryOrderData.location" label="LOCATION" placeholder="Location" disabled readonly dense outlined>
                                 </v-text-field>
                             </v-col>
                         </v-row>
-
                         <v-row>
                             <v-col cols="12" xs="12" sm="12" md="6" xl="6">
-                                <v-text-field v-model="deliveryOrderData.location" label="LOCATION" placeholder="Location" dense outlined>
-                                </v-text-field>
-                            </v-col>
-                        </v-row>
-
-                        <v-row>
-                            <v-col cols="12" xs="12" sm="12" md="6" xl="6">
-                                <v-select :items="colorItems" v-model="defaultColorValue" label="Color" dense outlined></v-select>
+                                <v-select :items="colorItems" v-model="defaultColorValue" label="Color" disabled readonly dense outlined></v-select>
                             </v-col>
                             <v-col cols="12" xs="12" sm="12" md="6" xl="6">
-                                <v-text-field v-model="defaultCombinationValue" label="COMBINATION" placeholder="Combination" disabled readonly filled dense outlined>
+                                <v-text-field v-model="defaultCombinationValue" label="COMBINATION" placeholder="Combination" disabled readonly dense outlined>
                                 </v-text-field>
                             </v-col>
                         </v-row>
@@ -45,7 +44,7 @@
                     <div>
                         <!-- First Stepper Button -->
                         <v-row>
-                          <v-col cols="12" xs="12" sm="12" md="6" xl="6">
+                            <v-col cols="12" xs="12" sm="12" md="6" xl="6">
                                 <v-btn block depressed color="error" @click.stop="deliveryCancelOrderDialog = true">
                                     Cancel
                                 </v-btn>
@@ -147,7 +146,8 @@
 import _ from "lodash";
 import moment from "moment";
 import {
-    mapActions
+    mapActions,
+    mapState
 } from "vuex";
 
 import Page from "@/components/paradym/Page";
@@ -175,6 +175,7 @@ export default {
         this.getMsgTemplate();
         this.getUserlocation();
         this.getLockingDetails();
+        localStorage.clear();
     },
     data() {
         return {
@@ -211,6 +212,7 @@ export default {
             smsObject: {
                 to: "",
                 message: "",
+                mediaUrl: []
             },
             templateMsg: "",
             editNumber: false,
@@ -227,6 +229,9 @@ export default {
         computedDateFormatted() {
             return this.formatDate(this.date);
         },
+        ...mapState({
+            capturedImagesFromVuex: (state) => state.capturedImages = [],
+        }),
     },
     watch: {
         date(val) {
@@ -288,14 +293,8 @@ export default {
             this.searchHistoryDialog = false;
             this.deliveryOrderDialog = false;
             this.loader = true;
-
-            console.log("delivery information", this.deliveryOrderData);
             let dataToAdd = this.deliveryOrderData;
             let userPositionData = this.userPosition;
-
-            // let message = `Hello ${dataToAdd.name}! Your bike is now available at ${dataToAdd.location}. Your deliver number is ${dataToAdd.orderid}, Bike Rack : ${dataToAdd.rack}, Color : ${dataToAdd.color}, Lock-Combo : ${dataToAdd.combination}. Thank You.`
-
-            // let newMSG = `Hello [customer-name]! \nJOY\n\n\n\nBANGLA\n\n\n\nYour bike is now available at [geo-lat] [geo-long] Your deliver number is [delivery-number] Thank You.`
 
             let infoMap = {
                 "[customer-name]": "name",
@@ -316,33 +315,25 @@ export default {
                 dataToAdd,
                 userPositionData
             );
-
-            // let message = `Hello ${dataToAdd.name}! Your bike is now available at ${dataToAdd.location}. Your deliver number is ${dataToAdd.orderid}, Bike Rack : ${dataToAdd.rack}, Color : ${dataToAdd.color}, Lock-Combo : ${dataToAdd.combination}. Thank You.`;
-            // this.smsObject.message = message;
-
-            // this.smsObject.to = dataToAdd.mobileNo;
             this.smsObject.message = output;
-            // this.smsObject.to ="+8801745476473";
 
-            console.log("Data ready====>", this.smsObject);
+            try {
+                let response = await this.uploadFiles(this.smsObject);
+            } catch (error) {
+                console.log("error", error);
+            }
+
             try {
                 let response = await this.$axios.$post(
                     "api/user/sendSMS",
                     this.smsObject
                 );
-                console.log("respones", response.message);
                 this.loader = false;
                 this.showSuccess(response.message);
-                //  this.$router.go(-1);
+                this.$router.push('/deliveryOrder');
             } catch (err) {
                 console.log("errror", err.response);
                 this.loader = false;
-            }
-
-            try {
-                this.uploadFiles();
-            } catch (error) {
-                console.log("error", error);
             }
         },
         async getOrderDetails() {
@@ -374,7 +365,7 @@ export default {
         setDelivaryStepper(param) {
             this.deliveryStepper = param;
         },
-        async upload(upload) {
+        async upload(upload, pictureNumber) {
             const blob = await fetch(upload.local_blob_url).then((r) => r.blob());
             const newfileObj = new File([blob], `${upload.originalName}.jpeg`, {
                 type: blob.type,
@@ -384,13 +375,14 @@ export default {
             formData.append("file", newfileObj);
 
             try {
+                let pictureName = `${this.deliveryOrderData.orderid}-${pictureNumber}`
                 let result = await this.$axios.$post(
-                    "/api/user/upload?orderid=" + this.deliveryOrderData.orderid,
+                    `/api/user/upload?orderid=${pictureName}`,
                     formData
                 );
 
                 if (result.success) {
-                    console.log(`upload success!!! ${this.deliveryOrderData.orderid}`);
+                    console.log(`Photo upload was successful. ${this.deliveryOrderData.orderid}`);
                     // this.$router.push({
                     //   path: "/callForHelp",
                     //   query: { orderid: this.deliveryOrderData.orderid },
@@ -409,10 +401,10 @@ export default {
                         saveData, {
                             params: {
                                 orderid: this.deliveryOrderData.orderid,
+                                status: 1,
                             },
                         }
                     );
-                    if (result) this.$router.go(-1);
                 } else {
                     console.log("upload failed!!!");
                 }
@@ -420,10 +412,14 @@ export default {
                 console.log(err);
             }
         },
-        async uploadFiles() {
-            this.uploads.forEach((upload) => {
-                this.upload(upload);
-            });
+        async uploadFiles(messageObject) {
+            var counter = 0;
+
+            for (const upload of this.uploads) {
+                let uploadResponse = await this.upload(upload, counter);
+                messageObject.mediaUrl.push(`https://images.hiretheproz.com/${this.deliveryOrderData.barcode}-${counter}.jpeg`);
+                counter = counter + 1;
+            }
         },
         async setUploadFiles(uploads) {
             this.uploads = uploads;

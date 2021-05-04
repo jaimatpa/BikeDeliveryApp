@@ -69,7 +69,7 @@ export default {
   methods: {
     async getDataFromApi() {
       this.loading = true;
-      this.apiCall().then((data) => {
+      await this.apiCall().then((data) => {
         this.users = data.items;
         this.totalUsers = data.total;
         this.loading = false;
@@ -80,6 +80,7 @@ export default {
         const { sortBy, sortDesc, page, itemsPerPage } = this.options;
 
         const data = await this.$axios.$get("/api/user/allUsers");
+        console.log(data);
 
         let items = data.allUsers;
         const total = data.allUsers.length;
@@ -100,17 +101,6 @@ export default {
             }
           });
         }
-
-        if (itemsPerPage > 0) {
-          items = items.slice((page - 1) * itemsPerPage, page * itemsPerPage);
-        }
-
-        setTimeout(() => {
-          resolve({
-            items,
-            total,
-          });
-        }, 1000);
       });
     },
   },
