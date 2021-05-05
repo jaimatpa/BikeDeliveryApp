@@ -18,8 +18,6 @@
             {{ getDateFormat(item.date) }}
         </template>
 
-       
-
         <!-- Actions -->
         <template v-slot:item.actions="{ item }">
             <v-icon medium color="primary" @click.stop="
@@ -59,6 +57,10 @@ import { mapActions } from "vuex";
 
 import Page from "@/components/paradym/Page";
 import BarScanner from "@/components/BarScanner";
+import {
+    mapActions,
+    mapState
+} from "vuex";
 
 export default {
     name: "deliveryOrder",
@@ -140,6 +142,10 @@ export default {
         },
     },
     methods: {
+        ...mapActions("snackbar", {
+            showSuccess: "success",
+            showError: "error"
+        }),
         getDateFormat(date) {
             return moment(date).add(4, 'hours').format("MM/DD/YYYY hh:mm A");
         },
@@ -150,11 +156,20 @@ export default {
             }
             this.getDataFromApi();
         },
-        code(value) {
-            this.search = value;
+        async code(value) {
             this.closeScanner();
             var stringWithoutDash = value.substring(1);
-            this.$router.push(`/deliveryOrder/${stringWithoutDash}`);
+            this.search = stringWithoutDash;
+            let orderParam = {
+                orderid: stringWithoutDash
+            }
+            let result = await this.$axios.get(`/api/user/getOrder`, {params: orderParam});
+            console.log(result);
+            if (result.data == '1') {
+                this.$router.push(`/deliveryOrder/${stringWithoutDash}`);
+            } else {
+                this.showError("The scanned order does not appear to be in the system.");
+            }
         },
 
         onKeyUp(event) {

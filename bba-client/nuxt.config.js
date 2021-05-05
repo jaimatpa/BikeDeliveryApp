@@ -113,7 +113,8 @@ export default {
     workbox: {
       //enabled: true, // Development mode enabled
       cacheAssets: true, // should be enabled by default
-      offlineStrategy: "CacheFirst",
+      offline: false,
+      offlineStrategy: "NetworkFirst",
     },
   },
 

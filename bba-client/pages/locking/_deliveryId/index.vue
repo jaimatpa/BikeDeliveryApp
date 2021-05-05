@@ -12,10 +12,9 @@
                     <v-select :items="colorItems" v-model="defaultColorValue" label="COLOR" dense outlined></v-select>
                 </v-col>
 
-                <v-col cols="12" xs="12" sm="12" md="6" xl="6">
-                    <v-text-field v-model="defaultCombinationValue" label="COMBINATION" placeholder="Combination" disabled readonly dense outlined>
-                    </v-text-field>
-                </v-col>
+                <!-- <v-col cols="12" xs="12" sm="12" md="6" xl="6">
+                    <v-text-field v-model="defaultCombinationValue" label="COMBINATION" placeholder="Combination" disabled readonly dense outlined></v-text-field>
+                </v-col> -->
             </v-row>
             <v-row>
                 <v-col cols="12" xs="12" sm="12" md="12" xl="12">
@@ -61,7 +60,7 @@ export default {
     },
     watch: {
         defaultColorValue(newVal, oldVal) {
-                const data = _.find(this.lockingData, (o) => o.color === newVal);
+                const data = _.find(this.lockingData, (o) => o.color == newVal);
                 this.defaultCombinationValue = data && data.combination;
                 this.defaultLockingValue = data && data.lockId;
         },
@@ -90,7 +89,6 @@ export default {
                         search: this.$route.params.deliveryId,
                     },
                 });
-                console.log("respones", response);
                 this.lockData = response[0];
                 this.defaultColorValue = response[0].color;
                 this.defaultCombinationValue = response[0].combination;

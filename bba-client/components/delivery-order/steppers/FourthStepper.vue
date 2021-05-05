@@ -211,7 +211,6 @@ export default {
                 this.clickedImage = nextImage;
 
                 this.SET_CAPTURED_IMAGES_IN_VUEX([...filtered_images]);
-                // this.local_files_to_upload = [ ...filtered_images ]
             }
         },
     },

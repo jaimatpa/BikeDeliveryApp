@@ -142,7 +142,7 @@ export default {
           title: "RESEND",
           icon: "mdi-share-outline",
           iconSelected: "mdi-share",
-          to: "/resend",
+          to: "/searchHistory",
         },
       ],
       userItems: [
@@ -174,11 +174,11 @@ export default {
           iconImage: require("./../assets/images/download.svg"),
           downArrowIcon: require("./../assets/images/down_arrow.svg"),
         },
-        {
-          title: "MY ACCOUNT",
-          to: "/account",
-          icon: "mdi-account-circle",
-        },
+        // {
+        //   title: "MY ACCOUNT",
+        //   to: "/account",
+        //   icon: "mdi-account-circle",
+        // },
         {
           title: "LOGOUT",
           to: "/logout",

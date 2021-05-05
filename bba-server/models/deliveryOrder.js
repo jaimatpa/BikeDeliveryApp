@@ -22,6 +22,8 @@ module.exports = (sequelize, DataTypes) => {
       barcode: DataTypes.STRING,
       status: DataTypes.INTEGER,
       updatedAt: DataTypes.DATE,
+      email: DataTypes.STRING,
+      note: DataTypes.STRING
     },
     {
       sequelize,

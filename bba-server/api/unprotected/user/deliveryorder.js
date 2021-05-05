@@ -118,6 +118,16 @@ router.get("/", async (req, res) => {
                         return false;
                     }
                 }));
+            }  else if (type === "Resend") {
+                data = data.filter((record => {
+                    var d = moment(record.date).add(4, 'hours').format('LL');
+                    var today = moment().format('LL');
+                    if (d > today && record.status == 1) {
+                        return true;
+                    } else {
+                        return false;
+                    }
+                }));
             }
             console.log(data)
         }catch(error){
@@ -134,9 +144,8 @@ router.get("/", async (req, res) => {
                         }
                     }
                 });
-                console.log(data)
             }catch(error){
-                console.log(error)
+                return Promise.reject();
             }
         }
     }
@@ -144,8 +153,8 @@ router.get("/", async (req, res) => {
         data = await models.DeliveryOrders.findAll();
         if (type === "DeliveryOrders") {
             data = data.filter((record => {
-                var d = moment(record.date).add(4, 'hours').format('LL');
-                var today = moment().format('LL');
+                var d = moment(record.date).add(4, 'hours').startOf('day');
+                var today = moment().endOf('day');
                 if (d >= today && record.status == 0) {
                     return true;
                 } else {
@@ -176,6 +185,16 @@ router.get("/", async (req, res) => {
                 var d = moment(record.date).add(4, 'hours').format('LL');
                 var today = moment().format('LL');
                 if (d == today) {
+                    return true;
+                } else {
+                    return false;
+                }
+            }));
+        } else if (type === "Resend") {
+            data = data.filter((record => {
+                var d = moment(record.date).add(4, 'hours').format('LL');
+                var today = moment().format('LL');
+                if (d > today && record.status == 1) {
                     return true;
                 } else {
                     return false;

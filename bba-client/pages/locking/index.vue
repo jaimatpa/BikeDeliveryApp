@@ -168,12 +168,21 @@ export default {
             }
             this.getDataFromApi();
         },
-        code(value) {
+        async code(value) {
 
-            this.search = value;
-            this.closeScanner()
+             this.closeScanner();
             var stringWithoutDash = value.substring(1);
-            this.$router.push(`/deliveryOrder/${stringWithoutDash}`);
+            this.search = stringWithoutDash;
+            let orderParam = {
+                orderid: stringWithoutDash
+            }
+            let result = await this.$axios.get(`/api/user/getOrder`, {params: orderParam});
+            console.log(result);
+            if (result.data == '1') {
+                this.$router.push(`/locking/${stringWithoutDash}`);
+            } else {
+                this.showError("The scanned order does not appear to be in the system.");
+            }
 
         },
 

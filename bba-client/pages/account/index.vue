@@ -2,8 +2,7 @@
   <Page
     :title="!isMobile ? 'Account Settings' : ''"
     desc="Change your name, password, and more."
-    center
-  >
+    center>
     <SettingsList :items="items" />
   </Page>
 </template>
@@ -30,7 +29,7 @@ export default {
       items: [
         {
           label: "Email",
-          value: this.$auth.$state.user.email,
+          value: this.$auth.user.email,
         },
         {
           label: "Password",

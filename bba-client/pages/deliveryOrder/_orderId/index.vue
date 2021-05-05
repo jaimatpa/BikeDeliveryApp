@@ -40,6 +40,10 @@
                                 </v-text-field>
                             </v-col>
                         </v-row>
+                        <v-row cols="12" xs="12" sm="12" md="12" xl="12">
+                             <v-textarea v-model="deliveryOrderData.note" label="NOTES" placeholder="NOTES" disabled readonly dense outlined>
+                                </v-textarea>
+                        </v-row>
                     </div>
                     <div>
                         <!-- First Stepper Button -->
@@ -171,11 +175,11 @@ export default {
         FourthStepper
     },
     async created() {
+        // location.reload();
         this.getOrderDetails();
         this.getMsgTemplate();
         this.getUserlocation();
         this.getLockingDetails();
-        localStorage.clear();
     },
     data() {
         return {
@@ -212,6 +216,7 @@ export default {
             smsObject: {
                 to: "",
                 message: "",
+                orderid: '',
                 mediaUrl: []
             },
             templateMsg: "",
@@ -316,11 +321,18 @@ export default {
                 userPositionData
             );
             this.smsObject.message = output;
+            this.smsObject.orderid = this.deliveryOrderData.orderid;
 
             try {
                 let response = await this.uploadFiles(this.smsObject);
             } catch (error) {
                 console.log("error", error);
+            }
+
+            try {
+                let emailResponse = await this.$axios.post("api/user/sendDeliveryEmail", this.smsObject);
+            } catch (error) {
+                this.loader = false;
             }
 
             try {

@@ -12,31 +12,31 @@ router.post("/", async (req, res) => {
   try {
     //LOCAL TESTING
     console.log("Hello from SendSMS");
-    var textResponse = await client.messages.create({
-      body: req.body.message,
-      from: process.env.TWILIO_NUMBER,
-      to: `+13044839974`,
-    });
-    if (req.body.mediaUrl === undefined || req.body.mediaUrl.length === 0) {
-    } else {
-      console.log("In IF Statement");
-      var response = await client.messages
-      .create({body: "Here are the photo(s) of the bike!", from: process.env.TWILIO_NUMBER, to: `+13044839974`, mediaUrl: req.body.mediaUrl})
-      .then(message => console.log(message.sid));
-    }
-
     // var textResponse = await client.messages.create({
     //   body: req.body.message,
     //   from: process.env.TWILIO_NUMBER,
-    //   to: req.body.to,
+    //   to: `+13044839974`,
     // });
-
-    // if (req.body.mediaUrl === undefined || req.body.mediaUrl.length == 0) {
+    // if (req.body.mediaUrl === undefined || req.body.mediaUrl.length === 0) {
     // } else {
+    //   console.log("In IF Statement");
     //   var response = await client.messages
-    //   .create({body: req.body.message, from: process.env.TWILIO_NUMBER, to: `+1${req.body.to}`, mediaUrl: req.body.mediaUrl})
+    //   .create({body: "Here are the photo(s) of the bike!", from: process.env.TWILIO_NUMBER, to: `+13044839974`, mediaUrl: req.body.mediaUrl})
     //   .then(message => console.log(message.sid));
     // }
+
+    var textResponse = await client.messages.create({
+      body: req.body.message,
+      from: process.env.TWILIO_NUMBER,
+      to: req.body.to,
+    });
+
+    if (req.body.mediaUrl === undefined || req.body.mediaUrl.length == 0) {
+    } else {
+      var response = await client.messages
+      .create({body: req.body.message, from: process.env.TWILIO_NUMBER, to: `+1${req.body.to}`, mediaUrl: req.body.mediaUrl})
+      .then(message => console.log(message.sid));
+    }
     res.status(200).json({
       response: textResponse,
       message: `Message Sent To ${req.body.to}`,

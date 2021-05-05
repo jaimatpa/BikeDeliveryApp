@@ -23,23 +23,29 @@ router.post("/", async (req, res) => {
                 orderid:orderid
             }
         });
+
+
+    let sendTo = `+1${req.body.to}`;
+
+
     var textResponse = await client.messages.create({
       body: req.body.message,
       from: process.env.TWILIO_NUMBER,
-      to: `+13044839974`,
+      to: sendTo,
     });
     
     const path = '/public';
     let mediaUrls = [];
-    mediaUrls.push('https://images.hiretheproz.com/Apr999-21-0.jpeg');
-    mediaUrls.push('https://images.hiretheproz.com/Apr999-21-1.jpeg');
-    mediaUrls.push('https://images.hiretheproz.com/Apr999-21-2.jpeg');
-    mediaUrls.push('https://images.hiretheproz.com/Apr999-21-3.jpeg');
-    mediaUrls.push('https://images.hiretheproz.com/Apr999-21-4.jpeg');
+    mediaUrls.push(`https://images.hiretheproz.com/${deliveryOrder.barcode}-0.jpeg`);
+    mediaUrls.push(`https://images.hiretheproz.com/${deliveryOrder.barcode}-1.jpeg`);
+    mediaUrls.push(`https://images.hiretheproz.com/${deliveryOrder.barcode}-2.jpeg`);
+    mediaUrls.push(`https://images.hiretheproz.com/${deliveryOrder.barcode}-3.jpeg`);
+    mediaUrls.push(`https://images.hiretheproz.com/${deliveryOrder.barcode}-4.jpeg`);
+
 
     try {
       let response = await client.messages
-    .create({body: "Here are the photo(s) of the bike!", from: process.env.TWILIO_NUMBER, to: `+13044839974`, mediaUrl: mediaUrls[0]})
+    .create({body: "Here are the photo(s) of the bike!", from: process.env.TWILIO_NUMBER, to: sendTo, mediaUrl: mediaUrls[0]})
     .then(message => console.log(message.sid));
     } catch (error) {
       
@@ -47,7 +53,7 @@ router.post("/", async (req, res) => {
     
     try {
       let response1 = await client.messages
-    .create({body: "", from: process.env.TWILIO_NUMBER, to: `+13044839974`, mediaUrl: mediaUrls[1]})
+    .create({body: "", from: process.env.TWILIO_NUMBER, to: sendTo, mediaUrl: mediaUrls[1]})
     .then(message => console.log(message.sid));
     } catch (error) {
       
@@ -55,7 +61,7 @@ router.post("/", async (req, res) => {
 
     try {
       let response2 = await client.messages
-      .create({body: "", from: process.env.TWILIO_NUMBER, to: `+13044839974`, mediaUrl: mediaUrls[2]})
+      .create({body: "", from: process.env.TWILIO_NUMBER, to: sendTo, mediaUrl: mediaUrls[2]})
       .then(message => console.log(message.sid));
     } catch (error) {
       
@@ -63,7 +69,7 @@ router.post("/", async (req, res) => {
 
     try {
       let response3 = await client.messages
-      .create({body: "", from: process.env.TWILIO_NUMBER, to: `+13044839974`, mediaUrl: mediaUrls[3]})
+      .create({body: "", from: process.env.TWILIO_NUMBER, to: sendTo, mediaUrl: mediaUrls[3]})
       .then(message => console.log(message.sid));
     } catch (error) {
       
@@ -71,7 +77,7 @@ router.post("/", async (req, res) => {
 
     try {
       let response4 = await client.messages
-      .create({body: "", from: process.env.TWILIO_NUMBER, to: `+13044839974`, mediaUrl: mediaUrls[4]})
+      .create({body: "", from: process.env.TWILIO_NUMBER, to: sendTo, mediaUrl: mediaUrls[4]})
       .then(message => console.log(message.sid));
       
     } catch (error) {

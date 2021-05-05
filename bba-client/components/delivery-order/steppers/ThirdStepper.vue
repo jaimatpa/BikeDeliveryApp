@@ -152,7 +152,6 @@ export default {
             },
         };
     },
-
     mounted() {
         var el = this.$refs.currentImgRef;
         touchScreen.swipedetect(el, (swipedir) => {
@@ -192,6 +191,9 @@ export default {
         ...mapState({
             capturedImagesFromVuex: (state) => state.capturedImages,
         }),
+    },
+    created: {
+        
     },
     methods: {
         ...mapMutations(["SET_CAPTURED_IMAGES_IN_VUEX"]),

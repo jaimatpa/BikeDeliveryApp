@@ -200,6 +200,12 @@ export default {
             console.log(this.orderData);
 
             try {
+                let response = await this.$axios.$post("api/user/sendDeliveryEmail", this.smsObject);
+            } catch (error) {
+                
+            }
+
+            try {
                 let response = await this.$axios.$post(
                     "api/user/resend",
                     this.smsObject,

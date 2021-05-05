@@ -13,6 +13,8 @@ const template = require("./user/template");
 const upload = require("./user/upload");
 const downloadBackUpPhotos = require("./user/downloadBackUpPhotos");
 const resend = require("./user/resend");
+const sendDeliveryEmail = require("./user/sendDeliveryEmail");
+const getOrder = require("./user/getOrder");
 const cors = require('cors')
 
 module.exports = {
@@ -34,5 +36,7 @@ module.exports = {
     app.use("/api/user/upload", upload);
     app.use("/api/user/downloadBackUpPhotos", downloadBackUpPhotos);
     app.use("/api/user/resend", resend);
+    app.use("/api/user/sendDeliveryEmail", sendDeliveryEmail);
+    app.use("/api/user/getOrder", getOrder);
   },
 };

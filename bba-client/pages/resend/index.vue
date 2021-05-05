@@ -123,7 +123,6 @@ export default {
         },
         options: {
             handler() {
-                // console.log('watch this.options: ', this.options)
                 if (this.initialRender === false) {
                     this.getDataFromApi();
                 }
@@ -159,28 +158,80 @@ export default {
             }
         },
         async sendNotification() {
-            this.resendDialog = false;
-            // this.showSuccess("Notification Sent.");
+            this.searchHistoryDialog = false;
+            this.deliveryOrderDialog = false;
             this.loader = true;
+            let dataToAdd = this.orderData;
+            let userPositionData = this.userPosition;
 
-            console.log("delivery information", this.dataToSent);
-            let dataToAdd = this.dataToSent;
+            let infoMap = {
+                "[customer-name]": "name",
+                "[location]": "location",
+                "[lock-combo]": ["lock", "combination"],
+                "[lock]": "lock",
+                "[combination]": "combination",
+                "[delivery-number]": "orderid",
+                "[color]": "color",
+                "[rack]": "rack",
+                "[geo-lat]": "geo-lat",
+                "[geo-long]": "geo-long",
+            };
 
-            let message = `Hello ${dataToAdd.name}! Your bike is now available at ${dataToAdd.location}.  Your Order number is ${dataToAdd.order}. Thank You.`;
-            this.smsObject.message = message;
+
+            let output = this.getMessage(
+                this.templateMsg,
+                infoMap,
+                dataToAdd,
+                userPositionData
+            );
+            console.log("IN OUTPUT");
+
+            console.log(output);
+            this.smsObject.message = output;
+            this.smsObject.orderid = this.orderData.orderid;
+            console.log("TESTING!!!!");
+            console.log(this.orderData);
+
             try {
                 let response = await this.$axios.$post(
-                    "api/user/sendSMS",
-                    this.smsObject
+                    "api/user/resend",
+                    this.smsObject,
                 );
-                console.log("respones", response.message);
                 this.loader = false;
                 this.showSuccess(response.message);
-                //  this.$router.go(-1);
+                this.$router.push('/deliveryOrder');
             } catch (err) {
                 console.log("errror", err.response);
                 this.loader = false;
             }
+        },
+        getMessage(template, infoMap, userObj, userPosition) {
+            let result = template;
+            console.log(template, infoMap, userObj);
+            try {
+                for (let key in infoMap) {
+                    if (key === "[lock-combo]") {
+                        let key0 = infoMap[key][0];
+                        let key1 = infoMap[key][1];
+                        result = result.replaceAll(key, `${userObj[key0]}-${userObj[key1]}`);
+                    }
+
+                    if (key === "[geo-lat]" && userPosition) {
+                        result = result.replaceAll(key, userPosition.lat);
+                    }
+                    if (key === "[geo-long]" && userPosition) {
+                        result = result.replaceAll(key, userPosition.lng);
+                    }
+
+                    result = result.replaceAll(key, userObj[infoMap[key]]);
+                }
+                console.log("RETURNING RESULT", result);
+                return result;
+            } catch (error) {
+                console.log(error)
+            }
+
+            return '';
         },
         async getDataFromApi() {
             this.loading = true;
@@ -193,8 +244,11 @@ export default {
         apiCall() {
             return new Promise(async (resolve, reject) => {
                 let param = this.search ? {
-                    search: this.search
-                } : {};
+                    search: this.search,
+                    type: "Resend"
+                } : {
+                    type: "Resend"
+                };
 
                 const orderDeliveryMockData = await this.$axios.$get(
                     "/api/user/deliveryOrder", {
