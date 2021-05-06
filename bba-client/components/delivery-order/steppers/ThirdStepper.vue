@@ -192,9 +192,6 @@ export default {
             capturedImagesFromVuex: (state) => state.capturedImages,
         }),
     },
-    created: {
-        
-    },
     methods: {
         ...mapMutations(["SET_CAPTURED_IMAGES_IN_VUEX"]),
 
