@@ -11,6 +11,7 @@
                 </tr>
             </thead>
             <tbody>
+                <!--Work in progress -->
                 <tr v-for="(lock, i) in getLockingData" :key="i">
                     <td>
                         <v-text-field label="Color" outlined dense v-model="lock.color"></v-text-field>
