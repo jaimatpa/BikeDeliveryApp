@@ -12,6 +12,19 @@
                     <v-select :items="colorItems" v-model="defaultColorValue" label="COLOR" dense outlined></v-select>
                 </v-col>
 
+                <v-col cols="12" xs="12" sm="12" md="6" xl="6">
+                    <v-list :items="colorItems" label="COLOR">
+                        <v-subheader>COLORS</v-subheader>
+                        <v-list-item-group color="primary">
+                            <v-list-item v-for="(item, i) in colorItems" :value="item" :key="i">
+                                <v-list-item-action>
+                                    <v-btn :color="item">{{item}}</v-btn>
+                                </v-list-item-action>
+                            </v-list-item>
+                        </v-list-item-group>
+                    </v-list>
+                </v-col>
+
                 <!-- <v-col cols="12" xs="12" sm="12" md="6" xl="6">
                     <v-text-field v-model="defaultCombinationValue" label="COMBINATION" placeholder="Combination" disabled readonly dense outlined></v-text-field>
                 </v-col> -->

@@ -89,23 +89,19 @@ export default {
                 },
                 {
                     text: "NAME",
-                    value: "name",
-                    sortable: false
+                    value: "name"
                 },
                 {
                     text: "COLOR",
-                    value: "color",
-                    sortable: false
+                    value: "color"
                 },
                 {
                     text: "LOCATION",
-                    value: "location",
-                    sortable: false
+                    value: "location"
                 },
                 {
                     text: "ORDER#",
-                    value: "orderid",
-                    sortable: false
+                    value: "orderid"
                 },
                 {
                     text: "ACTION",
@@ -170,13 +166,15 @@ export default {
         },
         async code(value) {
 
-             this.closeScanner();
+            this.closeScanner();
             var stringWithoutDash = value.substring(1);
             this.search = stringWithoutDash;
             let orderParam = {
                 orderid: stringWithoutDash
             }
-            let result = await this.$axios.get(`/api/user/getOrder`, {params: orderParam});
+            let result = await this.$axios.get(`/api/user/getOrder`, {
+                params: orderParam
+            });
             console.log(result);
             if (result.data == '1') {
                 this.$router.push(`/locking/${stringWithoutDash}`);

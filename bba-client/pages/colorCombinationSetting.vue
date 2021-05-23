@@ -6,6 +6,8 @@
                 <tr>
                     <th class="text-left">COLOR KEY</th>
                     <th class="text-left">COMBINATION KEY</th>
+                    <th class="text-left">COLOR VALUE 1</th>
+                    <th class="text-left">COLOR VALUE 2</th>
                 </tr>
             </thead>
             <tbody>
@@ -15,6 +17,12 @@
                     </td>
                     <td>
                         <v-text-field label="Combination" outlined dense v-model="lock.combination"></v-text-field>
+                    </td>
+                    <td>
+                        <v-color-picker mode='hexa' hide-canvas  v-model="lock.colorvalue"></v-color-picker>
+                    </td>
+                    <td>
+                        <v-color-picker mode='hexa' hide-canvas  v-model="lock.colorvalue1"></v-color-picker>
                     </td>
                 </tr>
             </tbody>
@@ -62,6 +70,8 @@ export default {
             lockingData: [],
             color: "",
             combination: "",
+            colorvalue1: "",
+            colorvalue2: "",
             rules: {
                 required: (value) => !!value || "Required.",
             },
@@ -86,11 +96,15 @@ export default {
             this.lockingData.push({
                 color: this.color,
                 combination: this.combination,
+                colorvalue: this.colorvalue1,
+                colorvalue1: this.colorvalue2
             });
         },
         async getLockingDetails() {
             const lockingDataResponse = await this.$axios.$get("/api/user/locking");
+            console.log("LOCKING DATA RESPONSE", lockingDataResponse);
             this.lockingData = lockingDataResponse;
+            console.log(this.lockingData);
         },
         saveColorCombinationData() {
             console.log("this.lockingData =>>>>>>>>", this.lockingData);

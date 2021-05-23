@@ -37,7 +37,7 @@ function sendEmailMain(args, messageObject) {
             html: emailHTML, // html body
           });
         } catch (error) {
-          
+          console.log("Email Error", error);
         }
         
   

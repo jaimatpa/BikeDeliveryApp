@@ -4,23 +4,40 @@
         <div>
             <v-row>
                 <v-col cols="12" xs="12" sm="12" md="6" xl="6">
-                    <v-text-field v-model="orderData.date" label="DATE" placeholder="Date" disabled filled readonly dense outlined>
+                    <v-text-field v-model="orderData.date" label="DATE" placeholder="Date" filled readonly dense outlined>
                     </v-text-field>
                 </v-col>
                 <v-col cols="12" xs="12" sm="12" md="6" xl="6">
-                    <v-text-field v-model="orderData.name" label="NAME" placeholder="Name" disabled readonly filled dense outlined>
+                    <v-text-field v-model="orderData.name" label="NAME" placeholder="Name" readonly filled dense outlined>
                     </v-text-field>
                 </v-col>
             </v-row>
 
             <v-row>
                 <v-col cols="12" xs="12" sm="12" md="6" xl="6">
-                    <v-text-field v-model="orderData.location" label="LOCATION" placeholder="Location" disabled readonly dense filled outlined>
+                    <v-text-field v-model="orderData.location" label="LOCATION" placeholder="Location" readonly dense filled outlined>
                     </v-text-field>
                 </v-col>
                 <v-col cols="12" xs="12" sm="12" md="6" xl="6">
-                    <v-text-field v-model="orderData.orderid" label="ORDER #" placeholder="Order#" disabled readonly filled dense outlined>
+                    <v-text-field v-model="orderData.orderid" label="ORDER #" placeholder="Order#" readonly filled dense outlined>
                     </v-text-field>
+                </v-col>
+            </v-row>
+            <v-row cols="12">
+                <v-col cols="12" xs="12" sm="12" md="6" xl="6">
+                    <img :src="`https://images.hiretheproz.com/${orderData.barcode}-0.jpeg`"></img>
+                </v-col>
+                <v-col cols="12" xs="12" sm="12" md="6" xl="6">
+                    <img :src="`https://images.hiretheproz.com/${orderData.barcode}-1.jpeg`"></img>
+                </v-col>
+                <v-col cols="12" xs="12" sm="12" md="6" xl="6">
+                    <img :src="`https://images.hiretheproz.com/${orderData.barcode}-2.jpeg`"></img>
+                </v-col>
+                <v-col cols="12" xs="12" sm="12" md="6" xl="6">
+                    <img :src="`https://images.hiretheproz.com/${orderData.barcode}-3.jpeg`"></img>
+                </v-col>
+                <v-col cols="12" xs="12" sm="12" md="6" xl="6">
+                    <img :src="`https://images.hiretheproz.com/${orderData.barcode}-4.jpeg`"></img>
                 </v-col>
             </v-row>
 
@@ -49,7 +66,7 @@
 
         <div>
             <!-- Notification Send Button -->
-            
+
         </div>
     </div>
 
@@ -178,7 +195,6 @@ export default {
                 "[geo-long]": "geo-long",
             };
 
-
             let output = this.getMessage(
                 this.templateMsg,
                 infoMap,
@@ -202,7 +218,7 @@ export default {
             try {
                 let response = await this.$axios.$post("api/user/sendDeliveryEmail", this.smsObject);
             } catch (error) {
-                
+
             }
 
             try {

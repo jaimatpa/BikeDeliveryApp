@@ -3,7 +3,7 @@ const nodemailer = require("nodemailer");
 const constVariables = require("./../../constants");
 
 const appName = process.env.APP_NAME || "BDA";
-const appEmail = process.env.APP_EMAIL || "krahamatullah@pardynamix.com";
+const appEmail = process.env.APP_EMAIL || "bikerentalshhi@gmail.com";
 const primaryColor = process.env.COLOR_PRIMARY || "#4C9A2A";
 
 // Sends an email message using nodemailer

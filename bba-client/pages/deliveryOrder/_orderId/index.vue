@@ -68,7 +68,7 @@
 
             <!-- Third Stepper -->
             <v-stepper-content step="3">
-                <ThirdStepper @set-delivery-stepper="setDelivaryStepper" :deliveryOrderData="deliveryOrderData" :userPosition="userPosition" />
+                <ThirdStepper ref="thirdStep" @set-delivery-stepper="setDelivaryStepper" :deliveryOrderData="deliveryOrderData" :userPosition="userPosition" />
             </v-stepper-content>
 
             <!-- Fourth Stepper -->
@@ -361,8 +361,18 @@ export default {
                 // this.deliveryOrderData.date = moment(response[0].date).format(
                 //   "MM/DD/YYYY hh:mm A"
                 // );
+                
 
                 this.deliveryOrderData = response[0];
+
+                // console.log("TESTING CAPTURED IMAGES", ThirdStepper.capturedImages);
+                console.log("TESTING CAPTURED IMAGES BEFORE", this.$refs.thirdStep.local_files_to_upload);
+                this.$refs.thirdStep.local_files_to_upload = [];
+                // ThirdStepper.local_files_to_upload = [];
+                console.log("TESTING CAPTURED IMAGES AFTER", this.$refs.thirdStep.local_files_to_upload);
+
+                    ThirdStepper.capturedImages = [];
+                    // this.$emit("captured-camera-images", ThirdStepper.capturedImages);
 
                 this.date = response[0].date.substr(0, 10);
                 this.dateFormatted = this.formatDate(response[0].date.substr(0, 10));

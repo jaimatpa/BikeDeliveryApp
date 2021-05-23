@@ -120,6 +120,7 @@ export default {
             type: Object,
             default: {},
         },
+        
     },
     components: {
         CameraModal,

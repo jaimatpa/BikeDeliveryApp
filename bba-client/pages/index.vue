@@ -15,7 +15,7 @@
         <v-col cols="12" xs="12" sm="12" md="12" xl="12" class="mt-5" justify="center">
             <div :class="[isMobile ? 'text-center' : '']">
                 <p class="headline text-uppercase primary--text mb-1">
-                    Today's Deliveries
+                    Today's Deliveries - {{orders.filter(x => x.status === 1).length}} / {{orders.length}} Delivered.
                 </p>
                 <v-divider :class="[isMobile ? 'mobile-divider' : '']"></v-divider>
             </div>
@@ -33,10 +33,14 @@
                 <template v-slot:[`item.status`]="{ item }">
                     {{ getBoolFormat(item.status) }}
                 </template>
+                <template v-slot:[`item.lock`]="{ item }">
+                    {{ getBoolFormat(item.lock) }}
+                </template>
                 <template v-slot:[`item.actions`]="{ item }">
-                    <v-icon medium color="primary" @click.stop="
-            $router.push({
-              path: `/deliveryOrder/${item.orderid}`,})">
+                    <v-icon v-if="item.status === 0"  medium color="primary" @click.stop="$router.push({path: `/deliveryOrder/${item.orderid}`,})">
+                        mdi-page-next
+                    </v-icon>
+                    <v-icon v-if="item.status === 1"  medium color="primary" @click.stop="$router.push({path: `/searchHistory/${item.orderid}`,})">
                         mdi-page-next
                     </v-icon>
                 </template>
@@ -83,24 +87,30 @@ export default {
                 {
                     text: "ORDER#",
                     align: "start",
-                    sortable: false,
+                    sortable: true,
                     value: "orderid",
                 },
                 {
                     text: "NAME",
                     value: "name",
-                    sortable: false
+                    sortable: true
                 },
                 {
                     text: "LOCATION",
                     value: "location",
-                    sortable: false
+                    sortable: true
                 },
                 {
-                    text: "STATUS",
+                    text: "LOCK",
+                    value: "lock",
+                    sortable: true,
+                    align: "left"
+                },
+                {
+                    text: "DELIVERED",
                     value: "status",
-                    sortable: false,
-                    align: "center"
+                    sortable: true,
+                    align: "left"
                 },
                 {
                     text: "ACTION",
@@ -154,6 +164,13 @@ export default {
                 return "NO"
             }
         },
+        getLockFormat(lock) {
+            if (lock) {
+                return "YES";
+            } else {
+                return "NO"
+            }
+        },
         async getDataFromApi() {
             this.loading = true;
             this.apiCall().then((data) => {
@@ -182,7 +199,7 @@ export default {
                 let items = orderMockData;
                 const total = orderMockData?.length;
 
-                if (sortBy?.length === 1 && sortDesc?.length === 1) {
+                if (sortBy ?.length === 1 && sortDesc?.length === 1) {
                     items = items.sort((a, b) => {
                         const sortA = a[sortBy[0]];
                         const sortB = b[sortBy[0]];
