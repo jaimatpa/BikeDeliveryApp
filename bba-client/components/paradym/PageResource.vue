@@ -2,103 +2,7 @@
 <Page :title="title">
     <ServerDataTable ref="serverDataTable" :endpoint="endpoint" :name="name" :dataTypes="{ createdAt: Date, updatedAt: Date }" @edit="editItem" />
 
-    <FloatingButton @click="
-        itemToEdit = null;
-        dialog = true;
-      " color="primary" />
-
-    <!-- <v-simple-table v-if="isShowWebHookMappingTable" dense class="web-hook-mapping-table">
-        <template v-slot:default>
-            <thead>
-                <tr>
-                    <th class="text-left">Table KEY</th>
-                    <th class="text-left">JSON KEY</th>
-                </tr>
-            </thead>
-            <tbody>
-                <tr>
-                    <td>
-                        <v-text-field label="date" outlined dense filled disabled readonly v-model="date"></v-text-field>
-                    </td>
-                    <td>
-                        <v-text-field label="Key 1" outlined dense v-model="jsonKey1" :rules="[rules.required]"></v-text-field>
-                    </td>
-                </tr>
-                <tr>
-                    <td>
-                        <v-text-field label="Name" outlined dense filled disabled readonly v-model="tableKeyName"></v-text-field>
-                    </td>
-                    <td>
-                        <v-text-field label="Key 2" outlined dense v-model="jsonKey2" :rules="[rules.required]"></v-text-field>
-                    </td>
-                </tr>
-                <tr>
-                    <td>
-                        <v-text-field label="Location" outlined dense filled disabled readonly v-model="location"></v-text-field>
-                    </td>
-                    <td>
-                        <v-text-field label="Key 3" outlined dense v-model="jsonKey3" :rules="[rules.required]"></v-text-field>
-                    </td>
-                </tr>
-                <tr>
-                    <td>
-                        <v-text-field label="OrderId" outlined dense filled disabled readonly v-model="orderid"></v-text-field>
-                    </td>
-                    <td>
-                        <v-text-field label="Key 4" outlined dense v-model="jsonKey4" :rules="[rules.required]"></v-text-field>
-                    </td>
-                </tr>
-                <tr>
-                    <td>
-                        <v-text-field label="Rack" outlined dense filled disabled readonly v-model="rack"></v-text-field>
-                    </td>
-                    <td>
-                        <v-text-field label="Key 5" outlined dense v-model="jsonKey5" :rules="[rules.required]"></v-text-field>
-                    </td>
-                </tr>
-                <tr>
-                    <td>
-                        <v-text-field label="Color" outlined dense filled disabled readonly v-model="color"></v-text-field>
-                    </td>
-                    <td>
-                        <v-text-field label="Key 6" outlined dense v-model="jsonKey6" :rules="[rules.required]"></v-text-field>
-                    </td>
-                </tr>
-                <tr>
-                    <td>
-                        <v-text-field label="Combination" outlined dense filled disabled readonly v-model="combination"></v-text-field>
-                    </td>
-                    <td>
-                        <v-text-field label="Key 7" outlined dense v-model="jsonKey7" :rules="[rules.required]"></v-text-field>
-                    </td>
-                </tr>
-                <tr>
-                    <td>
-                        <v-text-field label="Lock" outlined dense filled disabled readonly v-model="lock"></v-text-field>
-                    </td>
-                    <td>
-                        <v-text-field label="Key 8" outlined dense v-model="jsonKey8" :rules="[rules.required]"></v-text-field>
-                    </td>
-                </tr>
-                <tr>
-                    <td>
-                        <v-text-field label="Mobile No" outlined dense filled disabled readonly v-model="mobileNo"></v-text-field>
-                    </td>
-                    <td>
-                        <v-text-field label="Key 9" outlined dense v-model="jsonKey9" :rules="[rules.required]"></v-text-field>
-                    </td>
-                </tr>
-                <tr>
-                    <td>
-                        <v-text-field label="Barcode" outlined dense filled disabled readonly v-model="barcode"></v-text-field>
-                    </td>
-                    <td>
-                        <v-text-field label="Key 10" outlined dense v-model="jsonKey10" :rules="[rules.required]"></v-text-field>
-                    </td>
-                </tr>
-            </tbody>
-        </template>
-    </v-simple-table> -->
+    <FloatingButton @click="itemToEdit = null; dialog = true;" color="primary" />
 
     <v-btn block color="primary" @click="sendWebHookMapData()" v-if="isShowWebHookMappingTable" class="mt-4">
         Update
@@ -253,7 +157,7 @@ export default {
                 );
 
                 if (response) {
-                    this.showSuccess(`Updated Successfully Done!!!`);
+                    this.showSuccess(`Item has been updated.`);
                 }
             } catch (error) {
                 console.log("error", error);
@@ -294,13 +198,13 @@ export default {
                     );
 
                     if (response) {
-                        this.showSuccess(`${this.name} Updated Successfully Done!!!`);
+                        this.showSuccess(`${this.name} has been updated.`);
                     }
                 } else {
                     const response = await this.$axios.$post(this.endpoint, sendData);
 
                     if (response) {
-                        this.showSuccess(`${this.name} Created Successfully Done!!!`);
+                        this.showSuccess(`${this.name} has been created.`);
                         this.itemToEdit = {};
                     }
                 }

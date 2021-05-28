@@ -43,50 +43,6 @@ const upload = multer({
   },
 });
 
-/*
-let uploadSingle = upload.single('file')
-router.post('/', function (req, res) {
-  uploadSingle(req, res, async function (err) {
-    if (err instanceof multer.MulterError) {
-      // A Multer error occurred when uploading.
-      console.log('ERROR - MULTER ERROR')
-      return
-    } else if (err) {
-      console.log('ERROR - UNKNOWN ERROR')
-      return
-      // An unknown error occurred when uploading.
-    }
-    console.log("HERE")
-
-    if (!req.file) {
-      console.log('returning error')
-      return res.status(400).json({'type': 'file', 'message': 'File type not permitted.'})
-    } else {
-    let path = req.file.path.replace(/\\/g, '/')
-    let newFile = {
-      filename: path.substring(path.lastIndexOf('/') + 1),
-      originalName: req.file.originalname,
-      size: req.file.size,
-      mimetype: req.file.mimetype,
-      encoding: req.file.encoding
-    }
-    const fileModel = models.Upload.build(newFile)
-    try {
-      const savedFile = await fileModel.save()
-      consola.success('Upload: Saved file ' + newFile.filename)
-      res.json({ success: true, file: null })
-    }
-    catch(err) {
-      consola.error('Upload: Error saving file to the database.  Details: ' + err)
-      // TODO: Remove the file
-      return res.status(500).send({'type': 'unknown', 'message': err})
-    } }
-
-
-  })
-})
-*/
-
 router.post("/", upload.single("file"), async (req, res) => {
   if (!req.file) {
     console.log("returning error");

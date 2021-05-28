@@ -15,9 +15,7 @@
             <v-tooltip right :disabled="isMobile ? true : !drawer" nudge-right="8" color="#555555">
                 <template v-slot:activator="{ on, attrs }">
                     <v-list-item-action class="pl-2 mr-4" v-bind="attrs" v-on="on">
-                        <v-icon>{{
-                $nuxt.$route.path != item.to ? item.icon : item.iconSelected
-              }}</v-icon>
+                        <v-icon>{{$nuxt.$route.path != item.to ? item.icon : item.iconSelected}}</v-icon>
                     </v-list-item-action>
                 </template>
                 <span>{{ item.title }}</span>

@@ -37,10 +37,10 @@
                     {{ getBoolFormat(item.lock) }}
                 </template>
                 <template v-slot:[`item.actions`]="{ item }">
-                    <v-icon v-if="item.status === 0"  medium color="primary" @click.stop="$router.push({path: `/deliveryOrder/${item.orderid}`,})">
+                    <v-icon v-if="item.status === 0" medium color="primary" @click.stop="$router.push({path: `/deliveryOrder/${item.orderid}`,})">
                         mdi-page-next
                     </v-icon>
-                    <v-icon v-if="item.status === 1"  medium color="primary" @click.stop="$router.push({path: `/searchHistory/${item.orderid}`,})">
+                    <v-icon v-if="item.status === 1" medium color="primary" @click.stop="$router.push({path: `/searchHistory/${item.orderid}`,})">
                         mdi-page-next
                     </v-icon>
                 </template>
@@ -199,7 +199,7 @@ export default {
                 let items = orderMockData;
                 const total = orderMockData?.length;
 
-                if (sortBy ?.length === 1 && sortDesc?.length === 1) {
+                if (sortBy?.length === 1 && sortDesc?.length === 1) {
                     items = items.sort((a, b) => {
                         const sortA = a[sortBy[0]];
                         const sortB = b[sortBy[0]];

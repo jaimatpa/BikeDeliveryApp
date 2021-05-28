@@ -1,7 +1,5 @@
 <template lang="html">
 <Page>
-    <!-- <h1>vue-barcode-reader demo</h1> -->
-    <!-- Delivery Order Scan Button  -->
     <v-btn block depressed color="primary" class="mb-5" @click.stop="dialog = true;cameraRender += 1">
         <v-icon left medium color="white" class="mr-2">
             mdi-barcode-scan

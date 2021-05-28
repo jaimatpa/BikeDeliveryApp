@@ -29,7 +29,8 @@
     "mysql2": "^2.2.5",
     "nodemailer": "^6.4.18",
     "sequelize": "^6.5.0",
-    "twilio": "^3.59.0"
+    "twilio": "^3.59.0",
+    "vuetify-datetime-picker": "^2.1.1"
   },
   "devDependencies": {
     "concurrently": "^6.0.0",
