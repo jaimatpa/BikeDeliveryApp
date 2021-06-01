@@ -10,13 +10,9 @@ module.exports = (sequelize, DataTypes) => {
   }
   Lock.init(
     {
-      
-      orderid: DataTypes.STRING,
       lockId: DataTypes.STRING,
       color: DataTypes.STRING,
       combination: DataTypes.STRING,
-      colorvalue: DataTypes.STRING,
-      colorvalue1: DataTypes.STRING
     },
     {
       sequelize,

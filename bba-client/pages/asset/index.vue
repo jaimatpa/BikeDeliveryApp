@@ -1,9 +1,9 @@
 <template>
   <PageResource
-    name="User"
-    :title="!isMobile ? 'List of Users' : ''"
+    name="Asset"
+    :title="!isMobile ? 'List of Assets' : 'Assets'"
     :fields="fields"
-    endpoint="/api/users"
+    endpoint="/api/user/asset"
   />
 </template>
 
@@ -11,10 +11,10 @@
 import PageResource from "@/components/paradym/PageResource";
 
 export default {
-  name: "pageUsers",
+  name: "pageAssets",
   auth: true,
   head() {
-    return { title: "Users" };
+    return { title: "Assets" };
   },
   components: { PageResource },
   computed: {
@@ -26,20 +26,19 @@ export default {
     return {
       breakpoint: 640,
       fields: {
-        email: {
-          type: String,
-          required: true,
-          email: true,
-        },
-        name: {
+        barcode: {
           type: String,
           required: true,
         },
-        password: {
-          type: "Password",
+        item: {
+          type: String,
+          required: true,
         },
-        userType: {
-          type: "UserType",
+        lastDelivery: {
+          type: Date,
+        },
+        status: {
+          type: String,
         },
       },
     };

@@ -89,7 +89,7 @@ export default {
                 },
                 {
                     text: "NAME",
-                    value: "name"
+                    value: "name",
                 },
                 {
                     text: "COLOR",

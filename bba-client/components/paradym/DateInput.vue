@@ -4,68 +4,49 @@
 -->
 
 <template>
-  <v-menu
-    v-model="menuDate"
-    offset-y
-    min-width="auto"
-    :close-on-content-click="false"
-    transition="scale-transition"
-  >
+<v-menu v-model="menuDate" offset-y min-width="auto" :close-on-content-click="false" transition="scale-transition">
     <template v-slot:activator="{ on, attrs }">
-      <v-text-field
-        v-model="date"
-        :label="label"
-        v-bind="attrs"
-        v-on="on"
-        type="date"
-        :disabled="disabled"
-        clearable
-        outlined
-        dense
-        hide-details="auto"
-        class="mb-4"
-        :rules="required ? [rules.required] : []"
-        validate-on-blur
-      />
+        <v-text-field v-model="date" :label="label" v-bind="attrs" v-on="on" type="date" :disabled="disabled" clearable outlined dense hide-details="auto" class="mb-4" :rules="required ? [rules.required] : []" validate-on-blur />
     </template>
     <v-date-picker v-model="date" no-title scrollable />
-  </v-menu>
+</v-menu>
 </template>
 
 <script>
 export default {
-  name: "DateInput",
-  props: {
-    value: String,
-    label: String,
-    disabled: Boolean,
-    required: Boolean,
-  },
-  data() {
-    return {
-      date: this.value,
-      menuDate: false,
-      rules: {
-        required: (value) => !!value || "Required.",
-      },
-    };
-  },
-  watch: {
-    value(newValue) {
-      this.date = newValue;
+    name: "DateInput",
+    props: {
+        value: String,
+        label: String,
+        disabled: Boolean,
+        required: Boolean,
     },
-    date(newValue) {
-      this.$emit("input", newValue);
+    data() {
+        return {
+            date: this.value,
+            menuDate: false,
+            rules: {
+                required: (value) => !!value || "Required.",
+            },
+        };
     },
-  },
+    watch: {
+        value(newValue) {
+            this.date = newValue;
+        },
+        date(newValue) {
+            this.$emit("input", newValue);
+        },
+    },
 };
 </script>
 
-<style type="scss">
+<style>
 input::-webkit-calendar-picker-indicator {
-  display: none;
+    display: none;
 }
+
 input[type="date"]::-webkit-input-placeholder {
-  visibility: hidden !important;
+    visibility: hidden !important;
 }
 </style>

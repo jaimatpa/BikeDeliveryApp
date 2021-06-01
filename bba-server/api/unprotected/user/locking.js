@@ -16,6 +16,43 @@ router.post("/", async (req,res) => {
     
 });
 
+router.put("/", async (req, res) => {
+    try {
+        const updateLock = await models.Locks.update({
+            color: req.body.color,
+            combination: req.body.combination
+        },
+        {
+        where: {
+            id: req.body.id
+        }
+        });
+        return res.send(updateLock);
+    } catch (error) {
+        console.log(error);
+    }
+});
+
+router.delete("/", async (req, res) => {
+    try {
+        const deleteAsset = await models.Locks.destroy(
+        {
+        where: {
+            id: req.body.id
+        }
+        });
+        const response = {
+            success: true,
+            result: {deleteAsset},
+            message:
+              "Asset was successfully found and deleted.",
+          };
+        return res.send(response);
+    } catch (error) {
+        console.log(error);
+    }
+});
+
 router.get("/", async (req,res) => {
     
     try{

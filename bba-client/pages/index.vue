@@ -22,10 +22,11 @@
         </v-col>
     </v-row>
 
+    <v-text-field v-model="search" append-icon="mdi-magnify" label="Search by Order #, Name, Location" single-line hide-details outlined dense clearable class="mb-5 order-search-text-field" @keyup="onKeyUp" @click:clear="onClearClicked"></v-text-field>
     <!-- Orders Mock Data Table -->
     <v-row>
         <v-col cols="12" xs="12" sm="12" md="12" xl="12" class="mt-1">
-            <v-data-table :headers="headers" :items="orders" :options.sync="options" :server-items-length="totalOrders" :loading="loading" class="elevation-1" sort-by="date" :sort-desc="false" :mobile-breakpoint="0">
+            <v-data-table :headers="headers" :items="orders" :search="search" :options.sync="options" :hide-default-footer="true" :server-items-length="totalOrders" :loading="loading" class="elevation-1" sort-by="date" :sort-desc="false" :mobile-breakpoint="0">
                 <!-- Date -->
                 <template v-slot:[`item.date`]="{ item }">
                     {{ getDateFormat(item.date) }}
@@ -34,7 +35,7 @@
                     {{ getBoolFormat(item.status) }}
                 </template>
                 <template v-slot:[`item.lock`]="{ item }">
-                    {{ getBoolFormat(item.lock) }}
+                    {{ getLockFormat(item.lock) }}
                 </template>
                 <template v-slot:[`item.actions`]="{ item }">
                     <v-icon v-if="item.status === 0" medium color="primary" @click.stop="$router.push({path: `/deliveryOrder/${item.orderid}`,})">
@@ -77,6 +78,7 @@ export default {
             breakpoint: 640,
             totalOrders: 0,
             orders: [],
+            search: "",
             loading: true,
             options: {},
             headers: [{
@@ -149,6 +151,9 @@ export default {
             },
             deep: true,
         },
+        search: function (newValue) {
+            this.getDataFromApi();
+        },
     },
     created() {
         this.getDataFromApi();
@@ -171,6 +176,15 @@ export default {
                 return "NO"
             }
         },
+        onKeyUp(event) {
+            // console.log('key uppppppp ', typeof event.target.value,  `${event.target.value}`.length)
+            if (event.key === "Enter") {
+                this.getDataFromApi();
+            } else if (`${event.target.value}`.length === 0) {
+                // if someone clears the input field.
+                this.getDataFromApi();
+            }
+        },
         async getDataFromApi() {
             this.loading = true;
             this.apiCall().then((data) => {
@@ -179,17 +193,23 @@ export default {
                 this.loading = false;
             });
         },
+        onClearClicked() {
+            if (this.search !== "" || this.searchByBarcode !== "") {
+                this.search = "";
+                this.searchByBarcode = "";
+            }
+            this.getDataFromApi();
+        },
         apiCall() {
             return new Promise(async (resolve, reject) => {
                 let param = {
+                    search: this.search,
                     type: "Dashboard",
                 };
 
                 const {
                     sortBy,
                     sortDesc,
-                    page,
-                    itemsPerPage
                 } = this.options;
                 const orderMockData = await this.$axios.$get(
                     "/api/user/deliveryOrder", {
@@ -216,9 +236,9 @@ export default {
                     });
                 }
 
-                if (itemsPerPage > 0) {
-                    items = items.slice((page - 1) * itemsPerPage, page * itemsPerPage);
-                }
+                // if (itemsPerPage > 0) {
+                //     items = items.slice((page - 1) * itemsPerPage, page * itemsPerPage);
+                // }
 
                 setTimeout(() => {
                     resolve({

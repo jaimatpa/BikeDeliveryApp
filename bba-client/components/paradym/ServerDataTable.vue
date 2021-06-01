@@ -176,7 +176,7 @@ export default {
             this.deleteDialog = false;
             try {
                 let response = await this.$axios.$delete(
-                    this.endpoint + "/" + this.itemToDelete.id
+                    this.endpoint + "/" + this.itemToDelete.id, {data: {itemID: this.itemToDelete.id}}
                 );
                 this.$fetch();
             } catch (err) {

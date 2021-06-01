@@ -1,5 +1,5 @@
 <template>
-<PageResource name="Truck" :title="!isMobile ? 'Trucks' : ''" :fields="fields" endpoint="/api/users" />
+<PageResource name="Truck" :title="!isMobile ? 'Trucks' : ''" :fields="fields" endpoint="/api/user/truck" />
 </template>
 
 <script>
@@ -25,11 +25,7 @@ export default {
         return {
             breakpoint: 640,
             fields: {
-                Name: {
-                    type: String,
-                    required: true,
-                },
-                Notes: {
+                notes: {
                     type: String,
                     required: true,
                 },

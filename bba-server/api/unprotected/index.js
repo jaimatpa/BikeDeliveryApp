@@ -14,8 +14,11 @@ const upload = require("./user/upload");
 const downloadBackUpPhotos = require("./user/downloadBackUpPhotos");
 const resend = require("./user/resend");
 const sendDeliveryEmail = require("./user/sendDeliveryEmail");
+const searchHistory = require("./user/searchhistory");
 const getOrder = require("./user/getOrder");
-const cors = require('cors')
+const asset = require("./user/asset");
+const truck = require("./user/truck");
+const cors = require('cors');
 
 module.exports = {
   create: (app) => {
@@ -38,5 +41,10 @@ module.exports = {
     app.use("/api/user/resend", resend);
     app.use("/api/user/sendDeliveryEmail", sendDeliveryEmail);
     app.use("/api/user/getOrder", getOrder);
+    app.use("/api/user/searchHistory", searchHistory);
+    app.use("/api/user/asset/", asset);
+    app.use("/api/user/asset/:id", asset);
+    app.use("/api/user/truck/", truck);
+    app.use("/api/user/truck/:id", truck);
   },
 };

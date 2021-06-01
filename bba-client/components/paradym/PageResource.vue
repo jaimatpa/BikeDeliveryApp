@@ -185,13 +185,14 @@ export default {
             delete data.createdAt;
 
             // Processed to data add/update for new user
-            let sendData = _.omit(data, "id", "userType");
+            let sendData = _.omit(data, "id", "userType", "itemID");
             sendData.userType = parseInt(data?.userType?.userTypeVal, 10);
 
             try {
                 this.errorMessage = "";
 
                 if (data?.id) {
+                    sendData.itemID = data?.id;
                     const response = await this.$axios.$put(
                         this.endpoint + "/" + data?.id,
                         sendData
