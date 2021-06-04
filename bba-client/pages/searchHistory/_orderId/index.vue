@@ -23,21 +23,53 @@
                     </v-text-field>
                 </v-col>
             </v-row>
+
             <v-row cols="12">
-                <v-col cols="12" xs="12" sm="12" md="6" xl="6">
+                <header>
+                    <h1 class="text-h4 mb-4 primary--text" >Delivery Photos</h1>
+                </header>
+            </v-row>
+
+
+            <v-row cols="12">
+                <v-col cols="12" xs="12" sm="12" md="4" xl="4">
                     <img :src="`https://images.hiretheproz.com/${orderData.barcode}-0.jpeg`"></img>
                 </v-col>
-                <v-col cols="12" xs="12" sm="12" md="6" xl="6">
+                <v-col cols="12" xs="12" sm="12" md="4" xl="4">
                     <img :src="`https://images.hiretheproz.com/${orderData.barcode}-1.jpeg`"></img>
                 </v-col>
-                <v-col cols="12" xs="12" sm="12" md="6" xl="6">
+                <v-col cols="12" xs="12" sm="12" md="4" xl="4">
                     <img :src="`https://images.hiretheproz.com/${orderData.barcode}-2.jpeg`"></img>
                 </v-col>
-                <v-col cols="12" xs="12" sm="12" md="6" xl="6">
+                <v-col cols="12" xs="12" sm="12" md="4" xl="4">
                     <img :src="`https://images.hiretheproz.com/${orderData.barcode}-3.jpeg`"></img>
                 </v-col>
-                <v-col cols="12" xs="12" sm="12" md="6" xl="6">
+                <v-col cols="12" xs="12" sm="12" md="4" xl="4">
                     <img :src="`https://images.hiretheproz.com/${orderData.barcode}-4.jpeg`"></img>
+                </v-col>
+            </v-row>
+
+            <v-row cols="12">
+                <header>
+                    <h1 class="text-h4 mb-4 primary--text" >Pickup Photos</h1>
+                </header>
+            </v-row>
+
+            <v-row cols="12">
+                <v-col cols="12" xs="12" sm="12" md="4" xl="4">
+                    <img :src="`https://images.hiretheproz.com/pickup/${orderData.barcode}-0.jpeg`"></img>
+                </v-col>
+                <v-col cols="12" xs="12" sm="12" md="4" xl="4">
+                    <img :src="`https://images.hiretheproz.com/pickup/${orderData.barcode}-1.jpeg`"></img>
+                </v-col>
+                <v-col cols="12" xs="12" sm="12" md="4" xl="4">
+                    <img :src="`https://images.hiretheproz.com/pickup/${orderData.barcode}-2.jpeg`"></img>
+                </v-col>
+                <v-col cols="12" xs="12" sm="12" md="4" xl="4">
+                    <img :src="`https://images.hiretheproz.com/pickup/${orderData.barcode}-3.jpeg`"></img>
+                </v-col>
+                <v-col cols="12" xs="12" sm="12" md="4" xl="4">
+                    <img :src="`https://images.hiretheproz.com/pickup/${orderData.barcode}-4.jpeg`"></img>
                 </v-col>
             </v-row>
 

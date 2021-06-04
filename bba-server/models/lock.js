@@ -13,6 +13,7 @@ module.exports = (sequelize, DataTypes) => {
       lockId: DataTypes.STRING,
       color: DataTypes.STRING,
       combination: DataTypes.STRING,
+      ColorValue: DataTypes.STRING
     },
     {
       sequelize,

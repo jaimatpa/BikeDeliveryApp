@@ -175,7 +175,6 @@ export default {
         FourthStepper
     },
     async created() {
-        // location.reload();
         this.getOrderDetails();
         this.getMsgTemplate();
         this.getUserlocation();
@@ -183,7 +182,6 @@ export default {
     },
     data() {
         return {
-
             breakpoint: 640,
             deliveryOrderData: {},
             deliveryStepper: 1,
@@ -355,14 +353,6 @@ export default {
                         search: this.$route.params.orderId,
                     },
                 });
-
-                // const responseData = _.omit(response[0], "date");
-                // this.deliveryOrderData = responseData;
-                // this.deliveryOrderData.date = moment(response[0].date).format(
-                //   "MM/DD/YYYY hh:mm A"
-                // );
-                
-
                 this.deliveryOrderData = response[0];
 
                 // console.log("TESTING CAPTURED IMAGES", ThirdStepper.capturedImages);

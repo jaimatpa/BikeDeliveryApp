@@ -7,7 +7,6 @@
         <!-- Date -->
         <template v-slot:item.date="{ item }">
             {{getDateFormat(item.date)}}
-
         </template>
 
         <!-- Actions -->

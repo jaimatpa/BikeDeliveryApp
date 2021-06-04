@@ -10,7 +10,7 @@
     <!-- Order Search Field -->
     <v-text-field v-model="search" append-icon="mdi-magnify" label="Search by Order #, Name, Location" single-line hide-details outlined dense clearable class="mb-5 order-search-text-field" @keyup="onKeyUp" @click:clear="onClearClicked"></v-text-field>
 
-    <v-data-table :headers="headers" :items="delivaries" :options.sync="options" :server-items-length="totalOrderDelivery" :loading="loading" :search="search" class="elevation-1" :mobile-breakpoint="0" sort-by="date" :sort-desc="false">
+    <v-data-table :headers="headers" :items="delivaries" :options.sync="options" :server-items-length="totalOrderDelivery" :loading="loading" :search="search" class="elevation-1" :mobile-breakpoint="0" sort-by="date" :sort-desc="true">
         <!-- Date -->
         <template v-slot:item.date="{ item }">
             {{ getDateFormat(item.date) }}
@@ -20,7 +20,7 @@
         <template v-slot:item.actions="{ item }">
             <v-icon medium color="primary" @click.stop="
             $router.push({
-              path: `/deliveryOrder/${item.orderid}`,
+              path: `/pickup/${item.orderid}`,
             })
           ">
                 mdi-page-next
@@ -189,12 +189,12 @@ export default {
             return new Promise(async (resolve, reject) => {
                 let param = this.search ? {
                         search: this.search,
-                        type: "DeliveryOrders",
+                        type: "Pickup",
                     } :
                     this.searchByBarcode ? {
                         barcodeid: this.searchByBarcode
                     } : {
-                        type: "DeliveryOrders",
+                        type: "Pickup",
                     };
 
                 const orderDeliveryMockData = await this.$axios.$get(

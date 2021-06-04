@@ -24,7 +24,7 @@
         <template v-slot:item.colorvalue="props">
                 <!-- {{props.item.colorvalue}} -->
                 <template>
-                    <v-color-picker hide-canvas hide-inputs swatches-max-height="75" show-swatches v-model="props.item.colorvalue" label="Edit"></v-color-picker>
+                    <v-color-picker hide-canvas hide-inputs swatches-max-height="75"  v-model="props.item.colorvalue" label="Edit"></v-color-picker>
                 </template>
         </template>
 
@@ -173,6 +173,11 @@ export default {
             const lockingDataResponse = await this.$axios.$get("/api/user/locking");
             this.lockingData = lockingDataResponse;
             this.locks = lockingDataResponse;
+            this.locks.forEach(lock => {
+                console.log(lock);
+                // lock.colorvalue.hex = lock.ColorValue;
+            });
+            console.log(this.locks);
         },
         async deleteColorCombination() {
 
@@ -201,15 +206,17 @@ export default {
             console.log('Dialog closed')
         },
         saveColorCombinationData() {
-            console.log("this.lockingData =>>>>>>>>", this.lockingData);
-
+            this.lockingData.forEach(lock => {
+                lock.ColorValue = lock.colorvalue.hex;
+                console.log(lock);
+            });
             const res = this.$axios
                 .$post("/api/user/locking", this.lockingData)
                 .then((result) => {
                     if (result) {
                         this.dialog = false;
                         this.getLockingDetails();
-                        this.showSuccess("Update Successfully Done.");
+                        this.showSuccess("Color Combination Successfully Updated.");
                     }
                 });
         },

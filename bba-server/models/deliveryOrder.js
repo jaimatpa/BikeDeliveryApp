@@ -23,7 +23,14 @@ module.exports = (sequelize, DataTypes) => {
       status: DataTypes.INTEGER,
       updatedAt: DataTypes.DATE,
       email: DataTypes.STRING,
-      note: DataTypes.STRING
+      note: DataTypes.STRING,
+      plantation: DataTypes.STRING,
+      area: DataTypes.STRING,
+      area: DataTypes.STRING,
+      endDate: DataTypes.DATE,
+      PickedUp: DataTypes.BOOLEAN,
+      PickupNotes: DataTypes.STRING,
+      truckID: DataTypes.INTEGER
     },
     {
       sequelize,

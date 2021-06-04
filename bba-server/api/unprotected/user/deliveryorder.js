@@ -108,7 +108,6 @@ router.get("/", async (req, res) => {
                     }
                 }));
             } else if (type === "Dashboard") {
-                console.log("IN DASHBOARD");
                 data = data.filter((record => {
                     var d = moment(record.date).add(4, 'hours').format('LL');
                     var today = moment().format('LL');
@@ -118,7 +117,7 @@ router.get("/", async (req, res) => {
                         return false;
                     }
                 }));
-            }  else if (type === "Resend") {
+            } else if (type === "Resend") {
                 data = data.filter((record => {
                     var d = moment(record.date).add(4, 'hours').format('LL');
                     var today = moment().format('LL');
@@ -128,7 +127,28 @@ router.get("/", async (req, res) => {
                         return false;
                     }
                 }));
-            }
+            } else if (type === "Logistics") {
+                console.log("In Logistics");
+                data = data.filter((record => {
+                    var d = moment(record.date).add(4, 'hours').format('LL');
+                    var today = moment().format('LL');
+                    if (d >= today && record.status == 0) {
+                        return true;
+                    } else {
+                        return false;
+                    }
+                }));
+            } else if (type === "Pickup") {
+                data = data.filter((record => {
+                    var d = moment(record.date).add(4, 'hours').format('LL');
+                    var today = moment().format('LL');
+                    if (record.status == 1 && record.PickedUp == 0) {
+                        return true;
+                    } else {
+                        return false;
+                    }
+                }));
+            } 
             console.log(data)
         }catch(error){
             console.log(error)
@@ -163,7 +183,7 @@ router.get("/", async (req, res) => {
             }));
         } else if (type === "Locking") {
             data = data.filter((record => {
-                var d = moment(record.date).add(4, 'hours').format('LL');
+                var d = moment(record.date).add(4, 'hours').startOf('day').format('LL');
                 var today = moment().format('LL');
                 if (d >= today) {
                     return true;
@@ -180,10 +200,10 @@ router.get("/", async (req, res) => {
                 }
             }));
         } else if (type === "Dashboard") {
-            console.log("IN DASHBOARD");
+            console.log("In Dashboard");
             data = data.filter((record => {
-                var d = moment(record.date).add(4, 'hours').format('LL');
-                var today = moment().format('LL');
+                var d = moment(record.date).add(4, 'hours').format("LL");
+                var today = moment().format("LL");
                 if (d == today) {
                     return true;
                 } else {
@@ -192,7 +212,7 @@ router.get("/", async (req, res) => {
             }));
         } else if (type === "Resend") {
             data = data.filter((record => {
-                var d = moment(record.date).add(4, 'hours').format('LL');
+                var d = moment(record.date).add(4, 'hours').startOf('LL');
                 var today = moment().format('LL');
                 if (d > today && record.status == 1) {
                     return true;
@@ -200,9 +220,46 @@ router.get("/", async (req, res) => {
                     return false;
                 }
             }));
-        }
+        } else if (type === "Logistics") {
+            data = data.filter((record => {
+                var d = moment(record.date).add(4, 'hours').startOf('day');
+                var today = moment().endOf('day');
+                if (d >= today && record.status == 0) {
+                    return true;
+                } else {
+                    return false;
+                }
+            }));
+        } else if (type === "Pickup") {
+            data = data.filter((record => {
+                var d = moment(record.date).add(4, 'hours').format('LL');
+                var today = moment().format('LL');
+                if (record.status == 1 && record.PickedUp == 0) {
+                    return true;
+                } else {
+                    return false;
+                }
+            }));
+        } 
     }
     return res.send(data);
+});
+
+router.put("/", async (req, res) => {
+    try {
+        console.log(req);
+        const updateDO = await models.DeliveryOrders.update({
+            truckID: req.body.truckID
+        },
+        {
+        where: {
+            id: req.body.id
+        }
+        });
+        return res.send(updateDO);
+    } catch (error) {
+        console.log(error);
+    }
 });
 
 module.exports = router;

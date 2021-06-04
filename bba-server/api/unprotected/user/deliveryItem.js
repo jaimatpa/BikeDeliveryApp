@@ -16,16 +16,19 @@ router.post("/", async (req, res) => {
 });
 
 router.put("/", async (req, res) => {
+    console.log("IN PUT REQUEST");
     try {
-        const updateTruck = await models.Truck.update({
-            notes: req.body.notes,
+        const updateDeliveryItem = await models.DeliveryItem.update({
+            checkedDelievery: req.body.checkedDelievery,
+            checkPickup: req.body.checkPickup,
+            serialbarcode: req.body.serialbarcode,
         },
         {
         where: {
-            id: req.body.itemID
+            id: req.body.id
         }
         });
-        return res.send(updateTruck);
+        return res.send(updateDeliveryItem);
     } catch (error) {
         console.log(error);
     }
@@ -53,10 +56,13 @@ router.delete("/", async (req, res) => {
 
 router.get("/", async (req,res) => {
     try {
-        console.log("In GET Trucks");
+        let deliveryID = req.body.deliveryID;
+        console.log("REQUEST INFORMATION", req.body);
         let data = [];
-        data = await models.Truck.findAll({
-
+        data = await models.DeliveryItem.findAll({
+            // where: {
+            //     DeliveryID: deliveryID,
+            // }
         });
         return res.send(data);
     } catch (error) {

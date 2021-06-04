@@ -7,9 +7,23 @@ const models = require("./../../../models");
 
 router.post("/", async (req,res) => {
     try{
-        const lock = await models.Locks.build(req.body);
-        await lock.save();
-        return res.send(lock)
+        console.log(req);
+        let locks = req.body;
+        locks.forEach(lock => {
+            const updateLock = models.Locks.update({
+                color: lock.color,
+                combination: lock.combination,
+                ColorValue: lock.ColorValue,
+            },
+            {
+            where: {
+                id: lock.id
+            }
+            });
+        });
+        // const lock = await models.Locks.build(req.body);
+        // await lock.save();
+        return res.send(locks)
     }catch(error){
         return res.send(error)
     }

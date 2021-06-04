@@ -9,6 +9,7 @@ router.get("/", async (req, res) => {
     const search = req.query.search;
     const barcodeid = req.query.barcodeid;
     if(search){
+        console.log(search);
         try{
             data = await models.DeliveryOrders.findAll({
                 where:{
@@ -69,6 +70,7 @@ router.get("/", async (req, res) => {
         }
     }
     else{
+        console.log(req);
         data = await models.DeliveryOrders.findAll({where:{status:1}});
     }
     return res.send(data);

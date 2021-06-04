@@ -49,6 +49,18 @@
                 </div>
             </v-col>
         </v-row>
+        <v-data-table width="100%" block cols="12" xs="12" sm="12" md="12" xl="12" :headers="headers" :items="equipment" item-key="name" class="elevation-1 ma-1 mb-2">
+            <template v-slot:[`item.checkedDelievery`]="{ item }">
+                <v-simple-checkbox v-model="item.checkPickup" v-ripple @input="saveUpdate(item)">
+
+                </v-simple-checkbox>
+            </template>
+            <template v-slot:[`item.actions`]="{ item }">
+                <v-icon medium color="primary" @click.stop="currentItem=item;scanDialogVisible = true;cameraRender += 1">
+                    mdi-barcode
+                </v-icon>
+            </template>
+        </v-data-table>
         <v-row>
             <v-col cols="12" xs="12" sm="12" md="4" xl="4">
                 <v-btn block depressed color="accent" @click.stop="$emit('set-delivery-stepper', 3)">
@@ -67,6 +79,22 @@
             </v-col>
         </v-row>
     </div>
+
+    <v-dialog v-model="scanDialogVisible" fullscreen>
+        <v-card>
+            <v-card-title class="title primary--text">
+                <!-- Scanning Barcode -->
+            </v-card-title>
+
+            <v-card-text>
+                <BarScanner @code="code" :key="cameraRender" />
+                <v-btn  depressed color="primary" class="mb-5" @click.stop="closeScanner">
+                    Close
+                </v-btn>
+            </v-card-text>
+        </v-card>
+    </v-dialog>
+
 </div>
 </template>
 
@@ -89,16 +117,43 @@ export default {
             default: "",
         },
     },
+    created() {
+        this.getOrderItems();
+    },
     data() {
         return {
             clickedImage: {},
             innerWindowWidth: 0,
             canvasHeight: 480,
             canvasWidth: 640,
+            scanDialogVisible: false,
+            currentItem: {},
+            cameraRender: 0,
             aspectRatio: null,
             reviewPhoto: false,
             allImages: undefined,
-            deliveryCancelOrderDialog: false
+            deliveryCancelOrderDialog: false,
+            headers: [{
+                    text: "ITEM",
+                    align: "start",
+                    value: "item",
+                },
+                {
+                    text: "BARCODE",
+                    value: "serialbarcode",
+                },
+                {
+                    text: "DELIVERED",
+                    value: "checkedDelievery",
+                },
+                {
+                    text: "ACTION",
+                    value: "actions",
+                    sortable: false,
+                    align: "center"
+                },
+            ],
+            equipment: [],
         };
     },
     computed: {
@@ -158,6 +213,53 @@ export default {
             }
         },
 
+        async code(value) {
+            console.log("CURRENTITEM", this.currentItem);
+            this.currentItem.serialbarcode = value;
+            this.saveUpdate(this.currentItem);
+        },
+        async saveUpdate(item) {
+            console.log("ITEM", item);
+            let response = await this.$axios.$put("/api/user/deliveryItem", item);
+            console.log("RESPONSE", response);
+            this.closeScanner();
+        },
+
+        closeScanner() {
+            this.scanDialogVisible = false;
+
+            const video = document.querySelector("video");
+
+            // A video's MediaStream object is available through its srcObject attribute
+            const mediaStream = video.srcObject;
+
+            // Through the MediaStream, you can get the MediaStreamTracks with getTracks():
+            const tracks = mediaStream.getTracks();
+
+            // Tracks are returned as an array, so if you know you only have one, you can stop it with:
+            // tracks[0].stop();
+
+            // Or stop all like so:
+            tracks.forEach((track) => track.stop());
+
+        },
+
+        async getOrderItems() {
+            try {
+                let response = await this.$axios.$get("/api/user/deliveryItem", {
+                    params: {
+                        deliveryID: this.$route.params.deliveryID,
+                    },
+                });
+
+                this.equipment = response;
+
+                //  this.$router.go(-1);
+            } catch (err) {
+                console.log("Issue in getOrderItems", err.response);
+            }
+        },
+
         goToNextImage(direction) {
             const {
                 array_index
@@ -181,7 +283,12 @@ export default {
                 }
             }
         },
+        close() {
 
+        },
+        save() {
+
+        },
         deleteImage(img_index) {
             // console.log('%c img_index: ', 'color: yellowgreen; font-size: 20px', img_index)
             if (confirm("Are you sure to remove?")) {

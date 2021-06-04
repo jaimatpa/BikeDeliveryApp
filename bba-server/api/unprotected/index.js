@@ -18,6 +18,8 @@ const searchHistory = require("./user/searchhistory");
 const getOrder = require("./user/getOrder");
 const asset = require("./user/asset");
 const truck = require("./user/truck");
+const deliveryItem = require("./user/deliveryItem");
+const uploadPickup = require("./user/uploadPickup");
 const cors = require('cors');
 
 module.exports = {
@@ -46,5 +48,8 @@ module.exports = {
     app.use("/api/user/asset/:id", asset);
     app.use("/api/user/truck/", truck);
     app.use("/api/user/truck/:id", truck);
+    app.use("/api/user/deliveryItem/", deliveryItem);
+    app.use("/api/user/deliveryItem/:id", deliveryItem);
+    app.use("/api/user/uploadPikcup/", uploadPickup);
   },
 };

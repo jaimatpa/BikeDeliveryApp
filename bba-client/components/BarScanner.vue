@@ -34,8 +34,10 @@ export default {
         onDecode(a, b, c) {
             console.log("DECODING");
             console.log(a, b, c);
-            var stringWithoutDash = a.substring(1);
-            this.text = stringWithoutDash;
+            if (a.charAt(0) === '-') {
+                a = a.substring(1);
+            }
+            this.text = a;
             this.$emit('code', a)
         },
         onLoaded() {
