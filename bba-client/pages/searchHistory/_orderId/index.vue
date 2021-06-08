@@ -23,6 +23,12 @@
                     </v-text-field>
                 </v-col>
             </v-row>
+            <v-row>
+                <v-col cols="12" xs="12" sm="12" md="6" xl="6">
+                    <v-text-field v-model="orderData.combination" label="Combination" placeholder="Combination" readonly filled dense outlined>
+                    </v-text-field>
+                </v-col>
+            </v-row>
 
             <v-row cols="12">
                 <header>
