@@ -32,11 +32,13 @@ export default {
     },
     methods: {
         onDecode(a, b, c) {
-            console.log("DECODING");
-            console.log(a, b, c);
-            if (a.charAt(0) === '-') {
+            if (a.charAt(0) === '-' || a.charAt(0) === '#') {
                 a = a.substring(1);
             }
+            if (a.charAt(0) === '-' || a.charAt(0) === '#') {
+                a = a.substring(1);
+            }
+            console.log(a);
             this.text = a;
             this.$emit('code', a)
         },

@@ -12,18 +12,11 @@
                     <v-select :items="colorItems" v-model="defaultColorValue" label="COLOR" dense outlined></v-select>
                 </v-col>
 
-                <v-col cols="12" xs="12" sm="12" md="6" xl="6">
-                    <v-list :items="colorItems" label="COLOR">
-                        <v-subheader>COLORS</v-subheader>
-                        <v-list-item-group color="primary">
-                            <v-list-item v-for="(item, i) in colorItems" :value="item" :key="i">
-                                <v-list-item-action>
-                                    <v-btn :color="item">{{item}}</v-btn>
-                                </v-list-item-action>
-                            </v-list-item>
-                        </v-list-item-group>
-                    </v-list>
-                </v-col>
+                <v-row>
+                    <v-col cols="12" xs="2" sm="2" md="2" xl="2" v-for="(item, i) in colorItems" :value="item" :key="i">
+                        <v-btn @click="setColor(item)" :color="getColor(item)" foreground="white"  >{{item}}</v-btn>
+                    </v-col>
+                </v-row>
 
                 <!-- <v-col cols="12" xs="12" sm="12" md="6" xl="6">
                     <v-text-field v-model="defaultCombinationValue" label="COMBINATION" placeholder="Combination" disabled readonly dense outlined></v-text-field>
@@ -85,6 +78,7 @@ export default {
             defaultCombinationValue: "",
             defaultLockingValue: "",
             colorItems: [],
+            colorHexValues: [],
             lockingData: [],
             lockData: {},
         };
@@ -94,6 +88,7 @@ export default {
             const lockingDataResponse = await this.$axios.$get("/api/user/locking");
             this.lockingData = lockingDataResponse;
             this.colorItems = _.map(lockingDataResponse, "color");
+            this.colorHexValues = _.map(lockingDataResponse, "ColorValue");
         },
         async getOrderDetails() {
             try {
@@ -111,6 +106,18 @@ export default {
             } catch (err) {
                 console.log("errror", err.response);
             }
+        },
+        async setColor(item) {
+            this.defaultColorValue = item;
+        },
+        getColor(item) {
+            console.log("in get color");
+            let colorIndex = this.colorItems.indexOf(item);
+            let color = this.colorHexValues[colorIndex];
+            return color;
+        },
+        getForegroundColor(item) {
+
         },
         async saveLockingData() {
             const res = await this.$axios.$post(

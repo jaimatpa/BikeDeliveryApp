@@ -21,12 +21,12 @@
             </v-edit-dialog>
         </template>
 
-        <template v-slot:item.colorvalue="props">
+        <!-- <template v-slot:item.colorvalue="props"> -->
                 <!-- {{props.item.colorvalue}} -->
-                <template>
+                <!-- <template>
                     <v-color-picker hide-canvas hide-inputs swatches-max-height="75"  v-model="props.item.colorvalue" label="Edit"></v-color-picker>
                 </template>
-        </template>
+        </template> -->
 
         <template v-slot:item.actions="{ item }">
             <v-icon small @click="deleteItem(item)">
