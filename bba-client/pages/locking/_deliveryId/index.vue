@@ -14,7 +14,7 @@
 
                 <v-row>
                     <v-col cols="12" xs="2" sm="2" md="2" xl="2" v-for="(item, i) in colorItems" :value="item" :key="i">
-                        <v-btn @click="setColor(item)" :color="getColor(item)" foreground="white"  >{{item}}</v-btn>
+                        <v-btn @click="setColor(item)" :color="getColor(item)" :class="getForegroundColor(item)">{{item}}</v-btn>
                     </v-col>
                 </v-row>
 

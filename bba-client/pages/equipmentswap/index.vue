@@ -154,15 +154,14 @@ export default {
         },
         async code(value) {
             this.closeScanner();
-            var stringWithoutDash = value.substring(1);
-            this.search = stringWithoutDash;
+            this.search = value;
             let orderParam = {
-                orderid: stringWithoutDash
+                orderid: value
             }
             let result = await this.$axios.get(`/api/user/getOrder`, {params: orderParam});
             console.log(result);
             if (result.data == '1') {
-                this.$router.push(`/deliveryOrder/${stringWithoutDash}`);
+                this.$router.push(`/deliveryOrder/${value}`);
             } else {
                 this.showError("The scanned order does not appear to be in the system.");
             }
