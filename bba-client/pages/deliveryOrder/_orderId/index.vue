@@ -8,13 +8,13 @@
                     <div class="mt-1">
                         <v-row>
                             <v-col cols="12" xs="12" sm="12" md="6" xl="6">
-                                <v-text-field v-model="deliveryOrderData.orderid" label="ORDER #" placeholder="Order" readonly disabled dense outlined>
+                                <v-text-field v-model="deliveryOrderData.orderid" label="ORDER #" placeholder="Order" readonly dense outlined>
                                 </v-text-field>
                             </v-col>
                             <v-col cols="12" xs="12" sm="12" md="6" xl="6">
                                 <v-menu ref="menu1" v-model="menu1" :close-on-content-click="false" transition="scale-transition" offset-y max-width="290px" min-width="auto">
                                     <template v-slot:activator="{ on, attrs }">
-                                        <v-text-field v-model="dateFormatted" label="Date" hint="MM/DD/YYYY format" persistent-hint v-bind="attrs" @blur="date = parseDate(dateFormatted)" v-on="on" disabled readonly outlined dense></v-text-field>
+                                        <v-text-field v-model="dateFormatted" label="Date" hint="MM/DD/YYYY format" persistent-hint v-bind="attrs" @blur="date = parseDate(dateFormatted)" v-on="on" readonly outlined dense></v-text-field>
                                     </template>
                                     <v-date-picker v-model="date" no-title @input="menu1 = false"></v-date-picker>
                                 </v-menu>
@@ -22,26 +22,26 @@
                         </v-row>
                         <v-row>
                             <v-col cols="12" xs="12" sm="12" md="6" xl="6">
-                                <v-text-field v-model="deliveryOrderData.name" label="NAME" placeholder="Name" disabled readonly dense outlined>
+                                <v-text-field v-model="deliveryOrderData.name" label="NAME" placeholder="Name" readonly dense outlined>
                                 </v-text-field>
                             </v-col>
 
                             <v-col cols="12" xs="12" sm="12" md="6" xl="6">
-                                <v-text-field v-model="deliveryOrderData.location" label="LOCATION" placeholder="Location" disabled readonly dense outlined>
+                                <v-text-field v-model="deliveryOrderData.location" label="LOCATION" placeholder="Location" readonly dense outlined>
                                 </v-text-field>
                             </v-col>
                         </v-row>
                         <v-row>
                             <v-col cols="12" xs="12" sm="12" md="6" xl="6">
-                                <v-select :items="colorItems" v-model="defaultColorValue" label="Color" disabled readonly dense outlined></v-select>
+                                <v-select :items="colorItems" v-model="defaultColorValue" label="Color" dense outlined></v-select>
                             </v-col>
                             <v-col cols="12" xs="12" sm="12" md="6" xl="6">
-                                <v-text-field v-model="defaultCombinationValue" label="COMBINATION" placeholder="Combination" disabled readonly dense outlined>
+                                <v-text-field v-model="defaultCombinationValue" label="COMBINATION" placeholder="Combination" readonly dense outlined>
                                 </v-text-field>
                             </v-col>
                         </v-row>
                         <v-row cols="12" xs="12" sm="12" md="12" xl="12">
-                             <v-textarea v-model="deliveryOrderData.note" label="NOTES" placeholder="NOTES" disabled readonly dense outlined>
+                             <v-textarea v-model="deliveryOrderData.note" label="NOTES" placeholder="NOTES" readonly dense outlined>
                                 </v-textarea>
                         </v-row>
                     </div>

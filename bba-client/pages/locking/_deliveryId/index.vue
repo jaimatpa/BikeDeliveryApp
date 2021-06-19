@@ -4,7 +4,7 @@
         <div>
             <v-row>
                 <v-col cols="12" xs="12" sm="12" md="6" xl="6">
-                    <v-text-field v-model="lockData.orderid" label="DELIVERY #" placeholder="DELIVERY Id" readonly disabled dense outlined>
+                    <v-text-field v-model="lockData.orderid" label="DELIVERY #" placeholder="DELIVERY Id" readonly dense outlined>
                     </v-text-field>
                 </v-col>
 

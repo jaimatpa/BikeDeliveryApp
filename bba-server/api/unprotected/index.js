@@ -20,6 +20,7 @@ const asset = require("./user/asset");
 const truck = require("./user/truck");
 const deliveryItem = require("./user/deliveryItem");
 const uploadPickup = require("./user/uploadPickup");
+const deliveryOrderManagement = require("./user/deliveryOrderManagement");
 const cors = require('cors');
 
 module.exports = {
@@ -50,6 +51,9 @@ module.exports = {
     app.use("/api/user/truck/:id", truck);
     app.use("/api/user/deliveryItem/", deliveryItem);
     app.use("/api/user/deliveryItem/:id", deliveryItem);
-    app.use("/api/user/uploadPikcup/", uploadPickup);
+    app.use("/api/user/uploadPickup/", uploadPickup);
+    app.use("/api/user/uploadPickup/", uploadPickup);
+    app.use("/api/user/deliveryOrderManagement/", deliveryOrderManagement);
+    app.use("/api/user/deliveryOrderManagement/:id", deliveryOrderManagement);
   },
 };

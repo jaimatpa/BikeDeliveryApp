@@ -5,19 +5,30 @@ const models = require("./../../../models");
 const apiMessage = require("./../../../language/en.json");
 router.post("/", async (req, res) => {
     try {
-        console.log(req);
-        const newTruck = await models.Truck.create({
-            notes: req.body.notes,
-        })
-        return res.send(newTruck);
+        // let newDeliveryItem = await models.DeliveryItem.create({
+        //     deliveryID: existingItem[0].dataValues.deliveryID,
+        //     item: existingItem[0].dataValues.item,
+        //     serialbarcode: existingItem[0].dataValues.serialbarcode,
+        //     Active: false,
+        //     checkedDelievery: existingItem[0].dataValues.checkedDelievery,
+        //     checkPickup: existingItem[0].dataValues.checkPickup
+        // })
+        // return res.send(newDeliveryItem);
     } catch (error) {
         console.log(error);
     }
 });
 
 router.put("/", async (req, res) => {
-    console.log("IN PUT REQUEST");
+    console.log("IN PUT REQUEST", req.body);
     try {
+
+        let existingItem = await models.DeliveryItem.findAll({
+            where: {
+                id: req.body.id,
+            }
+        });
+
         const updateDeliveryItem = await models.DeliveryItem.update({
             checkedDelievery: req.body.checkedDelievery,
             checkPickup: req.body.checkPickup,
@@ -28,6 +39,16 @@ router.put("/", async (req, res) => {
             id: req.body.id
         }
         });
+
+        const newDeliveryItem = await models.DeliveryItem.create({
+            deliveryID: existingItem[0].dataValues.deliveryID,
+            item: existingItem[0].dataValues.item,
+            serialbarcode: existingItem[0].dataValues.serialbarcode,
+            Active: false,
+            checkedDelievery: existingItem[0].dataValues.checkedDelievery,
+            checkPickup: existingItem[0].dataValues.checkPickup
+        })
+
         return res.send(updateDeliveryItem);
     } catch (error) {
         console.log(error);
@@ -56,13 +77,13 @@ router.delete("/", async (req, res) => {
 
 router.get("/", async (req,res) => {
     try {
-        let deliveryID = req.body.deliveryID;
-        console.log("REQUEST INFORMATION", req.body);
+        let deliveryID = req.query.deliveryID;
         let data = [];
         data = await models.DeliveryItem.findAll({
-            // where: {
-            //     DeliveryID: deliveryID,
-            // }
+            where: {
+                DeliveryID: deliveryID,
+                Active: true
+            }
         });
         return res.send(data);
     } catch (error) {

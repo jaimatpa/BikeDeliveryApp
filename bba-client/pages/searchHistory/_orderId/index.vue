@@ -4,28 +4,28 @@
         <div>
             <v-row>
                 <v-col cols="12" xs="12" sm="12" md="6" xl="6">
-                    <v-text-field v-model="orderData.date" label="DATE" placeholder="Date" filled readonly dense outlined>
+                    <v-text-field v-model="orderData.date" label="DATE" placeholder="Date" readonly dense outlined>
                     </v-text-field>
                 </v-col>
                 <v-col cols="12" xs="12" sm="12" md="6" xl="6">
-                    <v-text-field v-model="orderData.name" label="NAME" placeholder="Name" readonly filled dense outlined>
+                    <v-text-field v-model="orderData.name" label="NAME" placeholder="Name" readonly dense outlined>
                     </v-text-field>
                 </v-col>
             </v-row>
 
             <v-row>
                 <v-col cols="12" xs="12" sm="12" md="6" xl="6">
-                    <v-text-field v-model="orderData.location" label="LOCATION" placeholder="Location" readonly dense filled outlined>
+                    <v-text-field v-model="orderData.location" label="LOCATION" placeholder="Location" readonly dense outlined>
                     </v-text-field>
                 </v-col>
                 <v-col cols="12" xs="12" sm="12" md="6" xl="6">
-                    <v-text-field v-model="orderData.orderid" label="ORDER #" placeholder="Order#" readonly filled dense outlined>
+                    <v-text-field v-model="orderData.orderid" label="ORDER #" placeholder="Order#" readonly dense outlined>
                     </v-text-field>
                 </v-col>
             </v-row>
             <v-row>
                 <v-col cols="12" xs="12" sm="12" md="6" xl="6">
-                    <v-text-field v-model="orderData.combination" label="Combination" placeholder="Combination" readonly filled dense outlined>
+                    <v-text-field v-model="orderData.combination" label="Combination" placeholder="Combination" readonly dense outlined>
                     </v-text-field>
                 </v-col>
             </v-row>

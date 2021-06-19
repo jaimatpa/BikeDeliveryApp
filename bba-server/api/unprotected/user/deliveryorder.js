@@ -80,8 +80,8 @@ router.get("/", async (req, res) => {
             });
             if (type === "DeliveryOrders") {
                 data = data.filter((record => {
-                    var d = moment(record.date).add(4, 'hours').format('LL');
-                    var today = moment().format('LL');
+                    var d = moment(record.date).add(4, 'hours').startOf('day');
+                    var today = moment().endOf('day');
                     if (d >= today && record.status == 0) {
                         return true;
                     } else {

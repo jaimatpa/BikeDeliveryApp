@@ -13,6 +13,7 @@ module.exports = (sequelize, DataTypes) => {
       deliveryID: DataTypes.INTEGER,
       item: DataTypes.STRING,
       serialbarcode: DataTypes.STRING,
+      active: DataTypes.BOOLEAN,
       checkedDelievery: DataTypes.BOOLEAN,
       checkPickup: DataTypes.BOOLEAN,
     },

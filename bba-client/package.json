@@ -17,6 +17,7 @@
     "@nuxtjs/axios": "^5.12.5",
     "@nuxtjs/pwa": "^3.3.4",
     "@nuxtjs/sentry": "^5.0.0",
+    "sass": "~1.32.6",
     "core-js": "^3.8.2",
     "lodash": "^4.17.21",
     "moment": "^2.29.1",

@@ -128,16 +128,16 @@ export default {
                     icon: "mdi-calendar-month-outline",
                     iconSelected: "mdi-calendar-month",
                     to: "/logistics",
-                    disabled: true,
-                    color: "grey",
+                    disabled: false,
+                    color: "primary",
                 },
                 {
                     title: "EQUIPMENT SWAP",
                     icon: "mdi-swap-horizontal-circle-outline",
                     iconSelected: "mdi-swap-horizontal-circle",
                     to: "/equipmentswap",
-                    disabled: true,
-                    color: "grey",
+                    disabled: false,
+                    color: "primary",
                 },
                 {
                     title: "REPORTS",
@@ -163,6 +163,12 @@ export default {
                 {
                     title: "TEXT MSG TEMPLATE",
                     to: "/textMessageTemplate",
+                },
+                {
+                    title: "DELIVERY ORDERS",
+                    to: "/deliveryOrderManagement",
+                    iconImage: 'mdi-lock',
+                    downArrowIcon: require("./../assets/images/down_arrow.svg"),
                 },
                 {
                     title: "ASSETS",

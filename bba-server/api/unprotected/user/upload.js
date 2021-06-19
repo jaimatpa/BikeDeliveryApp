@@ -34,6 +34,7 @@ router.post("/", async (req, res) => {
     let upload = multer({ storage: storage, fileFilter: imageFilter }).single('file');
 
     upload(req, res, async function (err) {
+        console.log("START");
         // req.file contains information of uploaded file
         // req.body contains information of text fields, if there were any
         const orderid = req.query.orderid;
@@ -46,16 +47,20 @@ router.post("/", async (req, res) => {
          }
 
         if (req.fileValidationError) {
-            return res.send(req.fileValidationError);
+        console.log("File Validation Error");
+        return res.send(req.fileValidationError);
         }
         else if (!req.file) {
-            return res.send('Please select an image to upload');
+        console.log("NO FILE");
+        return res.send('Please select an image to upload');
         }
         else if (err instanceof multer.MulterError) {
-            return res.send(err);
+        console.log("MULTER ERROR");
+        return res.send(err);
         }
         else if (err) {
-            return res.send(err);
+        console.log("GENERIC", err);
+        return res.send(err);
         }
 
         // Display uploaded image for user validation

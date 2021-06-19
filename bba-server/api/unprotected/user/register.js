@@ -56,7 +56,7 @@ router.post("/", async (req, res) => {
           name: req.body.name || "",
           password: req.body.password,
           userType: parseInt(req.body.userType.userTypeVal, 10),
-          isVerified: false,
+          isVerified: true,
         }).save();
 
         if (newUser) {

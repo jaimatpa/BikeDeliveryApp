@@ -1,5 +1,7 @@
 <template lang="html">
 <Page>
+    <!-- <h1>vue-barcode-reader demo</h1> -->
+    <!-- Delivery Order Scan Button  -->
     <v-btn block depressed color="primary" class="mb-5" @click.stop="dialog = true;cameraRender += 1">
         <v-icon left medium color="white" class="mr-2">
             mdi-barcode-scan
@@ -9,18 +11,25 @@
 
     <!-- Order Search Field -->
     <v-text-field v-model="search" append-icon="mdi-magnify" label="Search by Order #, Name, Location" single-line hide-details outlined dense clearable class="mb-5 order-search-text-field" @keyup="onKeyUp" @click:clear="onClearClicked"></v-text-field>
-
+    <v-btn block depressed color="primary" class="mb-5" @click="createNew()">
+        <v-icon left medium color="white" class="mr-2">
+            mdi-plus
+        </v-icon>
+        Create New Delivery
+    </v-btn>
     <v-data-table :headers="headers" :items="delivaries" :options.sync="options" :server-items-length="totalOrderDelivery" :loading="loading" :search="search" class="elevation-1" :mobile-breakpoint="0" sort-by="date" :sort-desc="false">
         <!-- Date -->
         <template v-slot:item.date="{ item }">
             {{ getDateFormat(item.date) }}
         </template>
-
         <!-- Actions -->
         <template v-slot:item.actions="{ item }">
-            <v-icon medium color="primary" @click.stop="$router.push({path: `/equipmentswap/${item.orderid}`,})">
-                mdi-page-next
-            </v-icon>
+            <span>
+                <v-icon medium color="primary" @click.stop="
+                    $router.push({path: `/deliveryOrderManagement/${item.orderid}`,})">mdi-page-next
+                </v-icon>
+            </span>
+
         </template>
     </v-data-table>
 
@@ -138,6 +147,11 @@ export default {
             showSuccess: "success",
             showError: "error"
         }),
+        createNew() {
+            this.$router.push({
+                path: `/deliveryOrderManagement/0`,
+            })
+        },
         getDateFormat(date) {
             return moment(date).add(4, 'hours').format("MM/DD/YYYY hh:mm A");
         },
@@ -154,7 +168,9 @@ export default {
             let orderParam = {
                 orderid: value
             }
-            let result = await this.$axios.get(`/api/user/getOrder`, {params: orderParam});
+            let result = await this.$axios.get(`/api/user/getOrder`, {
+                params: orderParam
+            });
             console.log(result);
             if (result.data == '1') {
                 this.$router.push(`/deliveryOrder/${value}`);
@@ -268,77 +284,78 @@ export default {
 }
 
 .custom-delivery-bar-scanner {
-  height: 100%;
-  background-color: hsla(0, 0%, 13%, 0.95);
-  padding: 0 20px;
+    height: 100%;
+    background-color: hsla(0, 0%, 13%, 0.95);
+    padding: 0 20px;
 
-  display: flex;
-  align-items: center;
-  justify-content: center;
+    display: flex;
+    align-items: center;
+    justify-content: center;
 
-  .scan-container {
-    padding: 0 !important;
+    .scan-container {
+        padding: 0 !important;
 
-    .scanner-container {
-      .overlay-element {
-        border: 0.1rem solid rgba(75, 152, 42, 0.2);
-      }
+        .scanner-container {
+            .overlay-element {
+                border: 0.1rem solid rgba(75, 152, 42, 0.2);
+            }
 
-      .overlay-element::before,
-      .overlay-element::after {
-        content: "";
-        display: block;
+            .overlay-element::before,
+            .overlay-element::after {
+                content: "";
+                display: block;
+                position: absolute;
+                width: 10vw;
+                height: 10vw;
+
+                border: 0.2rem solid transparent;
+
+                bottom: 0;
+                border-bottom-color: #4c9a2a;
+            }
+
+            .overlay-element::before {
+                left: 0;
+                border-left-color: #4c9a2a;
+            }
+
+            .overlay-element::after {
+                right: 0;
+                border-right-color: #4c9a2a;
+            }
+        }
+
+        .scanner-container::after,
+        .scanner-container::before {
+            content: "";
+            display: block;
+            position: absolute;
+            width: 10vw;
+            height: 10vw;
+
+            border: 0.2rem solid transparent;
+
+            top: 0;
+            border-top-color: #4c9a2a;
+        }
+
+        .scanner-container::after {
+            right: 0;
+            border-right-color: #4c9a2a;
+        }
+
+        .scanner-container::before {
+            left: 0;
+            border-left-color: #4c9a2a;
+        }
+    }
+
+    .scan-close-button {
         position: absolute;
-        width: 10vw;
-        height: 10vw;
-
-        border: 0.2rem solid transparent;
-
-        bottom: 0;
-        border-bottom-color: #4c9a2a;
-      }
-
-      .overlay-element::before {
-        left: 0;
-        border-left-color: #4c9a2a;
-      }
-
-      .overlay-element::after {
-        right: 0;
-        border-right-color: #4c9a2a;
-      }
+        bottom: 0px;
+        width: 100%;
+        left: 0px;
+        padding: 10px 20px;
     }
-
-    .scanner-container::after,
-    .scanner-container::before {
-      content: "";
-      display: block;
-      position: absolute;
-      width: 10vw;
-      height: 10vw;
-
-      border: 0.2rem solid transparent;
-
-      top: 0;
-      border-top-color: #4c9a2a;
-    }
-
-    .scanner-container::after {
-      right: 0;
-      border-right-color: #4c9a2a;
-    }
-    .scanner-container::before {
-      left: 0;
-      border-left-color: #4c9a2a;
-    }
-  }
-
-  .scan-close-button {
-    position: absolute;
-    bottom: 0px;
-    width: 100%;
-    left: 0px;
-    padding: 10px 20px;
-  }
 }
 </style>
