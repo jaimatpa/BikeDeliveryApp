@@ -8,6 +8,13 @@
         Scan Barcode
     </v-btn>
 
+    <v-btn block depressed color="primary" class="mb-5" @click="createNew()">
+        <v-icon left medium color="white" class="mr-2">
+            mdi-plus
+        </v-icon>
+        Create New Delivery
+    </v-btn>
+
     <v-text-field v-model="search" props="dark" append-icon="mdi-magnify" label="Search by Order #, Name, Location" single-line hide-details outlined dense clearable class="mb-5 order-search-text-field" @keyup="onKeyUp" @click:clear="onClearClicked"></v-text-field>
 
     <v-data-table :headers="headers" :items="delivaries" :options.sync="options" :server-items-length="totalOrderDelivery" :loading="loading" :search="search" class="elevation-1" :mobile-breakpoint="0">
@@ -150,6 +157,11 @@ export default {
             this.lockingData = lockingDataResponse;
             console.log(this.lockingData);
             this.colors = this.lockingData.filter(fil => fil.color != null).map(x => x.color);
+        },
+        createNew() {
+            this.$router.push({
+                path: `/deliveryOrderManagement/0`,
+            })
         },
         onDecode(decodedString) {
             console.log("decodedString", decodedString);

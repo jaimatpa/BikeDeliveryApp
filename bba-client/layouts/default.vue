@@ -128,8 +128,8 @@ export default {
                     icon: "mdi-calendar-month-outline",
                     iconSelected: "mdi-calendar-month",
                     to: "/logistics",
-                    disabled: false,
-                    color: "primary",
+                    disabled: true,
+                    color: "grey",
                 },
                 {
                     title: "EQUIPMENT SWAP",

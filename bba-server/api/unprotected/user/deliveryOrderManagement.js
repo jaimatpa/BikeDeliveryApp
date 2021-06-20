@@ -6,7 +6,7 @@ const apiMessage = require("./../../../language/en.json");
 router.post("/", async (req, res) => {
     try {
         console.log(req);
-        const newTruck = await models.DeliveryOrders.create({
+        const newOrder = await models.DeliveryOrders.create({
             date: req.body.date,
             name: req.body.name,
             location: req.body.location,

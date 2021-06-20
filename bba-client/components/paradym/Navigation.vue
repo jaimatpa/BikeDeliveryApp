@@ -14,7 +14,7 @@
         <v-list-item v-for="(item, i) in items" :disabled="item.disabled" :key="i" :to="item.to" router exact @click="onNavClick" :color="item.color">
             <v-tooltip right :disabled="isMobile ? true : !drawer" nudge-right="8" color="#222222">
                 <template v-slot:activator="{ on, attrs }">
-                    <v-list-item-action  class="pl-2 mr-4" v-bind="attrs" v-on="on">
+                    <v-list-item-action class="pl-2 mr-4" v-bind="attrs" v-on="on">
                         <v-icon>{{$nuxt.$route.path != item.to ? item.icon : item.iconSelected}}</v-icon>
                     </v-list-item-action>
                 </template>

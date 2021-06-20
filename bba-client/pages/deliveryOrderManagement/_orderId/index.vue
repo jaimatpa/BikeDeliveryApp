@@ -170,7 +170,6 @@ export default {
             showError: "error"
         }),
         async saveDeliveryOrder() {
-            console.log("IN SAVE DIALOG");
             this.deliveryOrderData.date = this.date
             if (this.deliveryOrderData) {
                 if (this.deliveryOrderData.id) {
@@ -181,7 +180,7 @@ export default {
                     let response = await this.$axios.$post("/api/user/deliveryOrderManagement/", this.deliveryOrderData);
                 }
             }
-            this.$router.push({path: `/deliveryOrderManagement/`,})
+            this.$router.push('/locking/');
         },
         formatDate(date) {
             if (!date) return null;
