@@ -9,13 +9,15 @@
             {{getDateFormat(item.date)}}
         </template>
 
+        <template v-slot:[`item.status`]="{ item }">
+            <v-simple-checkbox v-model="item.status" v-ripple>
+
+            </v-simple-checkbox>
+        </template>
+
         <!-- Actions -->
         <template v-slot:item.actions="{ item }">
-            <v-icon medium color="primary" @click.stop="
-            $router.push({
-              path: `/searchHistory/${item.orderid}`,
-            })
-          ">
+            <v-icon medium color="primary" @click.stop="$router.push({path: `/searchHistory/${item.orderid}`,})">
                 mdi-page-next
             </v-icon>
         </template>
@@ -25,6 +27,7 @@
 </template>
 
 <script>
+/* eslint-disable no-eval */
 import _ from "lodash";
 import moment from "moment";
 import Page from "@/components/paradym/Page";
@@ -63,18 +66,23 @@ export default {
                 {
                     text: "NAME",
                     value: "name",
-                    sortable: false
+                    sortable: true
                 },
                 {
                     text: "LOCATION",
                     value: "location",
-                    sortable: false
+                    sortable: true
                 },
                 // { text: "RACK", value: "rack", sortable: false },
                 {
                     text: "ORDER#",
                     value: "orderid",
-                    sortable: false
+                    sortable: true
+                },
+                {
+                    text: "Delivered?",
+                    value: "status",
+                    sortable: true
                 },
                 {
                     text: "ACTION",
@@ -135,7 +143,7 @@ export default {
                 let param = this.search ? {
                     search: this.search
                 } : {
-                  type: "SearchHistory",
+                    type: "SearchHistory",
                 };
 
                 const orderDeliveryMockData = await this.$axios.$get(

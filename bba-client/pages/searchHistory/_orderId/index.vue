@@ -32,10 +32,26 @@
 
             <v-row cols="12">
                 <header>
-                    <h1 class="text-h4 mb-4 primary--text" >Delivery Photos</h1>
+                    <h1 class="text-h4 mb-4 primary--text">Equipment</h1>
                 </header>
             </v-row>
+                <v-data-table readonly width="100%" block cols="12" xs="12" sm="12" md="12" xl="12" :headers="headers" :items="equipment" item-key="name" class="elevation-6 ma-1 mb-5">
+                    <template v-slot:[`item.checkedDelievery`]="{ item }">
+                    <v-simple-checkbox v-model="item.checkedDelievery" v-ripple @input="saveUpdate(item)">
 
+                    </v-simple-checkbox>
+                </template>
+                <template v-slot:[`item.checkPickup`]="{ item }">
+                    <v-simple-checkbox v-model="item.checkPickup" v-ripple @input="saveUpdate(item)">
+
+                    </v-simple-checkbox>
+                </template>
+                </v-data-table>
+            <v-row cols="12">
+                <header>
+                    <h1 class="text-h4 mb-4 primary--text">Delivery Photos</h1>
+                </header>
+            </v-row>
 
             <v-row cols="12">
                 <v-col cols="12" xs="12" sm="12" md="4" xl="4">
@@ -57,7 +73,7 @@
 
             <v-row cols="12">
                 <header>
-                    <h1 class="text-h4 mb-4 primary--text" >Pickup Photos</h1>
+                    <h1 class="text-h4 mb-4 primary--text">Pickup Photos</h1>
                 </header>
             </v-row>
 
@@ -166,7 +182,8 @@ export default {
         Page
     },
     async created() {
-        this.getOrderDetails();
+        await this.getOrderDetails();
+        await this.getOrderItems();
         this.getUploadDetails();
         this.getMsgTemplate();
     },
@@ -193,6 +210,27 @@ export default {
             },
             loader: false,
             uploadFilesData: [],
+            headers: [{
+                    text: "ITEM",
+                    align: "start",
+                    value: "item",
+                },
+                {
+                    text: "BARCODE",
+                    value: "serialbarcode",
+                },
+                {
+                    text: "DELIVERED",
+                    value: "checkedDelievery",
+                },
+                {
+                    text: "PICKED UP",
+                    value: "checkPickup",
+                    sortable: false,
+                    align: "center"
+                },
+            ],
+            equipment: [],
         };
     },
     methods: {
@@ -200,6 +238,23 @@ export default {
             showSuccess: "success",
             showError: "error"
         }),
+        async getOrderItems() {
+            try {
+                let response = await this.$axios.$get("/api/user/deliveryItem", {
+                    params: {
+                        deliveryID: this.orderData.id,
+                    },
+                });
+                this.equipment = response;
+
+                //  this.$router.go(-1);
+            } catch (err) {
+                console.log("Issue in getOrderItems", err.response);
+            }
+        },
+        async saveUpdate(item) {
+            // let response = await this.$axios.$put("/api/user/deliveryItem", item);
+        },
         async getUploadDetails() {
             try {
                 let response = await this.$axios.$get("/api/user/upload", {

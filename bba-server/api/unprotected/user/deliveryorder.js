@@ -11,7 +11,7 @@ router.post("/", async (req, res) => {
     try{
         await models.Logs.build({json:JSON.stringify(req.body)}).save();
     }catch(error){
-        console.log(error)
+       // console.log(error)
     }
 
     try{
@@ -28,7 +28,7 @@ router.post("/", async (req, res) => {
             await models.DeliveryOrders.build(d).save();
         }
     }catch(error){
-        console.log(error)
+        //console.log(error)
     }
     
     //received the json here req.body
@@ -101,11 +101,7 @@ router.get("/", async (req, res) => {
                 }));
             } else if (type === "SearchHistory") {
                 data = data.filter((record => {
-                    if (record.status === 1) {
-                        return true;
-                    } else {
-                        return false;
-                    }
+                    return true;
                 }));
             } else if (type === "Dashboard") {
                 data = data.filter((record => {
@@ -128,7 +124,6 @@ router.get("/", async (req, res) => {
                     }
                 }));
             } else if (type === "Logistics") {
-                console.log("In Logistics");
                 data = data.filter((record => {
                     var d = moment(record.date).add(4, 'hours').format('LL');
                     var today = moment().format('LL');
@@ -140,8 +135,6 @@ router.get("/", async (req, res) => {
                 }));
             } else if (type === "Pickup") {
                 data = data.filter((record => {
-                    var d = moment(record.date).add(4, 'hours').format('LL');
-                    var today = moment().format('LL');
                     if (record.status == 1 && record.PickedUp == 0) {
                         return true;
                     } else {
@@ -149,7 +142,6 @@ router.get("/", async (req, res) => {
                     }
                 }));
             } 
-            console.log(data)
         }catch(error){
             console.log(error)
         }
@@ -193,14 +185,11 @@ router.get("/", async (req, res) => {
             }));
         } else if (type === "SearchHistory") {
             data = data.filter((record => {
-                if (data.status === 1) {
-                    return true;
-                } else {
-                    return false;
-                }
+                console.log("SEARCH HISTORY, NO CRITERIA");
+                return true;
             }));
         } else if (type === "Dashboard") {
-            console.log("In Dashboard");
+            //console.log("In Dashboard");
             data = data.filter((record => {
                 var d = moment(record.date).add(4, 'hours').format("LL");
                 var today = moment().format("LL");
@@ -247,7 +236,6 @@ router.get("/", async (req, res) => {
 
 router.put("/", async (req, res) => {
     try {
-        console.log(req);
         const updateDO = await models.DeliveryOrders.update({
             truckID: req.body.truckID
         },
@@ -258,7 +246,7 @@ router.put("/", async (req, res) => {
         });
         return res.send(updateDO);
     } catch (error) {
-        console.log(error);
+        //(error);
     }
 });
 

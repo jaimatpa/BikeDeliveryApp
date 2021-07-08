@@ -1,8 +1,8 @@
 <template>
 <Page>
     <v-container>
-        <v-btn block depressed color="primary" class="mb-5">
-            <v-icon left medium color="white" class="mr-2">mdi-barcode-scan</v-icon>
+        <v-btn x-large block depressed color="primary" class="mb-5">
+            <v-icon size="50" left medium color="white" class="mr-2">mdi-barcode-scan</v-icon>
             Scan Barcode
         </v-btn>
         <v-text-field v-model="search" append-icon="mdi-magnify" label="Search by Order #, Name, Location" single-line hide-details outlined dense clearable class="mb-5 order-search-text-field" @keyup="onKeyUp" @click:clear="onClearClicked"></v-text-field>

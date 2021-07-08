@@ -103,7 +103,7 @@
                             </v-col>
                         </v-row>
 
-                        <v-btn color="primary" block @click.stop="scanDialogVisible = true;cameraRender += 1">Scan Barcode</v-btn>
+                        <v-btn color="primary" x-large block @click.stop="scanDialogVisible = true;cameraRender += 1">Scan Barcode</v-btn>
 
                         <v-data-table width="100%" block cols="12" xs="12" sm="12" md="12" xl="12" v-model="selected" :headers="headers" :items="equipment" item-key="name" class="elevation-1 ma-1 mb-2">
                             <template v-slot:item.checkpickup="{ item }">
@@ -245,9 +245,9 @@ export default {
         },
     },
     async created() {
-        this.getOrderDetails();
-        this.getOrderItems();
-        this.getLockingDetails();
+        await this.getOrderDetails();
+        await this.getOrderItems();
+        await this.getLockingDetails();
     },
     computed: {
         ...mapState({
@@ -317,11 +317,7 @@ export default {
             console.log("RESPONSE", response);
         },
         async code(value) {
-            console.log("IN CODE");
-            console.log(this.currentItem);
-            console.log(value);
             this.scanDialogVisible = false;
-            console.log(this.equipment);
             let foundEquipment = this.equipment.filter(e => e['serialbarcode'] === value);
             console.log("FOUND STUFF", foundEquipment);
             if (foundEquipment.length > 0) {
@@ -392,7 +388,7 @@ export default {
             try {
                 let response = await this.$axios.$get("/api/user/deliveryItem", {
                     params: {
-                        deliveryID: this.$route.params.deliveryID,
+                        deliveryID: this.orderData.id,
                     },
                 });
 

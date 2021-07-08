@@ -2,8 +2,8 @@
 <Page>
     <!-- <h1>vue-barcode-reader demo</h1> -->
     <!-- Delivery Order Scan Button  -->
-    <v-btn block depressed color="primary" class="mb-5" @click.stop="dialog = true;cameraRender += 1">
-        <v-icon left medium color="white" class="mr-2">
+    <v-btn x-large block depressed color="primary" class="mb-5" @click.stop="dialog = true;cameraRender += 1">
+        <v-icon size="50" left medium color="white" class="mr-2">
             mdi-barcode-scan
         </v-icon>
         Scan Barcode
@@ -170,7 +170,6 @@ export default {
         },
 
         onKeyUp(event) {
-            // console.log('key uppppppp ', typeof event.target.value,  `${event.target.value}`.length)
             if (event.key === "Enter") {
                 this.getDataFromApi();
             } else if (`${event.target.value}`.length === 0) {

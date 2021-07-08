@@ -1,8 +1,8 @@
 <template lang="html">
 <Page>
     <!-- Lock Scan Button  -->
-    <v-btn @click.stop="dialog = true;cameraRender += 1" block depressed color="primary" class="mb-5">
-        <v-icon left medium color="white" class="mr-2">
+    <v-btn x-large @click.stop="dialog = true;cameraRender += 1" block depressed color="primary" class="mb-5">
+        <v-icon size="50" left medium color="white" class="mr-2">
             mdi-barcode-scan
         </v-icon>
         Scan Barcode

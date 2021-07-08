@@ -47,7 +47,7 @@
         <!-- Third Stepper Button -->
         <v-row>
             <v-col cols="12" xs="12" sm="12" md="4" xl="4">
-                <v-btn block depressed color="accent" @click.stop="$emit('set-delivery-stepper', 1)">
+                <v-btn block depressed color="accent" @click.stop="$emit('set-delivery-stepper', 2)">
                     <v-icon dark>
                         mdi-chevron-left
                     </v-icon>

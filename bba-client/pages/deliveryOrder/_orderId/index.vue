@@ -41,8 +41,8 @@
                             </v-col>
                         </v-row>
                         <v-row cols="12" xs="12" sm="12" md="12" xl="12">
-                             <v-textarea v-model="deliveryOrderData.note" label="NOTES" placeholder="NOTES" readonly dense outlined>
-                                </v-textarea>
+                            <v-textarea v-model="deliveryOrderData.note" label="NOTES" placeholder="NOTES" readonly dense outlined>
+                            </v-textarea>
                         </v-row>
                     </div>
                     <div>
@@ -54,7 +54,7 @@
                                 </v-btn>
                             </v-col>
                             <v-col cols="12" xs="12" sm="12" md="6" xl="6">
-                                <v-btn block depressed color="primary" @click.stop="deliveryStepper = 3">
+                                <v-btn block depressed color="primary" @click.stop="deliveryStepper = 2">
                                     Next
                                     <v-icon dark>
                                         mdi-chevron-right
@@ -63,6 +63,35 @@
                             </v-col>
                         </v-row>
                     </div>
+                </div>
+            </v-stepper-content>
+
+            <v-stepper-content step="2">
+                <div>
+                    <v-data-table width="100%" block cols="12" xs="12" sm="12" md="12" xl="12" :headers="headers" :items="equipment" item-key="name" class="elevation-1 ma-1 mb-2">
+                        <template v-slot:[`item.checkedDelievery`]="{ item }">
+                            <v-simple-checkbox v-model="item.checkedDelievery" v-ripple @input="saveUpdate(item)">
+
+                            </v-simple-checkbox>
+                        </template>
+                        <template v-slot:[`item.actions`]="{ item }">
+                            <v-icon size="50" medium color="primary" @click.stop="currentItem=item;scanDialogVisible = true;cameraRender += 1">
+                                mdi-barcode
+                            </v-icon>
+                        </template>
+                    </v-data-table>
+                    <v-row>
+                        <v-col cols="12" xs="12" sm="12" md="6" xl="6">
+                            <v-btn block depressed color="accent" @click.stop="deliveryStepper = 1">
+                                Back
+                            </v-btn>
+                        </v-col>
+                        <v-col cols="12" xs="12" sm="12" md="6" xl="6">
+                            <v-btn block depressed color="primary" @click.stop="deliveryStepper = 3">
+                                Next
+                            </v-btn>
+                        </v-col>
+                    </v-row>
                 </div>
             </v-stepper-content>
 
@@ -143,6 +172,21 @@
     <v-overlay :value="loader">
         <v-progress-circular indeterminate size="64"></v-progress-circular>
     </v-overlay>
+
+    <v-dialog v-model="scanDialogVisible" fullscreen>
+        <v-card>
+            <v-card-title class="title primary--text">
+                <!-- Scanning Barcode -->
+            </v-card-title>
+
+            <v-card-text>
+                <BarScanner @code="code" :key="cameraRender" />
+                <v-btn  depressed color="primary" class="mb-5" @click.stop="closeScanner">
+                    Close
+                </v-btn>
+            </v-card-text>
+        </v-card>
+    </v-dialog>
 </Page>
 </template>
 
@@ -175,7 +219,8 @@ export default {
         FourthStepper
     },
     async created() {
-        this.getOrderDetails();
+        await this.getOrderDetails();
+        await this.getOrderItems();
         this.getMsgTemplate();
         this.getUserlocation();
         this.getLockingDetails();
@@ -190,7 +235,9 @@ export default {
             emptyPhoto: emptyPhoto,
             cyclePhoto: cyclePhoto,
             loader: false,
-
+            scanDialogVisible: false,
+            currentItem: {},
+            cameraRender: 0,
             userPosition: null,
             defaultColorValue: "",
             defaultCombinationValue: "",
@@ -206,6 +253,27 @@ export default {
                 "Gray",
                 "Purple",
             ],
+            headers: [{
+                    text: "ITEM",
+                    align: "start",
+                    value: "item",
+                },
+                {
+                    text: "BARCODE",
+                    value: "serialbarcode",
+                },
+                {
+                    text: "DELIVERED",
+                    value: "checkedDelievery",
+                },
+                {
+                    text: "ACTION",
+                    value: "actions",
+                    sortable: false,
+                    align: "center"
+                },
+            ],
+            equipment: [],
 
             // Date field
             date: null,
@@ -252,6 +320,53 @@ export default {
             showSuccess: "success",
             showError: "error"
         }),
+        async getOrderItems() {
+            try {
+                console.log("IN ORDER ITEMS", this.deliveryOrderData);
+                let response = await this.$axios.$get("/api/user/deliveryItem", {
+                    params: {
+                        deliveryID: this.deliveryOrderData.id,
+                    },
+                });
+
+                this.equipment = response;
+
+                //  this.$router.go(-1);
+            } catch (err) {
+                console.log("Issue in getOrderItems", err.response);
+            }
+        },
+        async code(value) {
+            console.log("CURRENTITEM", this.currentItem);
+            this.currentItem.serialbarcode = value;
+            this.currentItem.checkedDelievery = true;
+            this.saveUpdate(this.currentItem);
+        },
+        async saveUpdate(item) {
+            console.log("ITEM", item);
+            let response = await this.$axios.$put("/api/user/deliveryItem", item);
+            console.log("RESPONSE", response);
+            this.closeScanner();
+            this.getOrderItems();
+        },
+        closeScanner() {
+            this.scanDialogVisible = false;
+
+            const video = document.querySelector("video");
+
+            // A video's MediaStream object is available through its srcObject attribute
+            const mediaStream = video.srcObject;
+
+            // Through the MediaStream, you can get the MediaStreamTracks with getTracks():
+            const tracks = mediaStream.getTracks();
+
+            // Tracks are returned as an array, so if you know you only have one, you can stop it with:
+            // tracks[0].stop();
+
+            // Or stop all like so:
+            tracks.forEach((track) => track.stop());
+
+        },
         formatDate(date) {
             if (!date) return null;
 
@@ -361,8 +476,8 @@ export default {
                 // ThirdStepper.local_files_to_upload = [];
                 console.log("TESTING CAPTURED IMAGES AFTER", this.$refs.thirdStep.local_files_to_upload);
 
-                    ThirdStepper.capturedImages = [];
-                    // this.$emit("captured-camera-images", ThirdStepper.capturedImages);
+                ThirdStepper.capturedImages = [];
+                // this.$emit("captured-camera-images", ThirdStepper.capturedImages);
 
                 this.date = response[0].date.substr(0, 10);
                 this.dateFormatted = this.formatDate(response[0].date.substr(0, 10));
@@ -395,11 +510,7 @@ export default {
 
                 if (result.success) {
                     console.log(`Photo upload was successful. ${this.deliveryOrderData.orderid}`);
-                    // this.$router.push({
-                    //   path: "/callForHelp",
-                    //   query: { orderid: this.deliveryOrderData.orderid },
-                    // });
-
+                    
                     const saveData = {
                         date: this.dateFormatted,
                         name: this.deliveryOrderData.name,

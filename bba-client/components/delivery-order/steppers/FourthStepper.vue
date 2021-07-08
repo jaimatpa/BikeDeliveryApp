@@ -49,18 +49,6 @@
                 </div>
             </v-col>
         </v-row>
-        <v-data-table width="100%" block cols="12" xs="12" sm="12" md="12" xl="12" :headers="headers" :items="equipment" item-key="name" class="elevation-1 ma-1 mb-2">
-            <template v-slot:[`item.checkedDelievery`]="{ item }">
-                <v-simple-checkbox v-model="item.checkPickup" v-ripple @input="saveUpdate(item)">
-
-                </v-simple-checkbox>
-            </template>
-            <template v-slot:[`item.actions`]="{ item }">
-                <v-icon medium color="primary" @click.stop="currentItem=item;scanDialogVisible = true;cameraRender += 1">
-                    mdi-barcode
-                </v-icon>
-            </template>
-        </v-data-table>
         <v-row>
             <v-col cols="12" xs="12" sm="12" md="4" xl="4">
                 <v-btn block depressed color="accent" @click.stop="$emit('set-delivery-stepper', 3)">
@@ -195,6 +183,11 @@ export default {
                 this.$emit("setUploadFiles", newVal);
             },
         },
+        deliveryOrderData: {
+            handler: function() {
+                this.getOrderItems()
+            }
+        },
     },
     methods: {
         ...mapMutations(["SET_CAPTURED_IMAGES_IN_VUEX"]),
@@ -246,9 +239,10 @@ export default {
 
         async getOrderItems() {
             try {
+                console.log("IN ORDER ITEMS", this.deliveryOrderData);
                 let response = await this.$axios.$get("/api/user/deliveryItem", {
                     params: {
-                        deliveryID: this.$route.params.deliveryID,
+                        deliveryID: this.deliveryOrderData.id,
                     },
                 });
 

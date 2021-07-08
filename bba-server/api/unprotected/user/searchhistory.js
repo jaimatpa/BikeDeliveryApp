@@ -13,7 +13,6 @@ router.get("/", async (req, res) => {
         try{
             data = await models.DeliveryOrders.findAll({
                 where:{
-                    status:1,
                     [Op.or]:{
                         name: {
                             [Op.like]: `%${search}%`
@@ -57,7 +56,6 @@ router.get("/", async (req, res) => {
             try{
                 data = await models.DeliveryOrders.findAll({
                     where:{
-                        status:1,
                         barcode: {
                             [Op.like]: `%${barcodeid}%`
                         }
@@ -71,7 +69,7 @@ router.get("/", async (req, res) => {
     }
     else{
         console.log(req);
-        data = await models.DeliveryOrders.findAll({where:{status:1}});
+        data = await models.DeliveryOrders.findAll();
     }
     return res.send(data);
 });

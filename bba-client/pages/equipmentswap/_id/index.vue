@@ -43,7 +43,7 @@
                     </v-simple-checkbox>
                 </template>
                 <template v-slot:[`item.actions`]="{ item }">
-                    <v-icon medium color="primary" @click.stop="currentItem=item;scanDialogVisible = true;cameraRender += 1">
+                    <v-icon size="50" medium color="primary" @click.stop="currentItem=item;scanDialogVisible = true;cameraRender += 1">
                         mdi-barcode
                     </v-icon>
                 </template>
@@ -92,7 +92,7 @@ export default {
     },
     async created() {
         await this.getOrderDetails();
-        this.getOrderItems();
+        await this.getOrderItems();
     },
     data() {
         return {

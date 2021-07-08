@@ -22,7 +22,7 @@ router.post("/", async (req, res) => {
 router.put("/", async (req, res) => {
     console.log("IN PUT REQUEST", req.body);
     try {
-
+        console.log(req.body);
         let existingItem = await models.DeliveryItem.findAll({
             where: {
                 id: req.body.id,
@@ -85,6 +85,7 @@ router.get("/", async (req,res) => {
                 Active: true
             }
         });
+        console.log("GET DATA", data);
         return res.send(data);
     } catch (error) {
         console.log(error)
