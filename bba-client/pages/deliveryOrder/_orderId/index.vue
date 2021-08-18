@@ -54,7 +54,7 @@
                                 </v-btn>
                             </v-col>
                             <v-col cols="12" xs="12" sm="12" md="6" xl="6">
-                                <v-btn block depressed color="primary" @click.stop="deliveryStepper = 2">
+                                <v-btn :disabled="isNextButtonDisabled" block depressed color="primary" @click.stop="deliveryStepper = 2">
                                     Next
                                     <v-icon dark>
                                         mdi-chevron-right
@@ -303,13 +303,20 @@ export default {
         ...mapState({
             capturedImagesFromVuex: (state) => state.capturedImages = [],
         }),
+        isNextButtonDisabled() {
+            if (this.defaultCombinationValue == null || this.defaultCombinationValue == '') {
+                return true;
+            } else {
+                return false;
+            }
+        },
     },
     watch: {
         date(val) {
             this.dateFormatted = this.formatDate(this.date);
         },
         defaultColorValue(newVal, oldVal) {
-            if (oldVal) {
+            if (newVal !== oldVal) {
                 const data = _.find(this.lockingData, (o) => o.color === newVal);
                 this.defaultCombinationValue = data && data.combination;
             }
