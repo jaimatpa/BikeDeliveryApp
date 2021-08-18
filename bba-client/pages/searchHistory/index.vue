@@ -15,6 +15,12 @@
             </v-simple-checkbox>
         </template>
 
+        <template v-slot:[`item.textSent`]="{ item }">
+            <v-simple-checkbox v-model="item.textSent" v-ripple>
+
+            </v-simple-checkbox>
+        </template>
+
         <!-- Actions -->
         <template v-slot:item.actions="{ item }">
             <v-icon medium color="primary" @click.stop="$router.push({path: `/searchHistory/${item.orderid}`,})">
@@ -82,6 +88,11 @@ export default {
                 {
                     text: "Delivered?",
                     value: "status",
+                    sortable: true
+                },
+                {
+                    text: "MSG Sent?",
+                    value: "textSent",
                     sortable: true
                 },
                 {

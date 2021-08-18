@@ -30,7 +30,9 @@ module.exports = (sequelize, DataTypes) => {
       endDate: DataTypes.DATE,
       PickedUp: DataTypes.BOOLEAN,
       PickupNotes: DataTypes.STRING,
-      truckID: DataTypes.INTEGER
+      truckID: DataTypes.INTEGER,
+      textSent: DataTypes.BOOLEAN,
+      picturesSent: DataTypes.BOOLEAN
     },
     {
       sequelize,

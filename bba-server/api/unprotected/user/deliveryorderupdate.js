@@ -9,6 +9,8 @@ router.post("/", async (req,res) => {
     console.log("IN ROUTER POST");
     const orderid = req.query.orderid;
     const status = req.query.status;
+    const textSent = req.query.textSent;
+    const picturesSent = req.query.picturesSent;
     console.log(req.query.status);
     if(!orderid){
         return res.send('order id not found!!!')
@@ -35,6 +37,8 @@ router.post("/", async (req,res) => {
         deliveryOrder.barcode = req.body.barcode?req.body.barcode:deliveryOrder.barcode;
         deliveryOrder.lock = req.body.lock?req.body.lock:deliveryOrder.lock;
         deliveryOrder.status = status;
+        deliveryOrder.textSent = textSent;
+        deliveryOrder.picturesSent = picturesSent;
         
         await deliveryOrder.save();
         return res.send(deliveryOrder)

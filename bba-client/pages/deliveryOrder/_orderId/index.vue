@@ -181,7 +181,7 @@
 
             <v-card-text>
                 <BarScanner @code="code" :key="cameraRender" />
-                <v-btn  depressed color="primary" class="mb-5" @click.stop="closeScanner">
+                <v-btn depressed color="primary" class="mb-5" @click.stop="closeScanner">
                     Close
                 </v-btn>
             </v-card-text>
@@ -452,12 +452,33 @@ export default {
                 let response = await this.$axios.$post(
                     "api/user/sendSMS",
                     this.smsObject
-                );
-                this.loader = false;
-                this.showSuccess(response.message);
-                this.$router.push('/deliveryOrder');
-            } catch (err) {
-                console.log("errror", err.response);
+                ).then(async (response) => {
+                    let saveData = {
+                        date: this.dateFormatted,
+                        name: this.deliveryOrderData.name,
+                        location: this.deliveryOrderData.location,
+                        color: this.defaultColorValue,
+                        combination: this.defaultCombinationValue,
+                    };
+
+                    let result = await this.$axios.$post(
+                        "/api/user/deliveryorderupdate",
+                        saveData, {
+                            params: {
+                                orderid: this.deliveryOrderData.orderid,
+                                status: 1,
+                                textSent: 1,
+                                picturesSent: 1
+                            },
+                        }
+                    );
+                    console.log("RESPONSE", response);
+                    this.loader = false;
+                    this.showSuccess(response.message);
+                    this.$router.push('/deliveryOrder');
+                });
+            } catch (error) {
+                console.log("errror", error);
                 this.loader = false;
             }
         },
@@ -510,7 +531,7 @@ export default {
 
                 if (result.success) {
                     console.log(`Photo upload was successful. ${this.deliveryOrderData.orderid}`);
-                    
+
                     const saveData = {
                         date: this.dateFormatted,
                         name: this.deliveryOrderData.name,

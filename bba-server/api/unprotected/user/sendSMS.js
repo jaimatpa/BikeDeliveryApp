@@ -25,20 +25,20 @@ router.post("/", async (req, res) => {
     //   .then(message => console.log(message.sid));
     // }
 
-    var textResponse = await client.messages.create({
-      body: req.body.message,
-      from: process.env.TWILIO_NUMBER,
-      to: req.body.to,
-    });
-
+   
+    let response = {};
     if (req.body.mediaUrl === undefined || req.body.mediaUrl.length == 0) {
+       response = await client.messages.create({
+        body: req.body.message,
+        from: process.env.TWILIO_NUMBER,
+        to: req.body.to,
+      });
     } else {
-      var response = await client.messages
-      .create({body: req.body.message, from: process.env.TWILIO_NUMBER, to: `+1${req.body.to}`, mediaUrl: req.body.mediaUrl})
-      .then(message => console.log(message.sid));
+       response = await client.messages
+      .create({body: req.body.message, from: process.env.TWILIO_NUMBER, to: `+1${req.body.to}`, mediaUrl: req.body.mediaUrl});
     }
     res.status(200).json({
-      response: textResponse,
+      response: response,
       message: `Message Sent To ${req.body.to}`,
     });
   } catch (err) {
