@@ -157,6 +157,10 @@ export default {
                     to: "/colorCombinationSetting",
                 },
                 {
+                    title: "MESSAGE MANAGEMENT",
+                    to: "/twilioManagement",
+                },
+                {
                     title: "USER MANAGEMENT",
                     to: "/users",
                 },

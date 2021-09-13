@@ -315,8 +315,11 @@ export default {
         date(val) {
             this.dateFormatted = this.formatDate(this.date);
         },
-        defaultColorValue(newVal, oldVal) {
-            if (newVal !== oldVal) {
+        async defaultColorValue(newVal, oldVal) {
+            console.log("NEWVAL", newVal, "OLD VAL", oldVal, newVal != oldVal)
+            if (newVal != oldVal) {
+                await this.getLockingDetails();
+                console.log(this.lockingData);
                 const data = _.find(this.lockingData, (o) => o.color === newVal);
                 this.defaultCombinationValue = data && data.combination;
             }

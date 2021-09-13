@@ -21,6 +21,7 @@ const truck = require("./user/truck");
 const deliveryItem = require("./user/deliveryItem");
 const uploadPickup = require("./user/uploadPickup");
 const deliveryOrderManagement = require("./user/deliveryOrderManagement");
+const twilio = require("./user/twilio");
 const cors = require('cors');
 
 module.exports = {
@@ -55,5 +56,6 @@ module.exports = {
     app.use("/api/user/uploadPickup/", uploadPickup);
     app.use("/api/user/deliveryOrderManagement/", deliveryOrderManagement);
     app.use("/api/user/deliveryOrderManagement/:id", deliveryOrderManagement);
+    app.use("/api/user/twilio/", twilio);
   },
 };
