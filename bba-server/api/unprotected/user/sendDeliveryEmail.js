@@ -31,24 +31,20 @@ function sendEmailMain(args, message, images) {
   const appName = process.env.APP_NAME ? process.env.APP_NAME : "BDA";
   const emailHTML = createEmailHtml(message, images);
   // <iframe width="100%" height="450" frameborder="0" style="border:0" src="https://www.google.com/maps/embed/v1/place?q=${messageObject.pos},-74.0059413&amp;key=YOUR_API_KEY"></iframe>
-  args.email = 'cmiller@paradynamix.com';
-  const emailText = message;
-
-  console.log("EMAIL", args.email);
-  console.log("text", emailText);
-  console.log("HTML", emailHTML);
-  try {
-    email.sendEmail({
-      to: args.email, // list of receivers
-      subject: `Your bike is ready!`, // Subject line
-      text: emailText, // plain text body
-      html: emailHTML, // html body
-    });
-  } catch (error) {
-    console.log("Email Error", error);
+  // args.email = 'cmiller@paradynamix.com';
+  if (args.email) {
+    const emailText = message;
+    try {
+      email.sendEmail({
+        to: args.email, // list of receivers
+        subject: `Your bike is ready!`, // Subject line
+        text: emailText, // plain text body
+        html: emailHTML, // html body
+      });
+    } catch (error) {
+      console.log("Email Error", error);
+    }
   }
-
-
 }
 
 // *************************

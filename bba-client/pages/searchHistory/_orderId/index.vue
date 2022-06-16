@@ -413,9 +413,9 @@ export default {
     await this.getMsgTemplate();
     await this.getUserlocation();
     await this.getOrderImages();
+    // await this.sendEmail(), 
     this.getUploadDetails();
-    
-    
+
     let searchParam = {
       phoneNumber: this.orderData.mobileNo,
     };
@@ -530,21 +530,28 @@ export default {
       }
     },
     async getOrderImages() {
-       try {
-        let response = await this.$axios.$get("/api/user/searchhistory/images", {
-          params: {
-            orderID: this.orderData.orderid,
-          },
-        });
+      try {
+        let response = await this.$axios.$get(
+          "/api/user/searchhistory/images",
+          {
+            params: {
+              orderID: this.orderData.orderid,
+            },
+          }
+        );
         let localDeliveryArray = [];
         let localPickupArray = [];
         console.log("IMAGES", response);
         // 'https://bike-app-storage.s3.amazonaws.com/D-Apr0020-22/637848762657544860'
-        response.D.forEach(image => {
-          localDeliveryArray.push(`https://bike-app-storage.s3.amazonaws.com/D-${this.orderData.orderid}/${image}`);
+        response.D.forEach((image) => {
+          localDeliveryArray.push(
+            `https://bike-app-storage.s3.amazonaws.com/D-${this.orderData.orderid}/${image}`
+          );
         });
-        response.P.forEach(image => {
-          localPickupArray.push(`https://bike-app-storage.s3.amazonaws.com/P-${this.orderData.orderid}/${image}`);
+        response.P.forEach((image) => {
+          localPickupArray.push(
+            `https://bike-app-storage.s3.amazonaws.com/P-${this.orderData.orderid}/${image}`
+          );
         });
         this.deliveryImages = localDeliveryArray;
         this.pickupImages = localPickupArray;
@@ -553,41 +560,60 @@ export default {
       } catch (error) {
         console.log("ERROR", error);
       }
+    },
+    getUserlocation() {
+      if (process.client) {
+        if (navigator.geolocation) {
+          navigator.geolocation.getCurrentPosition(
+            (position) => {
+              console.log("Clicked on pointer, position === ", position);
+              const pos = {
+                lat: position.coords.latitude,
+                lng: position.coords.longitude,
+              };
+              console.log("pos ==== ", pos);
+              this.userPosition = pos;
+            },
+            (error) => {
+              // handle error here.
+              console.log("error =========== ", error);
+            }
+          );
+        }
+      }
+    },
+    async sendEmail() {
+     let infoMap = {
+        "[customer-name]": "name",
+        "[location]": "location",
+        "[lock-combo]": ["lock", "combination"],
+        "[lock]": "lock",
+        "[combination]": "combination",
+        "[delivery-number]": "orderid",
+        "[color]": "color",
+        "[rack]": "rack",
+        "[geo-lat]": "geo-lat",
+        "[geo-long]": "geo-long",
+      };
 
+      let dataToAdd = this.orderData;
+      let userPositionData = this.userPosition;
+     
+     let output = this.getMessage(
+        this.templateMsg,
+        infoMap,
+        dataToAdd,
+        userPositionData
+      );
 
+      
 
+      this.smsObject.message = output;
+      this.smsObject.images = this.deliveryImages;
+      console.log("MESSAGE", this.smsObject.message);
+      console.log("IMAGES", this.smsObject.images)
 
       try {
-        console.log("IN GET ORDER IMAGES");
-        let smsObject = {
-          to: "",
-          message: "",
-          orderid: "",
-          images: [],
-        };
-        let infoMap = {
-                "[customer-name]": "name",
-                "[location]": "location",
-                "[lock-combo]": ["lock", "combination"],
-                "[lock]": "lock",
-                "[combination]": "combination",
-                "[delivery-number]": "orderid",
-                "[color]": "color",
-                "[rack]": "rack",
-                "[geo-lat]": "geo-lat",
-                "[geo-long]": "geo-long",
-            };
-            let dataToAdd = this.orderData;
-            let userPositionData = this.userPosition;
-        let output = this.getMessage(
-          this.templateMsg,
-          infoMap,
-          dataToAdd,
-          userPositionData
-        );
-        this.smsObject.message = output;
-        this.smsObject.orderid = this.orderData.orderid;
-        this.smsObject.images = this.deliveryImages;
         let emailResponse = await this.$axios.post(
           "api/user/sendDeliveryEmail",
           {
@@ -599,33 +625,9 @@ export default {
           }
         );
       } catch (error) {
-        console.log("ERROR:", error);
         this.loader = false;
       }
-
-     
     },
-    getUserlocation() {
-            if (process.client) {
-                if (navigator.geolocation) {
-                    navigator.geolocation.getCurrentPosition(
-                        (position) => {
-                            console.log("Clicked on pointer, position === ", position);
-                            const pos = {
-                                lat: position.coords.latitude,
-                                lng: position.coords.longitude,
-                            };
-                            console.log("pos ==== ", pos);
-                            this.userPosition = pos;
-                        },
-                        (error) => {
-                            // handle error here.
-                            console.log("error =========== ", error);
-                        }
-                    );
-                }
-            }
-        },
     getSentReceived(direction) {
       console.log(direction);
       if (direction === "outbound-api") {
