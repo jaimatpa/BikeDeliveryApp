@@ -28,15 +28,58 @@ app.use(cors());
 // Create Sequelize Models
 const models = require('./models');
 const { webhook } = require('twilio')
+const AWS = require('aws-sdk');
+const { KeyContext } = require('twilio/lib/rest/api/v2010/account/key.js')
+AWS.config.update({
+  accessKeyId: process.env.AWSAccessKey,
+  secretAccessKey: process.env.AWSSecretAccessKey
+});
+AWS.config.region = process.env.AWSRegion;
+
+let s3 = new AWS.S3({params: {Bucket: 'bike-app-storage', Prefix: 'D-Apr0020-22/', Delimiter: '/'}});
+// console.log(s3.listObjects());
+// let imageFolder = s3.getObject({Key: 'D-Apr0020-22'}, function(err, file) {
+//   console.log("FILE", file);
+// });
+// console.log("IMAGE FOLDER", imageFolder);
+// s3.listObjectsV2(function (err, data) {
+//   if (err) {
+//     console.log(err);
+//   } else {
+//     console.log(data);
+//     data.Contents.forEach(imageObject => {
+//       let key = imageObject.Key;
+//       let splitKey = key.split('/');
+//       console.log(splitKey[1]);
+//     })
+//   }
+// })
+
+
+
+
+async function getImage() {
+  console.log("In Get Image");
+  const data = s3.getObject({
+    Bucket: '',
+  }).promise();
+  return data;
+}
+
+function encode(data) {
+  let buf = Buffer.from(data);
+  let base64 = buf.toString('base64');
+  return base64;
+}
 
 // Configure & Initialize Sentry
-Sentry.init({
-  dsn: process.env.SENTRY_DSN,
+// Sentry.init({
+//   dsn: process.env.SENTRY_DSN,
 
-  // We recommend adjusting this value in production, or using tracesSampler
-  // for finer control
-  tracesSampleRate: 1.0,
-});
+//   // We recommend adjusting this value in production, or using tracesSampler
+//   // for finer control
+//   tracesSampleRate: 1.0,
+// });
 
 async function start () {
   app.use(express.json({ limit: '10mb' }))
@@ -50,6 +93,7 @@ async function start () {
 
   // Protect all API endpoints from unauthorized access
   app.use('/api', auth)
+
 
   // Create protected routes
   apiRoutesProtected.create(app)
