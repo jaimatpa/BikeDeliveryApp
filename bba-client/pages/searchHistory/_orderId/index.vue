@@ -439,7 +439,6 @@ export default {
         orderid: "",
         mediaUrl: [],
       },
-      templateMsg: "",
       editNumber: false,
       rules: {
         required: (value) => !!value || "Required.",

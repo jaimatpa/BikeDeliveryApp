@@ -12,6 +12,13 @@ router.post("/", async (req, res) => {
   try {
     //LOCAL TESTING
     console.log("Hello from SendSMS");
+
+      // res.status(200).json({
+      //     // response: response,
+      //     message: `Message Sent To ${req.body.to}`,
+      // });
+      // return // temporary block to prevent sending SMS
+
     // var textResponse = await client.messages.create({
     //   body: req.body.message,
     //   from: process.env.TWILIO_NUMBER,

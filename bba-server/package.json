@@ -6,7 +6,7 @@
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
     "bba-client": "cd .. && cd  bba-client && yarn dev",
-    "dev": "concurrently -n 'server,client' -c 'red,green' \"nodemon index.js\" \"yarn bba-client\"",
+    "dev": "concurrently -n 'server,client' -c 'blue,green' \"nodemon index.js\" \"yarn bba-client\"",
     "start": "node index.js"
   },
   "author": "krahamatullah@paradynamix.com",
@@ -28,9 +28,12 @@
     "moment": "^2.29.1",
     "multer": "^1.4.2",
     "mysql2": "^2.2.5",
+    "node-fetch": "^3.2.6",
     "nodemailer": "^6.6.1",
+    "request": "^2.88.2",
     "sequelize": "^6.5.0",
     "twilio": "^3.67.2",
+    "url-exist": "^3.0.0",
     "vuetify-datetime-picker": "^2.1.1"
   },
   "devDependencies": {

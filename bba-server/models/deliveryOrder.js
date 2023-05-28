@@ -26,7 +26,7 @@ module.exports = (sequelize, DataTypes) => {
       note: DataTypes.STRING,
       plantation: DataTypes.STRING,
       area: DataTypes.STRING,
-      area: DataTypes.STRING,
+      // email: DataTypes.STRING,
       endDate: DataTypes.DATE,
       PickedUp: DataTypes.BOOLEAN,
       PickupNotes: DataTypes.STRING,

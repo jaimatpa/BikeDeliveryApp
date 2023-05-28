@@ -5,7 +5,7 @@ const models = require("./../../../models");
 const apiMessage = require("./../../../language/en.json");
 router.post("/", async (req, res) => {
     try {
-        console.log(req);
+        console.log(req.body);
         const newTruck = await models.Truck.create({
             notes: req.body.notes,
         })

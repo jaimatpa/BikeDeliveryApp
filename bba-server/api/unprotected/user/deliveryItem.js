@@ -88,7 +88,8 @@ router.get("/", async (req,res) => {
         console.log("GET DATA", data);
         return res.send(data);
     } catch (error) {
-        console.log(error)
+        console.log(error);
+        res.status(500).json("Error: " + error);
     }
 });
 

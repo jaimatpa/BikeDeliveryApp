@@ -57,6 +57,13 @@
                 </v-btn>
             </v-col>
         </v-row>
+
+<!--        <v-row>-->
+<!--          <pre>-->
+<!--            {{ JSON.stringify(defaultColorValue, undefined, 4) }}-->
+<!--          </pre>-->
+<!--        </v-row>-->
+
     </v-container>
     <v-overlay :value="loader">
         <v-progress-circular indeterminate size="64"></v-progress-circular>
@@ -171,16 +178,22 @@ export default {
         }),
         async saveDeliveryOrder() {
             this.deliveryOrderData.date = this.date
+            this.deliveryOrderData.color = this.defaultColorValue; // THIS was added by Justin
+            this.deliveryOrderData.combination = this.defaultCombinationValue; // THIS was added by Justin
+            // this.deliveryOrderData.lock = ""; // THIS was added by Justin
             if (this.deliveryOrderData) {
+              console.log(this.deliveryOrderData);
                 if (this.deliveryOrderData.id) {
                     console.log("IN EXISTING");
                     let response = await this.$axios.$put("/api/user/deliveryOrderManagement/", this.deliveryOrderData);
+                  this.$router.push('/locking/');
                 } else {
                     console.log("IN NEW");
                     let response = await this.$axios.$post("/api/user/deliveryOrderManagement/", this.deliveryOrderData);
+                  this.$router.push('/locking/');
                 }
             }
-            this.$router.push('/locking/');
+
         },
         formatDate(date) {
             if (!date) return null;

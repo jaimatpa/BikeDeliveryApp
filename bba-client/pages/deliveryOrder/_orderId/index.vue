@@ -34,6 +34,7 @@
                         <v-row>
                             <v-col cols="12" xs="12" sm="12" md="6" xl="6">
                                 <v-select :items="colorItems" v-model="defaultColorValue" label="Color" dense outlined></v-select>
+<!--                                <pre>{{ colorItems }}</pre>-->
                             </v-col>
                             <v-col cols="12" xs="12" sm="12" md="6" xl="6">
                                 <v-text-field v-model="defaultCombinationValue" label="COMBINATION" placeholder="Combination" readonly dense outlined>
@@ -239,6 +240,7 @@ export default {
       userPosition: null,
       defaultColorValue: "",
       defaultCombinationValue: "",
+      defaultLockId: "",
       colorItems: [],
       lockingData: [],
       colors: [
@@ -319,11 +321,31 @@ export default {
     },
     async defaultColorValue(newVal, oldVal) {
       console.log("NEWVAL", newVal, "OLD VAL", oldVal, newVal != oldVal);
-      if (newVal != oldVal) {
+
+      // alert default color value is changed
+      // alert("Default color value is changed");
+
+      if (newVal === null) {
+        // this.defaultCombinationValue = "";
         await this.getLockingDetails();
+      }
+
+      if (newVal !== oldVal && newVal != null) {
         console.log(this.lockingData);
         const data = _.find(this.lockingData, (o) => o.color === newVal);
-        this.defaultCombinationValue = data && data.combination;
+        if (data !== undefined){
+          this.defaultCombinationValue = data && data.combination;
+          // set the combination to the order combination
+          this.deliveryOrderData.combination = this.defaultCombinationValue;
+          this.deliveryOrderData.color = newVal;
+          this.deliveryOrderData.lock = data && data.lockId;
+        }
+        // alert JSON stringify(data);
+        // alert("334: " + JSON.stringify(data));
+
+
+
+        // alert("Default color value is changed");
       }
     },
   },
@@ -424,6 +446,10 @@ export default {
       this.loader = true;
       let dataToAdd = this.deliveryOrderData;
       let userPositionData = this.userPosition;
+
+      // alert(this.defaultColorValue);
+
+      // return;
 
       let infoMap = {
         "[customer-name]": "name",
@@ -560,6 +586,9 @@ export default {
       }
     },
     setDelivaryStepper(param) {
+      // this is only when it goes back in number of step
+      // alert("Stepper set to " + param);
+      // return;
       this.deliveryStepper = param;
     },
     async upload(upload, pictureNumber) {

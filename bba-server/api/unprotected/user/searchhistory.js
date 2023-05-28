@@ -72,7 +72,7 @@ router.get("/", async (req, res) => {
             }
         }
     } else {
-        console.log(req);
+        console.log(req.body);
         data = await models.DeliveryOrders.findAll();
     }
     return res.send(data);

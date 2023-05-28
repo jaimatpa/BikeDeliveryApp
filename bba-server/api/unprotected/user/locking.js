@@ -7,7 +7,7 @@ const models = require("./../../../models");
 
 router.post("/", async (req,res) => {
     try{
-        console.log(req);
+        console.log(req.body);
         let locks = req.body;
         locks.forEach(lock => {
             const updateLock = models.Locks.update({

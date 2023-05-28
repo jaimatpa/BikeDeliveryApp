@@ -7,7 +7,37 @@ const express = require("express");
 const cors = require('cors');
 const router = express.Router();
 const fs = require('fs');
+// const urlExist = require("url-exist");
 router.use(cors());
+const request = require('request');
+
+function urlExists(url, cb) {
+    request({ url: url, method: 'HEAD' }, function(err, res) {
+        if (err) return cb(null, false);
+        cb(null, /4\d\d/.test(res.statusCode) === false);
+    });
+}
+
+Array.prototype.forEachAsyncSeries = async function (callback) {
+    console.log("forEachAsyncSeries 1: " + this.length)
+    console.log(this);
+    for (let index = 0; index < this.length; index++) {
+        console.log("forEachAsyncSeries 2: " + index)
+        await callback(this[index], index, this);
+    }
+}
+
+Array.prototype.forEachAsyncParallel = async function (callback) {
+    let methods = [];
+    for (let index = 0; index < this.length; index++) {
+        methods.push(callback(this[index], index, this));
+    }
+    await Promise.allSettled(methods);
+};
+
+
+
+
 
 const models = require("./../../../models");
 
@@ -42,7 +72,26 @@ router.post("/", async (req, res) => {
     mediaUrls.push(`https://images.hiretheproz.com/${deliveryOrder.barcode}-3.jpeg`);
     mediaUrls.push(`https://images.hiretheproz.com/${deliveryOrder.barcode}-4.jpeg`);
 
+    let mediaUrls2 = [];
 
+    await mediaUrls.forEachAsyncParallel(async (url) => {
+        let exist = await urlExists(url);
+        if (exist) {
+            mediaUrls2.push(url);
+        }
+    });
+
+
+   try {
+       let response = await client.messages
+           .create({body: "Here are the photo(s) of the bike!", from: process.env.TWILIO_NUMBER, to: sendTo, mediaUrl: mediaUrls2})
+           .then(message => console.log(message.sid));
+   } catch (error) {
+
+   }
+
+
+       /*
     try {
       let response = await client.messages
     .create({body: "Here are the photo(s) of the bike!", from: process.env.TWILIO_NUMBER, to: sendTo, mediaUrl: mediaUrls[0]})
@@ -83,6 +132,10 @@ router.post("/", async (req, res) => {
     } catch (error) {
       
     }
+
+
+
+        */
     res.status(200).json({
       response: textResponse,
       message: `Message Sent To ${req.body.to}`,

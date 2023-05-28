@@ -145,7 +145,8 @@ router.get("/", async (req, res) => {
         }catch(error){
             console.log(error)
         }
-    }else if(barcodeid){
+    }
+    else if(barcodeid){
         if(barcodeid){
             try{
                 data = await models.DeliveryOrders.findAll({
@@ -162,7 +163,11 @@ router.get("/", async (req, res) => {
         }
     }
     else{
-        data = await models.DeliveryOrders.findAll();
+        data = await models.DeliveryOrders.findAll().catch((e) => {
+            console.error(e);
+            data = [];
+            return res.send([]);
+        });
         if (type === "DeliveryOrders") {
             data = data.filter((record => {
                 var d = moment(record.date).add(4, 'hours').startOf('day');
@@ -231,7 +236,12 @@ router.get("/", async (req, res) => {
             }));
         } 
     }
-    return res.send(data);
+    try {
+        return res.send(data);
+    } catch (e) {
+        // return res.send([]);
+    }
+
 });
 
 router.put("/", async (req, res) => {

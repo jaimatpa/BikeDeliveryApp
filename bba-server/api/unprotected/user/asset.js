@@ -5,7 +5,7 @@ const models = require("./../../../models");
 
 router.post("/", async (req, res) => {
     try {
-        console.log(req);
+        console.log(req.body);
         const newAsset = await models.Asset.create({
             barcode: req.body.barcode,
             item: req.body.item,
@@ -21,7 +21,7 @@ router.post("/", async (req, res) => {
 
 router.put("/", async (req, res) => {
     try {
-        console.log(req);
+        console.log(req.body);
         const updateAsset = await models.Asset.update({
             barcode: req.body.barcode,
             item: req.body.item,
