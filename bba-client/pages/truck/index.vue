@@ -1,5 +1,7 @@
 <template>
-<PageResource name="Truck" :title="!isMobile ? 'Trucks' : ''" :fields="fields" endpoint="/api/user/truck" />
+    <section>
+        <PageResource name="Truck" :title="!isMobile ? 'Trucks' : ''" :fields="fields" endpoint="/api/user/truck" />
+    </section>
 </template>
 
 <script>
@@ -25,9 +27,34 @@ export default {
         return {
             breakpoint: 640,
             fields: {
-                notes: {
+                LicensePlate: {
                     type: String,
-                    required: true,
+                },
+                TruckName: {
+                    type: String
+                },
+                MaxCapacity: {
+                    type: Number,
+                    default: 0
+                },
+                HHI_Resort: {
+                    type: String
+                },
+                Ocean_1: {
+                    type: String
+                },
+                PD_Pass: {
+                    type: String
+                },
+                SP_Pass: {
+                    type: String
+                },
+                SY_Pass: {
+                    type: String
+
+                },
+                notes: {
+                    type: String
                 },
             },
         };
