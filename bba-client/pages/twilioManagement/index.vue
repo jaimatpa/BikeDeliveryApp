@@ -1,18 +1,10 @@
 <template>
   <div>
-    <v-text-field
-      v-model="search"
-      append-icon="mdi-magnify"
-      label="Search by Order #, Name, Location"
-      single-line
-      hide-details
-      outlined
-      dense
-      clearable
-      class="ma-1 order-search-text-field"
-      @click:clear="onClearClicked"
-    ></v-text-field>
-    <v-data-table :headers="headers" :items="messages" :search="search" :items-per-page="100" dense class="elevation-1 ma-1">
+    <v-text-field v-model="search" append-icon="mdi-magnify" label="Search by Order #, Name, Location" single-line
+      hide-details outlined dense clearable class="ma-1 order-search-text-field"
+      @click:clear="onClearClicked"></v-text-field>
+    <v-data-table :headers="headers" :items="messages" :search="search" :items-per-page="100" dense
+      class="elevation-1 ma-1">
       <!-- Date -->
       <!-- <template v-slot:item.dateSent="{ item }">
         {{ getDateFormat(item.dateSent) }}
@@ -27,7 +19,14 @@
       </template>
 
       <template v-slot:item.to="{ item }">
-        {{ formatPhoneNumber(item.to) }}
+        <div class="d-flex align-center">
+          <span class="mr-2">{{ formatPhoneNumber(item.to) }}</span>
+          <!-- Remove the +1 from the phone number since database does not have store mobile numbers with +1 intl code -->
+          <v-icon v-if="item.to" medium color="primary"
+            @click.stop="$router.push({ path: `/searchHistory/${item.to.replace(/^\+1/g, '')}` })">
+            mdi-page-next
+          </v-icon>
+        </div>
       </template>
     </v-data-table>
   </div>
@@ -65,7 +64,7 @@ export default {
         {
           text: "TO #",
           value: "to",
-          width: "150",
+          width: "250",
           sortable: false,
         },
         {
@@ -108,12 +107,12 @@ export default {
       return null;
     },
     async onKeyUp(event) {
-        let searchParam = {
-                search: this.search,
-            };
-        this.messages = await this.$axios.$get("/api/user/twilio/", {params: searchParam});
+      let searchParam = {
+        search: this.search,
+      };
+      this.messages = await this.$axios.$get("/api/user/twilio/", { params: searchParam });
     },
-    onClearClicked() {},
+    onClearClicked() { },
   },
 };
 </script>

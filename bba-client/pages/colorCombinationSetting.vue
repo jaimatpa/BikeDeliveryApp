@@ -1,66 +1,78 @@
 <template lang="html">
-<Page>
-    <v-data-table :headers="headers" :items="locks" :hide-default-footer="true" disable-pagination dense>
-        <template v-slot:item.color="props">
-            <v-edit-dialog :return-value.sync="props.item.color" @save="save(props.item)" persistent>
-                {{props.item.color}}
-                <template v-slot:input>
-                    <v-text-field v-model="props.item.color" :rules="rules.max25chars" label="Edit" single-line counter>
-                    </v-text-field>
-                </template>
-            </v-edit-dialog>
-        </template>
+    <Page>
+        <v-data-table :headers="headers" :items="locks" :hide-default-footer="true" disable-pagination dense>
+            <template v-slot:item.ColorValue="props">
+                <v-edit-dialog :return-value.sync="props.item.ColorValue" @save="save(props.item)" persistent>
+                    {{ props.item.ColorValue }}
+                    <template v-slot:input>
+                        <v-text-field v-model="props.item.ColorValue" :rules="rules.max25chars" label="Edit" single-line
+                            counter>
+                        </v-text-field>
+                    </template>
+                </v-edit-dialog>
+            </template>
 
-        <template v-slot:item.combination="props">
-            <v-edit-dialog :return-value.sync="props.item.combination" @save="save(props.item)">
-                {{props.item.combination}}
-                <template v-slot:input>
-                    <v-text-field v-model="props.item.combination" :rules="rules.max25chars" label="Edit" single-line counter>
-                    </v-text-field>
-                </template>
-            </v-edit-dialog>
-        </template>
+            <template v-slot:item.color="props">
+                <v-edit-dialog :return-value.sync="props.item.color" @save="save(props.item)" persistent>
+                    {{ props.item.color }}
+                    <template v-slot:input>
+                        <v-text-field v-model="props.item.color" :rules="rules.max25chars" label="Edit" single-line counter>
+                        </v-text-field>
+                    </template>
+                </v-edit-dialog>
+            </template>
 
-        <!-- <template v-slot:item.colorvalue="props"> -->
-                <!-- {{props.item.colorvalue}} -->
-                <!-- <template>
+            <template v-slot:item.combination="props">
+                <v-edit-dialog :return-value.sync="props.item.combination" @save="save(props.item)">
+                    {{ props.item.combination }}
+                    <template v-slot:input>
+                        <v-text-field v-model="props.item.combination" :rules="rules.max25chars" label="Edit" single-line
+                            counter>
+                        </v-text-field>
+                    </template>
+                </v-edit-dialog>
+            </template>
+
+            <!-- <template v-slot:item.colorvalue="props"> -->
+            <!-- {{props.item.colorvalue}} -->
+            <!-- <template>
                     <v-color-picker hide-canvas hide-inputs swatches-max-height="75"  v-model="props.item.colorvalue" label="Edit"></v-color-picker>
                 </template>
         </template> -->
 
-        <template v-slot:item.actions="{ item }">
-            <v-icon small @click="deleteItem(item)">
-                mdi-delete
-            </v-icon>
-        </template>
-    </v-data-table>
+            <template v-slot:item.actions="{ item }">
+                <v-icon small @click="deleteItem(item)">
+                    mdi-delete
+                </v-icon>
+            </template>
+        </v-data-table>
 
-    <v-snackbar v-model="snack" :timeout="3000" :color="snackColor">
-        {{snackText}}
-        <template v-slot:action="{ attrs }">
-            <v-btn v-bind="attrs" text @click="snack = false"> Close
-            </v-btn>
-        </template>
-    </v-snackbar>
+        <v-snackbar v-model="snack" :timeout="3000" :color="snackColor">
+            {{ snackText }}
+            <template v-slot:action="{ attrs }">
+                <v-btn v-bind="attrs" text @click="snack = false"> Close
+                </v-btn>
+            </template>
+        </v-snackbar>
 
-    <FloatingButton @click="addRow()" color="primary" />
+        <FloatingButton @click="addRow()" color="primary" />
 
-    <v-dialog v-model="dialogDelete" max-width="500px">
-          <v-card>
-            <v-card-title class="headline">Are you sure you want to delete this item?</v-card-title>
-            <v-card-actions>
-              <v-spacer></v-spacer>
-              <v-btn color="blue darken-1" text @click="closeDelete">Cancel</v-btn>
-              <v-btn color="blue darken-1" text @click="deleteItemConfirm">OK</v-btn>
-              <v-spacer></v-spacer>
-            </v-card-actions>
-          </v-card>
+        <v-dialog v-model="dialogDelete" max-width="500px">
+            <v-card>
+                <v-card-title class="headline">Are you sure you want to delete this item?</v-card-title>
+                <v-card-actions>
+                    <v-spacer></v-spacer>
+                    <v-btn color="blue darken-1" text @click="closeDelete">Cancel</v-btn>
+                    <v-btn color="blue darken-1" text @click="deleteItemConfirm">OK</v-btn>
+                    <v-spacer></v-spacer>
+                </v-card-actions>
+            </v-card>
         </v-dialog>
 
-    <v-btn block color="primary" class="mt-5" @click="saveColorCombinationData()">
-        Save
-    </v-btn>
-</Page>
+        <v-btn block color="primary" class="mt-5" @click="saveColorCombinationData()">
+            Save
+        </v-btn>
+    </Page>
 </template>
 
 <script>
@@ -103,28 +115,29 @@ export default {
             lockingData: [],
             color: "",
             combination: "",
+            ColorValue: "",
             max25chars: v => v.length <= 25 || 'Input too long!',
             rules: {
                 required: (value) => !!value || "Required.",
             },
             headers: [{
-                    text: "COLOR KEY",
-                    align: "start",
-                    value: "color",
-                },
-                {
-                    text: "COMBINATION",
-                    value: "combination",
-                },
-                {
-                    text: "COLOR",
-                    value: "colorvalue",
-                },
-                {
-                    text: "ACTIONS",
-                    value: "actions",
-                    sortable: false
-                }
+                text: "COLOR KEY",
+                align: "start",
+                value: "color",
+            },
+            {
+                text: "COMBINATION",
+                value: "combination",
+            },
+            {
+                text: "COLOR",
+                value: "ColorValue",
+            },
+            {
+                text: "ACTIONS",
+                value: "actions",
+                sortable: false
+            }
             ],
             locks: [],
         };
@@ -146,6 +159,7 @@ export default {
             this.lockingData.push({
                 color: this.color,
                 combination: this.combination,
+                ColorValue: this.ColorValue,
             });
         },
         deleteItem(item) {
@@ -156,16 +170,16 @@ export default {
         closeDelete() {
             this.dialogDelete = false
             this.$nextTick(() => {
-            this.editedItem = Object.assign({}, this.defaultItem)
-            this.editedIndex = -1
-        })
+                this.editedItem = Object.assign({}, this.defaultItem)
+                this.editedIndex = -1
+            })
         },
         async deleteItemConfirm() {
-            await this.$axios.$delete("/api/user/locking", {data: {id: this.editedItem.id}}).then((result) => {
-                    this.locks.splice(this.editedIndex, 1)
-                    this.snack = true
-                    this.snackColor = 'success'
-                    this.snackText = 'Color Combination has been deleted.'
+            await this.$axios.$delete("/api/user/locking", { data: { id: this.editedItem.id } }).then((result) => {
+                this.locks.splice(this.editedIndex, 1)
+                this.snack = true
+                this.snackColor = 'success'
+                this.snackText = 'Color Combination has been deleted.'
             });
             this.closeDelete();
         },
@@ -173,10 +187,10 @@ export default {
             const lockingDataResponse = await this.$axios.$get("/api/user/locking");
             this.lockingData = lockingDataResponse;
             this.locks = lockingDataResponse;
-            this.locks.forEach(lock => {
-                console.log(lock);
-                // lock.colorvalue.hex = lock.ColorValue;
-            });
+            // this.locks.forEach(lock => {
+            //     console.log(lock);
+            //     // lock.colorvalue.hex = lock.ColorValue;
+            // });
             console.log(this.locks);
         },
         async deleteColorCombination() {
@@ -186,6 +200,10 @@ export default {
             console.log(item);
             const saveResponse = this.$axios.$put("/api/user/locking", item).then((result) => {
                 if (result) {
+                    if (!item.id) {
+                        item.id = result.id;
+                    }
+
                     this.snack = true
                     this.snackColor = 'success'
                     this.snackText = 'Data saved'
@@ -207,7 +225,7 @@ export default {
         },
         saveColorCombinationData() {
             this.lockingData.forEach(lock => {
-                lock.ColorValue = lock.colorvalue.hex;
+                lock.ColorValue = lock.ColorValue.hex;
                 console.log(lock);
             });
             const res = this.$axios

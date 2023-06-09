@@ -15,6 +15,7 @@ router.get("/", async (req, res) => {
     let fromMessages = [];
     let toMessages = [];
     console.log(req.query);
+
     if (phoneNumber) {
         client.messages.list({ limit: 1000, from: phoneNumber }).then(messages => {
             messages.forEach(x => {
@@ -25,7 +26,7 @@ router.get("/", async (req, res) => {
         client.messages.list({ limit: 1000, to: phoneNumber }).then(secondMessages => {
             secondMessages.forEach(x => {
                 x.dateSent = x.dateSent.toLocaleString('en-US');
-                toMessages =secondMessages;
+                toMessages = secondMessages;
             });
             return res.send(fromMessages.concat(toMessages));
         });
@@ -38,7 +39,6 @@ router.get("/", async (req, res) => {
         }
         );
     }
-
 })
 
 router.post("/sms", async (req, res) => {

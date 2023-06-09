@@ -3,11 +3,11 @@
 module.exports = {
   up: async (queryInterface, Sequelize) => {
     return Promise.all([
-      queryInterface.addColumn(
-        'Locks',
-        'ColorValue',
-        Sequelize.STRING
-      ),
+      // queryInterface.addColumn(
+      //   'Locks',
+      //   'ColorValue',
+      //   Sequelize.STRING
+      // ),
     ]);
     /**
      * Add altering commands here.

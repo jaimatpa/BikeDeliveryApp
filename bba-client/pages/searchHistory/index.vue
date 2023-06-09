@@ -1,35 +1,44 @@
 <template lang="html">
-<Page>
-    <!-- Order Search Field -->
-    <v-text-field v-model="search" append-icon="mdi-magnify" label="Search by Order #" single-line hide-details outlined dense clearable class="mb-5 order-search-text-field" @keyup="onKeyUp" @click:clear="onClearClicked"></v-text-field>
+    <Page>
+        <!-- Order Search Field -->
+        <v-text-field v-model="search" append-icon="mdi-magnify" label="Search by Order #" single-line hide-details outlined
+            dense clearable class="mb-5 order-search-text-field" @keyup="onKeyUp"
+            @click:clear="onClearClicked"></v-text-field>
 
-    <v-data-table :headers="headers" :items="searchHistories" :options.sync="options" :server-items-length="totalSearchHistory" :loading="loading" :search="search" class="elevation-1" :mobile-breakpoint='0' :class="{mobile: isMobile}" sort-by="date" :sort-desc="true">
-        <!-- Date -->
-        <template v-slot:item.date="{ item }">
-            {{getDateFormat(item.date)}}
-        </template>
+        <v-data-table :headers="headers" :items="searchHistories" :options.sync="options"
+            :server-items-length="totalSearchHistory" :loading="loading" :search="search" class="elevation-1"
+            :mobile-breakpoint='0' :class="{ mobile: isMobile }" sort-by="date" :sort-desc="true">
+            <!-- Date -->
+            <template v-slot:item.date="{ item }">
+                {{ getDateFormat(item.date) }}
+            </template>
 
-        <template v-slot:[`item.status`]="{ item }">
-            <v-simple-checkbox v-model="item.status" v-ripple>
+            <template v-slot:[`item.status`]="{ item }">
+                <v-simple-checkbox v-model="item.status" v-ripple>
 
-            </v-simple-checkbox>
-        </template>
+                </v-simple-checkbox>
+            </template>
 
-        <template v-slot:[`item.textSent`]="{ item }">
-            <v-simple-checkbox v-model="item.textSent" v-ripple>
+            <template v-slot:[`item.textSent`]="{ item }">
+                <v-simple-checkbox v-model="item.textSent" v-ripple>
 
-            </v-simple-checkbox>
-        </template>
+                </v-simple-checkbox>
+            </template>
 
-        <!-- Actions -->
-        <template v-slot:item.actions="{ item }">
-            <v-icon medium color="primary" @click.stop="$router.push({path: `/searchHistory/${item.orderid}`,})">
-                mdi-page-next
-            </v-icon>
-        </template>
+            <!-- Actions -->
+            <template v-slot:item.actions="{ item }">
+                <div class="d-flex align-center">
+                    <v-icon medium color="primary" @click.stop="$router.push({ path: `/searchHistory/${item.orderid}` })">
+                        mdi-page-next
+                    </v-icon>
+                    <v-icon medium color="primary" @click.stop="$router.push({ path: `/communication-messages/${item.id}` })">
+                        mdi-message
+                    </v-icon>
+                </div>
+            </template>
 
-    </v-data-table>
-</Page>
+        </v-data-table>
+    </Page>
 </template>
 
 <script>
@@ -65,42 +74,42 @@ export default {
             initialRender: true,
             options: {},
             headers: [{
-                    text: "DATE",
-                    align: "start",
-                    value: "date",
-                },
-                {
-                    text: "NAME",
-                    value: "name",
-                    sortable: true
-                },
-                {
-                    text: "LOCATION",
-                    value: "location",
-                    sortable: true
-                },
-                // { text: "RACK", value: "rack", sortable: false },
-                {
-                    text: "ORDER#",
-                    value: "orderid",
-                    sortable: true
-                },
-                {
-                    text: "Delivered?",
-                    value: "status",
-                    sortable: true
-                },
-                {
-                    text: "MSG Sent?",
-                    value: "textSent",
-                    sortable: true
-                },
-                {
-                    text: "ACTION",
-                    value: "actions",
-                    sortable: false,
-                    align: "center"
-                },
+                text: "DATE",
+                align: "start",
+                value: "date",
+            },
+            {
+                text: "NAME",
+                value: "name",
+                sortable: true
+            },
+            {
+                text: "LOCATION",
+                value: "location",
+                sortable: true
+            },
+            // { text: "RACK", value: "rack", sortable: false },
+            {
+                text: "ORDER#",
+                value: "orderid",
+                sortable: true
+            },
+            {
+                text: "Delivered?",
+                value: "status",
+                sortable: true
+            },
+            {
+                text: "MSG Sent?",
+                value: "textSent",
+                sortable: true
+            },
+            {
+                text: "ACTION",
+                value: "actions",
+                sortable: false,
+                align: "center"
+            },
             ],
         };
     },
@@ -159,8 +168,8 @@ export default {
 
                 const orderDeliveryMockData = await this.$axios.$get(
                     "/api/user/searchhistory", {
-                        params: param,
-                    }
+                    params: param,
+                }
                 );
 
                 const {
@@ -213,5 +222,4 @@ export default {
         font-size: 14px !important;
         color: #B5B5B5 !important;
     }
-}
-</style>
+}</style>
