@@ -66,7 +66,7 @@ async function getAllTrucks(_, res) {
 
         return res.send(data);
     } catch (error) {
-        console.log(error)
+        console.log(error);
     }
 }
 

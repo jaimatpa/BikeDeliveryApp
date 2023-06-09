@@ -22,6 +22,14 @@ const deliveryItem = require("./user/deliveryItem");
 const uploadPickup = require("./user/uploadPickup");
 const deliveryOrderManagement = require("./user/deliveryOrderManagement");
 const twilio = require("./user/twilio");
+const equipmentType = require("./user/equipmentType");
+const problem = require("./user/problem");
+const problemType = require("./user/problemType");
+const activity = require("./user/activity");
+const deal = require("./user/deal");
+const communicationMessage = require("./user/communicationMessage");
+const location = require("./user/location.controller");
+
 const cors = require('cors');
 
 module.exports = {
@@ -57,5 +65,32 @@ module.exports = {
     app.use("/api/user/deliveryOrderManagement/", deliveryOrderManagement);
     app.use("/api/user/deliveryOrderManagement/:id", deliveryOrderManagement);
     app.use("/api/user/twilio/", twilio);
+
+    // * Equipment Types
+    app.use("/api/user/equipment-types", equipmentType);
+    app.use("/api/user/equipment-types/:id", equipmentType);
+
+    // * Problems
+    app.use("/api/user/problems", problem);
+    app.use("/api/user/problems/:id", problem);
+
+    // * Problem Types
+    app.use("/api/user/problem-types", problemType);
+    app.use("/api/user/problem-types/:id", problemType);
+
+    // * Activities
+    app.use("/api/user/activities", activity);
+    app.use("/api/user/activities/:id", activity);
+
+    // * Deals
+    app.use("/api/user/deals", deal);
+    app.use("/api/user/deals/:id", deal);
+
+    // * Communication Message
+    app.use("/api/user/communication-message", communicationMessage);
+    app.use("/api/user/communication-message/:id", communicationMessage);
+
+    // * Location management
+    app.use("/api/user/locations", location);
   },
 };

@@ -140,6 +140,20 @@ export default {
                     color: "primary",
                 },
                 {
+                    title: "LOCATION MGMT.",
+                    icon: "mdi-near-me",
+                    iconSelected: "mdi-near-me",
+                    to: "/location-management",
+                    color: "primary",
+                },
+                {
+                    title: "LOCATION SORT.",
+                    icon: "mdi-sort",
+                    iconSelected: "mdi-sort",
+                    to: "/location-sort",
+                    color: "primary",
+                },
+                {
                     title: "REPORTS",
                     icon: "mdi-file-chart",
                     iconSelected: "mdi-file-chart",
@@ -183,6 +197,42 @@ export default {
                 {
                     title: "TRUCKS",
                     to: "/truck",
+                    iconImage: require("./../assets/images/download.svg"),
+                    downArrowIcon: require("./../assets/images/down_arrow.svg"),
+                },
+                {
+                    title: "Equipment Types".toUpperCase(),
+                    to: "/equipment-types",
+                    iconImage: require("./../assets/images/download.svg"),
+                    downArrowIcon: require("./../assets/images/down_arrow.svg"),
+                },
+                {
+                    title: "Problems".toUpperCase(),
+                    to: "/problem",
+                    iconImage: require("./../assets/images/download.svg"),
+                    downArrowIcon: require("./../assets/images/down_arrow.svg"),
+                },
+                {
+                    title: "Problem Types".toUpperCase(),
+                    to: "/problem-types",
+                    iconImage: require("./../assets/images/download.svg"),
+                    downArrowIcon: require("./../assets/images/down_arrow.svg"),
+                },
+                {
+                    title: "Activities".toUpperCase(),
+                    to: "/activity",
+                    iconImage: require("./../assets/images/download.svg"),
+                    downArrowIcon: require("./../assets/images/down_arrow.svg"),
+                },
+                {
+                    title: "Deals".toUpperCase(),
+                    to: "/deal",
+                    iconImage: require("./../assets/images/download.svg"),
+                    downArrowIcon: require("./../assets/images/down_arrow.svg"),
+                },
+                {
+                    title: "After Hour Message".toUpperCase(),
+                    to: "/after-hour-message",
                     iconImage: require("./../assets/images/download.svg"),
                     downArrowIcon: require("./../assets/images/down_arrow.svg"),
                 },

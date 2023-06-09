@@ -4,68 +4,89 @@
 -->
 
 <template>
-<Form class="form-generator" :outlined="outlined" :title="title" :width="width" :logo="logo" :busy="busy" :error="error" :disabled="disabled" :buttonText="buttonText" @submit="onSubmit" v-on="
-      hasCancelListener
-        ? {
-            cancel: () => {
-              $emit('cancel');
-            },
-          }
-        : {}
-    ">
-    <!-- Slot: Default -->
-    <slot></slot>
+    <Form class="form-generator" :outlined="outlined" :title="title" :width="width" :logo="logo" :busy="busy" :error="error"
+        :disabled="disabled" :buttonText="buttonText" @submit="onSubmit" v-on="
+            hasCancelListener
+                ? {
+                    cancel: () => {
+                        $emit('cancel');
+                    },
+                }
+                : {}
+        ">
+        <!-- Slot: Default -->
+        <slot></slot>
 
-    <!-- Slot: BeforeSubmit -->
-    <template v-slot:beforeSubmit>
-        <slot name="beforeSubmit"></slot>
-    </template>
+        <!-- Slot: BeforeSubmit -->
+        <template v-slot:beforeSubmit>
+            <slot name="beforeSubmit"></slot>
+        </template>
 
-    <div v-for="(field, index) in fieldsAsArray" :key="index">
-        <!-- Strings -->
-        <v-text-field v-if="field.type === String" v-model="inputData[field.name]" :maxlength="field.maxLength" :rules="getRules(field)" validate-on-blur :label="getLabel(field)" autocomplete="off" class="mb-4" outlined dense hide-details="auto" />
+        <div v-for="(field, index) in fieldsAsArray" :key="index">
+            <!-- Strings -->
+            <v-text-field v-if="field.type === String" v-model="inputData[field.name]" :maxlength="field.maxLength"
+                :rules="getRules(field)" validate-on-blur :label="getLabel(field)" autocomplete="off" class="mb-4" outlined
+                dense hide-details="auto" />
 
-        <!-- Password -->
-        <v-text-field v-if="field.type === 'Password' && isShowPasswordField" v-model="inputData[field.name]" :label="getLabel(field)" :rules="[rules.required, rules.minLength]" autocomplete="off" class="mb-4" color="primary" validate-on-blur outlined dense hide-details="auto" :type="showPassword ? 'text' : 'password'" :append-icon="showPassword ? 'mdi-eye' : 'mdi-eye-off'" @click:append="showPassword = !showPassword" />
+            <!-- Password -->
+            <v-text-field v-if="field.type === 'Password' && isShowPasswordField" v-model="inputData[field.name]"
+                :label="getLabel(field)" :rules="[rules.required, rules.minLength]" autocomplete="off" class="mb-4"
+                color="primary" validate-on-blur outlined dense hide-details="auto"
+                :type="showPassword ? 'text' : 'password'" :append-icon="showPassword ? 'mdi-eye' : 'mdi-eye-off'"
+                @click:append="showPassword = !showPassword" />
 
-        <!-- User Type Select -->
-        <v-select v-if="field.type === 'UserType'" v-model="userType" :items="userTypeItems" :label="getLabel(field)" :rules="[rules.required]" item-text="userTypeAttr" item-value="userTypeVal" class="mb-4" color="primary" validate-on-blur outlined dense hide-details="auto" return-object></v-select>
+            <!-- User Type Select -->
+            <v-select v-if="field.type === 'UserType'" v-model="userType" :items="userTypeItems" :label="getLabel(field)"
+                :rules="[rules.required]" item-text="userTypeAttr" item-value="userTypeVal" class="mb-4" color="primary"
+                validate-on-blur outlined dense hide-details="auto" return-object></v-select>
 
-        <!-- Numbers -->
-        <v-text-field v-if="field.type == Number || field.type == 'integer'" v-model="inputData[field.name]" :rules="getRules(field)" :label="getLabel(field)" autocomplete="off" class="mb-4" outlined dense hide-details="auto" validate-on-blur type="number" min="0" @keypress="isNumberKey($event, field.type == 'integer')" />
+            <!-- Problem Status -->
+            <v-select v-if="field.type === 'ProblemStatus'" v-model="problemStatus" :items="problemStatusItems"
+                :label="field.type" :rules="[rules.required]" item-text="problemStatusTypeAttr"
+                item-value="problemStatusTypeVal" class="mb-4" color="primary" validate-on-blur outlined dense
+                hide-details="auto" return-object></v-select>
 
-        <!-- Booleans -->
-        <v-radio-group v-if="field.type === Boolean" v-model="inputData[field.name]" row :rules="getRules(field)">
-            <template v-slot:label>
-                <div>{{ getLabel(field) }}</div>
-            </template>
-            <v-radio label="Yes" :value="true" />
-            <v-radio label="No" :value="false" />
-        </v-radio-group>
+            <!-- Numbers -->
+            <v-text-field v-if="field.type == Number || field.type == 'integer'" v-model="inputData[field.name]"
+                :rules="getRules(field)" :label="getLabel(field)" autocomplete="off" class="mb-4" outlined dense
+                hide-details="auto" validate-on-blur type="number" min="0"
+                @keypress="isNumberKey($event, field.type == 'integer')" />
 
-        <!-- Dates -->
-        <DateInput v-if="field.type == Date" v-model="inputData[field.name]" :label="getLabel(field)" :required="field.required" />
+            <!-- Booleans -->
+            <v-radio-group v-if="field.type === Boolean" v-model="inputData[field.name]" row :rules="getRules(field)">
+                <template v-slot:label>
+                    <div>{{ getLabel(field) }}</div>
+                </template>
+                <v-radio label="Yes" :value="true" />
+                <v-radio label="No" :value="false" />
+            </v-radio-group>
 
-        <!-- Text -->
-        <v-textarea v-if="field.type == 'text'" v-model="inputData[field.name]" :label="getLabel(field)" :rules="getRules(field)" class="mb-4" outlined hide-details="auto" no-resize validate-on-blur />
+            <!-- Dates -->
+            <DateInput v-if="field.type == Date" v-model="inputData[field.name]" :label="getLabel(field)"
+                :required="field.required" />
 
-        <!-- Time -->
-        <!-- <TimeInput v-if="field.type == 'time'" v-model="inputData[index]" :label="field.name" /> -->
+            <!-- Text -->
+            <v-textarea v-if="field.type == 'text'" v-model="inputData[field.name]" :label="getLabel(field)"
+                :rules="getRules(field)" class="mb-4" outlined hide-details="auto" no-resize validate-on-blur />
 
-        <v-text-field v-if="field.type == 'time'" v-model="inputData[field.name]" :label="getLabel(field)" type="time" :rules="getRules(field)" outlined dense hide-details="auto" class="mb-4" clearable validate-on-blur />
+            <!-- Time -->
+            <!-- <TimeInput v-if="field.type == 'time'" v-model="inputData[index]" :label="field.name" /> -->
+
+            <v-text-field v-if="field.type == 'time'" v-model="inputData[field.name]" :label="getLabel(field)" type="time"
+            :rules="getRules(field)" outlined dense hide-details="auto" class="mb-4" clearable validate-on-blur />
     </div>
 
-    <!-- Email Address -->
-    <!-- <v-text-field v-model="email" label="Email address" autocomplete="off"
-      class="mb-4" color="primary" validate-on-blur
-      outlined dense hide-details="auto" :prepend-inner-icon="icons ? 'mdi-email' : ''"
-      :rules="[rules.required, rules.email]" /> -->
+        <!-- Email Address -->
+        <!-- <v-text-field v-model="email" label="Email address" autocomplete="off"
+                          class="mb-4" color="primary" validate-on-blur
+                          outlined dense hide-details="auto" :prepend-inner-icon="icons ? 'mdi-email' : ''"
+                          :rules="[rules.required, rules.email]" /> -->
 
-    <!-- Slot: Footer -->
-    <template v-slot:footer>
-        <slot name="footer"></slot>
-    </template>
-</Form>
+        <!-- Slot: Footer -->
+        <template v-slot:footer>
+            <slot name="footer"></slot>
+        </template>
+    </Form>
 </template>
 
 <script>
@@ -107,7 +128,7 @@ export default {
         },
         error: String,
     },
-    created() {},
+    created() { },
     data() {
         return {
             showPassword: false,
@@ -117,18 +138,20 @@ export default {
                 this.getUserTypesVal(JSON.parse(JSON.stringify(this.values))) :
                 this.getUserTypesVal(this.defaultInputData()),
             userTypeItems: [{
-                    userTypeAttr: CLIENT,
-                    userTypeVal: CLIENT_NUMBER
-                },
-                {
-                    userTypeAttr: DELVERY_DRIVER,
-                    userTypeVal: DELVERY_DRIVER_NUMBER
-                },
-                {
-                    userTypeAttr: SYSTEM_ADMIN,
-                    userTypeVal: SYSTEM_ADMIN_NUMBER
-                },
+                userTypeAttr: CLIENT,
+                userTypeVal: CLIENT_NUMBER
+            },
+            {
+                userTypeAttr: DELVERY_DRIVER,
+                userTypeVal: DELVERY_DRIVER_NUMBER
+            },
+            {
+                userTypeAttr: SYSTEM_ADMIN,
+                userTypeVal: SYSTEM_ADMIN_NUMBER
+            },
             ],
+            problemStatus: "Started",
+            problemStatusItems: ["Started", "In Progress", "Closed "],
             // Input Data
             inputData: this.values ?
                 JSON.parse(JSON.stringify(this.values)) :
@@ -230,26 +253,26 @@ export default {
             return defaultData;
         },
         toTitleCase(str) {
-          return str.replace(
-            /\w\S*/g,
-            function(txt) {
-            return txt.charAt(0).toUpperCase() + txt.substr(1).toLowerCase();
-            }
-          );
+            return str.replace(
+                /\w\S*/g,
+                function (txt) {
+                    return txt.charAt(0).toUpperCase() + txt.substr(1).toLowerCase();
+                }
+            );
         },
         getLabel(field) {
-          // return field.label ? toTitleCase(field.label) : toTitleCase(field.name);
-          if (field.label) {
-            var fieldText = field.label;
-            var result = fieldText.replace( /([A-Z])/g, " $1" );
-            var finalResult = result.charAt(0).toUpperCase() + result.slice(1);
-            return finalResult;
-          } else {
-            var fieldText = field.name;
-            var result = fieldText.replace( /([A-Z])/g, " $1" );
-            var finalResult = result.charAt(0).toUpperCase() + result.slice(1);
-            return finalResult;
-          }
+            // return field.label ? toTitleCase(field.label) : toTitleCase(field.name);
+            if (field.label) {
+                var fieldText = field.label;
+                var result = fieldText.replace(/([A-Z])/g, " $1");
+                var finalResult = result.charAt(0).toUpperCase() + result.slice(1);
+                return finalResult;
+            } else {
+                var fieldText = field.name;
+                var result = fieldText.replace(/([A-Z])/g, " $1");
+                var finalResult = result.charAt(0).toUpperCase() + result.slice(1);
+                return finalResult;
+            }
         },
         getRules(field) {
             let result = [];
@@ -272,7 +295,9 @@ export default {
                 else if (field.type == "integer")
                     outputData[field.name] = parseInt(outputData[field.name]);
                 else if (field.type === "UserType") outputData.userType = this.userType;
+                else if (field.type === "ProblemStatus") outputData.Status = this.problemStatus;
             });
+
             return outputData;
         },
         isNumberKey(value, integerOnly) {

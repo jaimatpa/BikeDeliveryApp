@@ -1,8 +1,8 @@
 <template lang="html">
 <Page :title="isMobile ? 'Equipment Swap' : 'Equipment Swap'">
     <h2 class="primary--text">Order Information</h2>
-    <hr class="mb-4">
-    </hr>
+    <hr class="mb-4" />
+    
     <div class="d-flex flex-column justify-space-between" style="height: 100%">
         <div class="mt-1">
             <v-row>
@@ -34,8 +34,8 @@
                 </v-textarea>
             </v-row>
             <h2 class="primary--text">Item Information</h2>
-            <hr class="mb-4">
-            </hr>
+            <hr class="mb-4" />
+            
             <v-data-table width="100%" block cols="12" xs="12" sm="12" md="12" xl="12" :headers="headers" :items="equipment" item-key="name" class="elevation-6 ma-1 mb-2">
                 <template v-slot:[`item.checkedDelievery`]="{ item }">
                     <v-simple-checkbox v-model="item.checkPickup" v-ripple @input="saveUpdate(item)">
