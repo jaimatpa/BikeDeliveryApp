@@ -37,7 +37,7 @@ import moment from "moment";
 export default {
   data() {
     return {
-      search: "Received",
+      search: "",
       headers: [
         {
           text: "DATE SENT",

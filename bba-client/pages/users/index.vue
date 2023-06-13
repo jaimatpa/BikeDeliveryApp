@@ -1,10 +1,6 @@
 <template>
-  <PageResource
-    name="User"
-    :title="!isMobile ? 'List of Users' : ''"
-    :fields="fields"
-    endpoint="/api/users"
-  />
+  <PageResource name="User" :title="!isMobile ? 'List of Users' : ''" :fields="fields"
+    endpoint="/api/users" />
 </template>
 
 <script>

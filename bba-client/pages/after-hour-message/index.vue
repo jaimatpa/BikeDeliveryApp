@@ -1,6 +1,15 @@
 <template>
     <Page :title="!isMobile ? `After Hour Message` : ''">
         <v-container>
+
+            <v-row justify="center">
+                <v-col cols="12" sm="6">
+                    <v-text-field v-model="afterHourMessage" append-icon="mdi-message" label="After Hours Message"
+                        single-line hide-details outlined dense clearable class="mb-5"></v-text-field>
+                </v-col>
+            </v-row>
+
+
             <v-row justify="center">
                 <v-col cols="12" sm="6">
                     <v-menu v-model="mfStartOfDayMenu" :close-on-content-click="false" :nudge-right="40"
@@ -81,6 +90,7 @@ export default {
     },
     data() {
         return {
+            afterHourMessage: "",
             mfStartOfDayMenu: false,
             mfStartOfDay: null,
             mfEndOfDayMenu: false,

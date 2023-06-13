@@ -1,6 +1,6 @@
 <template>
     <section>
-        <PageResource name="Problem Type" :title="!isMobile ? 'Problem Type' : ''" :fields="fields"
+        <PageResource name="Problem Type" :title="!isMobile ? 'Problem Type' : ''" :fields="fields" :headers="headers"
             endpoint="/api/user/problem-types" />
     </section>
 </template>
@@ -27,6 +27,18 @@ export default {
     data() {
         return {
             breakpoint: 640,
+            headers: [
+                {
+                    text: "Name",
+                    align: "start",
+                    value: "Name",
+                },
+                {
+                    text: "Description",
+                    align: "start",
+                    value: "Description",
+                },
+            ],
             fields: {
                 Name: {
                     type: String,

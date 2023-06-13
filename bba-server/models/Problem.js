@@ -33,6 +33,9 @@ module.exports = (sequelize, DataTypes) => {
         Barcode: {
             type: DataTypes.STRING,
         },
+        TimeStamp: {
+            type: DataTypes.DATE,
+        },
     }, {
         sequelize,
         modelName: "Problem",

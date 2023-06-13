@@ -30,23 +30,29 @@ export default {
             fields: {
                 Label: {
                     type: String,
+                    required: true
                 },
                 BarcodePrefix: {
                     type: String,
+                    required: true
                 },
                 CapacityConsumption: {
                     type: Number,
+                    required: true
                 },
                 ProductLineId: {
                     type: String,
+                    required: true
                 },
                 qty: {
                     type: Number,
                     defaultValue: 0,
+                    required: true
                 },
                 qtyAvailable: {
                     type: Number,
                     defaultValue: 0,
+                    required: true
                 },
             },
         };

@@ -1,6 +1,6 @@
 <template>
     <section>
-        <PageResource name="Activities" :title="!isMobile ? 'Activities' : ''" :fields="fields"
+        <PageResource name="Activities" :title="!isMobile ? 'Activities' : ''" :fields="fields" :headers="headers"
             endpoint="/api/user/activities" />
     </section>
 </template>
@@ -27,6 +27,43 @@ export default {
     data() {
         return {
             breakpoint: 640,
+            headers: [
+                {
+                    text: "Title",
+                    align: "start",
+                    value: "Title",
+                },
+                {
+                    text: "Description",
+                    align: "start",
+                    value: "Description",
+                },
+                {
+                    text: "Image Path",
+                    align: "start",
+                    value: "ImagePath",
+                },
+                {
+                    text: "Location Id",
+                    align: "start",
+                    value: "LocationId",
+                },
+                {
+                    text: "Web Path",
+                    align: "start",
+                    value: "WebPath",
+                },
+                {
+                    text: "Notes",
+                    align: "start",
+                    value: "Notes",
+                },
+                {
+                    text: "Status",
+                    align: "start",
+                    value: "Status",
+                },
+            ],
             fields: {
                 Title: {
                     type: String,

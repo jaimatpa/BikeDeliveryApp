@@ -36,8 +36,7 @@ router.get("/", async (req, res) => {
                 x.dateSent = x.dateSent.toLocaleString('en-US')
             });
             return res.send(messages);
-        }
-        );
+        });
     }
 })
 
