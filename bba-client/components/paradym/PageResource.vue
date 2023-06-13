@@ -1,17 +1,19 @@
 <template>
-<Page :title="title">
-    <ServerDataTable ref="serverDataTable" :endpoint="endpoint" :name="name" :dataTypes="{ createdAt: Date, updatedAt: Date }" @edit="editItem" />
+    <Page :title="title">
+        <ServerDataTable ref="serverDataTable" :endpoint="endpoint" :name="name"
+            :dataTypes="{ createdAt: Date, updatedAt: Date }" @edit="editItem" :headers="headers" />
 
-    <FloatingButton @click="itemToEdit = null; dialog = true;" color="primary" />
+        <FloatingButton @click="itemToEdit = null; dialog = true;" color="primary"/>
 
-    <v-btn block color="primary" @click="sendWebHookMapData()" v-if="isShowWebHookMappingTable" class="mt-4">
-        Update
-    </v-btn>
+        <v-btn block color="primary" @click="sendWebHookMapData()" v-if="isShowWebHookMappingTable" class="mt-4">
+            Update
+        </v-btn>
 
-    <Dialog v-model="dialog" :title="addText" max-width="800" hideButtons>
-        <FormGenerator :fields="fields" :values="itemToEdit" :buttonText="addText" @cancel="dialog = false" @submit="addUpdateItem" />
-    </Dialog>
-</Page>
+        <Dialog v-model="dialog" :title="addText" max-width="800" hideButtons>
+            <FormGenerator :fields="fields" :values="itemToEdit" :buttonText="addText" @cancel="dialog = false"
+                @submit="addUpdateItem" />
+        </Dialog>
+    </Page>
 </template>
 
 <script>
@@ -44,6 +46,7 @@ export default {
         endpoint: String,
         isShowWebHookMappingTable: Boolean,
         fields: [Object, Array],
+        headers: Array
     },
     data() {
         return {
@@ -108,45 +111,45 @@ export default {
         },
         async sendWebHookMapData() {
             const webHookMapDataTable = [{
-                    table_key: this.date,
-                    json_key: this.jsonKey1.replace(/\s/g, ""),
-                },
-                {
-                    table_key: this.tableKeyName,
-                    json_key: this.jsonKey2.replace(/\s/g, ""),
-                },
-                {
-                    table_key: this.location,
-                    json_key: this.jsonKey3.replace(/\s/g, ""),
-                },
-                {
-                    table_key: this.orderid,
-                    json_key: this.jsonKey4.replace(/\s/g, ""),
-                },
-                {
-                    table_key: this.rack,
-                    json_key: this.jsonKey5.replace(/\s/g, ""),
-                },
-                {
-                    table_key: this.color,
-                    json_key: this.jsonKey6.replace(/\s/g, ""),
-                },
-                {
-                    table_key: this.combination,
-                    json_key: this.jsonKey7.replace(/\s/g, ""),
-                },
-                {
-                    table_key: this.lock,
-                    json_key: this.jsonKey8.replace(/\s/g, ""),
-                },
-                {
-                    table_key: this.mobileNo,
-                    json_key: this.jsonKey9.replace(/\s/g, ""),
-                },
-                {
-                    table_key: this.barcode,
-                    json_key: this.jsonKey10.replace(/\s/g, ""),
-                },
+                table_key: this.date,
+                json_key: this.jsonKey1.replace(/\s/g, ""),
+            },
+            {
+                table_key: this.tableKeyName,
+                json_key: this.jsonKey2.replace(/\s/g, ""),
+            },
+            {
+                table_key: this.location,
+                json_key: this.jsonKey3.replace(/\s/g, ""),
+            },
+            {
+                table_key: this.orderid,
+                json_key: this.jsonKey4.replace(/\s/g, ""),
+            },
+            {
+                table_key: this.rack,
+                json_key: this.jsonKey5.replace(/\s/g, ""),
+            },
+            {
+                table_key: this.color,
+                json_key: this.jsonKey6.replace(/\s/g, ""),
+            },
+            {
+                table_key: this.combination,
+                json_key: this.jsonKey7.replace(/\s/g, ""),
+            },
+            {
+                table_key: this.lock,
+                json_key: this.jsonKey8.replace(/\s/g, ""),
+            },
+            {
+                table_key: this.mobileNo,
+                json_key: this.jsonKey9.replace(/\s/g, ""),
+            },
+            {
+                table_key: this.barcode,
+                json_key: this.jsonKey10.replace(/\s/g, ""),
+            },
             ];
             console.log("this.webHookMapDataTable", webHookMapDataTable);
 

@@ -29,6 +29,7 @@ export default {
             fields: {
                 Title: {
                     type: String,
+                    required: true
                 },
                 Description: {
                     type: String,

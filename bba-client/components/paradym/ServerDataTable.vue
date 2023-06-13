@@ -16,54 +16,63 @@
     edit() - fires when the edit action button is clicked on a row item
 -->
 <template>
-<div>
-    <v-data-table :loading="loading" :headers="computedHeaders" :items="computedItems" :options.sync="options" :search="search" disable-sort disable-pagination :footer-props="{ 'items-per-page-options': [10, 25, 50, 100] }" :mobile-breakpoint="0" hide-default-footer>
+    <div>
+        <v-data-table :loading="loading" :headers="computedHeaders" :items="computedItems" :options.sync="options"
+            :search="search" disable-sort :footer-props="{ 'items-per-page-options': [10, 25, 50, 100] }"
+            :mobile-breakpoint="0">
 
-        <!-- Show Custom User Type Column -->
-        <template v-slot:[`item.userType`]="{ item }">
-            <v-chip v-if="item.userType === 1" color="orange" dark>
-                Client
-            </v-chip>
-            <v-chip v-if="item.userType === 2" color="teal" dark>
-                Delivery Driver
-            </v-chip>
-            <v-chip v-if="item.userType === 3" color="green" dark>
-                System Admin
-            </v-chip>
-        </template>
+            <!-- Show Custom User Type Column -->
+            <template v-slot:[`item.userType`]="{ item }">
+                <v-chip v-if="item.userType === 1" color="orange" dark>
+                    Client
+                </v-chip>
+                <v-chip v-if="item.userType === 2" color="teal" dark>
+                    Delivery Driver
+                </v-chip>
+                <v-chip v-if="item.userType === 3" color="green" dark>
+                    System Admin
+                </v-chip>
+            </template>
 
-        <!-- Show Custom isActive Column -->
-        <template v-slot:[`item.isActive`]="{ item }">
-            <v-chip v-if="item.isActive" color="primary" dark>
-                Yes
-            </v-chip>
-            <v-chip v-else color="error" dark>
-                No
-            </v-chip>
-        </template>
+            <!-- Show Custom isActive Column -->
+            <template v-slot:[`item.isActive`]="{ item }">
+                <v-chip v-if="item.isActive" color="primary" dark>
+                    Yes
+                </v-chip>
+                <v-chip v-else color="error" dark>
+                    No
+                </v-chip>
+            </template>
 
-        <!-- Show Custom CreatedAt Column -->
-        <template v-slot:[`item.createdAt`]="{ item }">
-            {{ item.createdAt }}
-        </template>
+            <!-- Show Custom CreatedAt Column -->
+            <template v-slot:[`item.createdAt`]="{ item }">
+                {{ item.createdAt }}
+            </template>
 
-        <!-- Actions -->
-        <template v-slot:[`item.actions`]="{ item }">
-            <v-icon small color="primary" class="mr-2" @click="$emit('edit', item)">
-                mdi-pencil
-            </v-icon>
-            <v-icon small color="error" @click="confirmDelete(item)">
-                mdi-delete
-            </v-icon>
-        </template>
-    </v-data-table>
+            <!-- Show Custom CreatedAt Column -->
+            <template v-slot:[`item.TimeStamp`]="{ item }">
+                {{ new Date(item.TimeStamp).toUTCString() }}
+            </template>
 
-    <ModalConfirm v-model="deleteDialog" :title="`Delete ${name}`" :message="
-        itemToDelete
-          ? `Delete ${name} <strong>${itemToDelete && itemToDelete.name ? itemToDelete.name : itemToDelete.id}</strong>?`
-          : `Delete ${name}`
-      " confirmText="Yes" cancelText="No" @confirm="deleteItem" />
-</div>
+            <!-- Actions -->
+            <template v-slot:[`item.actions`]="{ item }">
+                <v-icon small color="primary" class="mr-2" @click="$emit('edit', item)">
+                    mdi-pencil
+                </v-icon>
+                <v-icon small color="error" @click="confirmDelete(item)">
+                    mdi-delete
+                </v-icon>
+            </template>
+        </v-data-table>
+
+        <ModalConfirm v-model="deleteDialog" :title="`Delete ${name}`" :message="
+            itemToDelete
+                ? `Delete ${name} <strong>${itemToDelete && itemToDelete.name || itemToDelete.Name ? itemToDelete.name || itemToDelete.Name : (itemToDelete && itemToDelete.Title ? itemToDelete.Title : (itemToDelete && itemToDelete.Notes ? itemToDelete.Notes : itemToDelete.id))}
+
+                                                            </strong>?`
+                : `Delete ${name}`
+        " confirmText="Yes" cancelText="No" @confirm="deleteItem" />
+    </div>
 </template>
 
 <script>
@@ -156,9 +165,17 @@ export default {
                 sortable: false,
                 width: "76px",
             };
-            if (this.headers && this.headers.length)
+
+            if (this.headers && this.headers.length) {
                 return [...this.headers, actionHeader];
-            else return [...this.headersFromItems(), actionHeader];
+
+            } else {
+                return [...this.headersFromItems().map(obj => {
+                    const splitName = obj.text.replace(/([a-z])([A-Z])/g, '$1 $2').replace("_", " ");
+
+                    return { ...obj, text: splitName };
+                }), actionHeader]
+            };
         },
     },
     methods: {
@@ -176,7 +193,7 @@ export default {
             this.deleteDialog = false;
             try {
                 let response = await this.$axios.$delete(
-                    this.endpoint + "/" + this.itemToDelete.id, {data: {itemID: this.itemToDelete.id}}
+                    this.endpoint + "/" + this.itemToDelete.id, { data: { itemID: this.itemToDelete.id } }
                 );
                 this.$fetch();
             } catch (err) {
@@ -200,7 +217,7 @@ export default {
                 if (this.options.page == 1) params.offset = 0;
                 else
                     params.offset =
-                    (this.options.page - 1) * this.options.itemsPerPage || 0;
+                        (this.options.page - 1) * this.options.itemsPerPage || 0;
                 params.count = this.options.itemsPerPage || 10;
                 if (params.offset == -1) delete params.offset;
                 if (params.count == -1) delete params.count;

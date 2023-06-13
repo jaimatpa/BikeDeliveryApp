@@ -19,7 +19,7 @@
             bottom
             right
             fab
-            class="mr-4 mb-4"
+            class="mr-4"
             @click="$emit('click')"
             v-bind="attrs"
             v-on="on"
@@ -38,7 +38,7 @@
       bottom
       right
       fab
-      class="mr-4 mb-4"
+      class="mr-4"
       @click="$emit('click')"
       style="z-index: 5 !important;"
     >

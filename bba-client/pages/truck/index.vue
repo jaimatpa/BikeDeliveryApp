@@ -29,6 +29,7 @@ export default {
             fields: {
                 LicensePlate: {
                     type: String,
+                    text: "License Plate"
                 },
                 TruckName: {
                     type: String
