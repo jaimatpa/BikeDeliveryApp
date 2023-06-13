@@ -1,6 +1,6 @@
 {
   "name": "bullock-bike-server",
-  "version": "1.0.0",
+  "version": "1.1.0",
   "description": "A Bullock Bike Delivery App",
   "main": "index.js",
   "scripts": {
