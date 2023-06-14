@@ -78,9 +78,9 @@
 
         <!-- Email Address -->
         <!-- <v-text-field v-model="email" label="Email address" autocomplete="off"
-                          class="mb-4" color="primary" validate-on-blur
-                          outlined dense hide-details="auto" :prepend-inner-icon="icons ? 'mdi-email' : ''"
-                          :rules="[rules.required, rules.email]" /> -->
+                              class="mb-4" color="primary" validate-on-blur
+                              outlined dense hide-details="auto" :prepend-inner-icon="icons ? 'mdi-email' : ''"
+                              :rules="[rules.required, rules.email]" /> -->
 
         <!-- Slot: Footer -->
         <template v-slot:footer>
@@ -266,11 +266,13 @@ export default {
                 var fieldText = field.label;
                 var result = fieldText.replace(/([A-Z])/g, " $1");
                 var finalResult = result.charAt(0).toUpperCase() + result.slice(1);
+                finalResult = finalResult.replace("_", "");
                 return finalResult;
             } else {
                 var fieldText = field.name;
                 var result = fieldText.replace(/([A-Z])/g, " $1");
                 var finalResult = result.charAt(0).toUpperCase() + result.slice(1);
+                finalResult = finalResult.replace("_", "");
                 return finalResult;
             }
         },

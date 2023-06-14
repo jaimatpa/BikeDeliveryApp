@@ -69,7 +69,7 @@
             itemToDelete
                 ? `Delete ${name} <strong>${itemToDelete && itemToDelete.name || itemToDelete.Name ? itemToDelete.name || itemToDelete.Name : (itemToDelete && itemToDelete.Title ? itemToDelete.Title : (itemToDelete && itemToDelete.Notes ? itemToDelete.Notes : itemToDelete.id))}
 
-                                                            </strong>?`
+                                                                                                                                                            </strong>?`
                 : `Delete ${name}`
         " confirmText="Yes" cancelText="No" @confirm="deleteItem" />
     </div>
@@ -110,13 +110,21 @@ export default {
         let response = await this.$axios.get(this.getRequestUrl());
         this.loading = false;
         this.items = response.data;
-        if (response.headers) {
-            if (response.headers.hasOwnProperty("content-range"))
-                this.totalItems = this.parseContentRange(
-                    response.headers["content-range"]
-                ).length;
-            else this.totalItems = 0;
-        } else this.totalItems = 0;
+        // if (response.headers) {
+        //     console.log(response.headers["content-range"]);
+        //     console.log(this.parseContentRange(
+        //         response.headers["content-range"]
+        //     ));
+        //     if (response.headers.hasOwnProperty("content-range")) {
+        //         // this.totalItems = this.parseContentRange(
+        //         //     response.headers["content-range"]
+        //         // ).length;
+
+        //         // console.log(this.totalItems);
+        //     } else {
+        //         this.totalItems = 0;
+        //     }
+        // } else this.totalItems = 0;
     },
     data() {
         return {
@@ -168,14 +176,13 @@ export default {
 
             if (this.headers && this.headers.length) {
                 return [...this.headers, actionHeader];
-
             } else {
                 return [...this.headersFromItems().map(obj => {
                     const splitName = obj.text.replace(/([a-z])([A-Z])/g, '$1 $2').replace("_", " ");
 
                     return { ...obj, text: splitName };
                 }), actionHeader]
-            };
+            }
         },
     },
     methods: {
