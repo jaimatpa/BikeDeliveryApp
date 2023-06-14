@@ -51,6 +51,16 @@ module.exports = {
         default: "-createdAt",
       },
       actions: ["create", "list", "read", "update", "delete"],
+      pagination: false
+    });
+
+    function setNoCacheHeader(req, res, context) {
+      res.setHeader("Cache-Control", "no-cache");
+      context.continue();
+    }
+
+    userResource.all.auth(function (req, res, context) {
+      setNoCacheHeader(req, res, context);
     });
 
     userResource.create.write.after(async function (req, res, context) {
