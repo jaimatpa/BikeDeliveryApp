@@ -53,9 +53,9 @@ function sendEmailMain(args, message, images) {
 router.post("/", async (req, res) => {
   console.log("IN SEND DELIVER EMAIL POST");
   console.log(req.body);
-  const orderid = req.body.params.orderid;
-  const message = req.body.params.message;
-  const images = req.body.params.images;
+  const orderid = req.body.orderid || req.body.params.orderid;
+  const message = req.body.message || req.body.params.message;
+  const images = req.body.images || req.body.params.images;
   const deliveryOrder = await models.DeliveryOrders.findOne(
     {
       where:

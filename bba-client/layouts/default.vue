@@ -1,42 +1,46 @@
 <template>
-<v-app v-if="$auth.loggedIn">
-    <!-- App Bar -->
-    <AppBar app :title="$config.appName" @menuClick="drawer = !drawer" :color="$vuetify.theme.dark ? '' : '#444444'" :dark="true" :isMobileBreakPoint="isMobile" class="appBar-title">
-        <IconButtonMenu :items="userItems" :icon="$nuxt.$route.path === '/account' ? 'mdi-account-cog': 'mdi-account-cog-outline'" />
-    </AppBar>
+    <v-app v-if="$auth.loggedIn">
+        <!-- App Bar -->
+        <AppBar app :title="$config.appName" @menuClick="drawer = !drawer" :color="$vuetify.theme.dark ? '' : '#444444'"
+            :dark="true" :isMobileBreakPoint="isMobile" class="appBar-title">
+            <IconButtonMenu :items="userItems"
+                :icon="$nuxt.$route.path === '/account' ? 'mdi-account-cog' : 'mdi-account-cog-outline'" />
+        </AppBar>
 
-    <!-- Topbar -->
-    <div v-if="isMobile && $nuxt.$route.name !== 'index'" class="top-bar d-flex align-center px-6">
-        <v-icon medium color="white" class="mr-2">
-            {{ getTopBarIcon($nuxt.$route.name) }}
-        </v-icon>
-        <p class="text-uppercase white--text mb-0">
-            {{ getTopBarName($nuxt.$route.name) }}
-        </p>
-    </div>
+        <!-- Topbar -->
+        <div v-if="isMobile && $nuxt.$route.name !== 'index'" class="top-bar d-flex align-center px-6">
+            <v-icon medium color="white" class="mr-2">
+                {{ getTopBarIcon($nuxt.$route.name) }}
+            </v-icon>
+            <p class="text-uppercase white--text mb-0">
+                {{ getTopBarName($nuxt.$route.name) }}
+            </p>
+        </div>
 
-    <!-- Navigation -->
-    <Navigation v-model="drawer" v-if="!hideNav" :items="items" color="primary" />
+        <!-- Navigation -->
+        <Navigation v-model="drawer" v-if="!hideNav" :items="items" color="primary" />
 
-    <!-- Main Content Container -->
-    <v-main>
-        <nuxt />
-        <!-- <nuxt keep-alive :keep-alive-props="{ max: 10, exclude: ['pageAccount'] }" /> -->
-    </v-main>
+        
+        <!-- Main Content Container -->
+        <v-main>
+            <nuxt />
+            <!-- <nuxt keep-alive :keep-alive-props="{ max: 10, exclude: ['pageAccount'] }" /> -->
+        </v-main>
 
-    <!-- Sidebar: Settings -->
-    <!-- <Sidebar v-model="settings" title="Settings">
+        <!-- Sidebar: Settings -->
+        <!-- <Sidebar v-model="settings" title="Settings">
       <ThemeSettings />
     </Sidebar> -->
 
-    <!-- Snackbar -->
-    <Snackbar :busy="snackbar.busy" :timeout="snackbar.timeout" :color="snackbar.color" :message="snackbar.message" :canClose="snackbar.canClose" @close="setBusy(false)" />
-</v-app>
-<v-app v-else>
-    <v-main>
-        <Nuxt />
-    </v-main>
-</v-app>
+        <!-- Snackbar -->
+        <Snackbar :busy="snackbar.busy" :timeout="snackbar.timeout" :color="snackbar.color" :message="snackbar.message"
+            :canClose="snackbar.canClose" @close="setBusy(false)" />
+    </v-app>
+    <v-app v-else>
+        <v-main>
+            <Nuxt />
+        </v-main>
+    </v-app>
 </template>
 
 <script>
@@ -66,6 +70,7 @@ export default {
         this.$nextTick(() => {
             this.drawer = this.$vuetify.breakpoint.width > 640;
         });
+        console.log("version number", this.version);
     },
     components: {
         AppBar,
@@ -82,171 +87,171 @@ export default {
             settings: false,
             breakpoint: 640,
             items: [{
-                    title: "DASHBOARD",
-                    icon: "mdi-view-dashboard-outline",
-                    iconSelected: "mdi-view-dashboard",
-                    to: "/",
-                    color: "primary",
-                },
-                {
-                    title: "SEARCH HISTORY",
-                    icon: "mdi-magnify",
-                    iconSelected: "mdi-magnify",
-                    to: "/searchHistory",
-                    color: "primary",
-                },
-                {
-                    title: "DELIVERY ORDER",
-                    icon: "mdi-bike",
-                    iconSelected: "mdi-bike-fast",
-                    to: "/deliveryOrder",
-                    color: "primary",
-                },
-                {
-                    title: "LOCKING",
-                    icon: "mdi-lock-outline",
-                    iconSelected: "mdi-lock",
-                    to: "/locking",
-                    color: "primary",
-                },
-                {
-                    title: "RESEND",
-                    icon: "mdi-share-outline",
-                    iconSelected: "mdi-share",
-                    to: "/searchHistory",
-                    color: "primary",
-                },
-                {
-                    title: "PICKUP",
-                    icon: "mdi-truck",
-                    iconSelected: "mdi-truck-check",
-                    to: "/pickup",
-                    color: "primary",
-                },
-                {
-                    title: "LOGISTICS",
-                    icon: "mdi-calendar-month-outline",
-                    iconSelected: "mdi-calendar-month",
-                    to: "/logistics",
-                    disabled: true,
-                    color: "grey",
-                },
-                {
-                    title: "EQUIPMENT SWAP",
-                    icon: "mdi-swap-horizontal-circle-outline",
-                    iconSelected: "mdi-swap-horizontal-circle",
-                    to: "/equipmentswap",
-                    disabled: false,
-                    color: "primary",
-                },
-                {
-                    title: "LOCATION MGMT.",
-                    icon: "mdi-near-me",
-                    iconSelected: "mdi-near-me",
-                    to: "/location-management",
-                    color: "primary",
-                },
-                {
-                    title: "LOCATION SORT.",
-                    icon: "mdi-sort",
-                    iconSelected: "mdi-sort",
-                    to: "/location-sort",
-                    color: "primary",
-                },
-                {
-                    title: "REPORTS",
-                    icon: "mdi-file-chart",
-                    iconSelected: "mdi-file-chart",
-                    to: "/report",
-                    disabled: true,
-                    color: "grey",
-                },
+                title: "DASHBOARD",
+                icon: "mdi-view-dashboard-outline",
+                iconSelected: "mdi-view-dashboard",
+                to: "/",
+                color: "primary",
+            },
+            {
+                title: "SEARCH HISTORY",
+                icon: "mdi-magnify",
+                iconSelected: "mdi-magnify",
+                to: "/searchHistory",
+                color: "primary",
+            },
+            {
+                title: "DELIVERY ORDER",
+                icon: "mdi-bike",
+                iconSelected: "mdi-bike-fast",
+                to: "/deliveryOrder",
+                color: "primary",
+            },
+            {
+                title: "LOCKING",
+                icon: "mdi-lock-outline",
+                iconSelected: "mdi-lock",
+                to: "/locking",
+                color: "primary",
+            },
+            {
+                title: "RESEND",
+                icon: "mdi-share-outline",
+                iconSelected: "mdi-share",
+                to: "/searchHistory",
+                color: "primary",
+            },
+            {
+                title: "PICKUP",
+                icon: "mdi-truck",
+                iconSelected: "mdi-truck-check",
+                to: "/pickup",
+                color: "primary",
+            },
+            {
+                title: "LOGISTICS",
+                icon: "mdi-calendar-month-outline",
+                iconSelected: "mdi-calendar-month",
+                to: "/logistics",
+                disabled: true,
+                color: "grey",
+            },
+            {
+                title: "EQUIPMENT SWAP",
+                icon: "mdi-swap-horizontal-circle-outline",
+                iconSelected: "mdi-swap-horizontal-circle",
+                to: "/equipmentswap",
+                disabled: false,
+                color: "primary",
+            },
+            {
+                title: "LOCATION MGMT.",
+                icon: "mdi-near-me",
+                iconSelected: "mdi-near-me",
+                to: "/location-management",
+                color: "primary",
+            },
+            {
+                title: "LOCATION SORT.",
+                icon: "mdi-sort",
+                iconSelected: "mdi-sort",
+                to: "/location-sort",
+                color: "primary",
+            },
+            {
+                title: "REPORTS",
+                icon: "mdi-file-chart",
+                iconSelected: "mdi-file-chart",
+                to: "/report",
+                disabled: true,
+                color: "grey",
+            },
             ],
             userItems: [{
-                    title: "WEB HOOK SETTINGS",
-                    to: "/webHookSetting",
-                },
-                {
-                    title: "COLOR COMBINATION SETTINGS",
-                    to: "/colorCombinationSetting",
-                },
-                {
-                    title: "MESSAGE MANAGEMENT",
-                    to: "/twilioManagement",
-                },
-                {
-                    title: "USER MANAGEMENT",
-                    to: "/users",
-                },
-                {
-                    title: "TEXT MSG TEMPLATE",
-                    to: "/textMessageTemplate",
-                },
-                {
-                    title: "DELIVERY ORDERS",
-                    to: "/deliveryOrderManagement",
-                    iconImage: 'mdi-lock',
-                    downArrowIcon: require("./../assets/images/down_arrow.svg"),
-                },
-                {
-                    title: "ASSETS",
-                    to: "/asset",
-                    iconImage: 'mdi-lock',
-                    downArrowIcon: require("./../assets/images/down_arrow.svg"),
-                },
-                {
-                    title: "TRUCKS",
-                    to: "/truck",
-                    iconImage: require("./../assets/images/download.svg"),
-                    downArrowIcon: require("./../assets/images/down_arrow.svg"),
-                },
-                {
-                    title: "Equipment Types".toUpperCase(),
-                    to: "/equipment-types",
-                    iconImage: require("./../assets/images/download.svg"),
-                    downArrowIcon: require("./../assets/images/down_arrow.svg"),
-                },
-                {
-                    title: "Problems".toUpperCase(),
-                    to: "/problem",
-                    iconImage: require("./../assets/images/download.svg"),
-                    downArrowIcon: require("./../assets/images/down_arrow.svg"),
-                },
-                {
-                    title: "Problem Types".toUpperCase(),
-                    to: "/problem-types",
-                    iconImage: require("./../assets/images/download.svg"),
-                    downArrowIcon: require("./../assets/images/down_arrow.svg"),
-                },
-                {
-                    title: "Activities".toUpperCase(),
-                    to: "/activity",
-                    iconImage: require("./../assets/images/download.svg"),
-                    downArrowIcon: require("./../assets/images/down_arrow.svg"),
-                },
-                {
-                    title: "Deals".toUpperCase(),
-                    to: "/deal",
-                    iconImage: require("./../assets/images/download.svg"),
-                    downArrowIcon: require("./../assets/images/down_arrow.svg"),
-                },
-                {
-                    title: "After Hour Message".toUpperCase(),
-                    to: "/after-hour-message",
-                    iconImage: require("./../assets/images/download.svg"),
-                    downArrowIcon: require("./../assets/images/down_arrow.svg"),
-                },
-                {
-                    title: "LOGOUT",
-                    to: "/logout",
-                    icon: "mdi-logout",
-                    /*
-        action: () => {
-          this.$auth.$storage.removeLocalStorage('user')
-          this.$auth.logout()
-        }
-        */
-                },
+                title: "WEB HOOK SETTINGS",
+                to: "/webHookSetting",
+            },
+            {
+                title: "COLOR COMBINATION SETTINGS",
+                to: "/colorCombinationSetting",
+            },
+            {
+                title: "MESSAGE MANAGEMENT",
+                to: "/twilioManagement",
+            },
+            {
+                title: "USER MANAGEMENT",
+                to: "/users",
+            },
+            {
+                title: "TEXT MSG TEMPLATE",
+                to: "/textMessageTemplate",
+            },
+            {
+                title: "DELIVERY ORDERS",
+                to: "/deliveryOrderManagement",
+                iconImage: 'mdi-lock',
+                downArrowIcon: require("./../assets/images/down_arrow.svg"),
+            },
+            {
+                title: "ASSETS",
+                to: "/asset",
+                iconImage: 'mdi-lock',
+                downArrowIcon: require("./../assets/images/down_arrow.svg"),
+            },
+            {
+                title: "TRUCKS",
+                to: "/truck",
+                iconImage: require("./../assets/images/download.svg"),
+                downArrowIcon: require("./../assets/images/down_arrow.svg"),
+            },
+            {
+                title: "Equipment Types".toUpperCase(),
+                to: "/equipment-types",
+                iconImage: require("./../assets/images/download.svg"),
+                downArrowIcon: require("./../assets/images/down_arrow.svg"),
+            },
+            {
+                title: "Problems".toUpperCase(),
+                to: "/problem",
+                iconImage: require("./../assets/images/download.svg"),
+                downArrowIcon: require("./../assets/images/down_arrow.svg"),
+            },
+            {
+                title: "Problem Types".toUpperCase(),
+                to: "/problem-types",
+                iconImage: require("./../assets/images/download.svg"),
+                downArrowIcon: require("./../assets/images/down_arrow.svg"),
+            },
+            {
+                title: "Activities".toUpperCase(),
+                to: "/activity",
+                iconImage: require("./../assets/images/download.svg"),
+                downArrowIcon: require("./../assets/images/down_arrow.svg"),
+            },
+            {
+                title: "Deals".toUpperCase(),
+                to: "/deal",
+                iconImage: require("./../assets/images/download.svg"),
+                downArrowIcon: require("./../assets/images/down_arrow.svg"),
+            },
+            {
+                title: "After Hour Message".toUpperCase(),
+                to: "/after-hour-message",
+                iconImage: require("./../assets/images/download.svg"),
+                downArrowIcon: require("./../assets/images/down_arrow.svg"),
+            },
+            {
+                title: "LOGOUT",
+                to: "/logout",
+                icon: "mdi-logout",
+                /*
+    action: () => {
+      this.$auth.$storage.removeLocalStorage('user')
+      this.$auth.logout()
+    }
+    */
+            },
             ],
         };
     },
