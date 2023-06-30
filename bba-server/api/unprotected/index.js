@@ -29,6 +29,7 @@ const activity = require("./user/activity");
 const deal = require("./user/deal");
 const communicationMessage = require("./user/communicationMessage");
 const location = require("./user/location.controller");
+const trip = require("./user/trip.controller");
 
 const cors = require('cors');
 
@@ -92,5 +93,8 @@ module.exports = {
 
     // * Location management
     app.use("/api/user/locations", location);
+
+    // * Trips
+    app.use("/api/user/trips", trip);
   },
 };

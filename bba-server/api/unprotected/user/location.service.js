@@ -1,7 +1,44 @@
-const { Op } = require("sequelize");
+const { Op, Transaction } = require("sequelize");
 
-const { Area, Villa, StreetAddress } = require("./../../../models");
+const { Area, Villa, StreetAddress, sequelize, Sequelize } = require("./../../../models");
 const apiError = require("../../../libs/apiError");
+
+async function reconcileLocationPriorities(Model, id, newPriority) {
+    // * Start a transaction
+    const transaction = await sequelize.transaction();
+
+    try {
+        // * Fetch all items, ordered by priority
+        const items = await Model.findAll({
+            order: [["priority", "ASC"]],
+            transaction
+        });
+
+        // * Find the item to be updated
+        const itemIndex = items.findIndex(item => item.id === Number(id));
+        const item = items[itemIndex];
+
+        // * Remove the item from its old position
+        items.splice(itemIndex, 1);
+
+        // * Insert the item at its new position
+        items.splice(newPriority - 1, 0, item);
+
+        // * Reassign priorities, maintaining a gap of 1 between each item
+        for (let i = 0; i < items.length; i++) {
+            const newPriority = (i + 1) * 1;
+            await items[i].update({ priority: newPriority }, { transaction });
+        }
+
+        // * Commit transaction
+        await transaction.commit();
+
+        console.log(`Priorities for ${Model.name} reconciled`);
+    } catch (error) {
+        await transaction.rollback();
+        console.error(`Priorities for ${Model.name} errored`, error);
+    }
+}
 
 /**
  * Get all areas
@@ -38,6 +75,12 @@ async function createAnArea(req, res) {
         return apiError(res, "Invalid payload", 400);
     }
 
+    const minPriorityRecord = await Area.findOne({
+        order: [["priority", "DESC"]]
+    });
+
+    req.body.priority = minPriorityRecord ? minPriorityRecord.priority + 1 : 1;
+
     const area = await Area.create({
         ...req.body
     });
@@ -60,11 +103,16 @@ async function updateAnArea(req, res) {
         return apiError(res, "Invalid payload", 400);
     }
 
-    await Area.update({ ...req.body }, {
-        where: {
-            id: req.params.id
-        }
-    });
+    if (req.query.ctx === "p_update") {
+        await reconcileLocationPriorities(Area, req.params.id, req.body.priority);
+    } else {
+        await Area.update({ ...req.body }, {
+            where: {
+                id: req.params.id
+            }
+        });
+    }
+
 
     const area = await Area.findByPk(req.params.id);
 
@@ -189,6 +237,12 @@ async function createAVilla(req, res) {
         return apiError(res, "Invalid payload", 400);
     }
 
+    const minPriorityRecord = await Villa.findOne({
+        order: [["priority", "DESC"]]
+    });
+
+    req.body.priority = minPriorityRecord ? minPriorityRecord.priority + 1 : 1;
+
     const newVilla = await Villa.create({
         ...req.body,
         parent: parentArea.id
@@ -228,11 +282,15 @@ async function updateAVilla(req, res) {
         }
     }
 
-    await Villa.update({ ...req.body }, {
-        where: {
-            id: req.params.id
-        }
-    });
+    if (req.query.ctx === "p_update") {
+        await reconcileLocationPriorities(Villa, req.params.id, req.body.priority);
+    } else {
+        await Villa.update({ ...req.body }, {
+            where: {
+                id: req.params.id
+            }
+        });
+    }
 
     const villa = await Villa.findByPk(req.params.id, {
         include: [
@@ -378,6 +436,12 @@ async function createAStreetAddress(req, res) {
         return apiError(res, "Invalid payload", 400);
     }
 
+    const minPriorityRecord = await StreetAddress.findOne({
+        order: [["priority", "DESC"]]
+    });
+
+    req.body.priority = minPriorityRecord ? minPriorityRecord.priority + 1 : 1;
+
     const newStreetAddress = await StreetAddress.create({
         ...req.body,
         parent: parentVilla.id
@@ -422,11 +486,15 @@ async function updateAStreetAddress(req, res) {
         }
     }
 
-    await StreetAddress.update({ ...req.body }, {
-        where: {
-            id: req.params.id
-        }
-    });
+    if (req.query.ctx === "p_update") {
+        await reconcileLocationPriorities(StreetAddress, req.params.id, req.body.priority);
+    } else {
+        await StreetAddress.update({ ...req.body }, {
+            where: {
+                id: req.params.id
+            }
+        });
+    }
 
     const streetAddress = await StreetAddress.findByPk(req.params.id, {
         include: [

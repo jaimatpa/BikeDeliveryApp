@@ -102,17 +102,6 @@ export default {
             loading: false,
             areaSelectedId: 0,
             villaSelectedId: 0,
-            list1: [
-                { name: "John", id: 1 },
-                { name: "Joao", id: 2 },
-                { name: "Jean", id: 3 },
-                { name: "Gerard", id: 4 }
-            ],
-            list2: [
-                { name: "Juan", id: 5 },
-                { name: "Edgard", id: 6 },
-                { name: "Johnson", id: 7 }
-            ],
             areas: [],
             villas: [],
             streetAddresses: []
@@ -171,27 +160,32 @@ export default {
         },
         async handleAreaMove(event) {
             const { moved: { newIndex, element } } = event;
-            await this.$axios.$put(`/api/user/locations/areas/${element.id}`, { priority: newIndex + 1 });
+            await this.$axios.$put(`/api/user/locations/areas/${element.id}?ctx=p_update`, { priority: newIndex + 1 });
             element.priority = newIndex + 1;
 
             // Perform swap
-            this.areas = this.swapElement(this.areas, element)
+            // this.areas = this.swapElement(this.areas, element)
+
+            await this.getAllAreas();
         },
         async handleVillaMove(event) {
             const { moved: { newIndex, element } } = event;
-            await this.$axios.$put(`/api/user/locations/areas/villas/${element.id}`, { priority: newIndex + 1 });
+            await this.$axios.$put(`/api/user/locations/areas/villas/${element.id}?ctx=p_update`, { priority: newIndex + 1 });
             element.priority = newIndex + 1;
 
             // Perform swap
-            this.villas = this.swapElement(this.villas, element)
+            // this.villas = this.swapElement(this.villas, element)
+
+            await this.getAllVillasByArea();
         },
         async handleStreetAddressMove(event) {
             const { moved: { newIndex, element } } = event;
-            await this.$axios.$put(`/api/user/locations/areas/villas/street-addresses/${element.id}`, { priority: newIndex + 1 });
+            await this.$axios.$put(`/api/user/locations/areas/villas/street-addresses/${element.id}?ctx=p_update`, { priority: newIndex + 1 });
             element.priority = newIndex + 1;
 
             // Perform swap
-            this.streetAddresses = this.swapElement(this.streetAddresses, element)
+            // this.streetAddresses = this.swapElement(this.streetAddresses, element)
+            await this.getAllStreetAddressesByVilla();
         },
         async handleCardClick(cardType, element) {
             console.log(`${cardType} clicked`, element);

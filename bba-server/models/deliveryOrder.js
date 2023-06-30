@@ -31,6 +31,8 @@ module.exports = (sequelize, DataTypes) => {
       PickedUp: DataTypes.BOOLEAN,
       PickupNotes: DataTypes.STRING,
       truckID: DataTypes.INTEGER,
+      tripID1: DataTypes.INTEGER,
+      tripID2: DataTypes.INTEGER,
       textSent: DataTypes.BOOLEAN,
       picturesSent: DataTypes.BOOLEAN,
       driverDeliveredBy: DataTypes.STRING,
