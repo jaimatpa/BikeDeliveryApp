@@ -70,6 +70,27 @@ async function getAllTrucks(_, res) {
     }
 }
 
+async function getAllTruckTrips(req, res) {
+    const { date } = req.query;
+
+    const selectedDate = new Date(date);
+    const startOfDay = new Date(selectedDate.getFullYear(), selectedDate.getMonth(), selectedDate.getDate());
+    const endOfDay = new Date(selectedDate.getFullYear(), selectedDate.getMonth(), selectedDate.getDate() + 1);
+
+    const data = await models.Trip.findAll({
+        where: {
+            truckId: req.params.id,
+            date: {
+                [Op.gte]: startOfDay,
+                [Op.lt]: endOfDay
+            },
+        }
+    });
+
+    return res.send(data);
+}
+
 router.get("/", getAllTrucks);
+router.get("/:id/trips", getAllTruckTrips);
 
 module.exports = router;

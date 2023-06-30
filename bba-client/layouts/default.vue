@@ -20,7 +20,7 @@
         <!-- Navigation -->
         <Navigation v-model="drawer" v-if="!hideNav" :items="items" color="primary" />
 
-        
+
         <!-- Main Content Container -->
         <v-main>
             <nuxt />
@@ -86,6 +86,12 @@ export default {
             drawer: false,
             settings: false,
             breakpoint: 640,
+            items: [
+                { title: 'Click Me' },
+                { title: 'Click Me' },
+                { title: 'Click Me' },
+                { title: 'Click Me 2' },
+            ],
             items: [{
                 title: "DASHBOARD",
                 icon: "mdi-view-dashboard-outline",
@@ -129,6 +135,13 @@ export default {
                 color: "primary",
             },
             {
+                title: "SCHEDULER",
+                icon: "mdi-history",
+                iconSelected: "mdi-history",
+                to: "/scheduler",
+                color: "primary",
+            },
+            {
                 title: "LOGISTICS",
                 icon: "mdi-calendar-month-outline",
                 iconSelected: "mdi-calendar-month",
@@ -156,6 +169,13 @@ export default {
                 icon: "mdi-sort",
                 iconSelected: "mdi-sort",
                 to: "/location-sort",
+                color: "primary",
+            },
+            {
+                title: "LOCATION Recon.",
+                icon: "mdi-tag",
+                iconSelected: "mdi-tag",
+                to: "/location-reconciliation",
                 color: "primary",
             },
             {
