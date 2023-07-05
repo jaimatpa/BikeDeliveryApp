@@ -25,6 +25,8 @@ const auth = require('./middleware/auth');
 // Create the express server
 const app = express();
 app.use(cors());
+const cookieParser = require("cookie-parser");
+
 // Create Sequelize Models
 const models = require('./models');
 const { webhook } = require('twilio')

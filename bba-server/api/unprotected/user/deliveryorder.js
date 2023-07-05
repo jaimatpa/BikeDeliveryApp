@@ -2,6 +2,7 @@ const express = require("express");
 const router = express.Router();
 const { Op, literal } = require("sequelize");
 const moment = require("moment");
+const iterate = require("../../../libs/iterate");
 
 const models = require("./../../../models");
 const { RecordingSettingsContext } = require("twilio/lib/rest/video/v1/recordingSettings");
@@ -35,11 +36,40 @@ router.post("/", async (req, res) => {
     res.send(req.body);
 });
 
+router.post("/createEquipmentSwapOrder", async (req, res) => {
+
+    try {
+        await models.Logs.build({ json: JSON.stringify(req.body) }).save();
+    } catch (error) {
+        // console.log(error)
+    }
+
+    try {
+        const data = JSON.parse(JSON.stringify(req.body));
+
+        data.id = null;
+        data.swapOrder = true;
+        data.swapOrderDeliveryId = data.id;
+
+        // Create a new swapOrder
+        const order = await models.DeliveryOrders.build(data).save();
+
+        res.send(order);
+    } catch (error) {
+        res.send(error);
+        console.log(error)
+    }
+
+    //received the json here req.body
+    //res.send(req.body);
+});
+
 router.get("/", async (req, res) => {
     let data = [];
     const search = req.query.search;
     const type = req.query.type;
     const barcodeid = req.query.barcodeid;
+
     if (search) {
         try {
             data = await models.DeliveryOrders.findAll({
@@ -78,6 +108,7 @@ router.get("/", async (req, res) => {
 
                 }
             });
+            
             if (type === "DeliveryOrders") {
                 data = data.filter((record => {
                     var d = moment(record.date).add(4, 'hours').startOf('day');
@@ -142,6 +173,16 @@ router.get("/", async (req, res) => {
                     }
                 }));
             }
+            else if (type === "SwapOrder") {
+                data = data.filter((record => {
+                    if (record.status == 1 && record.swapOrder == 1) {
+                        return true;
+                    } else {
+                        return false;
+                    }
+                }));
+            }
+            
         } catch (error) {
             console.log(error)
         }
@@ -178,7 +219,16 @@ router.get("/", async (req, res) => {
                     return false;
                 }
             }));
-        } else if (type === "Locking") {
+        } else if (type === "EquipmentSwap") {
+            data = data.filter((record => {
+                if (record.status < 2 && record.swapOrder == true) {
+                    return true;
+                } else {
+                    return false;
+                }
+            }));
+        }
+        else if (type === "Locking") {
             data = data.filter((record => {
                 var d = moment(record.date).add(4, 'hours').startOf('day').format('LL');
                 var today = moment().format('LL');

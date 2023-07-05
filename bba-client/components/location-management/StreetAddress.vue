@@ -21,6 +21,15 @@
                 <div @click="item.editable = !editingLocked" v-else>{{ item.name }}</div>
             </template>
 
+            <template v-slot:item.priority="{ item }">
+                <div v-if="item.editable">
+                    <v-text-field v-model="item.bikeRack" @blur="saveItem(item)" @keydown.esc="cancelEditing(item)"
+                        @keydown.enter="saveItem(item)" single-line></v-text-field>
+                </div>
+                <div @click="item.editable = !editingLocked" v-else>{{ item.bikeRack }}</div>
+            </template>
+
+
             <!-- Area Editable -->
             <template v-slot:item.Villa="{ item }">
                 <div v-if="item.editable">
@@ -73,6 +82,12 @@ export default {
                     value: "name",
                 },
                 {
+                    text: "Bike Rack",
+                    align: "start",
+                    sortable: false,
+                    value: "priority",
+                },
+                {
                     text: "Villa",
                     align: "start",
                     sortable: false,
@@ -121,6 +136,9 @@ export default {
 
             this.streetAddresses = response;
             this.streetAddresses = this.streetAddresses.map(streetAddress => ({ ...streetAddress, editable: false }));
+
+            console.log()
+
             this.loading = !this.loading;
         },
         editItem(item) {
@@ -137,10 +155,14 @@ export default {
             this.villas = this.villas.filter(area => area.id !== null);
         },
         async saveItem(item) {
+            // Resolve the enter and blur bug
+            if(item.loading==true) return;
+
             if (item.id === null && (!item.name || !item.Villa)) {
                 return;
             }
 
+            item.loading=true;
             item.editable = false;
             console.log("Saving item:", item);
 
@@ -159,6 +181,7 @@ export default {
                 // Just update
                 await this.$axios.$put(`/api/user/locations/areas/villas/street-addresses/${item.id}`, payload);
             }
+            item.loading = false;
 
         },
         async deleteItem(item) {
@@ -175,6 +198,7 @@ export default {
                 {
                     id: null,
                     name: "",
+                    bikeRack: "test",
                     editable: true,
                     Villa: null
                 },

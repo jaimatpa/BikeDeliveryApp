@@ -36,7 +36,11 @@ module.exports = (sequelize, DataTypes) => {
       textSent: DataTypes.BOOLEAN,
       picturesSent: DataTypes.BOOLEAN,
       driverDeliveredBy: DataTypes.STRING,
-      driverPickedUpBy: DataTypes.STRING
+      driverPickedUpBy: DataTypes.STRING,
+      swapOrder: DataTypes.BOOLEAN,
+      swapOrderDeliveryId: DataTypes.STRING,
+      swappedReason: DataTypes.STRING,
+      swappedNote: DataTypes.STRING,
     },
     {
       sequelize,

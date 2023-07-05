@@ -88,7 +88,7 @@
 
         <v-row cols="12">
           <header>
-            <h1 class="text-h4 mb-4 ml-2 primary--text">Message History</h1>
+            <h1 class="text-h4 mb-4 primary--text">Message History</h1>
           </header>
         </v-row>
         <v-data-table
@@ -103,7 +103,7 @@
           :headers="messageHeaders"
           :items="messages"
           item-key="name"
-          class="elevation-6 ma-1 mb-5"
+          class="elevation-6 mb-5"
         >
           <template v-slot:item.direction="{ item }">
             <div>
@@ -123,9 +123,14 @@
             </div>
           </template>
         </v-data-table>
+        
+        <v-row cols="12" class=" mt-5 mb-5">
+          <v-divider />
+        </v-row>
+
         <v-row cols="12">
           <header>
-            <h1 class="text-h4 mb-4 ml-2 primary--text">Equipment</h1>
+            <h1 class="text-h4 mb-4 primary--text">Equipment</h1>
           </header>
         </v-row>
         <v-data-table
@@ -140,7 +145,7 @@
           :headers="headers"
           :items="equipment"
           item-key="name"
-          class="elevation-6 ma-1 mb-5"
+          class="elevation-6 mb-5"
         >
           <template v-slot:[`item.checkedDelievery`]="{ item }">
             <v-simple-checkbox
@@ -158,6 +163,11 @@
             />
           </template>
         </v-data-table>
+        
+        <v-row cols="12">
+          <v-divider />
+        </v-row>
+
         <v-row cols="12">
           <header>
             <h1 class="text-h4 mb-4 primary--text">Delivery Photos</h1>
@@ -167,61 +177,64 @@
         <v-row cols="12">
           <v-col cols="12" xs="12" sm="12" md="4" xl="4">
             <img
-              :src="`https://images.hiretheproz.com/${orderData.barcode}-0.jpeg`"
+              :src="`https://images.hiretheproz.com/${orderData.barcode}-0.jpeg`" style="display: none"
             />
           </v-col>
           <v-col cols="12" xs="12" sm="12" md="4" xl="4">
             <img
-              :src="`https://images.hiretheproz.com/${orderData.barcode}-1.jpeg`"
+              :src="`https://images.hiretheproz.com/${orderData.barcode}-1.jpeg`" style="display: none"
             />
           </v-col>
           <v-col cols="12" xs="12" sm="12" md="4" xl="4">
             <img
-              :src="`https://images.hiretheproz.com/${orderData.barcode}-2.jpeg`"
+              :src="`https://images.hiretheproz.com/${orderData.barcode}-2.jpeg`" style="display: none"
             />
           </v-col>
           <v-col cols="12" xs="12" sm="12" md="4" xl="4">
             <img
-              :src="`https://images.hiretheproz.com/${orderData.barcode}-3.jpeg`"
+              :src="`https://images.hiretheproz.com/${orderData.barcode}-3.jpeg`" style="display: none"
             />
           </v-col>
           <v-col cols="12" xs="12" sm="12" md="4" xl="4">
             <img
-              :src="`https://images.hiretheproz.com/${orderData.barcode}-4.jpeg`"
+              :src="`https://images.hiretheproz.com/${orderData.barcode}-4.jpeg`" style="display: none"
             />
           </v-col>
         </v-row>
 
+        <v-row cols="12">
+          <v-divider />
+        </v-row>
         <v-row cols="12">
           <header>
             <h1 class="text-h4 mb-4 primary--text">Pickup Photos</h1>
           </header>
         </v-row>
-
         <v-row cols="12">
+          
           <v-col cols="12" xs="12" sm="12" md="4" xl="4">
             <img
-              :src="`https://images.hiretheproz.com/pickup/${orderData.barcode}-0.jpeg`"
+              :src="`https://images.hiretheproz.com/pickup/${orderData.barcode}-0.jpeg`" style="display: none"
             />
           </v-col>
           <v-col cols="12" xs="12" sm="12" md="4" xl="4">
             <img
-              :src="`https://images.hiretheproz.com/pickup/${orderData.barcode}-1.jpeg`"
+              :src="`https://images.hiretheproz.com/pickup/${orderData.barcode}-1.jpeg`" style="display: none"
             />
           </v-col>
           <v-col cols="12" xs="12" sm="12" md="4" xl="4">
             <img
-              :src="`https://images.hiretheproz.com/pickup/${orderData.barcode}-2.jpeg`"
+              :src="`https://images.hiretheproz.com/pickup/${orderData.barcode}-2.jpeg`" style="display: none"
             />
           </v-col>
           <v-col cols="12" xs="12" sm="12" md="4" xl="4">
             <img
-              :src="`https://images.hiretheproz.com/pickup/${orderData.barcode}-3.jpeg`"
+              :src="`https://images.hiretheproz.com/pickup/${orderData.barcode}-3.jpeg`" style="display: none"
             />
           </v-col>
           <v-col cols="12" xs="12" sm="12" md="4" xl="4">
             <img
-              :src="`https://images.hiretheproz.com/pickup/${orderData.barcode}-4.jpeg`"
+              :src="`https://images.hiretheproz.com/pickup/${orderData.barcode}-4.jpeg`" style="display: none"
             />
           </v-col>
         </v-row>
@@ -240,6 +253,7 @@
         <v-row cols="12">
           <v-col
             v-for="image in deliveryImages"
+            v-bind:key="image"
             xs="12"
             sm="12"
             md="4"
@@ -247,7 +261,7 @@
             xl="4"
           >
             <v-card elevation="15">
-              <v-img :src="image" />
+              <v-img :src="image" style="display: none" />
             </v-card>
           </v-col>
         </v-row>
@@ -265,7 +279,8 @@
 
         <v-row cols="12">
           <v-col
-            v-for="image in pickupImages"
+            v-for="image in pickupImages" 
+            v-bind:key="image"
             xs="12"
             sm="12"
             md="4"
@@ -273,7 +288,7 @@
             xl="4"
           >
             <v-card elevation="15">
-              <v-img :src="image" />
+              <v-img :src="image" style="display: none" />
             </v-card>
           </v-col>
         </v-row>
@@ -525,7 +540,7 @@ export default {
 
         //  this.$router.go(-1);
       } catch (err) {
-        console.log("Issue in getOrderItems", err.response);
+        console.log("Issue in getOrderItems 4", err.response);
       }
     },
     async getOrderImages() {
