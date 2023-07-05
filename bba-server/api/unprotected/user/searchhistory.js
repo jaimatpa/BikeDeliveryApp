@@ -79,9 +79,9 @@ router.get("/", async (req, res) => {
 });
 
 router.get("/images", async (req, res) => {
-    console.log("IN IMAGES ENDPOINT");
+    // console.log("IN IMAGES ENDPOINT");
     let id = req.query.orderID;
-    console.log(id);
+    // console.log(id);
     let images = {};
     let deliveryImages = await getImages("D", id).catch(err => {
     });
@@ -92,7 +92,7 @@ router.get("/images", async (req, res) => {
     images["D"] = deliveryImages;
     images["P"] = pickupImages;
 
-    console.log("IMAGE ARRAY", images);
+    // console.log("IMAGE ARRAY", images);
     return res.send(images);
 });
 
@@ -110,10 +110,10 @@ async function getImages(prefix, orderID) {
                 data.Contents.forEach(imageObject => {
                     let key = imageObject.Key;
                     let splitKey = key.split('/');
-                    console.log(splitKey);
+                    //console.log(splitKey);
                     imageArray.push(splitKey[1]);
                 });
-                console.log(imageArray);
+                //console.log(imageArray);
                 resolve(imageArray);
             }
         });

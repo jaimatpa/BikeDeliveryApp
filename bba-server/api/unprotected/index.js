@@ -30,7 +30,7 @@ const deal = require("./user/deal");
 const communicationMessage = require("./user/communicationMessage");
 const location = require("./user/location.controller");
 const trip = require("./user/trip.controller");
-
+const notification = require("./user/notification");
 const cors = require('cors');
 
 module.exports = {
@@ -78,6 +78,10 @@ module.exports = {
     // * Problem Types
     app.use("/api/user/problem-types", problemType);
     app.use("/api/user/problem-types/:id", problemType);
+
+    // * Notifications
+    app.use("/api/user/notifications", notification);
+    app.use("/api/user/notifications/:id", notification);
 
     // * Activities
     app.use("/api/user/activities", activity);

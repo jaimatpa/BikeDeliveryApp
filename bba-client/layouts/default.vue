@@ -3,6 +3,8 @@
         <!-- App Bar -->
         <AppBar app :title="$config.appName" @menuClick="drawer = !drawer" :color="$vuetify.theme.dark ? '' : '#444444'"
             :dark="true" :isMobileBreakPoint="isMobile" class="appBar-title">
+            
+            <NotificationButtonMenu :items="notifications" :icon="notifications.length > 0 ? 'mdi-bell-ring' : 'mdi-bell-outline'"/>
             <IconButtonMenu :items="userItems"
                 :icon="$nuxt.$route.path === '/account' ? 'mdi-account-cog' : 'mdi-account-cog-outline'" />
         </AppBar>
@@ -56,6 +58,7 @@ import Snackbar from "@/components/paradym/Snackbar";
 import ThemeSettings from "@/components/ThemeSettings";
 import IconButton from "@/components/paradym/IconButton";
 import IconButtonMenu from "@/components/paradym/IconButtonMenu";
+import NotificationButtonMenu from "@/components/paradym/NotificationButtonMenu";
 
 export default {
     name: "LayoutDefault",
@@ -65,6 +68,10 @@ export default {
             let user = this.$auth.$storage.getLocalStorage("user");
             if (user) this.$auth.setUser(user);
         }
+
+        this.getNotifications();
+        this.pollData();
+
     },
     mounted() {
         this.$nextTick(() => {
@@ -80,17 +87,14 @@ export default {
         ThemeSettings,
         IconButton,
         IconButtonMenu,
+        NotificationButtonMenu
     },
     data() {
         return {
             drawer: false,
             settings: false,
             breakpoint: 640,
-            items: [
-                { title: 'Click Me' },
-                { title: 'Click Me' },
-                { title: 'Click Me' },
-                { title: 'Click Me 2' },
+            notifications: [
             ],
             items: [{
                 title: "DASHBOARD",
@@ -388,6 +392,18 @@ export default {
                     return routeName;
                     break;
             }
+        },
+        pollData () {
+            setInterval(() => {
+                this.getNotifications();
+            }, 15000)
+        },      
+        async getNotifications() {
+            await this.$axios.get(`/api/user/notifications`).then( response => {
+                this.notifications = response.data;
+                console.log('notifications have been updated');
+            })
+
         },
     },
 };

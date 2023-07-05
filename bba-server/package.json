@@ -18,6 +18,7 @@
     "aws-sdk": "^2.1153.0",
     "bcrypt": "^5.0.1",
     "consola": "^2.15.3",
+    "cookie-parser": "^1.4.6",
     "cors": "^2.8.5",
     "crypto-random-string": "^3.3.1",
     "express": "^4.17.1",

@@ -39,24 +39,22 @@
                                 </v-text-field>
                             </v-col>
                         </v-row>
-                        <v-row cols="12" xs="12" sm="12" md="12" xl="12">
-                             <v-textarea v-model="orderData.note" label="NOTES" placeholder="NOTES" disabled readonly dense outlined></v-textarea>
-                        </v-row>
+
                         <v-row cols="12">
                             <v-col cols="12" xs="12" sm="12" md="4" xl="4">
-                                <img :src="`https://images.hiretheproz.com/${orderData.barcode}-0.jpeg`"></img>
+                                <img :src="`https://images.hiretheproz.com/${orderData.barcode}-0.jpeg`" onload="this.style='display: block;'" style="display:none"></img>
                             </v-col>
                             <v-col cols="12" xs="12" sm="12" md="4" xl="4">
-                                <img :src="`https://images.hiretheproz.com/${orderData.barcode}-1.jpeg`"></img>
+                                <img :src="`https://images.hiretheproz.com/${orderData.barcode}-1.jpeg`"onload="this.style='display: block;'" style="display:none"></img>
                             </v-col>
                             <v-col cols="12" xs="12" sm="12" md="4" xl="4">
-                                <img :src="`https://images.hiretheproz.com/${orderData.barcode}-2.jpeg`"></img>
+                                <img :src="`https://images.hiretheproz.com/${orderData.barcode}-2.jpeg`" onload="this.style='display: block;'" style="display:none"></img>
                             </v-col>
                             <v-col cols="12" xs="12" sm="12" md="4" xl="4">
-                                <img :src="`https://images.hiretheproz.com/${orderData.barcode}-3.jpeg`"></img>
+                                <img :src="`https://images.hiretheproz.com/${orderData.barcode}-3.jpeg`" onload="this.style='display: block;'" style="display:none"></img>
                             </v-col>
                             <v-col cols="12" xs="12" sm="12" md="4" xl="4">
-                                <img :src="`https://images.hiretheproz.com/${orderData.barcode}-4.jpeg`"></img>
+                                <img :src="`https://images.hiretheproz.com/${orderData.barcode}-4.jpeg`" onload="this.style='display: block;'" style="display:none"></img>
                             </v-col>
                         </v-row>
                     </div>
@@ -105,13 +103,30 @@
 
                         <v-btn color="primary" x-large block @click.stop="scanDialogVisible = true;cameraRender += 1">Scan Barcode</v-btn>
 
-                        <v-data-table width="100%" block cols="12" xs="12" sm="12" md="12" xl="12" v-model="selected" :headers="headers" :items="equipment" item-key="name" class="elevation-1 ma-1 mb-2">
-                            <template v-slot:item.checkpickup="{ item }">
+                        <v-data-table width="100%" block cols="12" xs="12" sm="12" md="12" xl="12" :headers="headers" :items="equipment" item-key="name" class="elevation-6 ma-1 mb-2">
+                            <template v-slot:[`item.checkpickup`]="{ item }">
                                 <v-simple-checkbox v-model="item.checkPickup" v-ripple @input="saveUpdate(item)">
 
                                 </v-simple-checkbox>
                             </template>
+                            <template v-slot:[`item.actions`]="{ item }">
+                                <v-icon size="50" medium color="primary" @click.stop="currentItem=item;scanDialogVisible = true;cameraRender += 1">
+                                    mdi-barcode
+                                </v-icon>
+                            </template>
                         </v-data-table>
+
+                        <v-data-table width="100%" block cols="12" xs="12" sm="12" md="12" xl="12" :headers="headersextras" :items="extras" item-key="name" class="elevation-6 ma-1 mb-2">
+                        </v-data-table>
+
+                        <v-checkbox label="Unable to deliver all items" v-model="unableToDeliverItems" v-ripple></v-checkbox>
+                        <v-text-field
+                            label="Reason why you can't deliver all items"
+                            visible
+                            :disabled="!unableToDeliverItems"
+                            :v-show="unableToDeliverItems"
+                            hide-details
+                            ></v-text-field>
 
                         <!-- <v-row cols="12">
                             <v-col cols="12" xs="12" sm="12" md="4" xl="4">
@@ -247,6 +262,7 @@ export default {
     async created() {
         await this.getOrderDetails();
         await this.getOrderItems();
+        await this.getOrderExtras();
         await this.getLockingDetails();
     },
     computed: {
@@ -262,9 +278,11 @@ export default {
             breakpoint: 640,
             searchHistoryDialog: false,
             scanDialogVisible: false,
+            unableToDeliverItems: false,
             cameraRender: 0,
             currentItem: {},
             orderData: {},
+            pickedUp: [],
             selected: [],
             userPosition: {},
             date: null,
@@ -286,8 +304,15 @@ export default {
                 {
                     text: "PICKED UP",
                     value: "checkpickup",
-                },
+                }
             ],
+            headersextras: [{
+                    text: "Name",
+                    align: "start",
+                    value: "extraName",
+                }
+            ],
+            extras: [],
             equipment: [],
             smsObject: {
                 to: "",
@@ -334,9 +359,18 @@ export default {
             console.log(lockingDataResponse);
             this.colorItems = _.map(lockingDataResponse, "color");
         },
+        async updateOrderDetails() {
+            this.showSuccess('The Delivery Order items have been marked as picked up.');
+            // const lockingDataResponse = await this.$axios.$get("/api/user/locking");
+            // this.lockingData = lockingDataResponse;
+            // console.log(lockingDataResponse);
+            // this.colorItems = _.map(lockingDataResponse, "color");
+            this.$router.push("/pickup");
+        },
         async save() {
             this.uploads = this.$refs.thirdStep.local_files_to_upload
             this.uploadFiles(this.uploads);
+            this.updateOrderDetails();
             console.log("SAVE")
         },
         closeScanner() {
@@ -397,7 +431,23 @@ export default {
 
                 //  this.$router.go(-1);
             } catch (err) {
-                console.log("Issue in getOrderItems", err.response);
+                console.log("Issue in getOrderItems 2", err.response);
+            }
+        },
+        async getOrderExtras() {
+            try {
+                let response = await this.$axios.$get("/api/user/deliveryItem/extras", {
+                    params: {
+                        deliveryID: this.orderData.id,
+                    },
+                });
+
+                this.extras = response;
+                console.log("Extras", this.extras);
+
+                //  this.$router.go(-1);
+            } catch (err) {
+                console.log("Issue in getOrderItems 3", err.response);
             }
         },
         async getMsgTemplate() {

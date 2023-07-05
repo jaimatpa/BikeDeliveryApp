@@ -1,6 +1,6 @@
 {
   "name": "paradym-client",
-  "version": "1.2.0-RC",
+  "version": "1.2.1-RC",
   "description": "The client template application for the Paradym framework",
   "author": "Paradynamix (https://www.paradynamix.com/)",
   "private": true,

@@ -8,19 +8,24 @@ const models = require("./../../../models");
 router.post("/", async (req,res) => {
     console.log("IN ROUTER POST");
     const orderid = req.query.orderid;
+    const swapOrder = req.query.swapOrder ? req.query.swapOrder : 0;
+    
     const status = req.query.status;
     const textSent = req.query.textSent;
     const picturesSent = req.query.picturesSent;
     console.log(req.query.status);
+
     if(!orderid){
         return res.send('order id not found!!!')
     }
     try{
+
         const deliveryOrder = await models.DeliveryOrders.findOne(
             {
                 where:
                 {
-                    orderid:orderid
+                    orderid:orderid,
+                    swapOrder: swapOrder
                 }
             });
             

@@ -367,7 +367,7 @@ export default {
 
         //  this.$router.go(-1);
       } catch (err) {
-        console.log("Issue in getOrderItems", err.response);
+        console.log("Issue in getOrderItems 1234", err.response);
       }
     },
     async code(value) {
@@ -512,6 +512,7 @@ export default {
               {
                 params: {
                   orderid: this.deliveryOrderData.orderid,
+                  swapOrder: 1,
                   status: 1,
                   textSent: 1,
                   picturesSent: 1,
@@ -524,7 +525,7 @@ export default {
             this.$router.push("/deliveryOrder");
           });
       } catch (error) {
-        console.log("errror", error);
+        console.log("errror 1234", error);
         this.loader = false;
       }
     },
@@ -627,6 +628,7 @@ export default {
               params: {
                 orderid: this.deliveryOrderData.orderid,
                 status: 1,
+                swapOrder: 1
               },
             }
           );

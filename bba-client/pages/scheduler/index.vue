@@ -1,15 +1,15 @@
 <template>
-    <section class="pa-1">
+    <section class="pa-1 mt-3">
 
         <v-app-bar style="height: 40px;">
             <v-row no-gutters align="center">
-                <v-col cols="4"></v-col>
-                <v-col cols="4" class="pa-4">
-                    <v-menu v-model="menuOpen" :close-on-content-click="false">
+                <v-col cols="2"> 
+                    <v-menu v-model="menuOpen" :close-on-content-click="true" >
                         <template v-slot:activator="{ on }">
                             <v-text-field v-model="selectedDate" label="Select a date" readonly v-on="on"></v-text-field>
+                            
                         </template>
-                        <v-date-picker v-model="selectedDate"></v-date-picker>
+                        <v-date-picker v-model="selectedDate" @input="updateScheduler()" ></v-date-picker>
                     </v-menu>
                 </v-col>
             </v-row>
@@ -20,33 +20,38 @@
                 style="min-width: 350px; max-height: 100%; overflow-y: auto;">
                 <!-- Trips for each truck -->
                 <v-card v-for="trip in truck.trips" :key="trip.tripNumber"
+
                     style="width: 100%; overflow-y: scroll; overflow-x: hidden; margin-bottom: 10px;">
                     <v-card-subtitle>
                         <h5>
-                            {{ truck.TruckName }}
+                            Truck Name {{ truck.TruckName }}
                         </h5>
                     </v-card-subtitle>
 
-                    <div class="row" style="height: 120px; overflow-x: auto; align-items: center;">
+                    <div class="row" style="margin: 5px; overflow-x: auto; align-items: center;">
                         <div class="col-4" style="min-width: 100%; max-height: 100%; overflow-y: auto;">
                             <Draggable class="list-group" style="cursor: move;" :list="trip.deliveryOrders"
-                                group="deliveryOrder" @change="handleDeliveryOrderMove">
+                                :group="{ name: 'row' }"
+                                @change="deliverOrderMoved(truck.id, trip.tripNumber, $event)"
+                                :clone="cloneAction()">
+
                                 <div class="list-group-item" v-for="deliveryOrder in trip.deliveryOrders"
                                     :key="deliveryOrder.id">
                                     <v-card color="white" class="mb-2">
                                         <v-card-text>
                                             <v-row align="center">
-                                                <v-col cols="2" class="d-flex align-center">
+                                                <v-col cols="12" class="d-flex align-center">
                                                     <v-icon>mdi-drag</v-icon>
-                                                    <span>{{ deliveryOrder.orderid }}</span>
-                                                </v-col>
-                                                <v-col cols="10" class="text-right">
-                                                    <span>{{ deliveryOrder.location }}</span>
-                                                </v-col>
+                                                    <div class="" style="padding-left: 10px; display: block">
+                                                        <span><strong>{{ deliveryOrder.orderid }}</strong></span><br/>
+                                                        <span>{{ deliveryOrder.location }}</span>
+                                                    </div>
+                                                </v-col> 
                                             </v-row>
                                         </v-card-text>
                                     </v-card>
                                 </div>
+
                             </Draggable>
                         </div>
                     </div>
@@ -55,7 +60,7 @@
                         <v-row align="center" justify="space-between">
                             <v-col cols="auto">
                                 <h4>
-                                    Trip {{ trip.tripNumber }}
+                                    Trip #{{ trip.tripNumber }}
                                 </h4>
                             </v-col>
                             <v-col cols="auto">
@@ -67,13 +72,15 @@
             </v-col>
         </v-row>
 
-        <div class="row" style="height: 30vh; overflow-x: auto;">
+        <div class="row" style=" overflow-x: auto;">
             <div class="col-4" style="min-width: 250px; max-height: 100%; overflow-y: auto;">
                 <h4>Deliveries</h4>
                 <hr class="mb-2" />
-                <Draggable class="list-group" style="cursor: move;" :list="deliveryOrders" group="deliveryOrder"
-                    @change="handleDeliveryOrderMove">
-                    <div class="list-group-item" v-for="deliveryOrder in deliveryOrders" :key="deliveryOrder.id">
+                <Draggable class="list-group" style="cursor: move;" :list="nonSwappedDeliveryOrders"  
+     
+                    :group="{ name: 'row' }"
+                    :clone="cloneAction()">
+                    <div class="list-group-item" v-for="deliveryOrder in nonSwappedDeliveryOrders" :key="deliveryOrder.id">
                         <v-card color="white" :elevation="1" class="mb-2">
                             <v-card-text>
                                 <v-row align="center">
@@ -94,12 +101,53 @@
             <div class="col-4">
                 <h4>Swaps</h4>
                 <hr class="mb-2" />
+                <Draggable class="list-group" style="cursor: move;" :list="swappedDeliveryOrders"  
+   
+                    :group="{ name: 'row' }"
+                    :clone="cloneAction()">
+                    <div class="list-group-item" v-for="deliveryOrder in swappedDeliveryOrders" :key="deliveryOrder.id">
+                        <v-card color="white" :elevation="1" class="mb-2">
+                            <v-card-text>
+                                <v-row align="center">
+                                    <v-col cols="4" class="d-flex align-center">
+                                        <v-icon>mdi-drag</v-icon>
+                                        <span>{{ deliveryOrder.orderid }}</span>
+                                    </v-col>
+                                    <v-col cols="8" class="text-right">
+                                        <span>{{ deliveryOrder.location }}</span>
+                                    </v-col>
+                                </v-row>
+                            </v-card-text>
+                        </v-card>
+                    </div>
+                </Draggable>
             </div>
 
             <div class="col-4">
                 <h3>Pickups</h3>
                 <hr class="mb-2" />
-            </div>
+                
+                <Draggable class="list-group" style="cursor: move;" :list="pickups"  
+ 
+                    :group="{ name: 'row' }"
+                    :clone="cloneAction()">
+                    <div class="list-group-item" v-for="deliveryOrder in pickups" :key="deliveryOrder.id">
+                        <v-card color="white" :elevation="1" class="mb-2">
+                            <v-card-text>
+                                <v-row align="center">
+                                    <v-col cols="4" class="d-flex align-center">
+                                        <v-icon>mdi-drag</v-icon>
+                                        <span>{{ deliveryOrder.orderid }}</span>
+                                    </v-col>
+                                    <v-col cols="8" class="text-right">
+                                        <span>{{ deliveryOrder.location }}</span>
+                                    </v-col>
+                                </v-row>
+                            </v-card-text>
+                        </v-card>
+                    </div>
+                </Draggable>
+            </div> 
         </div>
     </section>
 </template>
@@ -206,11 +254,12 @@ export default {
     data() {
         return {
             loading: false,
-            selectedDate: new Date().toISOString().substring(0, 10),
+            selectedDate: "2022-10-08", //new Date().toISOString().substring(0, 10),
             menuOpen: false,
             areas: [],
             villas: [],
             streetAddresses: [],
+            tripCount: 0,
             /**
              * @typedef {Truck[]} Trucks
             * @type {Trucks}
@@ -225,14 +274,70 @@ export default {
              * @typedef {DeliveryOrder[]} DeliveryOrders
             * @type {DeliveryOrders}
             */
-            deliveryOrders: []
+            deliveryOrders: [],
+            nonSwappedDeliveryOrders: [],
+            swappedDeliveryOrders: [],
+            pickups: []
         };
     },
-    async mounted() {
+    async mounted() { 
         await this.generateTrips();
         await this.getAllDeliveryOrders();
+
+        await this.loadData();
+    },
+    async created() {
+
     },
     methods: {
+        async loadData() {
+            this.tripCount = 15;
+            this.swappedDeliveryOrders = this.deliveryOrders.filter(x=>x.swapOrder == 1 && x.truckID == null);
+            this.nonSwappedDeliveryOrders = this.deliveryOrders.filter(x=>x.swapOrder == 0 && x.truckID == null);
+
+            // Restore schedules
+            this.trucks.forEach( truck => {
+                this.trips.forEach(trip  => {
+                    var orders = this.deliveryOrders.filter(x=>x.truckID == truck.id && x.tripID1 == trip.tripNumber);
+                    console.log(trip.tripNumber - 1);
+                    if(typeof(truck.trips[trip.tripNumber - 1]) != 'undefined') {
+                        truck.trips[trip.tripNumber - 1].deliveryOrders = orders;
+                    }
+
+                    //var orders = this.deliveryOrders.filter(x=>x.truckID == truck.id && x.tripID1 == trip.tripNumber);
+                    console.log('orders:', orders);
+                    trip.deliveryOrders = orders;
+                    return;
+                });
+            });
+
+            // this.deliveryOrders.forEach(x=> {
+            //     console.log('delivery order', x.swapOrder);
+            // });
+            // console.log('this.swappedDeliveryOrders', this.swappedDeliveryOrders);
+            
+            // // //this.trucks[0].trips[0].deliveryOrders.append(this.DeliveryOrders[0]);
+
+            // console.log('this.trucks[0].trips[0]', this.trucks[0].trips[0]);
+            // //this.trucks[0].trips[0].tripNumber = 'hello';
+
+            console.log('truck 0 trips', this.trucks[0].trips);
+
+            // this.trucks[0].trips[0].deliveryOrders = [this.deliveryOrders[0]];
+            // this.trucks[0].trips[1].deliveryOrders = [this.deliveryOrders[1]];
+            // // this.trucks[0].trips[2].deliveryOrders = [this.deliveryOrders[2]];
+
+            // this.trucks[1].trips[0].deliveryOrders = [this.deliveryOrders[3]];
+            
+            console.log('delivery orders', this.deliveryOrders); 
+            console.log('trip delivery orders', this.trucks[0].trips[0].deliveryOrders);
+        },
+        async updateScheduler() {
+            await this.generateTrips();
+            await this.getAllDeliveryOrders();
+
+            await this.loadData();
+        }, 
         swapElement(array, newElement) {
             const index = array.findIndex((area) => area.id === newElement.id);
             if (index !== -1) {
@@ -246,25 +351,84 @@ export default {
          * @param {*} truckId 
          * @returns {Trip}
          */
-        async getTripObject(tripNumber, truckId) {
+        getTripObject(tripNumber, truckId) {
             // todo can be offloaded to server side
-            const persistedTrip = this.trips.filter(trip => trip.truckId === truckId && trip.tripNumber === tripNumber).pop();
+            // const persistedTrip = this.trips.filter(trip => trip.truckId === truckId && trip.tripNumber === tripNumber).pop();
 
-            if (persistedTrip) {
-                return persistedTrip;
-            }
+            // if (persistedTrip) {
+            //     console.log('returned persistedTrip');
+            //     return persistedTrip;
+            // }
 
+            
+            console.log('returned new trip');
             return {
                 id: null,
-                tripNumber,
+                tripNumber: tripNumber,
                 date: new Date(),
-                truckId,
+                truckId: truckId,
                 released: false,
                 complete: false,
                 notifyYardMAnager: false,
                 driverId: null,
                 deliveryOrders: []
             };
+        },
+        cloneAction(item) {
+            // console.log("cloned", item);
+        },
+        async deliverOrderMoved(truckid, tripid, event) {
+            console.log('deliverOrderMoved', truckid, tripid, event);
+
+            if(typeof(truckid) !== 'number' && typeof(tripid) !== 'number') return;
+
+            if (event.moved) {
+                console.log('order has been moved.');
+            }
+
+            if (event.removed) {
+                //trip.deliveryOrders.append(event.removed.element);
+                console.log('order has been removed.', event.removed);
+            }
+
+            if (event.added) {
+                console.log('order has been added.', event.added);
+                console.log('orderId', event.added.element.id);
+
+
+                var trucks = this.trucks.filter(x=>x.id == truckid);
+                var truck = trucks[0];
+                 
+                console.log('truck', truck);
+                //truck[0].trips = [];
+
+                const data = {
+                    truckId: truck,
+                    tripNumber: tripid,
+                    action: 'add',
+                    deliveryOrderId: event.added.element.id
+                }
+
+                var trip = this.getTripObject(truck.trips.length+1, truckid);
+                console.log(truck.trips[truck.trips.length - 1]);
+                if(truck.trips[truck.trips.length - 1].deliveryOrders.length > 0) {
+                    truck.trips.push(trip);
+                }
+                // truck[0].trips.append(trip);
+
+                //this.trucks.trips.append();
+
+                
+
+                const response = await this.$axios.$post(`/api/user/trips/`, data);
+
+                console.log('submitting data', data);
+
+                //await this.getAllDeliveryOrders();
+                ///await this.loadData();
+                
+            }
+
         },
         async generateTrips() {
             await this.getAllTrips();
@@ -281,13 +445,12 @@ export default {
                     ...this.getTripObject(index + 1, truck.id),
                 }));
             });
-
-            console.log(this.trucks);
+            
         },
         async getAllTrips() {
             // todo change this to be dynamic, uncomment following line
-            // const response = await this.$axios.$get(`/api/user/trips?date=${this.selectedDate}`);
-            const response = await this.$axios.$get(`/api/user/trips?date=2022-10-01`);
+            const response = await this.$axios.$get(`/api/user/trips?date=${this.selectedDate}`);
+            //const response = await this.$axios.$get(`/api/user/trips?date=2022-10-08`);
 
             this.trips = response;
         },
@@ -299,29 +462,18 @@ export default {
         async getAllDeliveryOrders() {
             console.log(this.selectedDate);
             // todo change this to be dynamic, uncomment following line
-            // const response = await this.$axios.$get(`/api/user/deliveryOrder/query?order_type=delivery_order&date=${this.selectedDate}`);
-            const response = await this.$axios.$get(`/api/user/deliveryOrder/query?order_type=delivery_order&date=2022-10-01`);
-
+            const response = await this.$axios.$get(`/api/user/deliveryOrder/query?order_type=delivery_order&date=${this.selectedDate}`);
+            //const response = await this.$axios.$get(`/api/user/deliveryOrder/query?order_type=delivery_order&date=2022-10-08`);
+ 
             this.deliveryOrders = response;
 
-            console.log(this.deliveryOrders)
+            console.log('orders', this.deliveryOrders)
         },
-        async handleDeliveryOrderMove(event) {
-            // const { moved: { newIndex, element } } = event;
-            console.log(event);
+        async handleDeliveryOrderMove(truck, trip, event) {
+            // const { moved: { oldIndex, element } } = event.removed;
 
-            if (event.moved) {
-
-            }
-
-            if (event.removed) {
-
-            }
-
-            if (event.added) {
-
-            }
-        },
+           
+        }, 
     }
 };
 </script>

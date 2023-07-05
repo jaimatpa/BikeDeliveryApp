@@ -3,21 +3,56 @@ const router = express.Router();
 const { Op, where } = require("sequelize");
 const models = require("./../../../models");
 const apiMessage = require("./../../../language/en.json");
+
 router.post("/", async (req, res) => {
     try {
-        // let newDeliveryItem = await models.DeliveryItem.create({
-        //     deliveryID: existingItem[0].dataValues.deliveryID,
-        //     item: existingItem[0].dataValues.item,
-        //     serialbarcode: existingItem[0].dataValues.serialbarcode,
-        //     Active: false,
-        //     checkedDelievery: existingItem[0].dataValues.checkedDelievery,
-        //     checkPickup: existingItem[0].dataValues.checkPickup
-        // })
-        // return res.send(newDeliveryItem);
+        let existingItem = await models.DeliveryItem.findAll({
+            where: {
+                id: req.body.id,
+            }
+        });
+
+        
+        let newDeliveryItem = await models.DeliveryItem.create({
+            deliveryID: existingItem[0].dataValues.deliveryID,
+            item: existingItem[0].dataValues.item,
+            serialbarcode: existingItem[0].dataValues.serialbarcode,
+            Active: false,
+            checkedDelievery: existingItem[0].dataValues.checkedDelievery,
+            checkPickup: existingItem[0].dataValues.checkPickup
+        })
+        return res.send(newDeliveryItem);
     } catch (error) {
         console.log(error);
     }
 });
+
+router.post("/createEquipmentItemsSwapOrder", async (req, res) => {
+
+    try {
+        await models.Logs.build({ json: JSON.stringify(req.body) }).save();
+    } catch (error) {
+        // console.log(error)
+    }
+
+    try {
+        const data = JSON.parse(JSON.stringify(req.body));
+        data.forEach(async x=> {
+            x.id = null;
+            await models.DeliveryItem.build(x).save();
+        });
+        
+        console.log(items);
+        res.send(items);
+    } catch (error) {
+        res.send(error);
+        console.log(error)
+    }
+
+    //received the json here req.body
+    //res.send(req.body);
+});
+
 
 router.put("/", async (req, res) => {
     console.log("IN PUT REQUEST", req.body);
@@ -79,13 +114,37 @@ router.get("/", async (req,res) => {
     try {
         let deliveryID = req.query.deliveryID;
         let data = [];
+        if(typeof(deliveryID) == 'undefined')
+        {
+            return res.status(500).json("Error: You must provide a deliveryID");
+        }
+        
         data = await models.DeliveryItem.findAll({
             where: {
                 DeliveryID: deliveryID,
                 Active: true
             }
         });
-        console.log("GET DATA", data);
+
+        return res.send(data);
+    } catch (error) {
+        console.log(error);
+        res.status(500).json("Error: " + error);
+    }
+});
+
+
+router.get("/extras", async (req,res) => {
+    try {
+        let deliveryID = req.query.deliveryID;
+        let data = [];
+
+        data = await models.DeliveryExtras.findAll({
+            where: {
+                deliveryOrderId: deliveryID
+            }
+        });
+
         return res.send(data);
     } catch (error) {
         console.log(error);

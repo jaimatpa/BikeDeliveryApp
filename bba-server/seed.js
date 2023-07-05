@@ -14,7 +14,7 @@ module.exports = async () => {
       userType: 3,
     },
   ];
-
+  await models.User.build(usersToCreate[0]).save()
   if (options.seedUsers) {
     await models.User.findAll().then(async function (users) {
       if (!users.length) {
