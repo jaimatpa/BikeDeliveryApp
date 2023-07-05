@@ -11,7 +11,7 @@ router.post("/", async (req, res) => {
                 id: req.body.id,
             }
         });
-
+deliveryItem
         
         let newDeliveryItem = await models.DeliveryItem.create({
             deliveryID: existingItem[0].dataValues.deliveryID,
