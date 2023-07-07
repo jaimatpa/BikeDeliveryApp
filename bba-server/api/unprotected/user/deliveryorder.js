@@ -3,6 +3,7 @@ const router = express.Router();
 const { Op, literal } = require("sequelize");
 const moment = require("moment");
 const iterate = require("../../../libs/iterate");
+const { sendNotification } = require("../../functions/notifications")
 
 const models = require("./../../../models");
 const { RecordingSettingsContext } = require("twilio/lib/rest/video/v1/recordingSettings");
@@ -359,8 +360,9 @@ router.get("/query", async (req, res) => {
 
     if (order_type === "delivery_order") {
         const selectedDate = new Date(date);
-        const startOfDay = new Date(selectedDate.getFullYear(), selectedDate.getMonth(), selectedDate.getDate());
-        const endOfDay = new Date(selectedDate.getFullYear(), selectedDate.getMonth(), selectedDate.getDate() + 1);
+        console.log(selectedDate);
+        const startOfDay = new Date(selectedDate.getFullYear(), selectedDate.getMonth(), selectedDate.getDate() + 1);
+        const endOfDay = new Date(selectedDate.getFullYear(), selectedDate.getMonth(), selectedDate.getDate() + 2);
         // Fetch all records from the three tables
         let [deliveryOrders, areas, villas, streetAddresses] = await Promise.all([
             models.DeliveryOrders.findAll({

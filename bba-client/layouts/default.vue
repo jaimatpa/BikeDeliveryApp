@@ -399,11 +399,13 @@ export default {
             }, 15000)
         },      
         async getNotifications() {
-            await this.$axios.get(`/api/user/notifications`).then( response => {
-                this.notifications = response.data;
-                console.log('notifications have been updated');
-            })
-
+            if(this.$auth.user.hasOwnProperty("id"))
+            {
+                await this.$axios.get(`/api/user/notifications`).then( response => {
+                    this.notifications = response.data;
+                    console.log('notifications have been updated');
+                })
+            }
         },
     },
 };

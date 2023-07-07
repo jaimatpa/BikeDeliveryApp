@@ -2,38 +2,49 @@
     <section class="pa-1 mt-3">
 
         <v-app-bar style="height: 40px;">
-            <v-row no-gutters align="center">
-                <v-col cols="2"> 
+            <v-row align="center">
+                <v-col cols="1"> 
                     <v-menu v-model="menuOpen" :close-on-content-click="true" >
                         <template v-slot:activator="{ on }">
                             <v-text-field v-model="selectedDate" label="Select a date" readonly v-on="on"></v-text-field>
-                            
                         </template>
                         <v-date-picker v-model="selectedDate" @input="updateScheduler()" ></v-date-picker>
                     </v-menu>
                 </v-col>
+
+                <v-col cols="3"> 
+                    <v-checkbox label="Enable Yard Manager" v-model="enableYardManager"></v-checkbox>
+                </v-col>
             </v-row>
         </v-app-bar>
 
-        <v-row no-gutters align="center" class="flex-nowrap my-2" style="height: 45vh; overflow-x: auto;">
+        <v-row no-gutters align="center" class="flex-nowrap my-2" style="height: 45vh; overflow-x: auto;" >
             <v-col v-for="truck in trucks" :key="truck.id" class="flex-shrink-0 px-2"
                 style="min-width: 350px; max-height: 100%; overflow-y: auto;">
-                <!-- Trips for each truck -->
+
+                 <!-- Trips for each truck -->
                 <v-card v-for="trip in truck.trips" :key="trip.tripNumber"
 
-                    style="width: 100%; overflow-y: scroll; overflow-x: hidden; margin-bottom: 10px;">
+                    style="width: 100%; overflow-y: scroll; overflow-x: hidden; margin-bottom: 10px; " :style="{ 'background-color': trip.released ? '#ececec' : 'inherit', 'pointer-effects': trip.released ? 'none' : 'inherit' }">
                     <v-card-subtitle>
                         <h5>
                             Truck Name {{ truck.TruckName }}
                         </h5>
+ 
+                        <div v-if="trip.released"  class="mt-4 mb-4" style="height: 3px; width:30%; background-color: orange;"></div>
+                        <div v-if="trip.complete"  class="mt-4 mb-4" style="height: 3px; width:30%; background-color: green;"></div>
+               
+                        <v-select :items="drivers" :disabled="trip.released" :style="{ 'pointer-effects': trip.released ? 'none' : 'inherit' }" item-text="displayName" v-model="trip.selectedDriver" persistent-hint single-line return-object label="Driver Name" ></v-select>
                     </v-card-subtitle>
 
-                    <div class="row" style="margin: 5px; overflow-x: auto; align-items: center;">
+                    <div class="row" style="margin: 0px; overflow-x: auto; align-items: center;">
                         <div class="col-4" style="min-width: 100%; max-height: 100%; overflow-y: auto;">
-                            <Draggable class="list-group" style="cursor: move;" :list="trip.deliveryOrders"
+                            <Draggable style="min-height: 120px" class="list-group" :list="trip.deliveryOrders"
                                 :group="{ name: 'row' }"
+                                :style="{ 'cursor': trip.released ? 'inherit' : 'move', 'pointer-effects': trip.released ? 'none' : 'inherit' }"
+                                :disabled="trip.released"
                                 @change="deliverOrderMoved(truck.id, trip.tripNumber, $event)"
-                                :clone="cloneAction()">
+                                >
 
                                 <div class="list-group-item" v-for="deliveryOrder in trip.deliveryOrders"
                                     :key="deliveryOrder.id">
@@ -64,7 +75,8 @@
                                 </h4>
                             </v-col>
                             <v-col cols="auto">
-                                <v-btn color="primary" outlined>Release</v-btn>
+                                <v-btn v-if="!trip.released" color="primary" outlined @click="releaseTrip(trip)">Release</v-btn>
+                                <v-btn v-if="trip.released" color="primary" outlined disabled>Released</v-btn>
                             </v-col>
                         </v-row>
                     </v-card-text>
@@ -79,7 +91,7 @@
                 <Draggable class="list-group" style="cursor: move;" :list="nonSwappedDeliveryOrders"  
      
                     :group="{ name: 'row' }"
-                    :clone="cloneAction()">
+                    >
                     <div class="list-group-item" v-for="deliveryOrder in nonSwappedDeliveryOrders" :key="deliveryOrder.id">
                         <v-card color="white" :elevation="1" class="mb-2">
                             <v-card-text>
@@ -104,7 +116,7 @@
                 <Draggable class="list-group" style="cursor: move;" :list="swappedDeliveryOrders"  
    
                     :group="{ name: 'row' }"
-                    :clone="cloneAction()">
+                    >
                     <div class="list-group-item" v-for="deliveryOrder in swappedDeliveryOrders" :key="deliveryOrder.id">
                         <v-card color="white" :elevation="1" class="mb-2">
                             <v-card-text>
@@ -130,7 +142,7 @@
                 <Draggable class="list-group" style="cursor: move;" :list="pickups"  
  
                     :group="{ name: 'row' }"
-                    :clone="cloneAction()">
+                    >
                     <div class="list-group-item" v-for="deliveryOrder in pickups" :key="deliveryOrder.id">
                         <v-card color="white" :elevation="1" class="mb-2">
                             <v-card-text>
@@ -155,6 +167,14 @@
 <script>
 import Page from "@/components/paradym/Page";
 import Draggable from "vuedraggable";
+
+import _ from "lodash";
+import moment from "moment";
+import {
+    mapActions,
+    mapState
+} from "vuex";
+
 
 /**
  * Represents a truck in the Trucks table.
@@ -254,12 +274,15 @@ export default {
     data() {
         return {
             loading: false,
-            selectedDate: "2022-10-08", //new Date().toISOString().substring(0, 10),
+            selectedDate: new Date().toISOString().substring(0, 10),
             menuOpen: false,
+            enableYardManager: false,
             areas: [],
             villas: [],
+            drivers: [],
             streetAddresses: [],
             tripCount: 0,
+            selectedDriver: [],
             /**
              * @typedef {Truck[]} Trucks
             * @type {Trucks}
@@ -277,60 +300,60 @@ export default {
             deliveryOrders: [],
             nonSwappedDeliveryOrders: [],
             swappedDeliveryOrders: [],
-            pickups: []
+            pickups: [],
+            forceUpdate: false
         };
     },
     async mounted() { 
         await this.generateTrips();
         await this.getAllDeliveryOrders();
-
+        await this.getAllDrivers();
         await this.loadData();
     },
     async created() {
 
     },
     methods: {
+        ...mapActions("snackbar", {
+            showSuccess: "success",
+            showError: "error"
+        }),
         async loadData() {
-            this.tripCount = 15;
-            this.swappedDeliveryOrders = this.deliveryOrders.filter(x=>x.swapOrder == 1 && x.truckID == null);
-            this.nonSwappedDeliveryOrders = this.deliveryOrders.filter(x=>x.swapOrder == 0 && x.truckID == null);
+            this.swappedDeliveryOrders = this.deliveryOrders.filter(x=>x.swapOrder == 1 && x.truckID == null && x.tripID1 == null);
+            this.nonSwappedDeliveryOrders = this.deliveryOrders.filter(x=>x.swapOrder == 0 && x.truckID == null && x.tripID1 == null); //
 
-            // Restore schedules
             this.trucks.forEach( truck => {
-                this.trips.forEach(trip  => {
-                    var orders = this.deliveryOrders.filter(x=>x.truckID == truck.id && x.tripID1 == trip.tripNumber);
-                    console.log(trip.tripNumber - 1);
-                    if(typeof(truck.trips[trip.tripNumber - 1]) != 'undefined') {
-                        truck.trips[trip.tripNumber - 1].deliveryOrders = orders;
-                    }
-
-                    //var orders = this.deliveryOrders.filter(x=>x.truckID == truck.id && x.tripID1 == trip.tripNumber);
-                    console.log('orders:', orders);
-                    trip.deliveryOrders = orders;
-                    return;
+                truck.trips.forEach( trip => {
+                    trip.released = false;
                 });
-            });
+            })
 
-            // this.deliveryOrders.forEach(x=> {
-            //     console.log('delivery order', x.swapOrder);
-            // });
-            // console.log('this.swappedDeliveryOrders', this.swappedDeliveryOrders);
+            this.trips.forEach( trip => {
+                console.log('searching for new trips');
+                var orders = this.deliveryOrders.filter( x => x.truckID == trip.truckId && x.tripID1 == trip.id );
+                var truck = this.trucks.filter( truck => truck.id == trip.truckId );
+                
+                truck[0].trips[ trip.tripNumber-1 ].deliveryOrders = orders;
+                truck[0].trips[ trip.tripNumber-1 ].id = trip.id;
+                truck[0].trips[ trip.tripNumber-1 ].released = trip.released ? true : false;
+                truck[0].trips[ trip.tripNumber-1 ].complete = trip.complete ? true : false;
+                
+                if(trip.driverId != null) {
+                    var driver = this.drivers.filter( driver => driver.id == trip.driverId );
+                    var selectedDriver = driver[0];
+
+                    console.log('found driver? ', trip.driverId, driver);
+
+                    truck[0].trips[ trip.tripNumber-1 ].selectedDriver = selectedDriver;
+                }
+            });  
             
-            // // //this.trucks[0].trips[0].deliveryOrders.append(this.DeliveryOrders[0]);
-
-            // console.log('this.trucks[0].trips[0]', this.trucks[0].trips[0]);
-            // //this.trucks[0].trips[0].tripNumber = 'hello';
-
-            console.log('truck 0 trips', this.trucks[0].trips);
-
-            // this.trucks[0].trips[0].deliveryOrders = [this.deliveryOrders[0]];
-            // this.trucks[0].trips[1].deliveryOrders = [this.deliveryOrders[1]];
-            // // this.trucks[0].trips[2].deliveryOrders = [this.deliveryOrders[2]];
-
-            // this.trucks[1].trips[0].deliveryOrders = [this.deliveryOrders[3]];
-            
-            console.log('delivery orders', this.deliveryOrders); 
-            console.log('trip delivery orders', this.trucks[0].trips[0].deliveryOrders);
+            this.trips.forEach(x=>console.log('released?', x.released));
+            this.trucks.forEach( truck => {
+                truck.trips.forEach( trip => {
+                    console.log('released 2?', trip.released);
+                });
+            })
         },
         async updateScheduler() {
             await this.generateTrips();
@@ -344,6 +367,40 @@ export default {
                 array.splice(index, 1, newElement);
             }
             return array;
+        },
+        async releaseTrip(trip) 
+        {
+            if( trip.selectedDriver == null ) 
+            {
+                this.showError('You must assign a driver to release this trip.');
+                return;
+            }
+
+            if( trip.deliveryOrders.length == 0 ) 
+            {
+                this.showError('You must assign at least one delivery order to this trip.');
+                return;
+            }
+            
+            const data = {
+                tripId: trip.id,
+                tripNumber: trip.tripNumber,
+                truckName: this.trucks[trip.truckId - 1].TruckName,
+                driverId: trip.selectedDriver.id
+            }
+
+            var trips = this.trucks[trip.truckId - 1].trips.filter( _trip => _trip.id == trip.id );
+            if(trips.length>0) {
+                trips[0].released = true;
+            }
+
+            this.trucks = [...this.trucks];
+            
+            const response = await this.$axios.$post(`/api/user/trips/release`, data);
+
+            this.showSuccess('The trip has been released.');
+
+            // alert('This trip has been released. To see the changes please reload the page.')
         },
         /**
          * 
@@ -360,8 +417,6 @@ export default {
             //     return persistedTrip;
             // }
 
-            
-            console.log('returned new trip');
             return {
                 id: null,
                 tripNumber: tripNumber,
@@ -414,19 +469,9 @@ export default {
                 if(truck.trips[truck.trips.length - 1].deliveryOrders.length > 0) {
                     truck.trips.push(trip);
                 }
-                // truck[0].trips.append(trip);
-
-                //this.trucks.trips.append();
-
-                
 
                 const response = await this.$axios.$post(`/api/user/trips/`, data);
-
-                console.log('submitting data', data);
-
-                //await this.getAllDeliveryOrders();
-                ///await this.loadData();
-                
+                console.log('submitting data', data);     
             }
 
         },
@@ -458,6 +503,11 @@ export default {
             const response = await this.$axios.$get("/api/user/truck");
 
             this.trucks = response;
+        },
+        async getAllDrivers() {
+            const response = await this.$axios.$get("/api/user/drivers");
+
+            this.drivers = response;
         },
         async getAllDeliveryOrders() {
             console.log(this.selectedDate);

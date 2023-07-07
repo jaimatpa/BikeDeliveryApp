@@ -69,6 +69,21 @@
 
             <v-stepper-content step="2">
                 <div>
+                  <h3 class="mb-3">Pickup</h3>
+                  <v-data-table width="100%" block cols="12" xs="12" sm="12" md="12" xl="12" :headers="pickupheaders" :items="equipment" item-key="name" class="elevation-1 ma-1 mb-5">
+                        <template v-slot:[`item.checkPickup`]="{ item }">
+                            <v-simple-checkbox v-model="item.checkPickup" v-ripple @input="saveUpdate(item)">
+
+                            </v-simple-checkbox>
+                        </template>
+                        <template v-slot:[`item.actions`]="{ item }">
+                            <v-icon size="50" medium color="primary" @click.stop="currentItem=item;scanDialogVisible = true;cameraRender += 1">
+                                mdi-barcode
+                            </v-icon>
+                        </template>
+                    </v-data-table>
+                    
+                    <h3 class="mb-3">Delivery</h3>
                     <v-data-table width="100%" block cols="12" xs="12" sm="12" md="12" xl="12" :headers="headers" :items="equipment" item-key="name" class="elevation-1 ma-1 mb-2">
                         <template v-slot:[`item.checkedDelievery`]="{ item }">
                             <v-simple-checkbox v-model="item.checkedDelievery" v-ripple @input="saveUpdate(item)">
@@ -81,6 +96,7 @@
                             </v-icon>
                         </template>
                     </v-data-table>
+                    
                     <v-row>
                         <v-col cols="12" xs="12" sm="12" md="6" xl="6">
                             <v-btn block depressed color="accent" @click.stop="deliveryStepper = 1">
@@ -266,6 +282,27 @@ export default {
         {
           text: "DELIVERED",
           value: "checkedDelievery",
+        },
+        {
+          text: "ACTION",
+          value: "actions",
+          sortable: false,
+          align: "center",
+        },
+      ],
+      pickupheaders: [
+        {
+          text: "ITEM",
+          align: "start",
+          value: "item",
+        },
+        {
+          text: "BARCODE",
+          value: "serialbarcode",
+        },
+        {
+          text: "PICKED UP",
+          value: "checkPickup",
         },
         {
           text: "ACTION",

@@ -5,7 +5,7 @@
                 <h3>Area</h3>
                 <hr class="mb-2" />
                 <Draggable class="list-group" style="cursor: move;" :list="areas" group="area" @change="handleAreaMove">
-                    <div class="list-group-item" v-for="area in areas" :key="area.id">
+                    <div class="list-group-item" v-for="(area, index) in areas" :key="area.id">
                         <v-card color="white" :elevation="area.id === areaSelectedId ? 5 : 1" class="mb-2"
                             :style="{ outline: area.id === areaSelectedId ? '2px solid #4c9a2a' : 'none' }"
                             @click="handleCardClick(`area`, area)">
@@ -16,7 +16,7 @@
                                         <span>{{ area.name }}</span>
                                     </v-col>
                                     <v-col cols="2" class="text-right">
-                                        <span>{{ area.priority }}</span>
+                                        <span>{{ index + 1 }}</span>
                                     </v-col>
                                 </v-row>
                             </v-card-title>
@@ -29,7 +29,7 @@
                 <h3>Villa</h3>
                 <hr class="mb-2" />
                 <Draggable class="list-group" style="cursor: move;" :list="villas" group="area" @change="handleVillaMove">
-                    <div class="list-group-item" v-for="villa in villas" :key="villa.id">
+                    <div class="list-group-item" v-for="(villa, index) in villas" :key="villa.id">
                         <v-card color="white" :elevation="villa.id === villaSelectedId ? 5 : 1" class="mb-2"
                             :style="{ outline: villa.id === villaSelectedId ? '2px solid #4c9a2a' : 'none' }"
                             @click="handleCardClick(`villa`, villa)">
@@ -40,7 +40,7 @@
                                         <span>{{ villa.name }}</span>
                                     </v-col>
                                     <v-col cols="2" class="text-right">
-                                        <span>{{ villa.priority }}</span>
+                                        <span>{{ index + 1}}</span>
                                     </v-col>
                                 </v-row>
                             </v-card-title>
@@ -55,7 +55,7 @@
                 <Draggable class="list-group" style="cursor: move;" :list="streetAddresses" group="area"
                     @change="handleStreetAddressMove">
                     <!-- No click event needed for street addresses -->
-                    <div class="list-group-item" v-for="streetAddress in streetAddresses" :key="streetAddress.id">
+                    <div class="list-group-item" v-for="(streetAddress, index) in streetAddresses" :key="streetAddress.id">
                         <v-card color="white" class="mb-2">
                             <v-card-title>
                                 <v-row align="center">
@@ -64,7 +64,7 @@
                                         <span>{{ streetAddress.name }}</span>
                                     </v-col>
                                     <v-col cols="2" class="text-right">
-                                        <span>{{ streetAddress.priority }}</span>
+                                        <span>{{ index + 1}}</span>
                                     </v-col>
                                 </v-row>
                             </v-card-title>

@@ -119,14 +119,7 @@
                         <v-data-table width="100%" block cols="12" xs="12" sm="12" md="12" xl="12" :headers="headersextras" :items="extras" item-key="name" class="elevation-6 ma-1 mb-2">
                         </v-data-table>
 
-                        <v-checkbox label="Unable to deliver all items" v-model="unableToDeliverItems" v-ripple></v-checkbox>
-                        <v-text-field
-                            label="Reason why you can't deliver all items"
-                            visible
-                            :disabled="!unableToDeliverItems"
-                            :v-show="unableToDeliverItems"
-                            hide-details
-                            ></v-text-field>
+
 
                         <!-- <v-row cols="12">
                             <v-col cols="12" xs="12" sm="12" md="4" xl="4">
@@ -360,18 +353,26 @@ export default {
             this.colorItems = _.map(lockingDataResponse, "color");
         },
         async updateOrderDetails() {
-            this.showSuccess('The Delivery Order items have been marked as picked up.');
-            // const lockingDataResponse = await this.$axios.$get("/api/user/locking");
-            // this.lockingData = lockingDataResponse;
-            // console.log(lockingDataResponse);
-            // this.colorItems = _.map(lockingDataResponse, "color");
+            var data = {
+                id: this.orderData.id,
+                orderid: this.orderData.orderid,
+                unableToDeliverItems: this.orderData.unableToDeliverItems,
+                reason: this.orderData.pickupNotes
+            };
+            
+            console.log(data);
+
+            await this.$axios.$post(
+              "/api/user/deliveryorderupdate", data).then(  response => {
+                this.showSuccess('The order have been marked as picked up.');
+            });
+            
             this.$router.push("/pickup");
         },
         async save() {
             this.uploads = this.$refs.thirdStep.local_files_to_upload
             this.uploadFiles(this.uploads);
             this.updateOrderDetails();
-            console.log("SAVE")
         },
         closeScanner() {
             this.scanDialogVisible = false;

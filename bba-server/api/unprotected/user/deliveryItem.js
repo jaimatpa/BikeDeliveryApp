@@ -3,6 +3,7 @@ const router = express.Router();
 const { Op, where } = require("sequelize");
 const models = require("./../../../models");
 const apiMessage = require("./../../../language/en.json");
+const { sendNotification } = require("../../functions/notifications")
 
 router.post("/", async (req, res) => {
     try {
@@ -11,8 +12,8 @@ router.post("/", async (req, res) => {
                 id: req.body.id,
             }
         });
-deliveryItem
-        
+
+
         let newDeliveryItem = await models.DeliveryItem.create({
             deliveryID: existingItem[0].dataValues.deliveryID,
             item: existingItem[0].dataValues.item,
@@ -21,6 +22,7 @@ deliveryItem
             checkedDelievery: existingItem[0].dataValues.checkedDelievery,
             checkPickup: existingItem[0].dataValues.checkPickup
         })
+
         return res.send(newDeliveryItem);
     } catch (error) {
         console.log(error);
@@ -54,8 +56,7 @@ router.post("/createEquipmentItemsSwapOrder", async (req, res) => {
 });
 
 
-router.put("/", async (req, res) => {
-    console.log("IN PUT REQUEST", req.body);
+router.put("/", async (req, res) => { 
     try {
         console.log(req.body);
         let existingItem = await models.DeliveryItem.findAll({
@@ -63,6 +64,26 @@ router.put("/", async (req, res) => {
                 id: req.body.id,
             }
         });
+
+        const items = await models.DeliveryItem.findAll({
+            where: {
+                deliveryID: req.body.deliveryID
+            }
+        })
+
+        console.log('items len = ', items.length)
+        var count = items.length;
+        var delivered = 1;
+        items.forEach( item => {
+            if(item.checkedDelievery) delivered++;
+        });
+
+        if(delivered >= count - 1) {
+            console.log("All items have been delivered");
+        }
+        else {
+            console.log(`Loading items ... ${delivered} / ${count}`);
+        }
 
         const updateDeliveryItem = await models.DeliveryItem.update({
             checkedDelievery: req.body.checkedDelievery,
@@ -75,14 +96,6 @@ router.put("/", async (req, res) => {
         }
         });
 
-        const newDeliveryItem = await models.DeliveryItem.create({
-            deliveryID: existingItem[0].dataValues.deliveryID,
-            item: existingItem[0].dataValues.item,
-            serialbarcode: existingItem[0].dataValues.serialbarcode,
-            Active: false,
-            checkedDelievery: existingItem[0].dataValues.checkedDelievery,
-            checkPickup: existingItem[0].dataValues.checkPickup
-        })
 
         return res.send(updateDeliveryItem);
     } catch (error) {
