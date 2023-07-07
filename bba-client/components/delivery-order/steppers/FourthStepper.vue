@@ -50,6 +50,20 @@
             </v-col>
         </v-row>
         <v-row>
+            <v-col cols="12" xs="12" sm="12" md="12" xl="12">
+                <v-checkbox label="Unable to deliver all items" v-model="deliveryOrderData.unableToDeliverItems" v-ripple></v-checkbox>
+                <v-textarea label="Reason why you can't deliver all items"
+                            visible
+                            v-model="deliveryOrderData.note"
+                            :disabled="!deliveryOrderData.unableToDeliverItems"
+                            :v-show="deliveryOrderData.unableToDeliverItems"
+                            hide-details
+                            ></v-textarea>
+            </v-col>
+            
+        </v-row>
+            
+        <v-row>
             <v-col cols="12" xs="12" sm="12" md="4" xl="4">
                 <v-btn block depressed color="accent" @click.stop="$emit('set-delivery-stepper', 3)">
                     Back
@@ -281,7 +295,7 @@ export default {
 
         },
         save() {
-
+            alert('Save button has been clicked');
         },
         deleteImage(img_index) {
             // console.log('%c img_index: ', 'color: yellowgreen; font-size: 20px', img_index)

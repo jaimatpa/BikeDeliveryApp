@@ -31,6 +31,7 @@ const communicationMessage = require("./user/communicationMessage");
 const location = require("./user/location.controller");
 const trip = require("./user/trip.controller");
 const notification = require("./user/notification");
+const drivers = require("./user/drivers");
 const cors = require('cors');
 
 module.exports = {
@@ -100,5 +101,8 @@ module.exports = {
 
     // * Trips
     app.use("/api/user/trips", trip);
+
+    // * Drivers
+    app.use("/api/user/drivers", drivers);
   },
 };

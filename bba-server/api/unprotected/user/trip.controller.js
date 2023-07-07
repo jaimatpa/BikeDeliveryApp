@@ -4,7 +4,8 @@ const router = express.Router();
 
 const {
     newTrip,
-    getAllTrips
+    getAllTrips,
+    releaseTrip
 } = require("./trip.service");
 
 // Area
@@ -15,5 +16,6 @@ router.get("/", getAllTrips);
 
 
 router.post('/', newTrip);
+router.post('/release', releaseTrip);
 
 module.exports = router;

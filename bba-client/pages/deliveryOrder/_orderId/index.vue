@@ -81,6 +81,11 @@
                             </v-icon>
                         </template>
                     </v-data-table>
+
+                    <h3 class="mb-2 mt-2">Extras</h3>
+                    <v-data-table width="100%" block cols="12" xs="12" sm="12" md="12" xl="12" :headers="headersextras" :items="extras" item-key="name" class="elevation-6 ma-1 mb-2">
+                    </v-data-table>
+                    
                     <v-row>
                         <v-col cols="12" xs="12" sm="12" md="6" xl="6">
                             <v-btn block depressed color="accent" @click.stop="deliveryStepper = 1">
@@ -219,6 +224,7 @@ export default {
   async created() {
     await this.getOrderDetails();
     await this.getOrderItems();
+    await this.getOrderExtras();
     await this.getOrderImages();
     this.getMsgTemplate();
     this.getUserlocation();
@@ -275,7 +281,13 @@ export default {
         },
       ],
       equipment: [],
-
+      headersextras: [{
+                    text: "Name",
+                    align: "start",
+                    value: "extraName",
+                }
+            ],
+            extras: [],
       // Date field
       date: null,
       dateFormatted: null,
@@ -383,6 +395,22 @@ export default {
       this.closeScanner();
       this.getOrderItems();
     },
+    async getOrderExtras() {
+            try {
+                let response = await this.$axios.$get("/api/user/deliveryItem/extras", {
+                    params: {
+                        deliveryID: this.orderData.id,
+                    },
+                });
+
+                this.extras = response;
+                console.log("Extras", this.extras);
+
+                //  this.$router.go(-1);
+            } catch (err) {
+                console.log("Issue in getOrderItems 3", err.response);
+            }
+        },
     closeScanner() {
       this.scanDialogVisible = false;
 
@@ -503,26 +531,23 @@ export default {
               name: this.deliveryOrderData.name,
               location: this.deliveryOrderData.location,
               color: this.defaultColorValue,
-              combination: this.defaultCombinationValue,
-            };
-
+              combination: this.defaultCombinationValue, 
+              orderid: this.deliveryOrderData.orderid,
+              swapOrder: this.deliveryOrderData.swapOrder,
+              status: 1,
+              textSent: 1,
+              picturesSent: 1,
+              unableToDeliverItems: this.deliveryOrderData.unableToDeliverItems,
+              note: this.deliveryOrderData.note }
+ 
             let result = await this.$axios.$post(
               "/api/user/deliveryorderupdate",
-              saveData,
-              {
-                params: {
-                  orderid: this.deliveryOrderData.orderid,
-                  swapOrder: 1,
-                  status: 1,
-                  textSent: 1,
-                  picturesSent: 1,
-                },
-              }
+              saveData
             );
             console.log("RESPONSE", response);
             this.loader = false;
             this.showSuccess(response.message);
-            this.$router.push("/deliveryOrder");
+            //this.$router.push("/deliveryOrder");
           });
       } catch (error) {
         console.log("errror 1234", error);

@@ -1,5 +1,6 @@
 const { Op, Transaction } = require("sequelize");
-const { Trip, DeliveryOrders } = require("./../../../models");
+const { Trip, DeliveryOrders, Truck, Notification, User } = require("./../../../models");
+const { sendNotification } = require("../../functions/notifications")
 
 /**
  * Get all trip
@@ -26,45 +27,139 @@ async function getAllTrips(req, res) {
         }
     });
 
-   
     return res.send(data);
 }
 
-async function newTrip(req, res) {
+
+
+async function releaseTrip(req, res) 
+{
+    const data = JSON.parse(JSON.stringify(req.body));
+    const tripId = data.tripId; // Trip Object
+    const tripNumber = data.tripNumber; // Trip Object
+    const truckName = data.truckName;
+    const truck = data.truckId; // Truck object
+    const enableYardManager = data.enableYardManager; // Truck object
+
+    const trip = await Trip.findOne({
+        where: {
+            id: tripId
+        }
+    });
+
+    const _truck = await Truck.findOne({
+        where: {
+            truckId: truck
+        }
+    });
+
+    if(trip != null && _truck != null) {
+        trip.update({
+            driverId: data.driverId,
+            released: true,
+            complete: false,
+            notifyYardMAnager: enableYardManager
+        });
+
+        // Send notification to Admins
+        sendNotification( `Trip ${tripId} for ${truck.truckName} is ready to load.`, 0, 0, tripId, 1, 0);
+        
+        // Send notification to the driver
+        sendNotification( `Trip ${tripId} for ${truck.truckName} is ready to load.`, 0, 0, tripId, 3, data.driverId);
+
+        if(enableYardManager) 
+        {
+            sendNotification( `Trip ${tripId} for ${truck.truckName} is ready to load.`, 0, 0, tripId, 5, 0 );
+        }
+    }
+
+    return res.send(trip);
+
+}
+
+
+async function newTrip(req, res) 
+{
     const { date } = req.query;
     const data = JSON.parse(JSON.stringify(req.body));
     const tripNumber = data.tripNumber; // Trip Object
     const truck = data.truckId; // Truck object
 
+
+
     console.log('trip = ' + tripNumber);
 
-    truck.trips.forEach( trip => {
+    truck.trips.forEach(async trip => {
         console.log('truck = ' + truck.id);
+        console.log('trip = ' + truck.id);
 
+        // Delete previous trip details.
+        
         const orders = trip.deliveryOrders;
-        orders.forEach( async order => {
-            await DeliveryOrders.findAll({
-                where: [{
-                    id: order.id
-                }]
-            }).then( x => {
-                x.forEach( _order => {
-                    //_order.truckID = truck.id,
-                    //_order.TripID1 = trip.tripNumber
-                    console.log({
-                        id: order.id,
-                        truckID: truck.id,
-                        tripID1: tripNumber
-                    });
-                    _order.update({
-                        id: order.id,
-                        truckID: truck.id,
-                        tripID1: tripNumber
+        if(orders.length > 0) 
+        { 
+            console.log('writing orders' + orders[0].date);
+            var date = orders[0].date;
+            const selectedDate = date ? new Date(date) : new Date();
+            const startOfDay = new Date(selectedDate.getFullYear(), selectedDate.getMonth(), selectedDate.getDate() + 1);
+            const endOfDay = new Date(selectedDate.getFullYear(), selectedDate.getMonth(), selectedDate.getDate() + 2);
+            
+
+            // Trip.destroy({
+            //     where: { 
+            //         tripNumber: tripNumber,
+            //         truckID: truck.id,
+            //         date: {
+            //             [Op.gte]: startOfDay,
+            //             [Op.lt]: endOfDay
+            //         },
+            //     }
+            // });
+
+            // const existingTrip = await Trip.create({
+            //     date: selectedDate,
+            //     truckId: truck.id,
+            //     tripNumber: tripNumber,
+            //     // release: data.tripNumber.released ? data.tripNumber.released : false,
+            //     // complete: data.tripNumber.complete,
+            //     // notifyYardManager: data.tripNumber.notifyYardManager ? data.tripNumber.notifyYardManager : false
+            // });
+
+            const newTrip = await Trip.create({
+                date: selectedDate,
+                truckId: truck.id,
+                tripNumber: tripNumber,
+                // release: data.tripNumber.released ? data.tripNumber.released : false,
+                // complete: data.tripNumber.complete,
+                // notifyYardManager: data.tripNumber.notifyYardManager ? data.tripNumber.notifyYardManager : false
+            });
+        
+            
+        
+            orders.forEach( async order => {
+                await DeliveryOrders.findAll({
+                    where: [{
+                        id: order.id
+                    }]
+                }).then( x => {
+                    x.forEach( _order => {
+                        console.log(_order.orderid, _order.id);
+                        //_order.truckID = truck.id,
+                        //_order.TripID1 = trip.tripNumber
+                        console.log({
+                            id: order.id,
+                            truckID: truck.id,
+                            tripID1: newTrip.id
+                        });
+                        _order.update({
+                            id: order.id,
+                            truckID: truck.id,
+                            tripID1: newTrip.id
+                        });
                     });
                 });
             });
-
-        });
+        }
     });
 
     // const selectedDate = date ? new Date(date) : new Date();
@@ -101,5 +196,6 @@ async function newTrip(req, res) {
 
 module.exports = {
     newTrip,
-    getAllTrips
-};
+    getAllTrips,
+    releaseTrip
+};  

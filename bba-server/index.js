@@ -24,7 +24,10 @@ const auth = require('./middleware/auth');
 
 // Create the express server
 const app = express();
-app.use(cors());
+app.use(cors({
+  origin: '*',
+  allowedHeaders: [ 'Accept-Version', 'Access-Control-Allow-Origin' , 'Authorization', 'Credentials', 'Content-Type' ]
+}));
 const cookieParser = require("cookie-parser");
 
 // Create Sequelize Models
