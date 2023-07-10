@@ -38,9 +38,7 @@ module.exports = (sequelize, DataTypes) => {
       driverDeliveredBy: DataTypes.STRING,
       driverPickedUpBy: DataTypes.STRING,
       swapOrder: DataTypes.BOOLEAN,
-      swapOrderDeliveryId: DataTypes.STRING,
-      swappedReason: DataTypes.STRING,
-      swappedNote: DataTypes.STRING,
+      swapOrderDeliveryId: DataTypes.STRING
     },
     {
       sequelize,

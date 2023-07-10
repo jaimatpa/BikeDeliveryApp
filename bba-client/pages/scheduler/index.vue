@@ -493,9 +493,7 @@ export default {
             
         },
         async getAllTrips() {
-            // todo change this to be dynamic, uncomment following line
             const response = await this.$axios.$get(`/api/user/trips?date=${this.selectedDate}`);
-            //const response = await this.$axios.$get(`/api/user/trips?date=2022-10-08`);
 
             this.trips = response;
         },
@@ -510,14 +508,9 @@ export default {
             this.drivers = response;
         },
         async getAllDeliveryOrders() {
-            console.log(this.selectedDate);
-            // todo change this to be dynamic, uncomment following line
             const response = await this.$axios.$get(`/api/user/deliveryOrder/query?order_type=delivery_order&date=${this.selectedDate}`);
-            //const response = await this.$axios.$get(`/api/user/deliveryOrder/query?order_type=delivery_order&date=2022-10-08`);
  
             this.deliveryOrders = response;
-
-            console.log('orders', this.deliveryOrders)
         },
         async handleDeliveryOrderMove(truck, trip, event) {
             // const { moved: { oldIndex, element } } = event.removed;
