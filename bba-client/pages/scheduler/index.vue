@@ -508,7 +508,7 @@ export default {
             this.drivers = response;
         },
         async getAllDeliveryOrders() {
-            const response = await this.$axios.$get(`/api/user/deliveryOrder/query?order_type=delivery_order&date=${this.selectedDate}`);
+            const response = await this.$axios.$get(`/api/user/deliveryOrder/query?order_type=scheduler&date=${this.selectedDate}`);
  
             this.deliveryOrders = response;
         },

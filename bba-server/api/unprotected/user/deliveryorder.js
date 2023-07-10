@@ -383,6 +383,31 @@ router.get("/query", async (req, res) => {
 
         return res.json(sortedOrders);
     }
+    else if (order_type === "scheduler") {
+        const selectedDate = new Date(date);
+        console.log(selectedDate);
+        const startOfDay = new Date(selectedDate.getFullYear(), selectedDate.getMonth(), selectedDate.getDate() + 1);
+        const endOfDay = new Date(selectedDate.getFullYear(), selectedDate.getMonth(), selectedDate.getDate() + 2);
+        // Fetch all records from the three tables
+        let [deliveryOrders, areas, villas, streetAddresses] = await Promise.all([
+            models.DeliveryOrders.findAll({
+                where: {
+                    date: {
+                        [Op.gte]: startOfDay,
+                        [Op.lt]: endOfDay
+                    },
+                    status: 0 // considering 1 as true
+                }
+            }),
+            models.Area.findAll(),
+            models.Villa.findAll(),
+            models.StreetAddress.findAll()
+        ]);
+
+        const sortedOrders = customDeliveryOrderSort(deliveryOrders, areas, villas, streetAddresses);
+
+        return res.json(sortedOrders);
+    }
 
     return res.send(req.query);
 });
