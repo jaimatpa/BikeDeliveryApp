@@ -3,11 +3,12 @@
     <div>
         <v-row>
             <v-col cols="12" xs="12" sm="12" md="12" xl="12" class="d-flex flex-column justify-center align-center">
+                <h3>Delivery Photo</h3>
                 <v-img v-if="local_files_to_upload.length === 0" max-height="180" max-width="220" :src="emptyPhoto"></v-img>
                 <div v-else>
                     <div class="slider-img-container py-0 my-0" style="display: flex">
-                        <img style="align-self: flex-end" ref="currentImgRef" :src="clickedImage2.local_blob_url" :width="innerWindowWidth > 800 ? 600 : 300" />
-                        <span class="img-cross-btn" @click="deleteImage(clickedImage2.array_index)">
+                        <img style="align-self: flex-end" ref="currentImgRef" :src="clickedImage.local_blob_url" :width="innerWindowWidth > 800 ? 600 : 300" />
+                        <span class="img-cross-btn" @click="deleteImage(clickedImage.array_index)">
                             <v-icon color="black" style="font-size: 20px; cursor: pointer">
                                 mdi-close
                             </v-icon>
@@ -20,7 +21,7 @@
                         </span>
                     </div>
                     <div style="text-align: center; margin-top: 5px">
-                        Photo {{ clickedImage2.array_index + 1 }} of
+                        Photo {{ clickedImage.array_index + 1 }} of
                         {{ local_files_to_upload.length }}
                     </div>
                 </div>
@@ -46,16 +47,21 @@
     <div>
         <!-- Third Stepper Button -->
         <v-row>
-            <v-col cols="12" xs="12" sm="12" md="6" xl="6">
-                <v-btn block depressed color="accent" @click.stop="$emit('set-delivery-stepper', 1)">
+            <v-col cols="12" xs="12" sm="12" md="4" xl="4">
+                <v-btn block depressed color="accent" @click.stop="$emit('set-delivery-stepper', 2)">
                     <v-icon dark>
                         mdi-chevron-left
                     </v-icon>
                     Back
                 </v-btn>
             </v-col>
-            <v-col cols="12" xs="12" sm="12" md="6" xl="6">
-                <v-btn block depressed color="primary" @click.stop="$emit('set-delivery-stepper', 3)">
+            <v-col cols="12" xs="12" sm="12" md="4" xl="4">
+                <v-btn block depressed color="error" @click.stop="deliveryCancelOrderDialog = true">
+                    Cancel
+                </v-btn>
+            </v-col>
+            <v-col cols="12" xs="12" sm="12" md="4" xl="4">
+                <v-btn block depressed color="primary" @click.stop="handleGoToNextStepper">
                     Next
                     <v-icon dark>
                         mdi-chevron-right
@@ -64,8 +70,7 @@
             </v-col>
         </v-row>
     </div>
-    
-    <CameraModal v-if="open_camera_module" :deliveryNumber="this.deliveryOrderData.barcode" :show="open_camera_module" @cancel="handleCancel" @captured-camera-images="saveCameraImages" :multipleUpload="true" />
+    <CameraModal v-if="open_camera_module" step="delivery" :deliveryNumber="this.deliveryOrderData.barcode" :show="open_camera_module" @cancel="handleCancel" @captured-camera-images="saveCameraImages" :multipleUpload="true" />
 
     <!-- Delivery Cancel Dialog -->
     <v-dialog v-model="deliveryCancelOrderDialog" transition="dialog-bottom-transition" max-width="350" content-class="order-details-dialog">
@@ -98,31 +103,25 @@
 </template>
 
 <script>
-import touchScreen from "../service/touchScreen";
+import touchScreen from "../../../service/touchScreen";
 import emptyPhoto from "@/assets/images/empty.jpg";
-import CameraModal from "./delivery-order/photo-capture/CameraModal";
+import CameraModal from "../photo-capture/CameraModal";
 import {
     mapState,
     mapMutations
 } from "vuex";
 export default {
-    name: "PhotoCapture",
+    name: "ThirdSwapStepper",
     props: {
-        step: {
-            type: Object,
-            default: ''
-        },
         deliveryOrderData: {
             type: Object,
             default: {},
         },
         userPosition: {
             type: Object,
-            default: function () {
-                return {}
-            },
+            default: {},
         },
-
+        
     },
     components: {
         CameraModal,
@@ -141,11 +140,11 @@ export default {
             reviewPhoto: false,
 
             innerWindowWidth: 0,
-            clickedImage2: {
+            clickedImage: {
                 local_blob_url: null,
                 originalName: "",
                 mimetype: "",
-                type: this.props.step,
+
                 array_index: null,
                 caption: "",
                 tags: "",
@@ -156,7 +155,6 @@ export default {
         };
     },
     mounted() {
-        alert(props.step);
         var el = this.$refs.currentImgRef;
         touchScreen.swipedetect(el, (swipedir) => {
             // swipedir contains either "none", "left", "right", "top", or "down"
@@ -179,12 +177,14 @@ export default {
             handler: function (newVal, oldVal) {
                 if (newVal.length > 0) {
                     this.local_files_to_upload = [...newVal];
-                    this.clickedImage2 = {
-                        //...this.local_files_to_upload[0],
-                        //array_index: 0,
+                    this.clickedImage = {
+                        ...this.local_files_to_upload[0],
+                        array_index: 0,
                     };
+
+                    this.$emit('uploadFiles', this.clickedImage)
                 } else {
-                    this.clickedImage2 = {};
+                    this.clickedImage = {};
                 }
                 console.log("hereeeeeeeeeeeeeee ........ ");
             },
@@ -193,16 +193,17 @@ export default {
 
     computed: {
         ...mapState({
-            capturedImagesFromVuex: (state) => (state.capturedImages = []),
-      capturedPickupImagesFromVuex: (state) => (state.capturedPickupImages = []),
+            capturedImagesFromVuex: (state) => state.capturedPickupImages,
+            capturedPickupImagesFromVuex: (state) => state.capturedPickupImages,
+            
         }),
     },
     methods: {
         ...mapMutations(["SET_CAPTURED_IMAGES_IN_VUEX"]),
 
         handleGoToNextStepper() {
-            alert(props.step + ' - ' + this.step);
-            alert('wtf - alerting captured images');
+//            this.$emit("setUploadFiles", this.local_files_to_upload);
+            this.$emit("setUploadFiles", this.local_files_to_upload);
 
             this.SET_CAPTURED_IMAGES_IN_VUEX(this.local_files_to_upload);
             this.$emit("set-delivery-stepper", 4);
@@ -248,19 +249,12 @@ export default {
                     }
                 );
                 console.log("nextImage: ", nextImage);
-               //this.clickedImage2 = nextImage;
-                //this.local_files_to_upload = [...filtered_images];
+                this.clickedImage = nextImage;
+                this.local_files_to_upload = [...filtered_images];
             }
         },
 
         saveCameraImages(images) {
-            console.log('saving image ' + props.step);
-            alert(props.step + ' - ' + this.step);
-            alert('wtf - alerting captured images');
-
-            
-            console.log("================= images", images);
-
             const blob_urls = this.local_files_to_upload.map((o) => o.local_blob_url);
             const result = [...this.local_files_to_upload];
             for (let i = 0; i < images.length; i++) {
@@ -272,12 +266,13 @@ export default {
             this.local_files_to_upload = result;
 
             if (result.length > 0) {
-                this.clickedImage2 = {
-                   // ...result[0],
+                this.clickedImage = {
+                    ...result[0],
                     array_index: 0
                 };
-            } 
-            console.log("saveCameraImages  123 result ==========> ", this.step, props.step, result);
+            }
+
+            console.log("Saving Delivery Images result ==========>  45 ",  result[0].local_blob_url);
         },
 
         resize() {
@@ -297,10 +292,7 @@ export default {
         goToNextImage(direction) {
             const {
                 array_index
-            } = this.clickedImage2;
-
-            alert('ok');
-
+            } = this.clickedImage;
             if (direction === "left") {
                 if (array_index !== 0) {
                     const result = {
@@ -308,7 +300,7 @@ export default {
                         array_index: array_index - 1,
                     };
 
-                    this.clickedImage2 = result;
+                    this.clickedImage = result;
                 }
             } else if (direction === "right") {
                 if (array_index !== this.local_files_to_upload.length - 1) {
@@ -316,7 +308,7 @@ export default {
                         ...this.local_files_to_upload[array_index + 1],
                         array_index: array_index + 1,
                     };
-                    this.clickedImage2 = result;
+                    this.clickedImage = result;
                 }
             }
         },

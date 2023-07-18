@@ -57,7 +57,7 @@ router.post("/", async (req,res) => {
 
         if(deliveryOrder.unableToDeliverItems)
         {
-            // Sent to all administrators when unable to deliver all items.
+            // Sent to all administrators when unable to deliver extra items.
             sendNotification( `Items were missing from ${orderid}`, 0, orderid, 0, 1, 0);
         }
 

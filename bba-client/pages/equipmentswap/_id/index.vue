@@ -114,12 +114,16 @@
 
             <!-- Third Stepper -->
             <v-stepper-content step="3">
-                <ThirdStepper ref="thirdStep" @set-delivery-stepper="setDelivaryStepper" :deliveryOrderData="deliveryOrderData" :userPosition="userPosition" />
+                <ThirdSwapStepper ref="thirdStep" @set-delivery-stepper="setDelivaryStepper" :deliveryOrderData="deliveryOrderData" :userPosition="userPosition" @setUploadFiles="setUploadFilesDelivery" />
             </v-stepper-content>
 
             <!-- Fourth Stepper -->
             <v-stepper-content step="4">
-                <FourthStepper :deliveryOrderData="deliveryOrderData" :cyclePhoto="cyclePhoto" @set-delivery-stepper="setDelivaryStepper" @set-delivery-order-dialog="setDelivaryDialog" @setUploadFiles="setUploadFiles" />
+                <FourthSwapStepper ref="fourthStep" @set-delivery-stepper="setDelivaryStepper"   :deliveryOrderData="deliveryOrderData"  :userPosition="userPosition" @setUploadFiles="setUploadFilesPickup" />
+            </v-stepper-content>
+
+            <v-stepper-content step="5">
+                <FourthStepper :deliveryOrderData="deliveryOrderData" :cyclePhoto="cyclePhoto" @set-delivery-stepper="setDelivaryStepper" @set-delivery-order-dialog="setDelivaryDialog"   />
             </v-stepper-content>
         </v-stepper-items>
     </v-stepper>
@@ -216,7 +220,8 @@ import Page from "@/components/paradym/Page";
 import emptyPhoto from "@/assets/images/empty.jpg";
 import cyclePhoto from "@/assets/images/cycle@2x.png";
 
-import ThirdStepper from "@/components/delivery-order/steppers/ThirdStepper";
+import ThirdSwapStepper from "@/components/delivery-order/steppers/ThirdSwapStepper";
+import FourthSwapStepper from "@/components/delivery-order/steppers/FourthSwapStepper";
 import FourthStepper from "@/components/delivery-order/steppers/FourthStepper";
 
 export default {
@@ -229,8 +234,9 @@ export default {
   },
   components: {
     Page,
-    ThirdStepper,
-    FourthStepper,
+    ThirdSwapStepper,
+    FourthSwapStepper,
+    FourthStepper
   },
   async created() {
     await this.getOrderDetails();
@@ -340,6 +346,8 @@ export default {
     },
     ...mapState({
       capturedImagesFromVuex: (state) => (state.capturedImages = []),
+      capturedPickupImagesFromVuex: (state) => (state.capturedPickupImages = []),
+      
     }),
     isNextButtonDisabled() {
       if (
@@ -392,8 +400,7 @@ export default {
       showError: "error",
     }),
     async getOrderItems() {
-      try {
-        console.log("IN ORDER ITEMS", this.deliveryOrderData);
+      try { 
         let response = await this.$axios.$get("/api/user/deliveryItem", {
           params: {
             deliveryID: this.deliveryOrderData.id,
@@ -507,16 +514,22 @@ export default {
         dataToAdd,
         userPositionData
       );
+      
       this.smsObject.message = output;
       this.smsObject.orderid = this.deliveryOrderData.orderid;
-      this.smsObject.images = this.deliveryImages;
-      try {
+      this.smsObject.images = [ ...this.deliveryImages, ...this.pickupImages ];
+
+      try 
+      {
         let response = await this.uploadFiles(this.smsObject);
-      } catch (error) {
+      } 
+      catch (error) 
+      {
         console.log("error", error);
       }
 
-      try {
+      try 
+      {
         let emailResponse = await this.$axios.post(
           "api/user/sendDeliveryEmail",
           {
@@ -566,6 +579,7 @@ export default {
       }
     },
     async getOrderImages() {
+
       try {
         let response = await this.$axios.$get(
           "/api/user/searchhistory/images",
@@ -582,7 +596,9 @@ export default {
             `https://bike-app-storage.s3.amazonaws.com/D-${this.orderData.orderid}/${image}`
           );
         });
+
         this.deliveryImages = localDeliveryArray;
+
 
       } catch (error) {
         console.log("ERROR", error);
@@ -590,27 +606,40 @@ export default {
     },
     async getOrderDetails() {
       try {
+
         let response = await this.$axios.$get("/api/user/deliveryOrder", {
           params: {
             search: this.$route.params.id,
             type: 'SwapOrder'
           },
         });
-        this.deliveryOrderData = response[0]; 
-        
+
+        if(response.length > 0) {
+          this.deliveryOrderData = response[0]; 
+        }
+        else {
+          this.showError('There is no delivery data for this order');
+          this.$router.push('/equipmentswap/');
+          return;
+        }
+
         // console.log("TESTING CAPTURED IMAGES", ThirdStepper.capturedImages);
-        console.log(
-          "TESTING CAPTURED IMAGES BEFORE",
-          this.$refs.thirdStep.local_files_to_upload
-        );
+        // console.log(
+        //   "TESTING CAPTURED IMAGES BEFORE",
+        //   this.$refs.thirdStep.local_files_to_upload
+        // );
+
         this.$refs.thirdStep.local_files_to_upload = [];
+        this.$refs.fourthStep.local_pickup_images_to_upload = [];
         // ThirdStepper.local_files_to_upload = [];
         console.log(
           "TESTING CAPTURED IMAGES AFTER",
-          this.$refs.thirdStep.local_files_to_upload
+          this.$refs.fourthStep.local_pickup_images_to_upload
         );
 
         ThirdStepper.capturedImages = [];
+        FourthStepper.capturedPickupImages = [];
+        
         // this.$emit("captured-camera-images", ThirdStepper.capturedImages);
 
         this.date = response[0].date.substr(0, 10);
@@ -629,17 +658,22 @@ export default {
       // return;
       this.deliveryStepper = param;
     },
-    async upload(upload, pictureNumber) {
+    async upload(upload, type, pictureNumber) {
       const blob = await fetch(upload.local_blob_url).then((r) => r.blob());
       const newfileObj = new File([blob], `${upload.originalName}.jpeg`, {
         type: blob.type,
-      });
-
+      });  
+    
       let formData = new FormData();
       formData.append("file", newfileObj);
 
       try {
-        let pictureName = `${this.deliveryOrderData.orderid}-${pictureNumber}`;
+        var pictureName = `${this.deliveryOrderData.orderid}-${pictureNumber}`;
+
+        if(type == 'pickup') {
+          pictureName = `${this.deliveryOrderData.orderid}-pickup-${pictureNumber}`;
+        }
+
         let result = await this.$axios.$post(
           `/api/user/upload?orderid=${pictureName}`,
           formData
@@ -677,19 +711,40 @@ export default {
     },
     async uploadFiles(messageObject) {
       var counter = 0;
+      console.log('uploading....');
 
-      for (const upload of this.uploads) {
-        let uploadResponse = await this.upload(upload, counter);
+      // const images = [ ...this.deliveryImages, ...this.pickupImages ];
+
+      for (const upload of this.deliveryImages) {
+        console.log('uploading deliveryImage', upload);
+        let uploadResponse = await this.upload(upload, 'delivery', counter);
         messageObject.mediaUrl.push(
           `https://images.hiretheproz.com/${this.deliveryOrderData.barcode}-${counter}.jpeg`
         );
         counter = counter + 1;
       }
+
+      for (const upload of this.pickupImages) {
+        console.log('uploading pickupImages', upload);
+        let uploadResponse = await this.upload(upload, 'pickup', counter);
+        messageObject.mediaUrl.push(
+          `https://images.hiretheproz.com/${this.deliveryOrderData.barcode}-pickup-${counter}.jpeg`
+        );
+        counter = counter + 1;
+      }
+
+
     },
-    async setUploadFiles(uploads) {
+    async setUploadFilesDelivery(uploads) { 
+      this.deliveryImages = uploads;
+    },
+    async setUploadFilesPickup(uploads) { 
+      this.pickupImages = uploads;
+    },
+    async setUploadFiles(uploads) { 
+      console.log(uploads);
       this.uploads = uploads;
     },
-
     setDelivaryDialog(param) {
       this.deliveryOrderDialog = param;
     },

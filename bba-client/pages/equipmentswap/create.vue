@@ -179,8 +179,8 @@ export default {
         async save() { 
             // Does this reference or copy?
             var newOrder = this.order;
-            newOrder.swappedReason = this.reason.Name;
-            newOrder.PickupNotes = this.note;
+            newOrder.PickupNotes = this.reason.Name;
+            newOrder.note = this.notes;
             newOrder.swapOrderDeliveryId = this.order.id;
 
             if(this.swap_location) {

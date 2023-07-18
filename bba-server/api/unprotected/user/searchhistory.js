@@ -15,7 +15,11 @@ AWS.config.region = process.env.AWSRegion;
 router.get("/", async (req, res) => {
     let data = [];
     const search = req.query.search;
+    const type = req.query.type;
+    
     const barcodeid = req.query.barcodeid;
+    var swapOrder = type == 'swap' ? 1 : 0;
+
     if (search) {
         console.log(search);
         try {
@@ -50,6 +54,7 @@ router.get("/", async (req, res) => {
                             [Op.like]: `%${search}%`,
                         },
                     },
+                    swapOrder: swapOrder
                 },
             });
             console.log(data);

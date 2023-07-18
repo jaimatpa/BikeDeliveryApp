@@ -25,9 +25,14 @@
 
         <!-- Actions -->
         <template v-slot:item.actions="{ item }">
-            <v-icon medium color="primary" @click.stop="$router.push({path: `/equipmentswap/${item.orderid}`,})">
+            
+            <v-icon v-show="!item.delivered" medium color="primary" @click.stop="$router.push({path: `/equipmentswap/${item.orderid}`,})">
                 mdi-page-next
             </v-icon>
+            <v-icon v-show="item.delivered" medium color="primary" @click.stop="$router.push({path: `/searchHistory/${item.orderid}?type=swap`,})">
+                mdi-page-next
+            </v-icon>
+
         </template>
     </v-data-table>
 

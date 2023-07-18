@@ -69,6 +69,7 @@
             </v-col>
         </v-row>
     </div>
+
     <CameraModal v-if="open_camera_module" :deliveryNumber="this.deliveryOrderData.barcode" :show="open_camera_module" @cancel="handleCancel" @captured-camera-images="saveCameraImages" :multipleUpload="true" />
 
     <!-- Delivery Cancel Dialog -->
@@ -194,10 +195,10 @@ export default {
         }),
     },
     methods: {
-        ...mapMutations(["SET_CAPTURED_IMAGES_IN_VUEX"]),
+        ...mapMutations(["SET_CAPTURED_PICKUP_IMAGES_IN_VUEX"]),
 
         handleGoToNextStepper() {
-            this.SET_CAPTURED_IMAGES_IN_VUEX(this.local_files_to_upload);
+            this.SET_CAPTURED_PICKUP_IMAGES_IN_VUEX(this.local_files_to_upload);
             this.$emit("set-delivery-stepper", 4);
         },
 
@@ -266,7 +267,8 @@ export default {
                 };
             }
 
-            console.log("saveCameraImages result ==========> ", result);
+            alert('3rd swapper alert');
+            console.log("Saving Image  result ==========> ", result[0]);
         },
 
         resize() {

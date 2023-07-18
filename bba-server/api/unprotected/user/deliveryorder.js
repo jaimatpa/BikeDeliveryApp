@@ -104,8 +104,7 @@ router.get("/", async (req, res) => {
                             [Op.like]: `%${search}%`
                         }
 
-                    }
-
+                    } 
 
                 }
             });
@@ -136,6 +135,9 @@ router.get("/", async (req, res) => {
                     return true;
                 }));
             } else if (type === "Dashboard") {
+                data = data.filter( ( record => {
+                    record.swapOrder == 0
+                }));
                 data = data.filter((record => {
                     var d = moment(record.date).add(4, 'hours').format('LL');
                     var today = moment().format('LL');
@@ -175,8 +177,9 @@ router.get("/", async (req, res) => {
                 }));
             }
             else if (type === "SwapOrder") {
+                console.log('swap order filter');
                 data = data.filter((record => {
-                    if (record.status == 1 && record.swapOrder == 1) {
+                    if (record.status == 0 && record.swapOrder == 1) {
                         return true;
                     } else {
                         return false;
@@ -245,7 +248,11 @@ router.get("/", async (req, res) => {
                 return true;
             }));
         } else if (type === "Dashboard") {
-            //console.log("In Dashboard");
+            console.log("In Dashboard 2");
+            data = data.filter( ( record => {
+                return record.swapOrder == 0
+            }));
+
             data = data.filter((record => {
                 var d = moment(record.date).add(4, 'hours').format("LL");
                 var today = moment().format("LL");
@@ -305,6 +312,7 @@ router.get("/", async (req, res) => {
  */
 
 function customDeliveryOrderSort(deliveryOrders, areas, villas, streetAddresses) {
+
     // * Convert each array of records into an object, using the name as the key for faster lookup
     const areasByName = Object.fromEntries(areas.map(area => [area.name, area]));
     const villasByName = Object.fromEntries(villas.map(villa => [villa.name, villa]));
@@ -320,19 +328,23 @@ function customDeliveryOrderSort(deliveryOrders, areas, villas, streetAddresses)
         return groups;
     }, {});
 
+    
     // * Sort the orders within each group by plantation and lane
     for (const areaName in ordersByArea) {
         ordersByArea[areaName].sort((a, b) => {
             const aVillaPriority = villasByName[a.plantation]?.priority || 0;
-            const aStreetAddressPriority = streetAddressesByName[a.lane]?.priority || 0;
-
             const bVillaPriority = villasByName[b.plantation]?.priority || 0;
-            const bStreetAddressPriority = streetAddressesByName[b.lane]?.priority || 0;
+            
+            const aStreetAddressPriority = streetAddressesByName[a.location]?.priority || 0;
+            const bStreetAddressPriority = streetAddressesByName[b.location]?.priority || 0;
 
+            console.log(streetAddressesByName[a]);
             // * Compare based on the priority, lower values first
             if (aVillaPriority !== bVillaPriority) {
+                //console.log('villa priority: ' + villasByName[a.plantation]?.priority);
                 return aVillaPriority - bVillaPriority;
             } else {
+                //console.log('address priority', streetAddressesByName[0].priority);
                 return aStreetAddressPriority - bStreetAddressPriority;
             }
         });
@@ -353,7 +365,8 @@ function customDeliveryOrderSort(deliveryOrders, areas, villas, streetAddresses)
 }
 
 router.get("/query", async (req, res) => {
-    const { order_type, date } = req.query;
+    const { order_type, date, type } = req.query;
+    var { status } = req.query;
 
     // * Since there is not relation to actual entities in database between area, villas and stuff, cannot use the optimal way for query data and sorting it
     // * Will have match the strings to find the commonalities
@@ -384,29 +397,60 @@ router.get("/query", async (req, res) => {
         return res.json(sortedOrders);
     }
     else if (order_type === "scheduler") {
+
+        if(status == null) status = 0;
+
         const selectedDate = new Date(date);
-        console.log(selectedDate);
+        // Fetch all records from the three tables
+
         const startOfDay = new Date(selectedDate.getFullYear(), selectedDate.getMonth(), selectedDate.getDate() + 1);
         const endOfDay = new Date(selectedDate.getFullYear(), selectedDate.getMonth(), selectedDate.getDate() + 2);
-        // Fetch all records from the three tables
-        let [deliveryOrders, areas, villas, streetAddresses] = await Promise.all([
-            models.DeliveryOrders.findAll({
-                where: {
-                    date: {
-                        [Op.gte]: startOfDay,
-                        [Op.lt]: endOfDay
-                    },
-                    status: 0 // considering 1 as true
-                }
-            }),
-            models.Area.findAll(),
-            models.Villa.findAll(),
-            models.StreetAddress.findAll()
-        ]);
+        
+        if(type == '' || type=='deliveries')
+        {
+            let [deliveryOrders, areas, villas, streetAddresses] = await Promise.all([
+                models.DeliveryOrders.findAll({
+                    where: {
+                        date: {
+                            [Op.gte]: startOfDay,
+                            [Op.lt]: endOfDay
+                        },
+                        status: status // considering 1 as true
+                    }
+                }),
+                models.Area.findAll(),
+                models.Villa.findAll(),
+                models.StreetAddress.findAll()
+            ]); 
 
-        const sortedOrders = customDeliveryOrderSort(deliveryOrders, areas, villas, streetAddresses);
+            const sortedOrders = customDeliveryOrderSort(deliveryOrders, areas, villas, streetAddresses);
 
-        return res.json(sortedOrders);
+            return res.json(sortedOrders);
+        } 
+        else if(type=='pickups')   
+        {
+            console.log(startOfDay, endOfDay);
+
+            let [deliveryOrders, areas, villas, streetAddresses] = await Promise.all([
+                models.DeliveryOrders.findAll({
+                    where: {
+                        endDate: {
+                            [Op.gte]: startOfDay,
+                            [Op.lt]: endOfDay
+                        },
+                        status: status // considering 1 as true
+                    }
+                }),
+                models.Area.findAll(),
+                models.Villa.findAll(),
+                models.StreetAddress.findAll()
+            ]);
+
+            const sortedOrders = customDeliveryOrderSort(deliveryOrders, areas, villas, streetAddresses);
+
+            return res.json(sortedOrders);
+        }
+
     }
 
     return res.send(req.query);
