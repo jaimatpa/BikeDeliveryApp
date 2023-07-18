@@ -14,7 +14,7 @@ module.exports.sendNotification = async function sendNotification(message, type,
             type: 1,
             deliveryOrderId: 1,
             tripId: tripId,
-            userId: userid
+            userId: userId
         }); 
         console.log(`Created notification successfully for user ${userId}`);
     } 

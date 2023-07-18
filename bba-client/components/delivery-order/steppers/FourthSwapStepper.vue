@@ -3,7 +3,8 @@
     <div>
         <v-row>
             <v-col cols="12" xs="12" sm="12" md="12" xl="12" class="d-flex flex-column justify-center align-center">
-                <v-img v-if="local_files_to_upload.length === 0" max-height="180" max-width="220" :src="emptyPhoto"></v-img>
+                <h3>Pickup Photo</h3>
+                <v-img v-if="local_pickup_images_to_upload.length === 0" max-height="180" max-width="220" :src="emptyPhoto"></v-img>
                 <div v-else>
                     <div class="slider-img-container py-0 my-0" style="display: flex">
                         <img style="align-self: flex-end" ref="currentImgRef" :src="clickedImage2.local_blob_url" :width="innerWindowWidth > 800 ? 600 : 300" />
@@ -21,12 +22,12 @@
                     </div>
                     <div style="text-align: center; margin-top: 5px">
                         Photo {{ clickedImage2.array_index + 1 }} of
-                        {{ local_files_to_upload.length }}
+                        {{ local_pickup_images_to_upload.length }}
                     </div>
                 </div>
 
                 <v-btn block depressed color="secondary" class="mt-5" @click="open_camera_module = !open_camera_module">
-                    {{ local_files_to_upload.length ? "Add" : "Take" }}
+                    {{ local_pickup_images_to_upload.length ? "Add" : "Take" }}
                     Photo
                 </v-btn>
                 <p class="primary--text mt-5 mb-0">LOCATION</p>
@@ -46,16 +47,21 @@
     <div>
         <!-- Third Stepper Button -->
         <v-row>
-            <v-col cols="12" xs="12" sm="12" md="6" xl="6">
-                <v-btn block depressed color="accent" @click.stop="$emit('set-delivery-stepper', 1)">
+            <v-col cols="12" xs="12" sm="12" md="4" xl="4">
+                <v-btn block depressed color="accent" @click.stop="$emit('set-delivery-stepper', 3)">
                     <v-icon dark>
                         mdi-chevron-left
                     </v-icon>
                     Back
                 </v-btn>
             </v-col>
-            <v-col cols="12" xs="12" sm="12" md="6" xl="6">
-                <v-btn block depressed color="primary" @click.stop="$emit('set-delivery-stepper', 3)">
+            <v-col cols="12" xs="12" sm="12" md="4" xl="4">
+                <v-btn block depressed color="error" @click.stop="deliveryCancelOrderDialog = true">
+                    Cancel
+                </v-btn>
+            </v-col>
+            <v-col cols="12" xs="12" sm="12" md="4" xl="4">
+                <v-btn block depressed color="primary" @click.stop="handleGoToNextStepper">
                     Next
                     <v-icon dark>
                         mdi-chevron-right
@@ -64,8 +70,8 @@
             </v-col>
         </v-row>
     </div>
-    
-    <CameraModal v-if="open_camera_module" :deliveryNumber="this.deliveryOrderData.barcode" :show="open_camera_module" @cancel="handleCancel" @captured-camera-images="saveCameraImages" :multipleUpload="true" />
+
+    <CameraModal v-if="open_camera_module" step="pickup" :deliveryNumber="this.deliveryOrderData.barcode" :show="open_camera_module" @cancel="handleCancel" @captured-camera-images="saveCameraImages" :multipleUpload="true" />
 
     <!-- Delivery Cancel Dialog -->
     <v-dialog v-model="deliveryCancelOrderDialog" transition="dialog-bottom-transition" max-width="350" content-class="order-details-dialog">
@@ -98,31 +104,25 @@
 </template>
 
 <script>
-import touchScreen from "../service/touchScreen";
+import touchScreen from "../../../service/touchScreen";
 import emptyPhoto from "@/assets/images/empty.jpg";
-import CameraModal from "./delivery-order/photo-capture/CameraModal";
+import CameraModal from "../photo-capture/CameraModal";
 import {
     mapState,
     mapMutations
 } from "vuex";
 export default {
-    name: "PhotoCapture",
+    name: "FourthSwapStepper",
     props: {
-        step: {
-            type: Object,
-            default: ''
-        },
         deliveryOrderData: {
             type: Object,
             default: {},
         },
         userPosition: {
             type: Object,
-            default: function () {
-                return {}
-            },
+            default: {},
         },
-
+        
     },
     components: {
         CameraModal,
@@ -132,8 +132,8 @@ export default {
             deliveryCancelOrderDialog: false,
             emptyPhoto: emptyPhoto,
             open_camera_module: false,
-            local_files_to_upload: [],
-            local_files_to_upload_copy: [],
+            local_pickup_images_to_upload: [],
+            local_pickup_images_to_upload_copy: [],
 
             canvasHeight: 480,
             canvasWidth: 640,
@@ -145,18 +145,17 @@ export default {
                 local_blob_url: null,
                 originalName: "",
                 mimetype: "",
-                type: this.props.step,
+
                 array_index: null,
                 caption: "",
                 tags: "",
                 id: "",
                 isDirty: false,
                 isRetake: false,
-            },
+            }
         };
     },
     mounted() {
-        alert(props.step);
         var el = this.$refs.currentImgRef;
         touchScreen.swipedetect(el, (swipedir) => {
             // swipedir contains either "none", "left", "right", "top", or "down"
@@ -173,51 +172,47 @@ export default {
     },
 
     watch: {
-        capturedImagesFromVuex: {
+        capturedPickupImagesFromVuex: {
             deep: true,
             immediate: true,
-            handler: function (newVal, oldVal) {
+            handler: function (newVal, oldVal) { 
                 if (newVal.length > 0) {
-                    this.local_files_to_upload = [...newVal];
+                    //this.local_pickup_images_to_upload = [...newVal];
                     this.clickedImage2 = {
-                        //...this.local_files_to_upload[0],
-                        //array_index: 0,
-                    };
+                        ...this.local_pickup_images_to_upload[0],
+                        array_index: 0,
+                    }; 
                 } else {
                     this.clickedImage2 = {};
-                }
-                console.log("hereeeeeeeeeeeeeee ........ ");
+                } 
             },
         },
     },
 
     computed: {
         ...mapState({
-            capturedImagesFromVuex: (state) => (state.capturedImages = []),
-      capturedPickupImagesFromVuex: (state) => (state.capturedPickupImages = []),
+            capturedPickupImagesFromVuex: (state) => state.capturedImages,
         }),
     },
     methods: {
-        ...mapMutations(["SET_CAPTURED_IMAGES_IN_VUEX"]),
+    ...mapMutations(["SET_CAPTURED_IMAGES_IN_VUEX", "SET_CAPTURED_PICKUP_IMAGES_IN_VUEX"]),
 
-        handleGoToNextStepper() {
-            alert(props.step + ' - ' + this.step);
-            alert('wtf - alerting captured images');
-
-            this.SET_CAPTURED_IMAGES_IN_VUEX(this.local_files_to_upload);
-            this.$emit("set-delivery-stepper", 4);
+       handleGoToNextStepper() {
+            this.SET_CAPTURED_PICKUP_IMAGES_IN_VUEX(this.local_pickup_images_to_upload);
+            this.$emit("setUploadFiles", this.local_pickup_images_to_upload);
+            this.$emit("set-delivery-stepper", 5);
         },
 
         handleCancel(obj) {
-            // console.log('handleCancel this.local_files_to_upload ===> ', this.local_files_to_upload)
+            // console.log('handleCancel this.local_pickup_images_to_upload ===> ', this.local_pickup_images_to_upload)
             if (obj !== undefined && obj.save_backup === true) {
-                this.local_files_to_upload_copy = JSON.parse(
-                    JSON.stringify(this.local_files_to_upload)
+                this.local_pickup_images_to_upload_copy = JSON.parse(
+                    JSON.stringify(this.local_pickup_images_to_upload)
                 );
             }
 
             if (obj !== undefined && obj.cross_btn_clicked === true) {
-                this.local_files_to_upload = this.local_files_to_upload_copy;
+                this.local_pickup_images_to_upload = this.local_pickup_images_to_upload_copy;
             }
             this.open_camera_module = false;
         },
@@ -227,17 +222,17 @@ export default {
             if (confirm("Are you sure to remove?")) {
                 let nextImage = {};
 
-                const filtered_images = this.local_files_to_upload.filter(
+                const filtered_images = this.local_pickup_images_to_upload.filter(
                     (obj, index) => {
                         if (index === img_index) {
-                            if (img_index === this.local_files_to_upload.length - 1) {
+                            if (img_index === this.local_pickup_images_to_upload.length - 1) {
                                 nextImage = {
-                                    ...this.local_files_to_upload[img_index - 1],
+                                    ...this.local_pickup_images_to_upload[img_index - 1],
                                     array_index: img_index - 1,
                                 };
                             } else {
                                 nextImage = {
-                                    ...this.local_files_to_upload[img_index + 1],
+                                    ...this.local_pickup_images_to_upload[img_index + 1],
                                     array_index: img_index,
                                 };
                             }
@@ -248,36 +243,30 @@ export default {
                     }
                 );
                 console.log("nextImage: ", nextImage);
-               //this.clickedImage2 = nextImage;
-                //this.local_files_to_upload = [...filtered_images];
+                this.clickedImage2 = nextImage;
+                this.local_pickup_images_to_upload = [...filtered_images];
             }
         },
 
         saveCameraImages(images) {
-            console.log('saving image ' + props.step);
-            alert(props.step + ' - ' + this.step);
-            alert('wtf - alerting captured images');
-
-            
-            console.log("================= images", images);
-
-            const blob_urls = this.local_files_to_upload.map((o) => o.local_blob_url);
-            const result = [...this.local_files_to_upload];
+            const blob_urls = this.local_pickup_images_to_upload.map((o) => o.local_blob_url);
+            const result = [...this.local_pickup_images_to_upload];
             for (let i = 0; i < images.length; i++) {
                 let obj = images[i];
                 if (!blob_urls.includes(obj.local_blob_url)) {
                     result.push(obj);
                 }
             }
-            this.local_files_to_upload = result;
+            this.local_pickup_images_to_upload = result;
 
             if (result.length > 0) {
                 this.clickedImage2 = {
-                   // ...result[0],
+                    ...result[0],
                     array_index: 0
                 };
-            } 
-            console.log("saveCameraImages  123 result ==========> ", this.step, props.step, result);
+            }
+
+            console.log("Save Pickup Images result ==========> 53 ", result[0].local_blob_url);
         },
 
         resize() {
@@ -298,22 +287,19 @@ export default {
             const {
                 array_index
             } = this.clickedImage2;
-
-            alert('ok');
-
             if (direction === "left") {
                 if (array_index !== 0) {
                     const result = {
-                        ...this.local_files_to_upload[array_index - 1],
+                        ...this.local_pickup_images_to_upload[array_index - 1],
                         array_index: array_index - 1,
                     };
 
                     this.clickedImage2 = result;
                 }
             } else if (direction === "right") {
-                if (array_index !== this.local_files_to_upload.length - 1) {
+                if (array_index !== this.local_pickup_images_to_upload.length - 1) {
                     const result = {
-                        ...this.local_files_to_upload[array_index + 1],
+                        ...this.local_pickup_images_to_upload[array_index + 1],
                         array_index: array_index + 1,
                     };
                     this.clickedImage2 = result;

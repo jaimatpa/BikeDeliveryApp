@@ -49,20 +49,7 @@
                 </div>
             </v-col>
         </v-row>
-        <v-row>
-            <v-col cols="12" xs="12" sm="12" md="12" xl="12">
-                <v-checkbox label="Unable to deliver all items" v-model="deliveryOrderData.unableToDeliverItems" v-ripple></v-checkbox>
-                <v-textarea label="Reason why you can't deliver all items"
-                            visible
-                            v-model="deliveryOrderData.note"
-                            :disabled="!deliveryOrderData.unableToDeliverItems"
-                            :v-show="deliveryOrderData.unableToDeliverItems"
-                            hide-details
-                            ></v-textarea>
-            </v-col>
-            
-        </v-row>
-            
+ 
         <v-row>
             <v-col cols="12" xs="12" sm="12" md="4" xl="4">
                 <v-btn block depressed color="accent" @click.stop="$emit('set-delivery-stepper', 3)">
@@ -160,7 +147,9 @@ export default {
     },
     computed: {
         ...mapState({
-            capturedImagesFromVuex: (state) => state.capturedImages,
+            capturedImagesFromVuex: (state) => state.capturedPickupImages,
+            capturedPickupImagesFromVuex: (state) => state.capturedPickupImages,
+            
         }),
     },
 
@@ -179,7 +168,7 @@ export default {
         this.resize();
     },
     watch: {
-        capturedImagesFromVuex: {
+        capturedPickupImagesFromVuex: {
             deep: true,
             immediate: true,
             handler: function (newVal, oldVal) {
@@ -188,12 +177,18 @@ export default {
                         ...newVal[0],
                         array_index: 0
                     };
+                      
+                    // alert('emitting');
+                    // this.$emit("setUploadFiles", this.local_files_to_upload);
                     // this.$emit('uploadFiles', this.clickedImage)
                 } else {
                     this.clickedImage = {};
                 }
+                
+                console.log("capturedPickupImagesFromVuex");
+                
                 console.log(newVal);
-                console.log("Hellooooo");
+
                 this.$emit("setUploadFiles", newVal);
             },
         },
@@ -275,16 +270,16 @@ export default {
             if (direction === "left") {
                 if (array_index !== 0) {
                     const result = {
-                        ...this.capturedImagesFromVuex[array_index - 1],
+                        ...this.capturedPickupImagesFromVuex[array_index - 1],
                         array_index: array_index - 1,
                     };
 
                     this.clickedImage = result;
                 }
             } else if (direction === "right") {
-                if (array_index !== this.capturedImagesFromVuex.length - 1) {
+                if (array_index !== this.capturedPickupImagesFromVuex.length - 1) {
                     const result = {
-                        ...this.capturedImagesFromVuex[array_index + 1],
+                        ...this.capturedPickupImagesFromVuex[array_index + 1],
                         array_index: array_index + 1,
                     };
                     this.clickedImage = result;
@@ -302,17 +297,17 @@ export default {
             if (confirm("Are you sure to remove?")) {
                 let nextImage = {};
 
-                const filtered_images = this.capturedImagesFromVuex.filter(
+                const filtered_images = this.capturedPickupImagesFromVuex.filter(
                     (obj, index) => {
                         if (index === img_index) {
-                            if (img_index === this.capturedImagesFromVuex.length - 1) {
+                            if (img_index === this.capturedPickupImagesFromVuex.length - 1) {
                                 nextImage = {
-                                    ...this.capturedImagesFromVuex[img_index - 1],
+                                    ...this.capturedPickupImagesFromVuex[img_index - 1],
                                     array_index: img_index - 1,
                                 };
                             } else {
                                 nextImage = {
-                                    ...this.capturedImagesFromVuex[img_index + 1],
+                                    ...this.capturedPickupImagesFromVuex[img_index + 1],
                                     array_index: img_index,
                                 };
                             }
@@ -325,7 +320,7 @@ export default {
                 console.log("nextImage: ", nextImage);
                 this.clickedImage = nextImage;
 
-                this.SET_CAPTURED_IMAGES_IN_VUEX([...filtered_images]);
+                this.SET_CAPTURED_PICKUP_IMAGES_IN_VUEX([...filtered_images]);
             }
         },
     },

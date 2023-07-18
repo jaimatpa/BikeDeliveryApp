@@ -52,7 +52,7 @@
           </v-col>
         </v-row>
         <v-row>
-          <v-col cols="12" xs="12" sm="12" md="6" xl="6">
+          <v-col cols="12" xs="6" sm="6" md="6" xl="6">
             <v-text-field
               v-model="orderData.combination"
               label="Combination"
@@ -63,6 +63,57 @@
             >
             </v-text-field>
           </v-col>
+        </v-row>
+        <v-row>
+          <v-col cols="12" xs="12" sm="6" md="6" xl="6">
+            <v-simple-checkbox
+              v-model="orderData.extrasDelivered"
+              label="Extras Picked Up"
+              placeholder=""
+              readonly
+              dense
+              outlined
+            > Could not pickup all extra items
+          </v-simple-checkbox>
+          Could not deliver all extras
+
+            <v-text-field
+              v-model="orderData.extrasDeliveredUpReason"
+              label="Extras Delivery Reason"
+              placeholder=""
+              readonly
+              dense
+              outlined
+            > Could not deliver all extras
+            </v-text-field>
+          </v-col>
+ 
+          <v-col cols="12" xs="12" sm="12" md="6" xl="6">
+            <v-simple-checkbox
+              v-model="orderData.extrasPickedUp"
+              label="Extras Picked Up"
+              placeholder="Could not pickup all extra items"
+              title="Could not pickup all extra items"
+              text="hello"
+              readonly
+              dense
+              outlined
+            > 
+          </v-simple-checkbox> 
+          Could not pickup all extra items
+          
+            <v-text-field
+              v-model="orderData.extrasPickedUpReason"
+              label="Extras Picked Up Reason"
+              placeholder=""
+              readonly
+              dense
+              outlined
+            >
+            </v-text-field>
+          </v-col>
+        </v-row>
+        <v-row>
           <v-col cols="12" xs="12" sm="12" md="6" xl="6">
             <v-text-field
               v-model="orderData.driverDeliveredBy"
@@ -86,11 +137,12 @@
           </v-col>
         </v-row>
 
-        <v-row cols="12">
-          <header>
-            <h1 class="text-h4 mb-4 primary--text">Message History</h1>
-          </header>
+        <v-row>
+          <v-col cols="12" xs="12" sm="12" md="6" xl="6"> 
+            <h1 class="text-h5 mb-4">Message History</h1>
+          </v-col>
         </v-row>
+
         <v-data-table
           readonly
           width="100%"
@@ -124,14 +176,10 @@
           </template>
         </v-data-table>
         
-        <v-row cols="12" class=" mt-5 mb-5">
-          <v-divider />
-        </v-row>
-
-        <v-row cols="12">
-          <header>
-            <h1 class="text-h4 mb-4 primary--text">Equipment</h1>
-          </header>
+        <v-row>
+          <v-col cols="12" xs="12" sm="12" md="6" xl="6"> 
+            <h1 class="text-h5 mb-4">Equipment</h1>
+          </v-col>
         </v-row>
         <v-data-table
           readonly
@@ -163,95 +211,122 @@
             />
           </template>
         </v-data-table>
+
+        <v-row>
+          <v-col cols="12" xs="12" sm="12" md="6" xl="6"> 
+            <h1 class="text-h5 mb-4">Extras</h1>
+          </v-col>
+        </v-row>
+        <v-data-table
+          readonly
+          width="100%"
+          block
+          cols="12"
+          xs="12"
+          sm="12"
+          md="12"
+          xl="12"
+          :headers="headers2"
+          :items="extras"
+          item-key="name"
+          class="elevation-6 mb-5"
+        >
+          <template v-slot:[`item.checkedDelievery`]="{ item }">
+            <v-simple-checkbox
+              v-model="item.checkedDelievery"
+              v-ripple
+              @input="saveUpdate(item)"
+            >
+            </v-simple-checkbox>
+          </template>
+          <template v-slot:[`item.checkPickup`]="{ item }">
+            <v-simple-checkbox
+              v-model="item.checkPickup"
+              v-ripple
+              @input="saveUpdate(item)"
+            />
+          </template>
+        </v-data-table>
         
-        <v-row cols="12">
-          <v-divider />
-        </v-row>
 
-        <v-row cols="12">
-          <header>
-            <h1 class="text-h4 mb-4 primary--text">Delivery Photos</h1>
-          </header>
+        <v-row class="mt-5">
+          <v-col cols="12" xs="12" sm="12" md="6" xl="6"> 
+            <h1 class="text-h5 mb-4">Delivery Photos</h1>
+          </v-col>
         </v-row>
 
         <v-row cols="12">
           <v-col cols="12" xs="12" sm="12" md="4" xl="4">
             <img
-              :src="`https://images.hiretheproz.com/${orderData.barcode}-0.jpeg`" style="display: none"
+              :src="`https://images.hiretheproz.com/${orderData.barcode}-0.jpeg`" onload="this.style='display: block;'" style="display:none" 
             />
           </v-col>
           <v-col cols="12" xs="12" sm="12" md="4" xl="4">
             <img
-              :src="`https://images.hiretheproz.com/${orderData.barcode}-1.jpeg`" style="display: none"
+              :src="`https://images.hiretheproz.com/${orderData.barcode}-1.jpeg`" onload="this.style='display: block;'" style="display:none" 
             />
           </v-col>
           <v-col cols="12" xs="12" sm="12" md="4" xl="4">
             <img
-              :src="`https://images.hiretheproz.com/${orderData.barcode}-2.jpeg`" style="display: none"
+              :src="`https://images.hiretheproz.com/${orderData.barcode}-2.jpeg`"  onload="this.style='display: block;'" style="display:none"
             />
           </v-col>
           <v-col cols="12" xs="12" sm="12" md="4" xl="4">
             <img
-              :src="`https://images.hiretheproz.com/${orderData.barcode}-3.jpeg`" style="display: none"
+              :src="`https://images.hiretheproz.com/${orderData.barcode}-3.jpeg`" onload="this.style='display: block;'" style="display:none" 
             />
           </v-col>
           <v-col cols="12" xs="12" sm="12" md="4" xl="4">
             <img
-              :src="`https://images.hiretheproz.com/${orderData.barcode}-4.jpeg`" style="display: none"
+              :src="`https://images.hiretheproz.com/${orderData.barcode}-4.jpeg`"  onload="this.style='display: block;'" style="display:none"
             />
           </v-col>
         </v-row>
 
-        <v-row cols="12">
-          <v-divider />
+        <v-row class="mt-5">
+          <v-col cols="12" xs="12" sm="12" md="6" xl="6"> 
+            <h1 class="text-h5 mb-4">Pickup Photos</h1>
+          </v-col>
         </v-row>
-        <v-row cols="12">
-          <header>
-            <h1 class="text-h4 mb-4 primary--text">Pickup Photos</h1>
-          </header>
-        </v-row>
+
         <v-row cols="12">
           
           <v-col cols="12" xs="12" sm="12" md="4" xl="4">
             <img
-              :src="`https://images.hiretheproz.com/pickup/${orderData.barcode}-0.jpeg`" style="display: none"
+              :src="`https://images.hiretheproz.com/${orderData.barcode}-pickup-0.jpeg`"  onload="this.style='display: block;'" style="display:none"
             />
           </v-col>
           <v-col cols="12" xs="12" sm="12" md="4" xl="4">
             <img
-              :src="`https://images.hiretheproz.com/pickup/${orderData.barcode}-1.jpeg`" style="display: none"
+              :src="`https://images.hiretheproz.com/${orderData.barcode}-pickup-1.jpeg`"  onload="this.style='display: block;'" style="display:none"
             />
           </v-col>
           <v-col cols="12" xs="12" sm="12" md="4" xl="4">
             <img
-              :src="`https://images.hiretheproz.com/pickup/${orderData.barcode}-2.jpeg`" style="display: none"
+              :src="`https://images.hiretheproz.com/${orderData.barcode}-pickup-2.jpeg`" onload="this.style='display: block;'" style="display:none" 
             />
           </v-col>
           <v-col cols="12" xs="12" sm="12" md="4" xl="4">
             <img
-              :src="`https://images.hiretheproz.com/pickup/${orderData.barcode}-3.jpeg`" style="display: none"
+              :src="`https://images.hiretheproz.com/${orderData.barcode}-pickup-3.jpeg`"  onload="this.style='display: block;'" style="display:none"
             />
           </v-col>
           <v-col cols="12" xs="12" sm="12" md="4" xl="4">
             <img
-              :src="`https://images.hiretheproz.com/pickup/${orderData.barcode}-4.jpeg`" style="display: none"
+              :src="`https://images.hiretheproz.com/${orderData.barcode}-pickup-4.jpeg`" onload="this.style='display: block;'" style="display:none"
             />
           </v-col>
         </v-row>
-
-        <v-row cols="12">
-          <header>
-            <br />
-            <h1 class="text-h4 mb-4 primary--text">App Delivery Photos</h1>
-          </header>
-        </v-row>
-
-        <v-row cols="12">
-          <v-divider />
+  
+        <v-row class="mt-5">
+          <v-col cols="12" xs="12" sm="12" md="6" xl="6"> 
+            <h1 class="text-h5 mb-4">App Delivery Photos</h1>
+          </v-col>
         </v-row>
 
         <v-row cols="12">
           <v-col
+            style="background-color: #ececec;"
             v-for="image in deliveryImages"
             v-bind:key="image"
             xs="12"
@@ -261,22 +336,17 @@
             xl="4"
           >
             <v-card elevation="15">
-              <v-img :src="image" style="display: none" />
+              <v-img :src="image"   />
             </v-card>
           </v-col>
         </v-row>
 
-        <v-row cols="12">
-          <header>
-            <br />
-            <h1 class="text-h4 mb-4 primary--text">App Pickup Photos</h1>
-          </header>
+        <v-row class="mt-5">
+          <v-col cols="12" xs="12" sm="12" md="6" xl="6"> 
+            <h1 class="text-h5 mb-4">App Pickup Photos</h1>
+          </v-col>
         </v-row>
-
-        <v-row cols="12">
-          <v-divider />
-        </v-row>
-
+ 
         <v-row cols="12">
           <v-col
             v-for="image in pickupImages" 
@@ -288,7 +358,7 @@
             xl="4"
           >
             <v-card elevation="15">
-              <v-img :src="image" style="display: none" />
+              <v-img :src="image"   />
             </v-card>
           </v-col>
         </v-row>
@@ -405,6 +475,8 @@
 </template>
 
 <script>
+
+
 import _ from "lodash";
 import moment from "moment";
 import { mapActions } from "vuex";
@@ -425,6 +497,7 @@ export default {
   async created() {
     await this.getOrderDetails();
     await this.getOrderItems();
+    await this.getOrderExtras();
     await this.getMsgTemplate();
     await this.getUserlocation();
     await this.getOrderImages();
@@ -448,6 +521,13 @@ export default {
       breakpoint: 640,
       searchHistoryDialog: false,
       orderData: {},
+      headersextras: [{
+              text: "Name",
+              align: "start",
+              value: "extraName",
+          }
+      ],
+      extras: [],
       smsObject: {
         to: "",
         message: "",
@@ -529,6 +609,22 @@ export default {
       showSuccess: "success",
       showError: "error",
     }),
+    async getOrderExtras() {
+          try {
+            let response = await this.$axios.$get("/api/user/deliveryItem/extras", {
+                params: {
+                    deliveryID: this.deliveryOrderData.id,
+                },
+            });
+
+            this.extras = response;
+            console.log("Extras", this.extras);
+
+            //  this.$router.go(-1);
+          } catch (err) {
+                console.log("Issue in getOrderExtras", err);
+          }
+        },
     async getOrderItems() {
       try {
         let response = await this.$axios.$get("/api/user/deliveryItem", {

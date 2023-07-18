@@ -105,6 +105,7 @@ export default {
             canvas.toBlob(
                 (blob) => {
                     console.log("IN SAVE PHOTO");
+                    
                     const originalName = `${this.deliveryNumber}`;
                     const savedfileObj = new File([blob], originalName, {
                         type: blob.type,

@@ -45,7 +45,7 @@
                                 <img :src="`https://images.hiretheproz.com/${orderData.barcode}-0.jpeg`" onload="this.style='display: block;'" style="display:none"></img>
                             </v-col>
                             <v-col cols="12" xs="12" sm="12" md="4" xl="4">
-                                <img :src="`https://images.hiretheproz.com/${orderData.barcode}-1.jpeg`"onload="this.style='display: block;'" style="display:none"></img>
+                                <img :src="`https://images.hiretheproz.com/${orderData.barcode}-1.jpeg` "onload="this.style='display: block;'" style="display:none"></img>
                             </v-col>
                             <v-col cols="12" xs="12" sm="12" md="4" xl="4">
                                 <img :src="`https://images.hiretheproz.com/${orderData.barcode}-2.jpeg`" onload="this.style='display: block;'" style="display:none"></img>
@@ -118,24 +118,35 @@
 
                         <v-data-table width="100%" block cols="12" xs="12" sm="12" md="12" xl="12" :headers="headersextras" :items="extras" item-key="name" class="elevation-6 ma-1 mb-2">
                         </v-data-table>
-
+                        <v-row>
+                            <v-col cols="12" xs="12" sm="12" md="12" xl="12">
+                                <v-checkbox label="Unable to pickup all extra items." v-model="unableToDeliverItems" v-ripple></v-checkbox>
+                                <v-textarea label="Reason why you can't pickup all extra items"
+                                        :disabled="!unableToDeliverItems"
+                                        :v-show="unableToDeliverItems"
+                                        visible
+                                         hide-details
+                                            ></v-textarea>
+                            </v-col>
+                            
+                        </v-row>
 
 
                         <!-- <v-row cols="12">
                             <v-col cols="12" xs="12" sm="12" md="4" xl="4">
-                                <img :src="`https://images.hiretheproz.com/pickup/${orderData.barcode}-0.jpeg`"></img>
+                                <img :src="`https://images.hiretheproz.com/${orderData.barcode}-pickup-0.jpeg`"></img>
                             </v-col>
                             <v-col cols="12" xs="12" sm="12" md="4" xl="4">
-                                <img :src="`https://images.hiretheproz.com/pickup/${orderData.barcode}-1.jpeg`"></img>
+                                <img :src="`https://images.hiretheproz.com/${orderData.barcode}-pickup-1.jpeg`"></img>
                             </v-col>
                             <v-col cols="12" xs="12" sm="12" md="4" xl="4">
-                                <img :src="`https://images.hiretheproz.com/pickup/${orderData.barcode}-2.jpeg`"></img>
+                                <img :src="`https://images.hiretheproz.com/${orderData.barcode}-pickup-2.jpeg`"></img>
                             </v-col>
                             <v-col cols="12" xs="12" sm="12" md="4" xl="4">
-                                <img :src="`https://images.hiretheproz.com/pickup/${orderData.barcode}-3.jpeg`"></img>
+                                <img :src="`https://images.hiretheproz.com/${orderData.barcode}-pickup-3.jpeg`"></img>
                             </v-col>
                             <v-col cols="12" xs="12" sm="12" md="4" xl="4">
-                                <img :src="`https://images.hiretheproz.com/pickup/${orderData.barcode}-4.jpeg`"></img>
+                                <img :src="`https://images.hiretheproz.com/${orderData.barcode}-pickup-4.jpeg`"></img>
                             </v-col>
                         </v-row> -->
 
@@ -247,7 +258,7 @@ export default {
                     this.clickedImage = {};
                 }
                 console.log(newVal);
-                console.log("Hellooooo");
+                console.log("Hellooooo 2");
                 this.setUploadFiles(newVal);
             },
         },

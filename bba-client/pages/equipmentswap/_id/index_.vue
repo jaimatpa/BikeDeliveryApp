@@ -169,12 +169,12 @@ export default {
         }),
         async getOrderItems() {
             try {
-                let response = await this.$axios.$get("/api/user/deliveryItem", {
-                    params: {
-                        deliveryID: this.deliveryOrderData.id,
-                    },
-                });
-                this.equipment = response;
+            //     let response = await this.$axios.$get("/api/user/deliveryItem", {
+            //         params: {
+            //             deliveryID: this.deliveryOrderData.id,
+            //         },
+            //     });
+            //     this.equipment = response;
 
                 //  this.$router.go(-1);
             } catch (err) {

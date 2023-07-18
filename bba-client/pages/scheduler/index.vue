@@ -1,36 +1,42 @@
 <template>
-    <section class="pa-1 mt-3">
+    <section class="pa-5 mt-3">
+        <v-row align="center" class="mb-5">
+            <v-col cols="12"> 
+                <v-app-bar style="height: 40px;">
+                    <v-row align="center">
+                        <v-col cols="1"> 
+                            <v-menu v-model="menuOpen" :close-on-content-click="true" >
+                                <template v-slot:activator="{ on }">
+                                    <v-text-field v-model="selectedDate" label="Select a date" readonly v-on="on"></v-text-field>
+                                </template>
+                                <v-date-picker v-model="selectedDate" @input="updateScheduler()" ></v-date-picker>
+                            </v-menu>
+                        </v-col>
 
-        <v-app-bar style="height: 40px;">
-            <v-row align="center">
-                <v-col cols="1"> 
-                    <v-menu v-model="menuOpen" :close-on-content-click="true" >
-                        <template v-slot:activator="{ on }">
-                            <v-text-field v-model="selectedDate" label="Select a date" readonly v-on="on"></v-text-field>
-                        </template>
-                        <v-date-picker v-model="selectedDate" @input="updateScheduler()" ></v-date-picker>
-                    </v-menu>
-                </v-col>
+                        <v-col cols="3"> 
+                            <v-checkbox label="Enable Yard Manager" v-model="enableYardManager"></v-checkbox>
+                        </v-col>
+                    </v-row>
+                </v-app-bar>
+            </v-col>
+        </v-row>
 
-                <v-col cols="3"> 
-                    <v-checkbox label="Enable Yard Manager" v-model="enableYardManager"></v-checkbox>
-                </v-col>
-            </v-row>
-        </v-app-bar>
-
-        <v-row no-gutters align="center" class="flex-nowrap my-2" style="height: 45vh; overflow-x: auto;" >
+        <v-row no-gutters align="center" class="flex-nowrap my-2" style="height: 40vh; overflow-x: auto;" >
             <v-col v-for="truck in trucks" :key="truck.id" class="flex-shrink-0 px-2"
                 style="min-width: 350px; max-height: 100%; overflow-y: auto;">
 
                  <!-- Trips for each truck -->
                 <v-card v-for="trip in truck.trips" :key="trip.tripNumber"
-
-                    style="width: 100%; overflow-y: scroll; overflow-x: hidden; margin-bottom: 10px; " :style="{ 'background-color': trip.released ? '#ececec' : 'inherit', 'pointer-effects': trip.released ? 'none' : 'inherit' }">
+                    style="width: 100%;  overflow-x: hidden; margin-bottom: 10px; " :style="{ 'background-color': trip.released ? '#ececec' : 'inherit', 'pointer-effects': trip.released ? 'none' : 'inherit' }">
                     <v-card-subtitle>
+                        <h4>
+                            Trip #{{ trip.tripNumber }}
+                        </h4>
                         <h5>
-                            Truck Name {{ truck.TruckName }}
+                            {{ truck.TruckName }}
                         </h5>
  
+
                         <div v-if="trip.released"  class="mt-4 mb-4" style="height: 3px; width:30%; background-color: orange;"></div>
                         <div v-if="trip.complete"  class="mt-4 mb-4" style="height: 3px; width:30%; background-color: green;"></div>
                
@@ -52,7 +58,13 @@
                                         <v-card-text>
                                             <v-row align="center">
                                                 <v-col cols="12" class="d-flex align-center">
-                                                    <v-icon>mdi-drag</v-icon>
+
+                                                    <v-icon v-show="!trip.released">mdi-drag</v-icon>
+
+                                                    <div v-show="deliveryOrder.type == 'delivery'" style="background: blue; height: 60px; width: 3px;"></div>
+                                                    <div v-show="deliveryOrder.type == 'delivery' && deliveryOrder.swapOrder" style="background: purple; height: 60px; width: 3px;"></div>
+                                                    <div v-show="deliveryOrder.type == 'pickup'" style="background: orange; height: 60px; width: 3px;"></div>
+                                                    
                                                     <div class="" style="padding-left: 10px; display: block">
                                                         <span><strong>{{ deliveryOrder.orderid }}</strong></span><br/>
                                                         <span>{{ deliveryOrder.location }}</span>
@@ -70,11 +82,6 @@
                     <v-card-text>
                         <v-row align="center" justify="space-between">
                             <v-col cols="auto">
-                                <h4>
-                                    Trip #{{ trip.tripNumber }}
-                                </h4>
-                            </v-col>
-                            <v-col cols="auto">
                                 <v-btn v-if="!trip.released" color="primary" outlined @click="releaseTrip(trip)">Release</v-btn>
                                 <v-btn v-if="trip.released" color="primary" outlined disabled>Released</v-btn>
                             </v-col>
@@ -84,12 +91,31 @@
             </v-col>
         </v-row>
 
+        <v-row>
+            <v-col cols="12">
+                <v-text-field
+                    v-model="search"
+                    append-icon="mdi-magnify"
+                    label="Search by Order #, Name, Location"
+                    single-line
+                    hide-details
+                    outlined
+                    dense
+                    clearable
+                    class="mb-5 order-search-text-field"
+                    @keyup="onKeyUp"
+                    @click:clear="onClearClicked"
+                    ></v-text-field>
+            </v-col>
+        </v-row>
         <div class="row" style=" overflow-x: auto;">
-            <div class="col-4" style="min-width: 250px; max-height: 100%; overflow-y: auto;">
+            <div class="col-4" style="min-width: 250px; overflow-y: auto;">
                 <h4>Deliveries</h4>
                 <hr class="mb-2" />
-                <Draggable class="list-group" style="cursor: move;" :list="nonSwappedDeliveryOrders"  
-     
+                <Draggable class="list-group" 
+                style="cursor: move;  max-height: 30vh; height: 30vh; background-color: #efefef" 
+                :list="nonSwappedDeliveryOrders"  
+                 
                     :group="{ name: 'row' }"
                     >
                     <div class="list-group-item" v-for="deliveryOrder in nonSwappedDeliveryOrders" :key="deliveryOrder.id">
@@ -113,7 +139,7 @@
             <div class="col-4">
                 <h4>Swaps</h4>
                 <hr class="mb-2" />
-                <Draggable class="list-group" style="cursor: move;" :list="swappedDeliveryOrders"  
+                <Draggable class="list-group" style="cursor: move;  max-height: 30vh; height: 30vh; background-color: #efefef" :list="swappedDeliveryOrders"  
    
                     :group="{ name: 'row' }"
                     >
@@ -136,14 +162,17 @@
             </div>
 
             <div class="col-4">
-                <h3>Pickups</h3>
+                <h4>Pickups</h4>
                 <hr class="mb-2" />
                 
-                <Draggable class="list-group" style="cursor: move;" :list="pickups"  
- 
+                <Draggable class="list-group" style="cursor: move; max-height: 30vh; height: 30vh; background-color: #efefef" 
+                @change="test"
+                :list="unloadedPickups"  
+                @start="dragging = true"
+  @end="dragging = false"
                     :group="{ name: 'row' }"
                     >
-                    <div class="list-group-item" v-for="deliveryOrder in pickups" :key="deliveryOrder.id">
+                    <div class="list-group-item" v-for="deliveryOrder in this.unloadedPickups" :key="deliveryOrder.id">
                         <v-card color="white" :elevation="1" class="mb-2">
                             <v-card-text>
                                 <v-row align="center">
@@ -277,6 +306,7 @@ export default {
             selectedDate: new Date().toISOString().substring(0, 10),
             menuOpen: false,
             enableYardManager: false,
+            search: '',
             areas: [],
             villas: [],
             drivers: [],
@@ -300,14 +330,16 @@ export default {
             deliveryOrders: [],
             nonSwappedDeliveryOrders: [],
             swappedDeliveryOrders: [],
+            unloadedPickups: [],
             pickups: [],
             forceUpdate: false
         };
     },
     async mounted() { 
-        await this.generateTrips();
         await this.getAllDeliveryOrders();
+        await this.getAllPickups();
         await this.getAllDrivers();
+        await this.generateTrips();
         await this.loadData();
     },
     async created() {
@@ -318,21 +350,67 @@ export default {
             showSuccess: "success",
             showError: "error"
         }),
+        onClearClicked() {
+            if (this.search !== "" || this.searchByBarcode !== "") {
+                this.search = "";
+                this.searchByBarcode = "";
+            }
+            this.loadData();
+        }, 
+        test(event) {  
+        },  
+        onKeyUp(event) {
+            // console.log('key uppppppp ', typeof event.target.value,  `${event.target.value}`.length)
+            if (event.key === "Enter") {
+                this.loadData();
+            } else if (`${event.target.value}`.length === 0) {
+                // if someone clears the input field.
+                this.loadData();
+            }
+        },
         async loadData() {
             this.swappedDeliveryOrders = this.deliveryOrders.filter(x=>x.swapOrder == 1 && x.truckID == null && x.tripID1 == null);
             this.nonSwappedDeliveryOrders = this.deliveryOrders.filter(x=>x.swapOrder == 0 && x.truckID == null && x.tripID1 == null); //
+            this.unloadedPickups = this.pickups.filter(x=>x.swapOrder == 0 && x.truckID == null && x.tripID1 == null); 
 
+            this.nonSwappedDeliveryOrders.forEach(x=>x.type == 'deliveries');
+            this.swappedDeliveryOrders.forEach(x=>x.type == 'swaps');
+            this.unloadedPickups.forEach(x=>x.type == 'pickup');
+ 
             this.trucks.forEach( truck => {
                 truck.trips.forEach( trip => {
                     trip.released = false;
                 });
             })
 
+            console.log('trips:', this.trips.length);
+
             this.trips.forEach( trip => {
-                console.log('searching for new trips');
-                var orders = this.deliveryOrders.filter( x => x.truckID == trip.truckId && x.tripID1 == trip.id );
-                var truck = this.trucks.filter( truck => truck.id == trip.truckId );
+                console.log('searching for new trips: tripid:' + trip.id + ", truckid: " + trip.truckId);
+                var deliveries = this.deliveryOrders.filter( x => x.truckID == trip.truckId && x.tripID1 == trip.id );
+                var pickups = this.pickups.filter( x => x.truckID == trip.truckId && x.tripID1 == trip.id );
                 
+                var truck = this.trucks.filter( truck => truck.id == trip.truckId );
+                 
+                if(deliveries.length > 0) {
+                    deliveries.forEach(x=> {
+                        x.type = 'delivery';
+                        x.fixed=true;
+                    });
+                }
+
+                if(pickups.length > 0) {
+                    pickups.forEach(x=> {
+                        x.type = 'pickup';
+                        x.fixed=true;
+                    });
+                }
+
+                var orders = [...deliveries, ...pickups];
+                
+                 
+                
+            
                 truck[0].trips[ trip.tripNumber-1 ].deliveryOrders = orders;
                 truck[0].trips[ trip.tripNumber-1 ].id = trip.id;
                 truck[0].trips[ trip.tripNumber-1 ].released = trip.released ? true : false;
@@ -348,16 +426,16 @@ export default {
                 }
             });  
             
-            this.trips.forEach(x=>console.log('released?', x.released));
             this.trucks.forEach( truck => {
                 truck.trips.forEach( trip => {
-                    console.log('released 2?', trip.released);
+                
                 });
             })
         },
         async updateScheduler() {
             await this.generateTrips();
             await this.getAllDeliveryOrders();
+            await this.getAllPickups();
 
             await this.loadData();
         }, 
@@ -386,6 +464,7 @@ export default {
                 tripId: trip.id,
                 tripNumber: trip.tripNumber,
                 truckName: this.trucks[trip.truckId - 1].TruckName,
+                truckId: this.trucks[trip.truckId - 1].id,
                 driverId: trip.selectedDriver.id
             }
 
@@ -458,6 +537,7 @@ export default {
                 //truck[0].trips = [];
 
                 const data = {
+                    date: this.selectedDate,
                     truckId: truck,
                     tripNumber: tripid,
                     action: 'add',
@@ -470,7 +550,12 @@ export default {
                     truck.trips.push(trip);
                 }
 
-                const response = await this.$axios.$post(`/api/user/trips/`, data);
+                const response = await this.$axios.$post(`/api/user/trips/`, data).then( () =>{
+
+                    this.showSuccess("The order has been added to the schedule.");
+
+                });
+
                 console.log('submitting data', data);     
             }
 
@@ -494,7 +579,7 @@ export default {
         },
         async getAllTrips() {
             const response = await this.$axios.$get(`/api/user/trips?date=${this.selectedDate}`);
-
+            console.log(`/api/user/trips?date=${this.selectedDate}`);
             this.trips = response;
         },
         async getAllTrucks() {
@@ -508,9 +593,13 @@ export default {
             this.drivers = response;
         },
         async getAllDeliveryOrders() {
-            const response = await this.$axios.$get(`/api/user/deliveryOrder/query?order_type=scheduler&date=${this.selectedDate}`);
- 
+            const response = await this.$axios.$get(`/api/user/deliveryOrder/query?order_type=scheduler&type=deliveries&date=${this.selectedDate}`);
             this.deliveryOrders = response;
+        },
+        async getAllPickups() {
+            const response = await this.$axios.$get(`/api/user/deliveryOrder/query?order_type=scheduler&type=pickups&date=${this.selectedDate}`);
+ 
+            this.pickups = response;
         },
         async handleDeliveryOrderMove(truck, trip, event) {
             // const { moved: { oldIndex, element } } = event.removed;

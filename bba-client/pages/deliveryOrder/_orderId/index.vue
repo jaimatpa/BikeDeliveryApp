@@ -87,6 +87,19 @@
                     </v-data-table>
                     
                     <v-row>
+                      <v-col cols="12" xs="12" sm="12" md="12" xl="12">
+                          <v-checkbox label="Unable to deliver all extra items" v-model="unableToDeliverItems" v-ripple></v-checkbox>
+                          <v-textarea label="Reason why you can't deliver all extra items."
+                                      visible
+                                      v-model="extrasDeliveredReason"
+                                      :disabled="!unableToDeliverItems"
+                                      :v-show="unableToDeliverItems"
+                                      hide-details
+                                      ></v-textarea>
+                      </v-col>
+                      
+                    </v-row>
+                    <v-row>
                         <v-col cols="12" xs="12" sm="12" md="6" xl="6">
                             <v-btn block depressed color="accent" @click.stop="deliveryStepper = 1">
                                 Back
@@ -223,8 +236,8 @@ export default {
   },
   async created() {
     await this.getOrderDetails();
-    await this.getOrderItems();
     await this.getOrderExtras();
+    await this.getOrderItems();
     await this.getOrderImages();
     this.getMsgTemplate();
     this.getUserlocation();
@@ -236,6 +249,8 @@ export default {
       deliveryOrderData: {},
       deliveryStepper: 1,
       deliveryOrderDialog: false,
+      extrasDeliveredReason: '',
+      unableToDeliverItems: false,
       deliveryCancelOrderDialog: false,
       emptyPhoto: emptyPhoto,
       cyclePhoto: cyclePhoto,
@@ -396,20 +411,20 @@ export default {
       this.getOrderItems();
     },
     async getOrderExtras() {
-            try {
-                let response = await this.$axios.$get("/api/user/deliveryItem/extras", {
-                    params: {
-                        deliveryID: this.orderData.id,
-                    },
-                });
+          try {
+            let response = await this.$axios.$get("/api/user/deliveryItem/extras", {
+                params: {
+                    deliveryID: this.deliveryOrderData.id,
+                },
+            });
 
-                this.extras = response;
-                console.log("Extras", this.extras);
+            this.extras = response;
+            console.log("Extras", this.extras);
 
-                //  this.$router.go(-1);
-            } catch (err) {
-                console.log("Issue in getOrderItems 3", err.response);
-            }
+            //  this.$router.go(-1);
+          } catch (err) {
+                console.log("Issue in getOrderExtras", err);
+          }
         },
     closeScanner() {
       this.scanDialogVisible = false;
@@ -546,8 +561,10 @@ export default {
             );
             console.log("RESPONSE", response);
             this.loader = false;
+            
             this.showSuccess(response.message);
-            //this.$router.push("/deliveryOrder");
+            
+            this.$router.push("/deliveryOrder");
           });
       } catch (error) {
         console.log("errror 1234", error);
@@ -587,18 +604,21 @@ export default {
         this.deliveryOrderData = response[0];
 
         // console.log("TESTING CAPTURED IMAGES", ThirdStepper.capturedImages);
-        console.log(
-          "TESTING CAPTURED IMAGES BEFORE",
-          this.$refs.thirdStep.local_files_to_upload
-        );
+        // console.log(
+        //   "TESTING CAPTURED IMAGES BEFORE",
+        //   this.$refs.thirdStep.local_files_to_upload
+        // );
         this.$refs.thirdStep.local_files_to_upload = [];
+        this.$refs.fourthStep.local_files_to_upload2 = [];
+        
         // ThirdStepper.local_files_to_upload = [];
-        console.log(
-          "TESTING CAPTURED IMAGES AFTER",
-          this.$refs.thirdStep.local_files_to_upload
-        );
+        // console.log(
+        //   "TESTING CAPTURED IMAGES AFTER",
+        //   this.$refs.thirdStep.local_files_to_upload
+        // );
 
         ThirdStepper.capturedImages = [];
+        FourthStepper.capturedImages = [];
         // this.$emit("captured-camera-images", ThirdStepper.capturedImages);
 
         this.date = response[0].date.substr(0, 10);
