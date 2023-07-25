@@ -267,7 +267,6 @@ export default {
                 };
             }
 
-            alert('3rd swapper alert');
             console.log("Saving Image  result ==========> ", result[0]);
         },
 

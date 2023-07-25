@@ -5,7 +5,7 @@
         <v-col> 
             <h2 class="mb-2">Order Lookup</h2>
                            
-            <v-text-field v-model="lastname" append-icon="mdi-magnify" label="Search by Last Name" single-line hide-details outlined dense clearable class="mb-5 order-search-text-field" @keyup="onKeyUp" @click:clear="onClearClicked"></v-text-field> 
+            <!-- <v-text-field v-model="lastname" append-icon="mdi-magnify" label="Search by Last Name" single-line hide-details outlined dense clearable class="mb-5 order-search-text-field" @keyup="onKeyUp" @click:clear="onClearClicked"></v-text-field>  -->
             <v-text-field v-model="order_number" append-icon="mdi-magnify" label="Order #" single-line hide-details outlined dense clearable class="mb-5 order-search-text-field" @keyup="onKeyUp" @click:clear="onClearClicked"></v-text-field>
             
             <v-btn block depressed color="primary" @click="lookup">

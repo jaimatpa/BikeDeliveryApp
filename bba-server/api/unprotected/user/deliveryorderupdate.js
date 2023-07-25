@@ -10,18 +10,21 @@ router.post("/", async (req,res) => {
     const data = JSON.parse(JSON.stringify(req.body));
 
     console.log("IN ROUTER POST");
-    const orderid = data.orderid;
+    console.log(req.params);
+    console.log(data);
+
+    const orderid = data.orderid ?? req.params.orderid;
     const swapOrder = data.swapOrder ? data.swapOrder : 0;
     
     const status =data.status;
     const textSent =data.textSent;
-    const picturesSent =data.picturesSent;
-    const reason =data.reason;
-    const unableToDeliverItems = data.unableToDeliverItems;
-
-    if(!orderid){
-        return res.send('You must provide an orderID')
+    const picturesSent = data.picturesSent;
+    const reason = data.reason;
+    
+    if(!orderid) {
+        return res.send('You must provide an orderID: ' + req.params['orderid'] + ' - ' + data.orderid);
     }
+
     try{
 
         const deliveryOrder = await models.DeliveryOrders.findOne(
@@ -37,6 +40,11 @@ router.post("/", async (req,res) => {
             return res.send('Cannot find order ID in deliveries.')
         }
     
+        var tripPriority1 = deliveryOrder.tripPriority1;
+        var tripPriority2 = deliveryOrder.tripPriority1;
+        if(data.tripPriority1 !== 'undefined') tripPriority1 = data.tripPriority1;
+        if(data.tripPriority2 !== 'undefined') tripPriority1 = data.tripPriority1;
+    
         deliveryOrder.date = data.date?data.date:deliveryOrder.date;
         deliveryOrder.name = data.name?data.name:deliveryOrder.name;
         deliveryOrder.location = data.location?data.location:deliveryOrder.location;
@@ -45,13 +53,21 @@ router.post("/", async (req,res) => {
         deliveryOrder.mobileNo = data.mobileNo?data.mobileNo:deliveryOrder.mobileNo;
         deliveryOrder.barcode = data.barcode?data.barcode:deliveryOrder.barcode;
         deliveryOrder.lock = data.lock?data.lock:deliveryOrder.lock;
-        deliveryOrder.status = status;
+        deliveryOrder.status = status ? status : deliveryOrder.status;;
+        deliveryOrder.note = data.note ? data.note : deliveryOrder.note;
+        //deliveryOrder.unableToDeliverItems = unableToDeliverItems ? unableToDeliverItems : deliveryOrder.unableToDeliverItems;
+        deliveryOrder.extrasPickedUp = data.extrasPickedUp ? data.extrasPickedUp : deliveryOrder.extrasPickedUp;
+        deliveryOrder.extrasDelivered = data.extrasDelivered ? data.extrasDelivered : deliveryOrder.extrasDelivered;
+        deliveryOrder.extrasPickedUpReason = data.extrasPickedUpReason ? data.extrasPickedUpReason : deliveryOrder.extrasPickedUpReason;
+        deliveryOrder.extrasDeliveredReason = data.extrasDeliveredReason ? data.extrasDeliveredReason : deliveryOrder.extrasDeliveredReason;
+        deliveryOrder.tripPriority1 = tripPriority1;
+        deliveryOrder.tripPriority2 = tripPriority2;
+        
+        console.log('priority set?', deliveryOrder.orderid, deliveryOrder.tripPriority1 );
         deliveryOrder.textSent = textSent;
         deliveryOrder.picturesSent = picturesSent;
-        deliveryOrder.note = data.note ? data.note : deliveryOrder.note;
-        deliveryOrder.unableToDeliverItems = unableToDeliverItems ? unableToDeliverItems : deliveryOrder.unableToDeliverItems;
         // deliveryOrder.PickupNotes = reason;
-        deliveryOrder.PickedUp = true;
+        deliveryOrder.PickedUp = data.pickedUp ? data.pickedUp : deliveryOrder.PickedUp;
 
         await deliveryOrder.save();
 
@@ -61,11 +77,15 @@ router.post("/", async (req,res) => {
             sendNotification( `Items were missing from ${orderid}`, 0, orderid, 0, 1, 0);
         }
 
+        console.log('saved?');
         return res.send(deliveryOrder)
 
 
 
-    }catch(error){
+    }
+    catch(error)
+    {
+        console.log('Error updating Delivery Order', error);
         return res.send(error)
     }
     

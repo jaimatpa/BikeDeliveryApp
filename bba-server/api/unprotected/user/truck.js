@@ -6,7 +6,6 @@ const apiMessage = require("./../../../language/en.json");
 
 router.post("/", async (req, res) => {
     try {
-        console.log(req.body);
         const newTruck = await models.Truck.create({
             ...req.body
         })
@@ -61,9 +60,7 @@ router.delete("/", async (req, res) => {
  */
 async function getAllTrucks(_, res) {
     try {
-        console.log("In GET Trucks");
         const data = await models.Truck.findAll({});
-
         return res.send(data);
     } catch (error) {
         console.log(error);

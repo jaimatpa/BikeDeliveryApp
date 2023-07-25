@@ -19,7 +19,7 @@
                         <!-- <div class="mt-1 mb-1">Friday, April 3rd, 2013 05:03 PM</div> -->
                         <div class="mt-2 mb-2">{{ item.message }}</div>
 
-                        <v-btn class="mb-3" v-if="item.deliveryOrderId >0" @click.stop="$router.push({ path: `/deliveryOrder/${item.DeliveryOrder.orderid}` })">Go to Order #{{item.DeliveryOrder.orderid}}</v-btn>
+                        <v-btn class="mb-3" v-if="item.deliveryOrderId > 0" @click="$router.push({ path: `/deliveryOrder/${item.DeliveryOrder.orderid}` })">Go to Order #{{item.DeliveryOrder.orderid}}</v-btn>
                         <!-- <v-btn class="mb-2" v-if="item.tripId >0" @click.stop="$router.push({ path: `/deliveryOrder/${item.orderid}` })">Go to Trip #{{item.tripId}}</v-btn> -->
                     </template>
                 </v-list-item>

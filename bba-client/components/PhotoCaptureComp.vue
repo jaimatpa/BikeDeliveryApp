@@ -110,7 +110,7 @@ export default {
     props: {
         step: {
             type: Object,
-            default: ''
+            default: 1
         },
         deliveryOrderData: {
             type: Object,
@@ -145,7 +145,7 @@ export default {
                 local_blob_url: null,
                 originalName: "",
                 mimetype: "",
-                type: this.props.step,
+                // type: this.props.step,
                 array_index: null,
                 caption: "",
                 tags: "",
@@ -174,27 +174,26 @@ export default {
 
     watch: {
         capturedImagesFromVuex: {
-            deep: true,
-            immediate: true,
-            handler: function (newVal, oldVal) {
-                if (newVal.length > 0) {
-                    this.local_files_to_upload = [...newVal];
-                    this.clickedImage2 = {
-                        //...this.local_files_to_upload[0],
-                        //array_index: 0,
-                    };
-                } else {
-                    this.clickedImage2 = {};
-                }
-                console.log("hereeeeeeeeeeeeeee ........ ");
-            },
+        //     deep: true,
+        //     immediate: true,
+        //     handler: function (newVal, oldVal) {
+        //         if (newVal.length > 0) {
+        //             this.local_files_to_upload = [...newVal];
+        //             this.clickedImage = {
+        //                 //...this.local_files_to_upload[0],
+        //                 //array_index: 0,
+        //             };
+        //         } else {
+        //             this.clickedImage = {};
+        //         }
+        //         console.log("hereeeeeeeeeeeeeee ........ ");
+        //     },
         },
     },
 
     computed: {
         ...mapState({
-            capturedImagesFromVuex: (state) => (state.capturedImages = []),
-      capturedPickupImagesFromVuex: (state) => (state.capturedPickupImages = []),
+            //capturedImagesFromVuex: (state) => (state.capturedImages = []) 
         }),
     },
     methods: {
@@ -248,19 +247,12 @@ export default {
                     }
                 );
                 console.log("nextImage: ", nextImage);
-               //this.clickedImage2 = nextImage;
+               //this.clickedImage = nextImage;
                 //this.local_files_to_upload = [...filtered_images];
             }
         },
 
         saveCameraImages(images) {
-            console.log('saving image ' + props.step);
-            alert(props.step + ' - ' + this.step);
-            alert('wtf - alerting captured images');
-
-            
-            console.log("================= images", images);
-
             const blob_urls = this.local_files_to_upload.map((o) => o.local_blob_url);
             const result = [...this.local_files_to_upload];
             for (let i = 0; i < images.length; i++) {
@@ -272,12 +264,12 @@ export default {
             this.local_files_to_upload = result;
 
             if (result.length > 0) {
-                this.clickedImage2 = {
+                this.clickedImage = {
                    // ...result[0],
                     array_index: 0
                 };
             } 
-            console.log("saveCameraImages  123 result ==========> ", this.step, props.step, result);
+            //console.log("saveCameraImages  123 result ==========> ", this.step, props.step, result);
         },
 
         resize() {

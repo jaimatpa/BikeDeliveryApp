@@ -304,23 +304,20 @@ export default {
                     //   path: "/callForHelp",
                     //   query: { orderid: this.deliveryOrderData.orderid },
                     // });
-
+ 
                     const saveData = {
                         date: this.dateFormatted,
                         name: this.deliveryOrderData.name,
                         location: this.deliveryOrderData.location,
                         color: this.defaultColorValue,
                         combination: this.defaultCombinationValue,
+                        orderid: this.deliveryOrderData.orderid,
+                        status: 1,
                     };
 
                     let result = await this.$axios.$post(
                         "/api/user/deliveryorderupdate",
-                        saveData, {
-                            params: {
-                                orderid: this.deliveryOrderData.orderid,
-                                status: 1,
-                            },
-                        }
+                        saveData
                     );
                 } else {
                     console.log("upload failed!!!");

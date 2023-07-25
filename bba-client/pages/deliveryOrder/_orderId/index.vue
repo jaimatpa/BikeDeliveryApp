@@ -88,12 +88,12 @@
                     
                     <v-row>
                       <v-col cols="12" xs="12" sm="12" md="12" xl="12">
-                          <v-checkbox label="Unable to deliver all extra items" v-model="unableToDeliverItems" v-ripple></v-checkbox>
+                          <v-checkbox label="Unable to deliver all extra items" v-model="deliveryOrderData.extrasDelivered" v-ripple></v-checkbox>
                           <v-textarea label="Reason why you can't deliver all extra items."
                                       visible
-                                      v-model="extrasDeliveredReason"
-                                      :disabled="!unableToDeliverItems"
-                                      :v-show="unableToDeliverItems"
+                                      v-model="deliveryOrderData.extrasDeliveredReason"
+                                      :disabled="!deliveryOrderData.extrasDelivered"
+                                      :v-show="deliveryOrderData.extrasDelivered"
                                       hide-details
                                       ></v-textarea>
                       </v-col>
@@ -553,7 +553,11 @@ export default {
               textSent: 1,
               picturesSent: 1,
               unableToDeliverItems: this.deliveryOrderData.unableToDeliverItems,
-              note: this.deliveryOrderData.note }
+              note: this.deliveryOrderData.note,
+              extrasDelivered: this.deliveryOrderData.extrasDelivered,
+              extrasDeliveredReason: this.deliveryOrderData.extrasDeliveredReason,
+              delivered: true
+            }
  
             let result = await this.$axios.$post(
               "/api/user/deliveryorderupdate",
@@ -602,30 +606,31 @@ export default {
           },
         });
         this.deliveryOrderData = response[0];
-
+        this.date = response[0].date.substr(0, 10);
+        this.dateFormatted = this.formatDate(response[0].date.substr(0, 10));
+        this.defaultColorValue = response[0].color;
+        this.defaultCombinationValue = response[0].combination;
+        this.smsObject.to = this.deliveryOrderData.mobileNo;
+ 
         // console.log("TESTING CAPTURED IMAGES", ThirdStepper.capturedImages);
         // console.log(
         //   "TESTING CAPTURED IMAGES BEFORE",
         //   this.$refs.thirdStep.local_files_to_upload
         // );
         this.$refs.thirdStep.local_files_to_upload = [];
-        this.$refs.fourthStep.local_files_to_upload2 = [];
-        
+        ThirdStepper.capturedImages = [];
+        // this.$emit("captured-camera-images", ThirdStepper.capturedImages);
+
         // ThirdStepper.local_files_to_upload = [];
         // console.log(
         //   "TESTING CAPTURED IMAGES AFTER",
         //   this.$refs.thirdStep.local_files_to_upload
         // );
 
-        ThirdStepper.capturedImages = [];
-        FourthStepper.capturedImages = [];
-        // this.$emit("captured-camera-images", ThirdStepper.capturedImages);
+        // this.$refs.fourthStep.local_files_to_upload = [];
+        // FourthStepper.capturedImages = [];
+       
 
-        this.date = response[0].date.substr(0, 10);
-        this.dateFormatted = this.formatDate(response[0].date.substr(0, 10));
-        this.defaultColorValue = response[0].color;
-        this.defaultCombinationValue = response[0].combination;
-        this.smsObject.to = this.deliveryOrderData.mobileNo;
         //  this.$router.go(-1);
       } catch (err) {
         console.log("errror", err.response);
@@ -657,25 +662,23 @@ export default {
           console.log(
             `Photo upload was successful. ${this.deliveryOrderData.orderid}`
           );
-
+ 
           const saveData = {
             date: this.dateFormatted,
             name: this.deliveryOrderData.name,
             location: this.deliveryOrderData.location,
             color: this.defaultColorValue,
             combination: this.defaultCombinationValue,
+            extrasDelivered: this.deliveryOrderData.extrasDelivered,
+            extrasDeliveredReason: this.deliveryOrderData.extrasDeliveredReason,    
+            orderid: this.deliveryOrderData.orderid,
+            status: 1,
+            swapOrder: 1
           };
 
           let result = await this.$axios.$post(
             "/api/user/deliveryorderupdate",
-            saveData,
-            {
-              params: {
-                orderid: this.deliveryOrderData.orderid,
-                status: 1,
-                swapOrder: 1
-              },
-            }
+            saveData
           );
         } else {
           console.log("upload failed!!!");

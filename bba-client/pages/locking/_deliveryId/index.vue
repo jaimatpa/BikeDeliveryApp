@@ -125,11 +125,8 @@ export default {
                     color: this.defaultColorValue,
                     combination: this.defaultCombinationValue,
                     lock: this.defaultLockingValue,
-                }, {
-                    params: {
-                        orderid: this.lockData.orderid,
+                    orderid: this.lockData.orderid,
                         status: 0,
-                    },
                 }
             );
 

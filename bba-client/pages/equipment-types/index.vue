@@ -1,6 +1,9 @@
 <template>
     <section>
-        <PageResource name="Equipment Type" :title="!isMobile ? 'Equipment Type' : ''" :fields="fields" :headers="headers"
+        <PageResource name="Equipment Type" :title="!isMobile ? 'Equipment Type' : ''" 
+        includeStockTrackingLink=true
+        :fields="fields" 
+        :headers="headers"
             endpoint="/api/user/equipment-types" />
     </section>
 </template>
@@ -23,6 +26,9 @@ export default {
         isMobile() {
             return this.$vuetify.breakpoint.width < this.breakpoint;
         },
+    },
+    async created() {
+         
     },
     data() {
         return {
@@ -53,16 +59,17 @@ export default {
                     align: "start",
                     value: "qty",
                 },
-                {
-                    text: "Qty Available",
-                    align: "start",
-                    value: "qtyAvailable",
-                },
+                // {
+                //     text: "Qty Available",
+                //     align: "start",
+                //     value: "qtyAvailable",
+                // },
             ],
             fields: {
                 Label: {
                     type: String,
-                    required: true
+                    required: true,
+                    value: 'hey',
                 },
                 BarcodePrefix: {
                     type: String,

@@ -1,5 +1,5 @@
 const { Op, Transaction } = require("sequelize");
-const { Trip, DeliveryOrders, Truck, Notification, User } = require("./../../../models");
+const { Trip, DeliveryOrders, EquipmentType, DeliveryItem, Truck, Notification, User } = require("./../../../models");
 const { sendNotification } = require("../../functions/notifications")
 
 /**
@@ -27,7 +27,186 @@ async function getAllTrips(req, res) {
     return res.send(data);
 }
 
+async function getAllOrders(tripId, truckId) {
+    const orders = await DeliveryOrders.findAll({
+        where: {
+            [Op.or]: [
+                { tripID1: tripId },
+                { tripID2: tripId },  
+            ],
+            [Op.or]: [
+                { truckId: truckId },
+                { truckId1: truckId },  
+            ],
+            //status: 0
+        }
+    });
+ 
+    return orders;
+}
 
+async function getAllOrdersNoFilter(tripId, truckId) {
+    const orders = await DeliveryOrders.findAll({
+        where: {   
+            tripID1:  {  [Op.ne]: null },  
+            tripID2:  {  [Op.ne]: null },  
+            
+            //status: 1,
+            pickedup: 0
+        }
+    });
+ 
+    return orders;
+}
+
+
+async function getOrderItems(order) {
+    const orderItems = await DeliveryItem.findAll({
+        where: {
+            DeliveryId: order.id,
+            // checkedDelievery: 1,
+            // checkPickup: 0,
+            active: 1,
+            //status: 1
+        },
+        order: [['id', 'ASC']],
+    });
+
+    return orderItems;
+
+}
+
+
+
+async function getEquipment(label) {
+    if(label == null) return null;
+
+    var equipment = await EquipmentType.findOne({
+       where: {
+           'id': label
+       }
+    });
+
+    return equipment;
+};
+
+
+async function checkOrderStock(req, res) {
+    const data = JSON.parse(JSON.stringify(req.body));
+ 
+
+    var noStockOrders = [];
+
+    const orders = await getAllOrdersNoFilter();
+    
+    if(orders.length == 0) {
+        res.send({succes: true, outOfStock: noStockOrders.length > 0, orders: noStockOrders});
+    }
+
+    var count = 0;
+    var count2 = 0;
+    var sent = false;
+
+    var totalOrderItems = 0;
+
+    console.log('orders', orders.length);
+    var requests = 0;
+
+    orders.forEach( order => {
+
+        getOrderItems(order)
+        .then( items => {
+            count++;
+
+            totalOrderItems = totalOrderItems + items.length;
+
+            items.forEach( item => {
+                console.log('item.SerialBarcode')
+                getEquipment(item.EquipmentTypeId).then( equipment => {
+                    if(equipment !== null) {
+                        noStockOrders.push({ 
+                            orderId: order.orderid, 
+                            Label: equipment.Label,
+                            equipmentTypeId: item.EquipmentTypeId,
+                            barcode: equipment.BarcodePrefix,
+                            SerialBarcode: item.serialbarcode,
+                            qty: equipment.qty,
+                            qtyAvailable: equipment.qtyAvailable,
+                        });
+                    }
+                })
+                .finally(() => {
+                    requests++;
+                    if( requests == totalOrderItems && count == orders.length ) {
+                        console.log('Order Count', count, requests, totalOrderItems);
+                    
+                        res.send({success: true, orders: noStockOrders});
+                    }
+                });
+            }) 
+        }) 
+    });
+}
+
+async function checkStock(req, res) {
+    const data = JSON.parse(JSON.stringify(req.body));
+    
+    const tripId = data.tripId;
+    const truckId = data.truckId; // Truck object
+    var outOfStockItems = [];
+    var count = 0;
+    var totalOrderItems = 0;
+    var requests = 0;
+    var noStockOrders = [];
+
+    const orders = await getAllOrders(tripId, truckId);
+    
+    console.log('Got orders', orders.length);
+    if(orders.length == 0) {
+        res.send({succes: true, outOfStock: noStockOrders.length > 0, orders: noStockOrders});
+    }
+
+    orders.forEach( order => {
+
+        getOrderItems(order)
+        .then( items => {
+            count++;
+
+            console.log('order', order.orderid);
+            console.log('returning', items.length);
+
+            totalOrderItems = totalOrderItems + items.length;
+
+            items.forEach( item => {
+                getEquipment(item.EquipmentTypeId).then( equipment => {
+                    if(equipment != null ) { 
+                        noStockOrders.push({ 
+                            orderId: order.orderid, 
+                            Label: equipment.Label,
+                            equipmentTypeId: item.EquipmentTypeId,
+                            test: 'test',
+                            barcode: equipment.BarcodePrefix,
+                            qty: equipment.qty,
+                            qtyAvailable: equipment.qtyAvailable,
+                        });
+                    }
+                    else {
+                        console.log(item.EquipmentTypeId);
+                    }
+                })
+                .finally(() => { 
+                    requests++;
+                    console.log('requests', requests);
+                    if( requests == totalOrderItems && count == orders.length ) {
+                        console.log('Order Count', count, requests, totalOrderItems);
+                    
+                        res.send({success: true, outOfStock: noStockOrders.length > 0, orders: noStockOrders});
+                    }
+                });
+            }) 
+        }) 
+    });
+}
 
 async function releaseTrip(req, res) 
 {
@@ -35,23 +214,61 @@ async function releaseTrip(req, res)
     const tripId = data.tripId; // Trip Object
     const tripNumber = data.tripNumber; // Trip Object
     const truckName = data.truckName;
-    const truck = data.truckId; // Truck object
+    const truckId = data.truckId; // Truck object
     const enableYardManager = data.enableYardManager; // Truck object
+    const date = data.date; // Truck object
 
-    try {
-        const trip = await Trip.findOne({
+    try 
+    {
+        var trip = await Trip.findOne({
             where: {
                 id: tripId
             }
         });
 
+        if(trip == null) {
+            const selectedDate = date ? new Date(date) : new Date();
+            const startOfDay = new Date(selectedDate.getFullYear(), selectedDate.getMonth(), selectedDate.getDate() + 1);
+            const endOfDay = new Date(selectedDate.getFullYear(), selectedDate.getMonth(), selectedDate.getDate() + 2);
+
+            trip = await Trip.findOne({
+                where: {
+                    truckId: truckId,
+                    tripNumber: tripNumber,
+                
+                    date: {
+                        [Op.gte]: startOfDay,
+                        [Op.lt]: endOfDay
+                    },
+                    
+            }});
+
+            if(trip == null) {
+                console.log('trip not found. creating one');
+
+                trip = await Trip.create({
+                    date: startOfDay,
+                    truckId: truckId,
+                    tripNumber: tripNumber,
+                    released: true,
+                    complete: false,
+                    notifyYardMAnager: enableYardManager
+                });
+            } 
+        }
+
         const _truck = await Truck.findOne({
             where: {
-                Id: truck
+                id: truckId
             }
         });
 
+        console.log('sending notification for truck', truckId, truckName);
+
         if(trip != null && _truck != null) {
+
+            console.log('sending notification. trip ok truck ok');
+
             trip.update({
                 driverId: data.driverId,
                 released: true,
@@ -60,14 +277,18 @@ async function releaseTrip(req, res)
             });
 
             // Send notification to Admins
-            sendNotification( `Trip ${tripId} for ${truck.truckName} is ready to load.`, 0, 0, tripId, 1, 0);
-            
-            // Send notification to the driver
-            sendNotification( `Trip ${tripId} for ${truck.truckName} is ready to load.`, 0, 0, tripId, 3, data.driverId);
+//            sendNotification( `Trip ${tripId} for ${truck.truckName} is ready to load.`, 0, 0, tripId, 1, 0);
 
+            sendNotification( `Trip ${tripNumber} for ${truckName} is ready to load.`, 0, data.orderid, tripId, 3, 0);
+
+            // Send notification to the driver
+            sendNotification( `Trip ${tripNumber} for ${truckName} is ready to load.`, 0, data.orderid, tripId, 2, data.driverId);
+
+            
+            
             if(enableYardManager) 
             {
-                sendNotification( `Trip ${tripId} for ${truck.truckName} is ready to load.`, 0, 0, tripId, 5, 0 );
+                sendNotification( `Trip ${tripNumber} for ${truckName} is ready to load.`, 0, data.orderid, tripId, 5, 0 );
             }
         }
 
@@ -82,118 +303,122 @@ async function releaseTrip(req, res)
 
 async function newTrip(req, res) 
 {
-    const { date } = req.query;
     const data = JSON.parse(JSON.stringify(req.body));
     const tripNumber = data.tripNumber; // Trip Object
     const truck = data.truckId; // Truck object
+    const date = data.date;
+    const type = data.type;
+    var trip;
+    var tripid;
+    var outOfStockItems = [];
 
-
-
-    console.log('trip = ' + tripNumber);
-
-    truck.trips.forEach(async trip => {
-        console.log('truck = ' + truck.id);
-        console.log('trip = ' + truck.id);
-
-        // Delete previous trip details.
-        
-        const orders = trip.deliveryOrders;
-        if(orders.length > 0) 
-        { 
-            console.log('writing orders' + orders[0].date);
-            var date = date != null ? date : orders[0].date;
-            const selectedDate = date ? new Date(date) : new Date();
-            const startOfDay = new Date(selectedDate.getFullYear(), selectedDate.getMonth(), selectedDate.getDate() + 1);
-            const endOfDay = new Date(selectedDate.getFullYear(), selectedDate.getMonth(), selectedDate.getDate() + 2);
+    try
+    {
+       // truck.trips.forEach(async ttrip => {
+        var ttrip = truck.trips[0];
+            // Delete previous trip details.
             
-            console.log('creating new trip for: ' + date)
-            // Trip.destroy({
-            //     where: { 
-            //         tripNumber: tripNumber,
-            //         truckID: truck.id,
-            //         date: {
-            //             [Op.gte]: startOfDay,
-            //             [Op.lt]: endOfDay
-            //         },
-            //     }
-            // });
+            const orders = ttrip.deliveryOrders;
+            if(orders.length > 0) 
+            { 
+                // var date = date != null ? date : orders[0].date;
+                const selectedDate = date ? new Date(date) : new Date();
+                const startOfDay = new Date(selectedDate.getFullYear(), selectedDate.getMonth(), selectedDate.getDate() + 1);
+                const endOfDay = new Date(selectedDate.getFullYear(), selectedDate.getMonth(), selectedDate.getDate() + 2);
 
-            // const existingTrip = await Trip.create({
-            //     date: selectedDate,
-            //     truckId: truck.id,
-            //     tripNumber: tripNumber,
-            //     // release: data.tripNumber.released ? data.tripNumber.released : false,
-            //     // complete: data.tripNumber.complete,
-            //     // notifyYardManager: data.tripNumber.notifyYardManager ? data.tripNumber.notifyYardManager : false
-            // });
+                trip = await Trip.findOne({
+                    where: {
+                        truckId: truck.id,
+                        tripNumber: tripNumber,
+                    
+                        date: {
+                            [Op.gte]: startOfDay,
+                            [Op.lt]: endOfDay
+                        },
+                        
+                }});
 
-            var trip = await Trip.findOne({
-                where: {
-                    truckId: truck.id,
-                    tripNumber: tripNumber,
-            }});
+                if(trip == null) {
+                    console.log('trip not found. creating one');
 
-            if(trip == null) {
-                console.log('creating new trip');
-                trip = await Trip.create({
-                    date: new Date(),
-                    truckId: truck.id,
-                    tripNumber: tripNumber,
-                    // release: data.tripNumber.released ? data.tripNumber.released : false,
-                    // complete: data.tripNumber.complete,
-                    // notifyYardManager: data.tripNumber.notifyYardManager ? data.tripNumber.notifyYardManager : false
-                });
-            } 
-        
-            console.log('updating existing...: ' + trip.id);
-            orders.forEach( async order => {
-                await DeliveryOrders.findAll({
-                    where: [{
-                        id: order.id
-                    }]
-                }).then( x => {
-                    x.forEach( _order => {
-                        console.log(_order.orderid, _order.id);
-                        _order.update({
-                            id: order.id,
-                            truckID: truck.id,
-                            tripID1: trip.id
+                    trip = await Trip.create({
+                        date: startOfDay,
+                        truckId: truck.id,
+                        tripNumber: tripNumber,
+                        // release: data.tripNumber.released ? data.tripNumber.released : false,
+                        // complete: data.tripNumber.complete,
+                        // notifyYardManager: data.tripNumber.notifyYardManager ? data.tripNumber.notifyYardManager : false
+                    });
+                } 
+
+                console.log('updating existing...: ' + trip.id);
+
+                orders.forEach( async order => {
+                    await DeliveryOrders.findAll({
+                        where: [{
+                            id: order.id
+                        }]
+                    }).then( x => {
+                        x.forEach( async _order => {
+
+                            if(type=='delivery') {
+                                _order.update({
+                                    id: order.id,
+                                    truckID: truck.id,
+                                    tripID1: trip.id
+                                });
+                            }
+                            else if(type=='pickup') {
+                                console.log('updating order truckid1 to ', order.id, truck.id);
+                                _order.update({
+                                    id: order.id,
+                                    TruckId1: truck.id,
+                                    tripID2: trip.id
+                                }); 
+                            }
+
+                            
                         });
                     });
                 });
-            });
-            
-        }
-    });
 
-    // const selectedDate = date ? new Date(date) : new Date();
-    // const startOfDay = new Date(selectedDate.getFullYear(), selectedDate.getMonth(), selectedDate.getDate() + 1);
-    // const endOfDay = new Date(selectedDate.getFullYear(), selectedDate.getMonth(), selectedDate.getDate() + 2);
-    
-    // console.log('startOfDay', startOfDay);
-    // console.log('endOfDay', endOfDay);
 
-    // const data = await Trip.findAll({
-    //     where: {
-    //         date: {
-    //             [Op.gte]: startOfDay,
-    //             [Op.lt]: endOfDay
-    //         },
-    //     }
-    // });
+            }
 
-    //deliveryOrderId -- Update truckID on release?
-    // const trip = await Trip.create({
-    //     date: new Date(),
-    //     truckId: data.truckId,
-    //     tripNumber: data.tripNumber,
-    //     // release: data.tripNumber.released ? data.tripNumber.released : false,
-    //     // complete: data.tripNumber.complete,
-    //     // notifyYardManager: data.tripNumber.notifyYardManager ? data.tripNumber.notifyYardManager : false
-    // });
-    
+ 
+        //});
 
-    return res.send(data);
+        // const selectedDate = date ? new Date(date) : new Date();
+        // const startOfDay = new Date(selectedDate.getFullYear(), selectedDate.getMonth(), selectedDate.getDate() + 1);
+        // const endOfDay = new Date(selectedDate.getFullYear(), selectedDate.getMonth(), selectedDate.getDate() + 2);
+        
+        // console.log('startOfDay', startOfDay);
+        // console.log('endOfDay', endOfDay);
+
+        // const data = await Trip.findAll({
+        //     where: {
+        //         date: {
+        //             [Op.gte]: startOfDay,
+        //             [Op.lt]: endOfDay
+        //         },
+        //     }
+        // });
+
+        //deliveryOrderId -- Update truckID on release?
+        // const trip = await Trip.create({
+        //     date: new Date(),
+        //     truckId: data.truckId,
+        //     tripNumber: data.tripNumber,
+        //     // release: data.tripNumber.released ? data.tripNumber.released : false,
+        //     // complete: data.tripNumber.complete,
+        //     // notifyYardManager: data.tripNumber.notifyYardManager ? data.tripNumber.notifyYardManager : false
+        // });
+    }
+    catch(e) {
+        return res.send(e);
+    }
+
+    return res.send(trip);
 }
 
 
@@ -201,5 +426,7 @@ async function newTrip(req, res)
 module.exports = {
     newTrip,
     getAllTrips,
-    releaseTrip
+    releaseTrip,
+    checkStock,
+    checkOrderStock
 };  
