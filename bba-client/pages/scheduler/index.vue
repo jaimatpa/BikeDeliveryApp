@@ -1,5 +1,5 @@
 <template>
-    <section class="pa-5 mt-3">
+<section class="pa-5 mt-3">
         <v-row align="center" class="mb-5">
             <v-col cols="12"> 
                 <v-app-bar style="height: 40px;">
@@ -15,6 +15,7 @@
 
                         <v-col cols="3"> 
                             <v-checkbox label="Enable Yard Manager" v-model="enableYardManager"></v-checkbox>
+                             
                         </v-col>
                     </v-row>
                 </v-app-bar>
@@ -22,8 +23,12 @@
         </v-row>
 
         <v-row no-gutters align="center" class="flex-nowrap my-2" style="height: 40vh; overflow-x: auto;" >
+
             <v-col v-for="truck in trucks" :key="truck.id" class="flex-shrink-0 px-2"
                 style="min-width: 350px; max-height: 100%; overflow-y: auto;">
+
+          
+               
 
                  <!-- Trips for each truck -->
                 <v-card v-for="trip in truck.trips" :key="trip.tripNumber"
@@ -61,9 +66,9 @@
 
                                                     <v-icon v-show="!trip.released">mdi-drag</v-icon>
 
-                                                    <div v-show="deliveryOrder.type == 'delivery'" style="background: blue; height: 60px; width: 3px;"></div>
-                                                    <div v-show="deliveryOrder.type == 'delivery' && deliveryOrder.swapOrder" style="background: purple; height: 60px; width: 3px;"></div>
-                                                    <div v-show="deliveryOrder.type == 'pickup'" style="background: orange; height: 60px; width: 3px;"></div>
+                                                    <div v-show="deliveryOrder.type == 'delivery'" style="background: #ECA6EC; height: 60px; width: 3px;"></div>
+                                                    <div v-show="(deliveryOrder.type == 'delivery' || deliveryOrder.type == 'swap') && deliveryOrder.swapOrder" style="background: #A9A6EC; height: 60px; width: 3px;"></div>
+                                                    <div v-show="deliveryOrder.type == 'pickup'" style="background: #A7CDEC; height: 60px; width: 3px;"></div>
                                                     
                                                     <div class="" style="padding-left: 10px; display: block">
                                                         <span><strong>{{ deliveryOrder.orderid }}</strong></span><br/>
@@ -82,7 +87,8 @@
                     <v-card-text>
                         <v-row align="center" justify="space-between">
                             <v-col cols="auto">
-                                <v-btn v-if="!trip.released" color="primary" outlined @click="releaseTrip(trip)">Release</v-btn>
+
+                                <v-btn v-if="!trip.released " color="primary" outlined @click="showReleaseDialog(trip, truck.TruckName)">Release</v-btn>
                                 <v-btn v-if="trip.released" color="primary" outlined disabled>Released</v-btn>
                             </v-col>
                         </v-row>
@@ -92,7 +98,7 @@
         </v-row>
 
         <v-row>
-            <v-col cols="12">
+            <v-col cols="10">
                 <v-text-field
                     v-model="search"
                     append-icon="mdi-magnify"
@@ -107,13 +113,19 @@
                     @click:clear="onClearClicked"
                     ></v-text-field>
             </v-col>
+            <v-col cols="2">
+                <v-simple-checkbox style="display: inline-block" 
+                    v-model="showAllOrders"
+                    @click="onShowAllOrdersClicked"
+                /> Show All Orders
+            </v-col>
         </v-row>
         <div class="row" style=" overflow-x: auto;">
-            <div class="col-4" style="min-width: 250px; overflow-y: auto;">
+            <div class="col-4" style="min-width: 250px;">
                 <h4>Deliveries</h4>
-                <hr class="mb-2" />
+                <div class="mb-2" style="background-color: #ECA6EC; height: 2px; width: 90%"/>
                 <Draggable class="list-group" 
-                style="cursor: move;  max-height: 30vh; height: 30vh; background-color: #efefef" 
+                style="overflow-y: auto; cursor: move;  max-height: 30vh; height: 30vh; background-color: #efefef" 
                 :list="nonSwappedDeliveryOrders"  
                  
                     :group="{ name: 'row' }"
@@ -136,10 +148,11 @@
                 </Draggable>
             </div>
 
-            <div class="col-4">
+            <div class="col-4" style="min-width: 250px; ">
                 <h4>Swaps</h4>
-                <hr class="mb-2" />
-                <Draggable class="list-group" style="cursor: move;  max-height: 30vh; height: 30vh; background-color: #efefef" :list="swappedDeliveryOrders"  
+                <div class="mb-2" style="background-color: #A9A6EC; height: 2px; width: 90%"/>
+
+                <Draggable class="list-group" style="overflow-y: auto; cursor: move;  max-height: 30vh; height: 30vh; background-color: #efefef" :list="swappedDeliveryOrders"  
    
                     :group="{ name: 'row' }"
                     >
@@ -161,15 +174,14 @@
                 </Draggable>
             </div>
 
-            <div class="col-4">
+            <div class="col-4" style="min-width: 250px; ">
                 <h4>Pickups</h4>
-                <hr class="mb-2" />
+                <div class="mb-2" style="background-color: #A7CDEC; height: 2px; width: 90%"/>
                 
-                <Draggable class="list-group" style="cursor: move; max-height: 30vh; height: 30vh; background-color: #efefef" 
-                @change="test"
+                <Draggable class="list-group" style="overflow-y: auto; cursor: move;  max-height: 30vh; height: 30vh; background-color: #efefef" 
                 :list="unloadedPickups"  
                 @start="dragging = true"
-  @end="dragging = false"
+                @end="dragging = false"
                     :group="{ name: 'row' }"
                     >
                     <div class="list-group-item" v-for="deliveryOrder in this.unloadedPickups" :key="deliveryOrder.id">
@@ -190,6 +202,103 @@
                 </Draggable>
             </div> 
         </div>
+        <v-dialog
+    v-model="dialog"
+    width="auto"
+        >
+        <v-card>
+            <v-toolbar dense color="primary" dark elevation="0">
+                <v-toolbar-title>Release?</v-toolbar-title>
+                <v-spacer />
+                <v-btn icon dark @click.stop="dialog = false">
+                    <v-icon>mdi-close</v-icon>
+                </v-btn>
+            </v-toolbar>
+            <v-card-text class="my-5 text-center">
+                <p class="title mb-3 secondary--text sure-title">
+                    Is Trip #{{ selectedTrip.tripNumber }} for '{{ this.selectedTruckName }}' ready to begin loading? Once released the trip cannot have orders added or removed.<br/>
+                </p>
+                <p class="title mb-3 secondary--text sure-title"  v-if="!enableYardManager"> 
+                    Yard Manager is not enabled for today, only the truck driver will be notified of the released.
+                </p>
+            </v-card-text>
+            
+        
+            <div class="d-flex flex-column">
+                <v-btn class="ma-2" color="primary" @click="checkQuantity(selectedTrip)">
+                    Confirm
+                </v-btn>
+                <v-btn class="ma-2" outlined color="error" @click.stop="dialog = false">
+                    Cancel
+                </v-btn>
+            </div> 
+        </v-card>
+    </v-dialog>
+
+    <v-dialog
+    v-model="stockDialog"
+    width="auto"
+        >
+        <v-card>
+            <v-toolbar dense color="primary" dark elevation="0">
+                <v-toolbar-title>Insufficient Stock</v-toolbar-title>
+                <v-spacer />
+                <v-btn icon dark @click.stop="dialog = false">
+                    <v-icon>mdi-close</v-icon>
+                </v-btn>
+            </v-toolbar>
+            <v-card-text class="my-5 text-center">
+                <p class="title mb-3 secondary--text sure-title">
+                    There is currently insufficient stock to deliver the following items:
+                </p>
+                <v-data-table :headers="headers" :items="insufficientStockList" :loading="loading" item-value="key" class="elevation-1">
+                    <!-- Name Editable Cell -->
+                    <template v-slot:item.id="{ item }">
+                        <div>{{ item.orderId }}</div>
+                    </template>
+
+                    <template v-slot:item.name="{ item }">
+                        <div>{{ item.Label }}</div>
+                    </template>
+ 
+
+                    <template v-slot:item.availableQty="{ item }">
+                        <div>{{ item.qtyAvailable }}</div>
+                    </template>
+
+                    <!-- Actions -->
+                    <template v-slot:item.actions="{ item }">
+                        <div class="d-flex align-center">
+                            <a :href="`/stock-tracking/${item.id}`"
+                            target="_blank"
+                            rel="noreferrer"
+                            > 
+                            Check Stock
+                            </a>
+                        </div>
+
+                    </template>
+                </v-data-table>
+            </v-card-text>
+            
+
+            <div class="d-flex flex-column">
+                <v-card-text class="my-5 text-center">
+                    <p class="title secondary--text sure-title">
+                        Release this trip anyway?
+                    </p>
+     
+                    <v-btn class="ma-2" color="primary" @click="releaseTrip(selectedTrip)">
+                        Confirm
+                    </v-btn>
+                    <v-btn class="ma-2" outlined color="error" @click.stop="stockDialog = false">
+                        Cancel
+                    </v-btn>            
+                </v-card-text>
+            </div> 
+        </v-card>
+    </v-dialog>
+    
     </section>
 </template>
 
@@ -303,16 +412,59 @@ export default {
     data() {
         return {
             loading: false,
-            selectedDate: new Date().toISOString().substring(0, 10),
+            selectedDate: '2023-07-07', //new Date().toISOString().substring(0, 10),
             menuOpen: false,
             enableYardManager: false,
+            dialog: false,
+            stockDialog: false,
             search: '',
+            showAllOrders: false,
             areas: [],
             villas: [],
             drivers: [],
             streetAddresses: [],
             tripCount: 0,
             selectedDriver: [],
+            selectedTrip: [],
+            selectedTripNumber: 0,
+            selectedTruckName: '',
+            equipment:[],
+            insufficientStockList: [
+                {
+                    orderId: '12345',
+                    Label: 'Testing',
+                    qty: 1,
+                    qtyAvailable: 20
+                }
+            ],
+            headers: [
+                {
+                    text: "Order #",
+                    align: "start",
+                    sortable: true,
+                    value: "id",
+                },
+                {
+                    text: "Equipment Type",
+                    align: "start",
+                    sortable: false,
+                    value: "name",
+                },
+
+                {
+                    text: "Available Quantity",
+                    align: "start",
+                    sortable: false,
+                    value: "availableQty",
+                },
+                
+                {
+                    text: "Check Stock",
+                    align: "middle",
+                    sortable: false,
+                    value: "actions",
+                }
+            ],
             /**
              * @typedef {Truck[]} Trucks
             * @type {Trucks}
@@ -340,6 +492,7 @@ export default {
         await this.getAllPickups();
         await this.getAllDrivers();
         await this.generateTrips();
+        await this.onGetEquipmentTypes();
         await this.loadData();
     },
     async created() {
@@ -350,6 +503,16 @@ export default {
             showSuccess: "success",
             showError: "error"
         }),
+        async onShowAllOrdersClicked() {
+            await this.getAllDeliveryOrders();
+            await this.getAllPickups();
+
+            this.loadData();
+        },
+        async onGetEquipmentTypes() {
+            const response = await this.$axios.$get("/api/user/equipment-types")
+            this.equipment = response; 
+        },
         onClearClicked() {
             if (this.search !== "" || this.searchByBarcode !== "") {
                 this.search = "";
@@ -360,18 +523,41 @@ export default {
         test(event) {  
         },  
         onKeyUp(event) {
-            // console.log('key uppppppp ', typeof event.target.value,  `${event.target.value}`.length)
             if (event.key === "Enter") {
-                this.loadData();
+                this.customFilter();
             } else if (`${event.target.value}`.length === 0) {
                 // if someone clears the input field.
                 this.loadData();
             }
         },
-        async loadData() {
+        async customFilter() {
+            
             this.swappedDeliveryOrders = this.deliveryOrders.filter(x=>x.swapOrder == 1 && x.truckID == null && x.tripID1 == null);
             this.nonSwappedDeliveryOrders = this.deliveryOrders.filter(x=>x.swapOrder == 0 && x.truckID == null && x.tripID1 == null); //
             this.unloadedPickups = this.pickups.filter(x=>x.swapOrder == 0 && x.truckID == null && x.tripID1 == null); 
+
+            this.nonSwappedDeliveryOrders = this.nonSwappedDeliveryOrders.filter( x=> 
+            {
+                console.log('non sapped filter', x.orderid, x.orderid == 'Jul0003-23');
+                return x.orderid.indexOf(this.search) !== -1 ||
+                    x.orderid.indexOf(this.search) !== -1 ||
+                    x.name.indexOf(this.search) !== -1                   
+                ;
+            });
+
+            // this.unloadedPickups.filter(x=>{
+            //     return x.orderid == this.search
+            // });
+            this.nonSwappedDeliveryOrders = [...this.nonSwappedDeliveryOrders];
+        },
+        async loadData() {
+            this.swappedDeliveryOrders = this.deliveryOrders.filter(x=>x.swapOrder == 1 && x.truckID == null && x.tripID1 == null  );
+            this.nonSwappedDeliveryOrders = this.deliveryOrders.filter(x=>x.swapOrder == 0 && x.TruckID == null && x.tripID1 == null); //
+            this.unloadedPickups = this.pickups.filter(x=>x.swapOrder == 0 && x.TruckId1 == null && x.tripID2 == null); 
+
+            this.nonSwappedDeliveryOrders.forEach(x=>x.type = 'delivery');
+            this.swappedDeliveryOrders.forEach(x=>x.type = 'swap');
+            this.unloadedPickups.forEach(x=>x.type = 'pickup');
 
             this.nonSwappedDeliveryOrders.forEach(x=>x.type == 'deliveries');
             this.swappedDeliveryOrders.forEach(x=>x.type == 'swaps');
@@ -387,8 +573,9 @@ export default {
 
             this.trips.forEach( trip => {
                 console.log('searching for new trips: tripid:' + trip.id + ", truckid: " + trip.truckId);
+
                 var deliveries = this.deliveryOrders.filter( x => x.truckID == trip.truckId && x.tripID1 == trip.id );
-                var pickups = this.pickups.filter( x => x.truckID == trip.truckId && x.tripID1 == trip.id );
+                var pickups = this.pickups.filter( x => x.TruckId1 == trip.truckId && x.tripID2 == trip.id );
                 
                 var truck = this.trucks.filter( truck => truck.id == trip.truckId );
                  
@@ -403,15 +590,17 @@ export default {
                     pickups.forEach(x=> {
                         x.type = 'pickup';
                         x.fixed=true;
-                    });
+                    });           
+                    console.log(pickups[0].type);
                 }
 
                 var orders = [...deliveries, ...pickups];
+         
                 
-                 
-                
-            
-                truck[0].trips[ trip.tripNumber-1 ].deliveryOrders = orders;
+                if(orders.length > 0) {
+                    truck[0].trips[ trip.tripNumber-1 ].deliveryOrders = orders;
+                }
+
                 truck[0].trips[ trip.tripNumber-1 ].id = trip.id;
                 truck[0].trips[ trip.tripNumber-1 ].released = trip.released ? true : false;
                 truck[0].trips[ trip.tripNumber-1 ].complete = trip.complete ? true : false;
@@ -446,8 +635,44 @@ export default {
             }
             return array;
         },
+        async showReleaseDialog(trip, truckName) {
+
+            if( trip.selectedDriver == null ) 
+            {
+                this.showError('You must assign a driver to release this trip.');
+                return;
+            }
+
+            this.dialog = true;
+            this.selectedTrip = trip;
+            this.selectedTruckName = truckName;
+        }, 
+        async checkQuantity(selectedTrip) {
+            this.dialog = false;
+
+            const data = {
+                tripId: selectedTrip.id,
+                truckId: this.trucks[ selectedTrip.truckId - 1].id,
+            }
+
+            await this.$axios.$post(`/api/user/trips/checkStock`, data).then( async stock => {
+                console.log(stock.orders );
+                this.insufficientStockList = stock.orders
+
+                if(stock.outOfStock) 
+                {
+                    this.stockDialog = true;
+                }
+                else {
+                    await this.releaseTrip(selectedTrip);
+                }
+            });
+            
+
+        },
         async releaseTrip(trip) 
         {
+            this.stockDialog = false;
             if( trip.selectedDriver == null ) 
             {
                 this.showError('You must assign a driver to release this trip.');
@@ -465,7 +690,8 @@ export default {
                 tripNumber: trip.tripNumber,
                 truckName: this.trucks[trip.truckId - 1].TruckName,
                 truckId: this.trucks[trip.truckId - 1].id,
-                driverId: trip.selectedDriver.id
+                driverId: trip.selectedDriver.id,
+                date: this.selectedDate,
             }
 
             var trips = this.trucks[trip.truckId - 1].trips.filter( _trip => _trip.id == trip.id );
@@ -475,8 +701,8 @@ export default {
 
             this.trucks = [...this.trucks];
             
+ 
             const response = await this.$axios.$post(`/api/user/trips/release`, data);
-
             this.showSuccess('The trip has been released.');
 
             // alert('This trip has been released. To see the changes please reload the page.')
@@ -511,21 +737,60 @@ export default {
         cloneAction(item) {
             // console.log("cloned", item);
         },
-        async deliverOrderMoved(truckid, tripid, event) {
+        async deliverOrderMoved(truckid, tripid, event, from) {
             console.log('deliverOrderMoved', truckid, tripid, event);
 
             if(typeof(truckid) !== 'number' && typeof(tripid) !== 'number') return;
 
             if (event.moved) {
-                console.log('order has been moved.');
+                console.log('order has been moved.', event.moved.element);
+
+                var trips = this.Trip.filter(x=>x.id == tripid);
+                var tripNumber = trips[0].tripNumber;
+
+                if(event.moved.element.type=='delivery') 
+                {
+                    this.array_move(this.trucks[truckid - 1].trips[tripNumber - 1].deliveryOrders, event.oldIndex, event.newIndex);
+                    this.trucks[truckid - 1].trips[0].deliveryOrders.forEach(
+                        async (x,idx) => {
+                            x.tripPriority1 = idx;
+                            console.log("setting trip1Priority to: ", idx, x.orderid, x.tripPriority1);
+                            
+                            let saveData = {
+                                orderid: x.orderid,
+                                tripPriority1: x.tripPriority1
+                            };
+                            
+                            
+                            await this.$axios.$post("/api/user/deliveryorderupdate", saveData);
+                        }
+                    );
+
+                    
+                    this.trucks = [...this.trucks];
+                }
+               else if(event.moved.element.type=='pickup')
+               {
+                this.array_move(this.trucks[truckid].trips[ tripNumber - 1 ].deliveryOrders, event.oldIndex, event.newIndex);
+                    this.trucks[truckid].trips[0].deliveryOrders.forEach(
+                        (x,idx) => {
+                            //x.tripPriority2 = idx;
+                            console.log(idx, x.orderid, x.tripPriority2)
+                        }
+                    );
+
+                    this.trucks = [...this.trucks];
+                    
+               }
+
             }
 
-            if (event.removed) {
+            else if (event.removed) {
                 //trip.deliveryOrders.append(event.removed.element);
                 console.log('order has been removed.', event.removed);
             }
 
-            if (event.added) {
+            else if (event.added) {
                 console.log('order has been added.', event.added);
                 console.log('orderId', event.added.element.id);
 
@@ -536,29 +801,58 @@ export default {
                 console.log('truck', truck);
                 //truck[0].trips = [];
 
-                const data = {
+                var data = {
                     date: this.selectedDate,
-                    truckId: truck,
-                    tripNumber: tripid,
                     action: 'add',
                     deliveryOrderId: event.added.element.id
                 }
 
+                if(event.added.element.type == 'delivery' || event.added.element.type === 'swap') {
+
+                    data = {
+                        type: 'delivery',
+                        truckId: truck,
+                        tripNumber: tripid,
+                        ...data
+                    }
+                }
+                else if(event.added.element.type === 'pickup') 
+                {
+
+                    data = {
+                        type: 'pickup',
+                        truckId: truck,
+                        tripNumber: tripid,
+                        ...data
+                    }
+                }
+                
+
                 var trip = this.getTripObject(truck.trips.length+1, truckid);
                 console.log(truck.trips[truck.trips.length - 1]);
-                if(truck.trips[truck.trips.length - 1].deliveryOrders.length > 0) {
-                    truck.trips.push(trip);
-                }
 
-                const response = await this.$axios.$post(`/api/user/trips/`, data).then( () =>{
 
+                const response = await this.$axios.$post(`/api/user/trips/`, data).then( data =>{
+
+                
                     this.showSuccess("The order has been added to the schedule.");
 
                 });
 
+                
                 console.log('submitting data', data);     
             }
 
+        },
+        async array_move(arr, old_index, new_index) {
+            if (new_index >= arr.length) {
+                var k = new_index - arr.length + 1;
+                while (k--) {
+                    arr.push(undefined);
+                }
+            }
+            arr.splice(new_index, 0, arr.splice(old_index, 1)[0]);
+            return arr; // for testing
         },
         async generateTrips() {
             await this.getAllTrips();
@@ -593,8 +887,28 @@ export default {
             this.drivers = response;
         },
         async getAllDeliveryOrders() {
-            const response = await this.$axios.$get(`/api/user/deliveryOrder/query?order_type=scheduler&type=deliveries&date=${this.selectedDate}`);
-            this.deliveryOrders = response;
+            if(this.showAllOrders) 
+            {
+                const response = await this.$axios.$get(`/api/user/deliveryOrder/query?order_type=scheduler&type=deliveries`);
+                this.deliveryOrders = response;
+            }
+            else 
+            {
+                const response = await this.$axios.$get(`/api/user/deliveryOrder/query?order_type=scheduler&type=deliveries&date=${this.selectedDate}`);
+                this.deliveryOrders = response;
+            }
+        },
+        async getAllPickups() {
+            if(this.showAllOrders) 
+            {
+                const response = await this.$axios.$get(`/api/user/deliveryOrder/query?order_type=scheduler&type=pickups`);
+                this.pickups = response;
+            }
+            else 
+            {
+                const response = await this.$axios.$get(`/api/user/deliveryOrder/query?order_type=scheduler&type=pickups&date=${this.selectedDate}`);
+                this.pickups = response;
+            }
         },
         async getAllPickups() {
             const response = await this.$axios.$get(`/api/user/deliveryOrder/query?order_type=scheduler&type=pickups&date=${this.selectedDate}`);

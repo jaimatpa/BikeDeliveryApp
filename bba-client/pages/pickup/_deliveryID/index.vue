@@ -45,7 +45,7 @@
                                 <img :src="`https://images.hiretheproz.com/${orderData.barcode}-0.jpeg`" onload="this.style='display: block;'" style="display:none"></img>
                             </v-col>
                             <v-col cols="12" xs="12" sm="12" md="4" xl="4">
-                                <img :src="`https://images.hiretheproz.com/${orderData.barcode}-1.jpeg` "onload="this.style='display: block;'" style="display:none"></img>
+                                <img :src="`https://images.hiretheproz.com/${orderData.barcode}-1.jpeg`" onload="this.style='display: block;'" style="display:none"></img>
                             </v-col>
                             <v-col cols="12" xs="12" sm="12" md="4" xl="4">
                                 <img :src="`https://images.hiretheproz.com/${orderData.barcode}-2.jpeg`" onload="this.style='display: block;'" style="display:none"></img>
@@ -120,35 +120,16 @@
                         </v-data-table>
                         <v-row>
                             <v-col cols="12" xs="12" sm="12" md="12" xl="12">
-                                <v-checkbox label="Unable to pickup all extra items." v-model="unableToDeliverItems" v-ripple></v-checkbox>
+                                <v-checkbox label="Unable to pickup all extra items." v-model="orderData.extrasPickedUp" v-ripple></v-checkbox>
                                 <v-textarea label="Reason why you can't pickup all extra items"
-                                        :disabled="!unableToDeliverItems"
-                                        :v-show="unableToDeliverItems"
+                                    v-model="orderData.extrasPickedUpReason"
+                                        :disabled="!orderData.extrasPickedUp"
+                                        :v-show="orderData.extrasPickedUp"
                                         visible
-                                         hide-details
-                                            ></v-textarea>
+                                         hide-details ></v-textarea>
                             </v-col>
                             
                         </v-row>
-
-
-                        <!-- <v-row cols="12">
-                            <v-col cols="12" xs="12" sm="12" md="4" xl="4">
-                                <img :src="`https://images.hiretheproz.com/${orderData.barcode}-pickup-0.jpeg`"></img>
-                            </v-col>
-                            <v-col cols="12" xs="12" sm="12" md="4" xl="4">
-                                <img :src="`https://images.hiretheproz.com/${orderData.barcode}-pickup-1.jpeg`"></img>
-                            </v-col>
-                            <v-col cols="12" xs="12" sm="12" md="4" xl="4">
-                                <img :src="`https://images.hiretheproz.com/${orderData.barcode}-pickup-2.jpeg`"></img>
-                            </v-col>
-                            <v-col cols="12" xs="12" sm="12" md="4" xl="4">
-                                <img :src="`https://images.hiretheproz.com/${orderData.barcode}-pickup-3.jpeg`"></img>
-                            </v-col>
-                            <v-col cols="12" xs="12" sm="12" md="4" xl="4">
-                                <img :src="`https://images.hiretheproz.com/${orderData.barcode}-pickup-4.jpeg`"></img>
-                            </v-col>
-                        </v-row> -->
 
                         <v-row v-if="uploadFilesData.length">
                             <v-col v-for="(image, i) in uploadFilesData" :key="i" class="d-flex child-flex" cols="4">
@@ -339,10 +320,12 @@ export default {
             showError: "error"
         }),
         ...mapMutations(["SET_CAPTURED_IMAGES_IN_VUEX"]),
+
         async scanDialog(item) {},
         async saveUpdate(item) {
             console.log(item);
             let response = await this.$axios.$put("/api/user/deliveryItem", item);
+        
             console.log("RESPONSE", response);
         },
         async code(value) {
@@ -367,12 +350,14 @@ export default {
             var data = {
                 id: this.orderData.id,
                 orderid: this.orderData.orderid,
-                unableToDeliverItems: this.orderData.unableToDeliverItems,
-                reason: this.orderData.pickupNotes
+                pickedUp: true,
+                extrasPickedUp: this.orderData.extrasPickedUp,
+                extrasPickedUpReason: this.orderData.extrasPickedUpReason
             };
             
             console.log(data);
 
+            alert('update delivery order');
             await this.$axios.$post(
               "/api/user/deliveryorderupdate", data).then(  response => {
                 this.showSuccess('The order have been marked as picked up.');
@@ -381,6 +366,7 @@ export default {
             this.$router.push("/pickup");
         },
         async save() {
+            console.log(this.$refs.thirdStep.local_files_to_upload.length);
             this.uploads = this.$refs.thirdStep.local_files_to_upload
             this.uploadFiles(this.uploads);
             this.updateOrderDetails();
@@ -412,6 +398,8 @@ export default {
                 });
                 console.log("respones", response);
                 const responseData = _.omit(response[0], "date");
+                
+                console.log('orderData:', responseData);
                 this.orderData = responseData;
                 this.orderData.date = moment(response[0].date).format(
                     "MM/DD/YYYY hh:mm A"
@@ -443,6 +431,7 @@ export default {
 
                 //  this.$router.go(-1);
             } catch (err) {
+                alert('Error Getting Delivery Items');
                 console.log("Issue in getOrderItems 2", err.response);
             }
         },
@@ -460,6 +449,7 @@ export default {
                 //  this.$router.go(-1);
             } catch (err) {
                 console.log("Issue in getOrderItems 3", err.response);
+                alert('Error Getting Delivery Extras');
             }
         },
         async getMsgTemplate() {

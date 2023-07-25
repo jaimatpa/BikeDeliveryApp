@@ -56,6 +56,11 @@
 
             <!-- Actions -->
             <template v-slot:[`item.actions`]="{ item }">
+                <a :href="`/stock-tracking/${item.id}`" target="_blank">
+                    <v-icon v-if="includeStockTrackingLink" small color="secondary" class="mr-2">
+                        mdi-glasses
+                    </v-icon>
+                </a>
                 <v-icon small color="primary" class="mr-2" @click="$emit('edit', item)">
                     mdi-pencil
                 </v-icon>
@@ -87,6 +92,7 @@ export default {
         headers: Array,
         endpoint: String,
         dataTypes: Object,
+        includeStockTrackingLink: false,
         name: {
             type: String,
             default: "item",
@@ -171,7 +177,7 @@ export default {
                 text: "Actions",
                 value: "actions",
                 sortable: false,
-                width: "76px",
+                width: "120px",
             };
 
             if (this.headers && this.headers.length) {

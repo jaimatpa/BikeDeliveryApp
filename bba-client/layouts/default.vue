@@ -69,15 +69,15 @@ export default {
             if (user) this.$auth.setUser(user);
         }
 
-        this.getNotifications();
-        this.pollData();
-
     },
     mounted() {
         this.$nextTick(() => {
             this.drawer = this.$vuetify.breakpoint.width > 640;
         });
         console.log("version number", this.version);
+
+        this.pollData();
+        this.getNotifications();
     },
     components: {
         AppBar,
@@ -93,6 +93,7 @@ export default {
         return {
             drawer: false,
             settings: false,
+            poller: null,
             breakpoint: 640,
             notifications: [
             ],
@@ -394,17 +395,27 @@ export default {
             }
         },
         pollData () {
-            setInterval(() => {
-                this.getNotifications();
-            }, 15000)
+            setInterval( this.getNotifications , 15000);
         },      
         async getNotifications() {
-            if(this.$auth.user.hasOwnProperty("id"))
+            console.log('Getting notifications for user');
+
+            try 
             {
-                await this.$axios.get(`/api/user/notifications`).then( response => {
-                    this.notifications = response.data;
-                    console.log('notifications have been updated');
-                })
+                // if(this.$auth.ctx.id === !'undefined')
+                // {
+                    await this.$axios.get(`/api/user/notifications`).then( response => {
+                        this.notifications = response.data;
+                        console.log('notifications have been updated', response.data);
+                    })
+                // }
+                //else {
+                //   console.log('Cannot get ID of $auth.user');
+                //} 
+            }
+            catch(e) 
+            {
+
             }
         },
     },

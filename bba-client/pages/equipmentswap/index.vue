@@ -23,10 +23,17 @@
             {{ getDateFormat(item.date) }}
         </template>
 
+        <template v-slot:item.status="{ item }">
+           {{ item.status == 1 ? 'Complete' : 'Pending' }}
+        </template>
+
         <!-- Actions -->
         <template v-slot:item.actions="{ item }">
-            
-            <v-icon v-show="!item.delivered" medium color="primary" @click.stop="$router.push({path: `/equipmentswap/${item.orderid}`,})">
+            <v-icon v-show="item.status != 1" medium color="primary" @click.stop="$router.push({path: `/equipmentswap/${item.orderid}`,})">
+                mdi-page-next
+            </v-icon>
+
+            <v-icon v-show="item.status == 1" medium color="primary" @click.stop="$router.push({path: `/searchHistory/${item.orderid}?type=swap`,})">
                 mdi-page-next
             </v-icon>
             <v-icon v-show="item.delivered" medium color="primary" @click.stop="$router.push({path: `/searchHistory/${item.orderid}?type=swap`,})">
@@ -114,6 +121,11 @@ export default {
                 {
                     text: "ORDER#",
                     value: "orderid",
+                    sortable: false
+                },
+                {
+                    text: "COMPLETE",
+                    value: "status",
                     sortable: false
                 },
                 {

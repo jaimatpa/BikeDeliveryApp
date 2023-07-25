@@ -77,8 +77,8 @@ router.get("/", async (req, res) => {
             }
         }
     } else {
-        console.log(req.body);
-        data = await models.DeliveryOrders.findAll();
+        console.log('wtf ??');
+        data = await models.DeliveryOrders.findAll({where: { swapOrder: false }});
     }
     return res.send(data);
 });

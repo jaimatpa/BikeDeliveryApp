@@ -54,7 +54,6 @@ async function updateAnEquipmentType(req, res) {
             ...req.body
         }, {
             where: {
-                
                 id: req.body.itemID
             }
         })

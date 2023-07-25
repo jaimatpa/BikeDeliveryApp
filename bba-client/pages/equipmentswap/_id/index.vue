@@ -554,19 +554,16 @@ export default {
               location: this.deliveryOrderData.location,
               color: this.defaultColorValue,
               combination: this.defaultCombinationValue,
+              orderid: this.deliveryOrderData.orderid,
+              swapOrder: 1,
+              status: 1,
+              textSent: 1,
+              picturesSent: 1,
             };
 
             let result = await this.$axios.$post(
               "/api/user/deliveryorderupdate",
-              saveData,
-              {
-                params: {
-                  orderid: this.deliveryOrderData.orderid,
-                  status: 1,
-                  textSent: 1,
-                  picturesSent: 1,
-                },
-              }
+              saveData
             );
             console.log("RESPONSE", response);
             this.loader = false;
@@ -637,9 +634,6 @@ export default {
           this.$refs.fourthStep.local_pickup_images_to_upload
         );
 
-        ThirdStepper.capturedImages = [];
-        FourthStepper.capturedPickupImages = [];
-        
         // this.$emit("captured-camera-images", ThirdStepper.capturedImages);
 
         this.date = response[0].date.substr(0, 10);
@@ -647,6 +641,10 @@ export default {
         this.defaultColorValue = response[0].color;
         this.defaultCombinationValue = response[0].combination;
         this.smsObject.to = this.deliveryOrderData.mobileNo;
+
+        //ThirdStepper.capturedImages = [];
+        //FourthStepper.capturedPickupImages = [];
+        
         //  this.$router.go(-1);
       } catch (err) {
         console.log("errror", err.response);
@@ -690,17 +688,14 @@ export default {
             location: this.deliveryOrderData.location,
             color: this.defaultColorValue,
             combination: this.defaultCombinationValue,
+            orderid: this.deliveryOrderData.orderid,
+            status: 1,
+            swapOrder: 1,
           };
 
           let result = await this.$axios.$post(
             "/api/user/deliveryorderupdate",
-            saveData,
-            {
-              params: {
-                orderid: this.deliveryOrderData.orderid,
-                status: 1,
-              },
-            }
+            saveData
           );
         } else {
           console.log("upload failed!!!");
@@ -728,7 +723,7 @@ export default {
         console.log('uploading pickupImages', upload);
         let uploadResponse = await this.upload(upload, 'pickup', counter);
         messageObject.mediaUrl.push(
-          `https://images.hiretheproz.com/${this.deliveryOrderData.barcode}-pickup-${counter}.jpeg`
+          `https://images.hiretheproz.com/pickup/${this.deliveryOrderData.barcode}-${counter}.jpeg`
         );
         counter = counter + 1;
       }

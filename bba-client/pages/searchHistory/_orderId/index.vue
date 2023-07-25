@@ -67,18 +67,20 @@
         <v-row>
           <v-col cols="12" xs="12" sm="6" md="6" xl="6">
             <v-simple-checkbox
+              style="display: inline; margin-bottom: 10px"
               v-model="orderData.extrasDelivered"
               label="Extras Picked Up"
               placeholder=""
               readonly
               dense
               outlined
-            > Could not pickup all extra items
+            >  
           </v-simple-checkbox>
-          Could not deliver all extras
+            Could not deliver all extras
 
             <v-text-field
-              v-model="orderData.extrasDeliveredUpReason"
+            style="margin-top: 10px"
+            v-model="orderData.extrasDeliveredReason"
               label="Extras Delivery Reason"
               placeholder=""
               readonly
@@ -90,6 +92,7 @@
  
           <v-col cols="12" xs="12" sm="12" md="6" xl="6">
             <v-simple-checkbox
+            style="display: inline; margin-bottom: 10px"
               v-model="orderData.extrasPickedUp"
               label="Extras Picked Up"
               placeholder="Could not pickup all extra items"
@@ -103,6 +106,7 @@
           Could not pickup all extra items
           
             <v-text-field
+            style="margin-top: 10px"
               v-model="orderData.extrasPickedUpReason"
               label="Extras Picked Up Reason"
               placeholder=""

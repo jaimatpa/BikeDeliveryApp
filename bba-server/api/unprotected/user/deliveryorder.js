@@ -66,6 +66,8 @@ router.post("/createEquipmentSwapOrder", async (req, res) => {
 });
 
 router.get("/", async (req, res) => {
+    console.log('searching delivery orders');
+    
     let data = [];
     const search = req.query.search;
     const type = req.query.type;
@@ -131,8 +133,10 @@ router.get("/", async (req, res) => {
                     }
                 }));
             } else if (type === "SearchHistory") {
+                
+                console.log("SEARCH HISTORY, W CRITERIA 1");
                 data = data.filter((record => {
-                    return true;
+                    record.swapOrder == 0
                 }));
             } else if (type === "Dashboard") {
                 data = data.filter( ( record => {
@@ -169,7 +173,7 @@ router.get("/", async (req, res) => {
                 }));
             } else if (type === "Pickup") {
                 data = data.filter((record => {
-                    if (record.status == 1 && record.PickedUp == 0) {
+                    if (record.status == 1 && record.PickedUp == 0  && record.swapOrder == 0) {
                         return true;
                     } else {
                         return false;
@@ -245,10 +249,9 @@ router.get("/", async (req, res) => {
         } else if (type === "SearchHistory") {
             data = data.filter((record => {
                 console.log("SEARCH HISTORY, NO CRITERIA");
-                return true;
+                record.swapOrder == 0
             }));
-        } else if (type === "Dashboard") {
-            console.log("In Dashboard 2");
+        } else if (type === "Dashboard") { 
             data = data.filter( ( record => {
                 return record.swapOrder == 0
             }));
@@ -286,7 +289,7 @@ router.get("/", async (req, res) => {
             data = data.filter((record => {
                 var d = moment(record.date).add(4, 'hours').format('LL');
                 var today = moment().format('LL');
-                if (record.status == 1 && record.PickedUp == 0) {
+                if (record.status == 1 && record.PickedUp == 0 && record.swapOrder == 0) {
                     return true;
                 } else {
                     return false;
@@ -400,23 +403,40 @@ router.get("/query", async (req, res) => {
 
         if(status == null) status = 0;
 
-        const selectedDate = new Date(date);
-        // Fetch all records from the three tables
+        var selectedDate;
+        var startOfDay;
+        var endOfDay;
 
-        const startOfDay = new Date(selectedDate.getFullYear(), selectedDate.getMonth(), selectedDate.getDate() + 1);
-        const endOfDay = new Date(selectedDate.getFullYear(), selectedDate.getMonth(), selectedDate.getDate() + 2);
+        var where = {};
+
+        if(date != null && date != '') 
+        {
+            selectedDate = new Date(date);
+            startOfDay = new Date(selectedDate.getFullYear(), selectedDate.getMonth(), selectedDate.getDate() + 1);
+            endOfDay = new Date(selectedDate.getFullYear(), selectedDate.getMonth(), selectedDate.getDate() + 2);
+            where = {
+                date: {
+                    [Op.gte]: startOfDay,
+                    [Op.lt]: endOfDay
+                },
+                //status: status // considering 1 as true
+            }
+        }
+        else {
+            where = {
+                //status: status // considering 1 as true
+            }
+        }
         
         if(type == '' || type=='deliveries')
         {
             let [deliveryOrders, areas, villas, streetAddresses] = await Promise.all([
                 models.DeliveryOrders.findAll({
-                    where: {
-                        date: {
-                            [Op.gte]: startOfDay,
-                            [Op.lt]: endOfDay
-                        },
-                        status: status // considering 1 as true
-                    }
+                    where,
+                    order: [
+                        ['tripPriority1', 'ASC'],
+                        
+                    ]
                 }),
                 models.Area.findAll(),
                 models.Villa.findAll(),
@@ -433,13 +453,11 @@ router.get("/query", async (req, res) => {
 
             let [deliveryOrders, areas, villas, streetAddresses] = await Promise.all([
                 models.DeliveryOrders.findAll({
-                    where: {
-                        endDate: {
-                            [Op.gte]: startOfDay,
-                            [Op.lt]: endOfDay
-                        },
-                        status: status // considering 1 as true
-                    }
+                    where,
+                    order: [
+                        ['tripPriority2', 'ASC'],
+                        
+                    ]
                 }),
                 models.Area.findAll(),
                 models.Villa.findAll(),

@@ -1,7 +1,10 @@
 <template>
     <Page :title="title">
         <ServerDataTable ref="serverDataTable" :endpoint="endpoint" :name="name"
-            :dataTypes="{ createdAt: Date, updatedAt: Date }" @edit="editItem" :headers="headers" />
+            includeStockTrackingLink=this.includeStockTrackingLink
+            :dataTypes="{ createdAt: Date, updatedAt: Date }" 
+            @edit="editItem" 
+            :headers="headers" />
 
         <FloatingButton @click="itemToEdit = null; dialog = true;" color="primary"/>
 
@@ -45,8 +48,10 @@ export default {
         name: String,
         endpoint: String,
         isShowWebHookMappingTable: Boolean,
-        fields: [Object, Array],
-        headers: Array
+        fields: [Object, Array],                                                                                
+        headers: Array,
+        selectedItem: [],
+        includeStockTrackingLink: false,
     },
     data() {
         return {
@@ -54,13 +59,13 @@ export default {
             itemToEdit: null,
             errorMessage: "",
             date: "date",
-            jsonKey1: "",
+            jsonKey1: "test",
             tableKeyName: "name",
-            jsonKey2: "",
+            jsonKey2: "test                                                                                                                                                                                                                             ",
             location: "location",
             jsonKey3: "",
             orderid: "orderid",
-            jsonKey4: "",
+            jsonKey4: "test",
             rack: "rack",
             jsonKey5: "",
             color: "color",
@@ -74,12 +79,21 @@ export default {
             barcode: "barcode",
             jsonKey10: "",
             rules: {
-                required: (value) => !!value || "Required.",
+                required: (Zalue) => !!value || "Required.",
             },
         };
     },
-    created() {
-        this.getWebHookMapDataFromApi();
+    async created() {
+        this.getWebHookMapDataFromApi();   
+
+        if(this.$route.query.orderid != '') { 
+        const response = await this.$axios.$get("/api/user/equipment-types");  
+            response.forEach(x=> {
+                if( x.BarcodePrefix.indexOf(this.$route.query.orderid) !== -1 ) {
+                    this.editItem(x);
+                } 
+            });
+        }
     },
     computed: {
         addText() {
@@ -108,6 +122,7 @@ export default {
             this.jsonKey8 = webHookMapData.length ? webHookMapData[7].json_key : "";
             this.jsonKey9 = webHookMapData.length ? webHookMapData[8].json_key : "";
             this.jsonKey10 = webHookMapData.length ? webHookMapData[9].json_key : "";
+
         },
         async sendWebHookMapData() {
             const webHookMapDataTable = [{
@@ -151,7 +166,6 @@ export default {
                 json_key: this.jsonKey10.replace(/\s/g, ""),
             },
             ];
-            console.log("this.webHookMapDataTable", webHookMapDataTable);
 
             try {
                 const response = await this.$axios.$post(
@@ -167,6 +181,7 @@ export default {
             }
         },
         editItem(item) {
+            console.log('editItem', item);
             this.itemToEdit = JSON.parse(JSON.stringify(item));
             console.log("itemToEdit", this.itemToEdit);
             this.dialog = true;

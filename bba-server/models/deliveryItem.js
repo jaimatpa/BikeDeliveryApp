@@ -16,6 +16,8 @@ module.exports = (sequelize, DataTypes) => {
       active: DataTypes.BOOLEAN,
       checkedDelievery: DataTypes.BOOLEAN,
       checkPickup: DataTypes.BOOLEAN,
+      EquipmentTypeId: DataTypes.INTEGER,
+      
     },
     {
       sequelize,

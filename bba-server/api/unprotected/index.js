@@ -23,6 +23,8 @@ const uploadPickup = require("./user/uploadPickup");
 const deliveryOrderManagement = require("./user/deliveryOrderManagement");
 const twilio = require("./user/twilio");
 const equipmentType = require("./user/equipmentType");
+ 
+
 const problem = require("./user/problem");
 const problemType = require("./user/problemType");
 const activity = require("./user/activity");

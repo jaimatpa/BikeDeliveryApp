@@ -31,14 +31,22 @@ module.exports = (sequelize, DataTypes) => {
       PickedUp: DataTypes.BOOLEAN,
       PickupNotes: DataTypes.STRING,
       truckID: DataTypes.INTEGER,
+      TruckId1: DataTypes.INTEGER,
       tripID1: DataTypes.INTEGER,
       tripID2: DataTypes.INTEGER,
+      tripPriority1: DataTypes.INTEGER,
+      tripPriority2: DataTypes.INTEGER,
       textSent: DataTypes.BOOLEAN,
       picturesSent: DataTypes.BOOLEAN,
       driverDeliveredBy: DataTypes.STRING,
       driverPickedUpBy: DataTypes.STRING,
       swapOrder: DataTypes.BOOLEAN,
-      swapOrderDeliveryId: DataTypes.STRING
+      swapOrderDeliveryId: DataTypes.STRING,
+      extrasDelivered: DataTypes.BOOLEAN,
+      extrasDeliveredReason: DataTypes.STRING,
+      extrasPickedUp: DataTypes.BOOLEAN,
+      extrasPickedUpReason: DataTypes.STRING,
+      
     },
     {
       sequelize,
