@@ -412,7 +412,7 @@ export default {
     data() {
         return {
             loading: false,
-            selectedDate: '2023-07-07', //new Date().toISOString().substring(0, 10),
+            selectedDate: new Date().toISOString().substring(0, 10),
             menuOpen: false,
             enableYardManager: false,
             dialog: false,
