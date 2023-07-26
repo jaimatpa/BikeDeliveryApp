@@ -108,7 +108,7 @@ router.get("/", async (req, res) => {
 
                 }
             });
-            
+
             if (type === "DeliveryOrders") {
                 data = data.filter((record => {
                     var d = moment(record.date).add(4, 'hours').startOf('day');
@@ -186,7 +186,7 @@ router.get("/", async (req, res) => {
                     }
                 }));
             }
-            
+
         } catch (error) {
             console.log(error)
         }
@@ -458,15 +458,19 @@ router.get("/query", async (req, res) => {
 
 router.get("/location_reconciliation", async (req, res) => {
     //  Get delivery orders with a location that does not match any Street Address in the system.
-    const deliveryOrders = await models.DeliveryOrders.findAll({
-        where: {
-            location: {
-                [Op.notIn]: models.sequelize.literal(
-                    `(SELECT name FROM StreetAddress)`
-                ),
+    const all = req.query.all === "true";
+
+    const deliveryOrders = all
+        ? await models.DeliveryOrders.findAll()
+        : await models.DeliveryOrders.findAll({
+            where: {
+                location: {
+                    [Op.notIn]: models.sequelize.literal(
+                        `(SELECT name FROM StreetAddress)`
+                    ),
+                },
             },
-        },
-    });
+        });
 
     return res.send(deliveryOrders);
 });
@@ -520,6 +524,23 @@ router.put("/", async (req, res) => {
         return res.send(updateDO);
     } catch (error) {
         //(error);
+    }
+});
+
+router.delete("/:id", async (req, res) => {
+    try {
+        const deliveryOrder = await models.DeliveryOrders.findByPk(req.params.id);
+
+        if (!deliveryOrder) {
+            return res.status(404).json({ error: "Delivery order not found" });
+        }
+
+        await deliveryOrder.destroy();
+
+        res.status(200).json({ message: "Delivery order deleted successfully" });
+    } catch (error) {
+        console.error(error);
+        res.status(500).json({ error: "An error occurred while deleting the delivery order" });
     }
 });
 
