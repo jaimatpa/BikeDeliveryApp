@@ -44,20 +44,31 @@
             </v-col>
             <v-col>
                 <!-- Delivery orders  -->
-                <v-text-field class="mb-2" v-model="search" append-icon="mdi-magnify" label="Search" single-line
-                    hide-details clearable></v-text-field>
-                <small class="mb-2">
-                    Selected Number of Delivery Orders {{ getNumberSelectedDeliveryOrders }}
-                </small>
+                <v-row>
+                    <v-col cols="9">
+                        <v-text-field class="mb-2" v-model="search" append-icon="mdi-magnify" label="Search" single-line
+                            hide-details clearable></v-text-field>
+                        <small class="mb-2">
+                            Selected Number of Delivery Orders {{ getNumberSelectedDeliveryOrders }}
+                        </small>
+                    </v-col>
+
+                    <v-col cols="3">
+                        <v-checkbox v-model="showAllOrders" label="All Orders"></v-checkbox>
+                    </v-col>
+                </v-row>
+
                 <v-row>
                     <v-col cols="4">
-                        <v-btn depressed block color="primary" class="mb-2" :disabled="true">
+                        <v-btn depressed block color="red" class="mb-2" :disabled="getNumberSelectedDeliveryOrders < 1"
+                            @click="() => deleteDialog = true">
                             <v-icon left medium color="white" class="mr-2">
                                 mdi-delete
                             </v-icon>
-                            Delete
+                            <span style="color: white;">Delete</span>
                         </v-btn>
                     </v-col>
+
                     <v-col cols="8">
                         <v-btn depressed block color="primary" class="mb-2" @click="convertLocation()"
                             :disabled="disabledConvertLocation">
@@ -70,15 +81,28 @@
                 </v-row>
 
                 <v-data-table v-model="selectedDeliveryOrders" :headers="headers.deliveryOrder" :items="deliveryOrders"
-                    :loading="loading" :search="search" item-value="key" class="elevation-1" show-select></v-data-table>
+                    :loading="loading" :search="search" item-value="key" class="elevation-1" show-select>
+                    <template v-slot:item.name="{ item }">
+                        <span style="display: none;">{{ item.name }}</span>
+                    </template>
+                    <template v-slot:header.name>
+                        <span style="display: none;">{{ headers.deliveryOrder.find(header => header.value ===
+                            'name').text }}</span>
+                    </template>
+                </v-data-table>
             </v-col>
         </v-row>
 
+        <ModalConfirm v-model="deleteDialog" title="Delete Delivery Order"
+            :message="`Delete <strong>${getNumberSelectedDeliveryOrders}</strong> Delivery ${getNumberSelectedDeliveryOrders <= 1 ? 'order' : 'orders'}`"
+            confirmText="Yes" cancelText="No" @confirm="deleteDeliveryOrders" />
     </Page>
 </template>
 
 <script>
 import Page from "@/components/paradym/Page";
+import ModalConfirm from "@/components/paradym/modals/ModalConfirm";
+
 
 export default {
     // todo Bad impl, can be divided into components
@@ -92,7 +116,8 @@ export default {
     },
     components: {
         // todo break into components
-        Page
+        Page,
+        ModalConfirm
     },
     computed: {
         isMobile() {
@@ -125,6 +150,12 @@ export default {
             return this.selectedDeliveryOrders.length;
         }
     },
+    watch: {
+        showAllOrders(newVal) {
+            this.showAllOrders = newVal;
+            this.getAllDeliveryOrders();
+        }
+    },
     data() {
         return {
             selectedTab: 0,
@@ -139,6 +170,8 @@ export default {
             deliveryOrders: [],
             selectedDeliveryOrders: [],
             search: "",
+            deleteDialog: false,
+            showAllOrders: false,
             headers: {
                 deliveryOrder: [
                     {
@@ -165,6 +198,13 @@ export default {
                         sortable: false,
                         value: "orderid"
                     },
+                    {
+                        text: "Name",
+                        align: "start",
+                        sortable: false,
+                        value: "name",
+                        searchable: true
+                    }
                 ],
                 area: [
                     {
@@ -223,7 +263,11 @@ export default {
         async getAllDeliveryOrders() {
             this.loading = !this.loading;
 
-            const response = await this.$axios.$get("api/user/deliveryOrder/location_reconciliation");
+            const response = await this.$axios.$get("api/user/deliveryOrder/location_reconciliation", {
+                params: {
+                    all: this.showAllOrders
+                }
+            });
 
             this.deliveryOrders = response;
 
@@ -276,17 +320,26 @@ export default {
         async convertLocation() {
             // const { areaId, villaId, streetAddressId, deliveryOrderId } = req.body;
 
-            const futureBuffer = this.selectedDeliveryOrders.map(deliveryOrders => this.$axios.$patch("api/user/deliveryOrder/location_reconciliation", {
+            const futureBuffer = this.selectedDeliveryOrders.map(deliveryOrder => this.$axios.$patch("api/user/deliveryOrder/location_reconciliation", {
                 areaId: this.selectedArea.id,
                 villaId: this.selectedVilla.id,
                 streetAddressId: this.selectedStreetAddress.id,
-                deliveryOrderId: deliveryOrders.id
+                deliveryOrderId: deliveryOrder.id
             }));
 
             await Promise.all(futureBuffer);
 
             await this.getAllDeliveryOrders();
             this.selectedDeliveryOrders = [];
+        },
+        async deleteDeliveryOrders() {
+            const futureBuffer = this.selectedDeliveryOrders.map(deliveryOrder => this.$axios.$delete(`api/user/deliveryOrder/${deliveryOrder.id}`))
+
+            await Promise.all(futureBuffer);
+
+            await this.getAllDeliveryOrders();
+            this.selectedDeliveryOrders = [];
+            this.deleteDialog = false;
         }
     }
 };
