@@ -269,7 +269,7 @@
                     <!-- Actions -->
                     <template v-slot:item.actions="{ item }">
                         <div class="d-flex align-center">
-                            <a :href="`/stock-tracking/${item.id}`"
+                            <a :href="`/stock-tracking/${item.equipmentTypeId}`"
                             target="_blank"
                             rel="noreferrer"
                             > 
