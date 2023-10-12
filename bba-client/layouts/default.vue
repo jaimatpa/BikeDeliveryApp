@@ -405,6 +405,11 @@ export default {
                 // if(this.$auth.ctx.id === !'undefined')
                 // {
                     await this.$axios.get(`/api/user/notifications`).then( response => {
+                        
+                        response.data.forEach( item => {
+                            item.createdAt = new Date(item.createdAt).toLocaleDateString('en-us', { weekday:"long", year:"numeric", month:"long", day:"numeric", hour:"numeric", minute:"numeric"});
+                        });
+
                         this.notifications = response.data;
                         console.log('notifications have been updated', response.data);
                     })

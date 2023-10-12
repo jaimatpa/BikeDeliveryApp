@@ -340,8 +340,7 @@ function customDeliveryOrderSort(deliveryOrders, areas, villas, streetAddresses)
             
             const aStreetAddressPriority = streetAddressesByName[a.location]?.priority || 0;
             const bStreetAddressPriority = streetAddressesByName[b.location]?.priority || 0;
-
-            console.log(streetAddressesByName[a]);
+ 
             // * Compare based on the priority, lower values first
             if (aVillaPriority !== bVillaPriority) {
                 //console.log('villa priority: ' + villasByName[a.plantation]?.priority);
@@ -377,9 +376,10 @@ router.get("/query", async (req, res) => {
     if (order_type === "delivery_order") {
         const selectedDate = new Date(date);
         console.log(selectedDate);
-        const startOfDay = new Date(selectedDate.getFullYear(), selectedDate.getMonth(), selectedDate.getDate() + 1);
-        const endOfDay = new Date(selectedDate.getFullYear(), selectedDate.getMonth(), selectedDate.getDate() + 2);
+        const startOfDay = new Date(selectedDate.getFullYear(), selectedDate.getMonth(), selectedDate.getDate());
+        const endOfDay = new Date(selectedDate.getFullYear(), selectedDate.getMonth(), selectedDate.getDate() + 1);
         // Fetch all records from the three tables
+
         let [deliveryOrders, areas, villas, streetAddresses] = await Promise.all([
             models.DeliveryOrders.findAll({
                 where: {
@@ -412,19 +412,24 @@ router.get("/query", async (req, res) => {
         if(date != null && date != '') 
         {
             selectedDate = new Date(date);
-            startOfDay = new Date(selectedDate.getFullYear(), selectedDate.getMonth(), selectedDate.getDate() + 1);
-            endOfDay = new Date(selectedDate.getFullYear(), selectedDate.getMonth(), selectedDate.getDate() + 2);
+            startOfDay = new Date(selectedDate.getFullYear(), selectedDate.getMonth(), selectedDate.getDate());
+            endOfDay = new Date(selectedDate.getFullYear(), selectedDate.getMonth(), selectedDate.getDate() + 1);
             where = {
                 date: {
                     [Op.gte]: startOfDay,
                     [Op.lt]: endOfDay
                 },
-                //status: status // considering 1 as true
+                //status: 0 // considering 1 as true
+                //status 0 and pickup 0
             }
+
+            console.log('deliveries', date, startOfDay, endOfDay);
+
         }
         else {
             where = {
-                //status: status // considering 1 as true
+                //status: 1,
+                //pickedup: 0
             }
         }
         
@@ -449,24 +454,55 @@ router.get("/query", async (req, res) => {
         } 
         else if(type=='pickups')   
         {
-            console.log(startOfDay, endOfDay);
+            if(date != null && date != '')  {
+//                console.log('pickups', startOfDay, endOfDay);
 
-            let [deliveryOrders, areas, villas, streetAddresses] = await Promise.all([
-                models.DeliveryOrders.findAll({
-                    where,
-                    order: [
-                        ['tripPriority2', 'ASC'],
-                        
-                    ]
-                }),
-                models.Area.findAll(),
-                models.Villa.findAll(),
-                models.StreetAddress.findAll()
-            ]);
+                let [deliveryOrders, areas, villas, streetAddresses] = await Promise.all([
+                    models.DeliveryOrders.findAll({
+                        where: {
+                            endDate: {
+                                [Op.ne]: null,
+                                [Op.gte]: startOfDay,
+                                [Op.lt]: endOfDay
+                            }, 
+                        },
+                        order: [
+                            ['tripPriority2', 'ASC'],
+                            
+                        ]
+                    }),
+                    models.Area.findAll(),
+                    models.Villa.findAll(),
+                    models.StreetAddress.findAll()
+                ]);
+        
+                const sortedOrders = customDeliveryOrderSort(deliveryOrders, areas, villas, streetAddresses);
 
-            const sortedOrders = customDeliveryOrderSort(deliveryOrders, areas, villas, streetAddresses);
+                return res.json(sortedOrders);
+            }
+            else {
+                let [deliveryOrders, areas, villas, streetAddresses] = await Promise.all([
+                    models.DeliveryOrders.findAll({
+                        where: {
+                            endDate: {
+                                [Op.ne]: null,
+                            }, 
+                        },
+                        order: [
+                            ['tripPriority2', 'ASC'],
+                            
+                        ]
+                    }),
+                    models.Area.findAll(),
+                    models.Villa.findAll(),
+                    models.StreetAddress.findAll()
+                ]);
+                const sortedOrders = customDeliveryOrderSort(deliveryOrders, areas, villas, streetAddresses);
 
-            return res.json(sortedOrders);
+                return res.json(sortedOrders);
+    
+            }
+        
         }
 
     }
@@ -477,20 +513,44 @@ router.get("/query", async (req, res) => {
 router.get("/location_reconciliation", async (req, res) => {
     //  Get delivery orders with a location that does not match any Street Address in the system.
     const all = req.query.all === "true";
+    const { date } = req.query;
 
-    const deliveryOrders = all
-        ? await models.DeliveryOrders.findAll()
-        : await models.DeliveryOrders.findAll({
-            where: {
-                location: {
-                    [Op.notIn]: models.sequelize.literal(
-                        `(SELECT name FROM StreetAddress)`
-                    ),
+    if(date != '') {
+        const selectedDate = new Date(date);
+        const startOfDay = new Date(selectedDate.getFullYear(), selectedDate.getMonth(), selectedDate.getDate());
+        const endOfDay = new Date(selectedDate.getFullYear(), selectedDate.getMonth(), selectedDate.getDate() + 1);
+        const deliveryOrders = all
+            ? await models.DeliveryOrders.findAll()
+            : await models.DeliveryOrders.findAll({
+                where: {
+                    date: {
+                        [Op.gte]: startOfDay,
+                        [Op.lt]: endOfDay
+                    },
+                    location: {
+                        [Op.notIn]: models.sequelize.literal(
+                            `(SELECT name FROM StreetAddress)`
+                        ),
+                    },
                 },
-            },
-        });
-
-    return res.send(deliveryOrders);
+            });
+        return res.send(deliveryOrders);
+    }
+    else 
+    {
+        const deliveryOrders = all
+            ? await models.DeliveryOrders.findAll()
+            : await models.DeliveryOrders.findAll({
+                where: {
+                    location: {
+                        [Op.notIn]: models.sequelize.literal(
+                            `(SELECT name FROM StreetAddress)`
+                        ),
+                    },
+                },
+            });
+        return res.send(deliveryOrders);
+    }    
 });
 
 router.patch("/location_reconciliation", async (req, res) => {

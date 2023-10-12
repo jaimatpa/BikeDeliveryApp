@@ -11,6 +11,9 @@ module.exports.sendNotification = async function sendNotification(message, type,
         }
     });
 
+    //console.log(users, users);
+
+
     if(userId > 0) {
         Notification.create({
             message: message,
@@ -19,11 +22,11 @@ module.exports.sendNotification = async function sendNotification(message, type,
             tripId: tripId,
             userId: userId
         }); 
-        // console.log(`Created notification successfully for user ${userId}`);
+        console.log(`Created notification successfully for user ${userId}`);
     } 
     else {
-        console.log('notifying ', users.length);
         users.forEach( user => {
+            console.log(`notifying ${user.email}`);
             Notification.create({
                 message: message,
                 type: 1,
@@ -32,7 +35,7 @@ module.exports.sendNotification = async function sendNotification(message, type,
                 userId: user.id
             });
 
-            // console.log(`Created notification successfully for user ${user.id}`);
+            console.log(`Created notification successfully for user ${user.id}`);
         });
         
     }

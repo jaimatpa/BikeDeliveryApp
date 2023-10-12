@@ -16,29 +16,29 @@
             <template v-slot:item.name="{ item }">
                 <div v-if="item.editable">
                     <v-text-field v-model="item.name" @blur="saveItem(item)" @keydown.esc="cancelEditing(item)"
-                        @keydown.enter="saveItem(item)" single-line></v-text-field>
+                        @keydown.enter="saveItem(item)" single-line autofocus></v-text-field>
                 </div>
                 <div @click="item.editable = !editingLocked" v-else>{{ item.name }}</div>
             </template>
 
             <template v-slot:item.priority="{ item }">
-                <div v-if="item.editable">
+                <div v-if="item.rack_editable">
                     <v-text-field v-model="item.bikeRack" @blur="saveItem(item)" @keydown.esc="cancelEditing(item)"
                         @keydown.enter="saveItem(item)" single-line></v-text-field>
                 </div>
-                <div @click="item.editable = !editingLocked" v-else>{{ item.bikeRack }}</div>
+                <div @click="item.rack_editable = !editingLocked" v-else>{{ item.bikeRack }}</div>
             </template>
 
 
             <!-- Area Editable -->
             <template v-slot:item.Villa="{ item }">
-                <div v-if="item.editable">
+                <div v-if="item.villa_editable">
                     <v-combobox label="Villa" v-model="item.Villa" :items="villas" item-text="name" @blur="saveItem(item)"
                         @keydown.esc="cancelEditing(item)" @keydown.enter="saveItem(item)"></v-combobox>
                     <!-- <v-text-field v-model="item.name" @blur="saveItem(item)" @keydown.esc="cancelEditing(item)"
                         @keydown.enter="saveItem(item)" single-line></v-text-field> -->
                 </div>
-                <div @click="item.editable = !editingLocked" v-else>{{ item.Villa.name }}</div>
+                <div @click="item.villa_editable = !editingLocked" v-else>{{ item.Villa.name }}</div>
             </template>
 
 
@@ -110,7 +110,7 @@ export default {
             return !!this.streetAddresses.find(streetAddress => streetAddress.id === null);
         },
         editingLocked() {
-            return !!this.streetAddresses.find(streetAddress => streetAddress.editable);
+            return !!this.streetAddresses.find( streetAddress => streetAddress.editable || streetAddress.rack_editable || streetAddress.villa_editable );
         },
         isMobile() {
             return this.$vuetify.breakpoint.width < this.breakpoint;
@@ -135,22 +135,27 @@ export default {
             const response = await this.$axios.$get(URL);
 
             this.streetAddresses = response;
-            this.streetAddresses = this.streetAddresses.map(streetAddress => ({ ...streetAddress, editable: false }));
+            this.streetAddresses = this.streetAddresses.map(streetAddress => ({ ...streetAddress, editable: false, villa_editable: false, rack_editable: false}));
 
             console.log()
 
             this.loading = !this.loading;
         },
         editItem(item) {
-            item.editable = true;
+            //item.editable = true;
+            //item.rack_editable = true;
+            //item.villa_editable = true;
             console.log("Editing item:", item);
         },
         cancelEditing(item) {
             if (!item) {
-                this.villas = this.villas.map(area => ({ ...area, editable: false }));
+                this.villas = this.villas.map(area => ({ ...area, editable: false, villa_editable: false, rack_editable: false }));
                 this.$emit("editingCanceled");
             } else {
+                alert('cancel');
                 item.editable = false;
+                item.rack_editable = false;
+                item.villa_editable = false;
             }
             this.villas = this.villas.filter(area => area.id !== null);
         },
@@ -164,6 +169,8 @@ export default {
 
             item.loading=true;
             item.editable = false;
+            item.rack_editable = false;
+            item.villa_editable = false;
             console.log("Saving item:", item);
 
             const payload = { ...item, parent: item.Villa.id };
@@ -171,12 +178,15 @@ export default {
             delete payload.id;
             delete payload.Villa;
             delete payload.editable;
+            delete payload.rack_editable;
+            delete payload.villa_editable;
+            
 
             if (!item.id) {
                 // Create a new area
                 console.log(payload)
                 const response = await this.$axios.$post(`/api/user/locations/areas/villas/${item.Villa.id}/street-addresses`, payload);
-                this.streetAddresses.splice(0, 1, { ...response, editable: false });
+                this.streetAddresses.splice(0, 1, { ...response, editable: false, rack_editable: false, villa_editable: false });
             } else {
                 // Just update
                 await this.$axios.$put(`/api/user/locations/areas/villas/street-addresses/${item.id}`, payload);
@@ -198,8 +208,10 @@ export default {
                 {
                     id: null,
                     name: "",
-                    bikeRack: "test",
+                    bikeRack: "",
                     editable: true,
+                    rack_editable: true, 
+                    villa_editable: true,
                     Villa: null
                 },
                 ...this.streetAddresses

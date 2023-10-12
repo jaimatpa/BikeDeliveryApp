@@ -230,7 +230,7 @@
           sm="12"
           md="12"
           xl="12"
-          :headers="headers2"
+          :headers="headersextras"
           :items="extras"
           item-key="name"
           class="elevation-6 mb-5"
@@ -498,10 +498,10 @@ export default {
   components: {
     Page,
   },
-  async created() {
+  async mounted() {
     await this.getOrderDetails();
-    await this.getOrderItems();
     await this.getOrderExtras();
+    await this.getOrderItems();
     await this.getMsgTemplate();
     await this.getUserlocation();
     await this.getOrderImages();
@@ -614,16 +614,16 @@ export default {
       showError: "error",
     }),
     async getOrderExtras() {
-          try {
+          try 
+          {
             let response = await this.$axios.$get("/api/user/deliveryItem/extras", {
                 params: {
-                    deliveryID: this.deliveryOrderData.id,
+                    deliveryID: this.orderData.id,
                 },
             });
 
             this.extras = response;
-            console.log("Extras", this.extras);
-
+            console.log("Recieved Extras", this.orderData.id, this.extras);
             //  this.$router.go(-1);
           } catch (err) {
                 console.log("Issue in getOrderExtras", err);
@@ -680,12 +680,12 @@ export default {
         if (navigator.geolocation) {
           navigator.geolocation.getCurrentPosition(
             (position) => {
-              console.log("Clicked on pointer, position === ", position);
+              // console.log("Clicked on pointer, position === ", position);
               const pos = {
                 lat: position.coords.latitude,
                 lng: position.coords.longitude,
               };
-              console.log("pos ==== ", pos);
+              // console.log("pos ==== ", pos);
               this.userPosition = pos;
             },
             (error) => {
@@ -846,9 +846,9 @@ export default {
             search: this.$route.params.orderId,
           },
         });
-        console.log("respones", response);
+
         const responseData = _.omit(response[0], "date");
-        console.log("ORDER DATA", responseData);
+        // console.log("ORDER DATA", responseData);
         this.orderData = responseData;
         this.orderData.date = moment(response[0].date).format(
           "MM/DD/YYYY hh:mm A"
@@ -863,7 +863,7 @@ export default {
     async getMsgTemplate() {
       try {
         let response = await this.$axios.$get("api/user/template");
-        console.log("template response", response.body);
+        // console.log("template response", response.body);
         this.templateMsg = response.body;
       } catch (err) {
         console.log("errror", err.response);

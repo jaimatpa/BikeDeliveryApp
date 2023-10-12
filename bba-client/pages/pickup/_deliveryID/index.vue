@@ -355,9 +355,6 @@ export default {
                 extrasPickedUpReason: this.orderData.extrasPickedUpReason
             };
             
-            console.log(data);
-
-            alert('update delivery order');
             await this.$axios.$post(
               "/api/user/deliveryorderupdate", data).then(  response => {
                 this.showSuccess('The order have been marked as picked up.');
@@ -378,6 +375,7 @@ export default {
 
             // A video's MediaStream object is available through its srcObject attribute
             const mediaStream = video.srcObject;
+            if(mediaStream === null) return;
 
             // Through the MediaStream, you can get the MediaStreamTracks with getTracks():
             const tracks = mediaStream.getTracks();

@@ -15,20 +15,21 @@
             <template v-slot:item.name="{ item }">
                 <div v-if="item.editable">
                     <v-text-field v-model="item.name" @blur="saveItem(item)" @keydown.esc="cancelEditing(item)"
-                        @keydown.enter="saveItem(item)" single-line></v-text-field>
+                        @keydown.enter="saveItem(item)" single-line autofocus></v-text-field>
                 </div>
                 <div @click="item.editable = !editingLocked" v-else>{{ item.name }}</div>
             </template>
 
             <!-- Area Editable -->
             <template v-slot:item.Area="{ item }">
-                <div v-if="item.editable">
+                <div v-if="item.area_editable">
                     <v-combobox label="Area" v-model="item.Area" :items="areas" item-text="name" @blur="saveItem(item)"
                         @keydown.esc="cancelEditing(item)" @keydown.enter="saveItem(item)"></v-combobox>
+                        
                     <!-- <v-text-field v-model="item.name" @blur="saveItem(item)" @keydown.esc="cancelEditing(item)"
                         @keydown.enter="saveItem(item)" single-line></v-text-field> -->
                 </div>
-                <div @click="item.editable = !editingLocked" v-else>{{ item.Area.name }}</div>
+                <div @click="item.area_editable = !editingLocked" v-else>{{ item.Area.name }}</div>
             </template>
 
 
@@ -132,11 +133,14 @@ export default {
             const response = await this.$axios.$get(URL);
 
             this.villas = response;
-            this.villas = this.villas.map(villa => ({ ...villa, editable: false }));
+            this.villas = this.villas.map(villa => ({ ...villa, editable: false, area_editable: false }));
             this.loading = !this.loading;
         },
         editItem(item) {
-            item.editable = true;
+            alert('Editing');
+            
+            // item.editable = true;
+
             console.log("Editing item:", item);
         },
         cancelEditing(item) {
@@ -145,33 +149,37 @@ export default {
                 this.$emit("editingCanceled");
             } else {
                 item.editable = false;
+                item.area_editable = false;
             }
             this.villas = this.villas.filter(area => area.id !== null);
         },
         async saveItem(item) {
+            // Resolve the enter and blur bug
+            if(item.loading==true) return;
             if (item.id === null && (!item.name || !item.Area)) {
                 return;
             }
 
+            item.loading=true;
             item.editable = false;
-            console.log("Saving item:", item);
+            item.area_editable = false;
 
             const payload = { ...item, parent: item.Area.id };
 
             delete payload.id;
             delete payload.Area;
             delete payload.editable;
+            delete payload.area_editable;
 
             if (!item.id) {
                 // Create a new area
-                console.log(payload)
                 const response = await this.$axios.$post(`/api/user/locations/areas/${item.Area.id}/villas`, payload);
                 this.villas.splice(0, 1, { ...response, editable: false });
             } else {
                 // Just update
                 await this.$axios.$put(`/api/user/locations/areas/villas/${item.id}`, payload);
             }
-
+            item.loading = false;
         },
         async deleteItem(item) {
             console.log("Deleting item:", item);
@@ -188,6 +196,7 @@ export default {
                     id: null,
                     name: "",
                     editable: true,
+                    area_editable: true,
                     Area: null
                 },
                 ...this.villas

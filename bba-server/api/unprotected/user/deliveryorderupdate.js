@@ -16,8 +16,8 @@ router.post("/", async (req,res) => {
     const orderid = data.orderid ?? req.params.orderid;
     const swapOrder = data.swapOrder ? data.swapOrder : 0;
     
-    const status =data.status;
-    const textSent =data.textSent;
+    const status = data.status;
+    const textSent = data.textSent;
     const picturesSent = data.picturesSent;
     const reason = data.reason;
     
@@ -25,7 +25,8 @@ router.post("/", async (req,res) => {
         return res.send('You must provide an orderID: ' + req.params['orderid'] + ' - ' + data.orderid);
     }
 
-    try{
+    try
+    {
 
         const deliveryOrder = await models.DeliveryOrders.findOne(
             {
@@ -40,10 +41,31 @@ router.post("/", async (req,res) => {
             return res.send('Cannot find order ID in deliveries.')
         }
     
+        if( data.delivered ) {
+            
+            const trip = await models.Trip.findOne(
+                {
+                    where:
+                    {
+                        id: deliveryOrder.tripID1
+                    }
+                });
+
+            if(trip != null) {
+            
+                trip.complete = true;
+                trip.save();
+                console.log('trip was saved');
+            }
+        }
+
         var tripPriority1 = deliveryOrder.tripPriority1;
         var tripPriority2 = deliveryOrder.tripPriority1;
+        var assignedSort = deliveryOrder.assignedSort;
+
         if(data.tripPriority1 !== 'undefined') tripPriority1 = data.tripPriority1;
-        if(data.tripPriority2 !== 'undefined') tripPriority1 = data.tripPriority1;
+        if(data.tripPriority2 !== 'undefined') tripPriority2 = data.tripPriority2;
+        if(data.assignedSort !== 'undefined') assignedSort = data.assignedSort;
     
         deliveryOrder.date = data.date?data.date:deliveryOrder.date;
         deliveryOrder.name = data.name?data.name:deliveryOrder.name;
@@ -53,17 +75,25 @@ router.post("/", async (req,res) => {
         deliveryOrder.mobileNo = data.mobileNo?data.mobileNo:deliveryOrder.mobileNo;
         deliveryOrder.barcode = data.barcode?data.barcode:deliveryOrder.barcode;
         deliveryOrder.lock = data.lock?data.lock:deliveryOrder.lock;
-        deliveryOrder.status = status ? status : deliveryOrder.status;;
+        deliveryOrder.status = status ? status : deliveryOrder.status;
         deliveryOrder.note = data.note ? data.note : deliveryOrder.note;
         //deliveryOrder.unableToDeliverItems = unableToDeliverItems ? unableToDeliverItems : deliveryOrder.unableToDeliverItems;
         deliveryOrder.extrasPickedUp = data.extrasPickedUp ? data.extrasPickedUp : deliveryOrder.extrasPickedUp;
         deliveryOrder.extrasDelivered = data.extrasDelivered ? data.extrasDelivered : deliveryOrder.extrasDelivered;
         deliveryOrder.extrasPickedUpReason = data.extrasPickedUpReason ? data.extrasPickedUpReason : deliveryOrder.extrasPickedUpReason;
         deliveryOrder.extrasDeliveredReason = data.extrasDeliveredReason ? data.extrasDeliveredReason : deliveryOrder.extrasDeliveredReason;
+        if(data.tripID1 !=='undefined') deliveryOrder.tripID1 = data.tripID1 == 0 ? null : data.tripID1;
+        if(data.tripID2 !=='undefined') deliveryOrder.tripID2 = data.tripID2 == 0 ? null : data.tripID2;
+        if(data.truckID !=='undefined') deliveryOrder.truckID = data.truckID == 0 ? null: data.truckID;
+        if(data.TruckId1 !=='undefined') deliveryOrder.TruckId1 = data.TruckId1 == 0 ? null : data.TruckId1;
+
+        console.log(data.TruckId1);
+        
         deliveryOrder.tripPriority1 = tripPriority1;
         deliveryOrder.tripPriority2 = tripPriority2;
+        deliveryOrder.assignedSort = assignedSort;
         
-        console.log('priority set?', deliveryOrder.orderid, deliveryOrder.tripPriority1 );
+        console.log('priority set?', deliveryOrder.truckId1, deliveryOrder.orderid, deliveryOrder.assignedSort );
         deliveryOrder.textSent = textSent;
         deliveryOrder.picturesSent = picturesSent;
         // deliveryOrder.PickupNotes = reason;
@@ -79,8 +109,6 @@ router.post("/", async (req,res) => {
 
         console.log('saved?');
         return res.send(deliveryOrder)
-
-
 
     }
     catch(error)

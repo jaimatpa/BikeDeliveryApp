@@ -18,7 +18,8 @@ module.exports = (sequelize, DataTypes) => {
     type: DataTypes.BOOLEAN,
     deliveryOrderId: DataTypes.INTEGER(10),
     tripId: DataTypes.INTEGER(10),
-    userId: DataTypes.INTEGER(10)
+    userId: DataTypes.INTEGER(10),
+    createdAt: DataTypes.DATE 
   }, {
     sequelize,
     modelName: "Notification",

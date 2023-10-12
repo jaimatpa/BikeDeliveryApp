@@ -3,32 +3,38 @@
  
         <v-row>
             <v-col col="12">
-                <h3 class="mt-3 mb-3">Edit Equipment Type</h3>
+                <h3 class="mt-3 mb-3">Edit Equipment Types</h3>
                 <v-card>
                     
-                    <v-card-text class="my-5 text-center">
+                    <v-card-text class="my-5">
                         <v-row>
                             <v-col col="6">
+                                <label for="Label">Label</label>
                                 <v-text-field label="Label" v-model="equipmentType.Label" single-line autofocus></v-text-field>
                             </v-col>
                             <v-col col="6">
+                                <label>Barcode Prefix</label>
                                 <v-text-field label="Barcode Prefix" v-model="equipmentType.BarcodePrefix" single-line autofocus></v-text-field>
                                 <label>Seperate multiple barcodes with commas.</label>
                             </v-col>
                         </v-row>
                         <v-row>
                             <v-col col="6">
+                                <label>Capacity Consumption</label>
                                 <v-text-field label="Capacity Consumption" v-model="equipmentType.CapacityConsumption" single-line autofocus></v-text-field>
                             </v-col>
                             <v-col col="6">
+                                <label>Product Line ID</label>
                                 <v-text-field label="Product Line ID" v-model="equipmentType.ProductLineId" single-line autofocus></v-text-field>
                             </v-col>
                         </v-row>
                         <v-row>
                             <v-col col="6">
+                                <label>Stock Quantity</label>
                                 <v-text-field label="Stock Quantity" v-model="equipmentType.qty" single-line autofocus></v-text-field>
                             </v-col>
                             <v-col col="6">
+                                <label>Quantity Available</label>
                                 <v-text-field label="Quantity Available" v-model="equipmentType.qtyAvailable" readonly single-line autofocus></v-text-field>
                             </v-col>            
                         </v-row>
@@ -59,13 +65,8 @@
                     </template>
 
                     <!-- Show Custom CreatedAt Column -->
-                    <template v-slot:[`item.createdAt`]="{ item }">
-                        {{ item.createdAt }}
-                    </template>
-
-                    <!-- Show Custom CreatedAt Column -->
-                    <template v-slot:[`item.TimeStamp`]="{ item }">
-                        {{ new Date(item.TimeStamp).toUTCString() }}
+                    <template v-slot:[`item.pickup_date`]="{ item }">
+                       Test {{ new Date(item.pickup_date).toUTCString() }}
                     </template>
 
                 </v-data-table>
@@ -214,7 +215,7 @@ export default {
                 {
                     text: "Pickup Date",
                     align: "start",
-                    value: "pickupdate",
+                    value: "pickup_date",
                 },
                 // {
                 //     text: "Qty Available",

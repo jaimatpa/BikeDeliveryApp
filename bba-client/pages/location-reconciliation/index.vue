@@ -57,7 +57,41 @@
                         <v-checkbox v-model="showAllOrders" label="All Orders"></v-checkbox>
                     </v-col>
                 </v-row>
-
+                <v-row>
+                    <v-menu
+                        ref="menu"
+                        v-model="menu"
+                        :close-on-content-click="false"
+                        transition="scale-transition"
+                        offset-y
+                        min-width="auto"
+                    >
+                        <template v-slot:activator="{ on, attrs }">
+                        <v-text-field
+                            v-model="selectedDate"
+                            label="Order Date"
+                            prepend-icon="mdi-calendar"
+                            readonly
+                            v-bind="attrs"
+                            v-on="on"
+                        ></v-text-field>
+                        </template>
+                        <v-date-picker
+                        v-model="date"
+                        no-title
+                        scrollable
+                        >
+                        <v-spacer></v-spacer>
+                        <v-btn
+                            text
+                            color="primary"
+                            @click="reset()"
+                        >
+                            Reset
+                        </v-btn>
+                        </v-date-picker>
+                    </v-menu>
+                </v-row>
                 <v-row>
                     <v-col cols="4">
                         <v-btn depressed block color="red" class="mb-2" :disabled="getNumberSelectedDeliveryOrders < 1"
@@ -109,6 +143,7 @@ export default {
 
     name: "Location-Reconciliation",
     auth: true,
+
     head() {
         return {
             title: "Location Reconciliation"
@@ -120,6 +155,17 @@ export default {
         ModalConfirm
     },
     computed: {
+        date: {
+            get() {
+                return this.selectedDate;
+            },
+            async set(val) {
+                this.selectedDate = val;
+                this.menu = false;
+
+                await this.getAllDeliveryOrders();
+            },
+        },
         isMobile() {
             return this.$vuetify.breakpoint.width < this.breakpoint;
         },
@@ -161,8 +207,11 @@ export default {
             selectedTab: 0,
             cancelEditSignal: false,
             loading: false,
+            //date: '',
+            menu: false,
             selectedArea: {},
             selectedVilla: {},
+            selectedDate: '',
             selectedStreetAddress: {},
             areas: [],
             villas: [],
@@ -239,6 +288,12 @@ export default {
     beforeDestroy() {
     },
     methods: {
+        async reset() {
+            this.selectedDate = ''; 
+            this.menu = false;
+
+            await this.getAllDeliveryOrders();
+        },  
         /**
          * Handles the click event on a column.
          * 
@@ -265,7 +320,8 @@ export default {
 
             const response = await this.$axios.$get("api/user/deliveryOrder/location_reconciliation", {
                 params: {
-                    all: this.showAllOrders
+                    all: this.showAllOrders,
+                    date: this.selectedDate
                 }
             });
 

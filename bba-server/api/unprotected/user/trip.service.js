@@ -12,8 +12,8 @@ async function getAllTrips(req, res) {
     const { date } = req.query;
 
     const selectedDate = date ? new Date(date) : new Date();
-    const startOfDay = new Date(selectedDate.getFullYear(), selectedDate.getMonth(), selectedDate.getDate() + 1);
-    const endOfDay = new Date(selectedDate.getFullYear(), selectedDate.getMonth(), selectedDate.getDate() + 2);
+    const startOfDay = new Date(selectedDate.getFullYear(), selectedDate.getMonth(), selectedDate.getDate());
+    const endOfDay = new Date(selectedDate.getFullYear(), selectedDate.getMonth(), selectedDate.getDate() + 1);
     
     const data = await Trip.findAll({
         where: {
@@ -30,13 +30,9 @@ async function getAllTrips(req, res) {
 async function getAllOrders(tripId, truckId) {
     const orders = await DeliveryOrders.findAll({
         where: {
-            [Op.or]: [
-                { tripID1: tripId },
-                { tripID2: tripId },  
-            ],
-            [Op.or]: [
-                { truckId: truckId },
-                { truckId1: truckId },  
+            [Op.and]: [
+                { truckId: truckId }, 
+                { tripID1: tripId },   
             ],
             //status: 0
         }
@@ -49,10 +45,10 @@ async function getAllOrdersNoFilter(tripId, truckId) {
     const orders = await DeliveryOrders.findAll({
         where: {   
             tripID1:  {  [Op.ne]: null },  
-            tripID2:  {  [Op.ne]: null },  
+            // tripID2:  {  [Op.ne]: null },  
             
             //status: 1,
-            pickedup: 0
+            // pickedup: 0
         }
     });
  
@@ -109,7 +105,7 @@ async function checkOrderStock(req, res) {
 
     var totalOrderItems = 0;
 
-    console.log('orders', orders.length);
+    console.log('checkOrderStock order.length: ', orders.length);
     var requests = 0;
 
     orders.forEach( order => {
@@ -121,10 +117,11 @@ async function checkOrderStock(req, res) {
             totalOrderItems = totalOrderItems + items.length;
 
             items.forEach( item => {
-                console.log('item.SerialBarcode')
                 getEquipment(item.EquipmentTypeId).then( equipment => {
                     if(equipment !== null) {
                         noStockOrders.push({ 
+                            test: 'hi',
+                            pickup_date: order.endDate,
                             orderId: order.orderid, 
                             Label: equipment.Label,
                             equipmentTypeId: item.EquipmentTypeId,
@@ -150,6 +147,7 @@ async function checkOrderStock(req, res) {
 
 async function checkStock(req, res) {
     const data = JSON.parse(JSON.stringify(req.body));
+    const tripNumber = data.tripNumber; // Trip Object
     
     const tripId = data.tripId;
     const truckId = data.truckId; // Truck object
@@ -158,6 +156,11 @@ async function checkStock(req, res) {
     var totalOrderItems = 0;
     var requests = 0;
     var noStockOrders = [];
+
+    if(tripId == null)
+    {
+        console.log('Trip was not created yet, created trip and got ID');
+    }
 
     const orders = await getAllOrders(tripId, truckId);
     
@@ -179,7 +182,7 @@ async function checkStock(req, res) {
 
             items.forEach( item => {
                 getEquipment(item.EquipmentTypeId).then( equipment => {
-                    if(equipment != null ) { 
+                    if(equipment != null && equipment.qtyAvailable == 0 ) { 
                         noStockOrders.push({ 
                             orderId: order.orderid, 
                             Label: equipment.Label,
@@ -208,14 +211,14 @@ async function checkStock(req, res) {
     });
 }
 
-async function releaseTrip(req, res) 
+async function createTrip(req, res) 
 {
     const data = JSON.parse(JSON.stringify(req.body));
     const tripId = data.tripId; // Trip Object
     const tripNumber = data.tripNumber; // Trip Object
     const truckName = data.truckName;
     const truckId = data.truckId; // Truck object
-    const enableYardManager = data.enableYardManager; // Truck object
+    const enableYardManager = data.notifyYardMAnager; // Truck object
     const date = data.date; // Truck object
 
     try 
@@ -228,8 +231,65 @@ async function releaseTrip(req, res)
 
         if(trip == null) {
             const selectedDate = date ? new Date(date) : new Date();
-            const startOfDay = new Date(selectedDate.getFullYear(), selectedDate.getMonth(), selectedDate.getDate() + 1);
-            const endOfDay = new Date(selectedDate.getFullYear(), selectedDate.getMonth(), selectedDate.getDate() + 2);
+            const startOfDay = new Date(selectedDate.getFullYear(), selectedDate.getMonth(), selectedDate.getDate());
+            const endOfDay = new Date(selectedDate.getFullYear(), selectedDate.getMonth(), selectedDate.getDate() + 1);
+
+            trip = await Trip.findOne({
+                where: {
+                    truckId: truckId,
+                    tripNumber: tripNumber,
+                
+                    date: {
+                        [Op.gte]: startOfDay,
+                        [Op.lt]: endOfDay
+                    },
+                    
+            }});
+
+            if(trip == null) {
+                console.log('trip not found. creating one');
+
+                trip = await Trip.create({
+                    date: startOfDay,
+                    truckId: truckId,
+                    tripNumber: tripNumber,
+                    released: true,
+                    complete: false,
+                    notifyYardMAnager: enableYardManager
+                });
+            } 
+        }
+
+        return res.send({success: true, trip: trip});
+
+    }
+    catch(e) {
+        return res.send({success: false, message: "Trip could not be released.", error: e});
+    }
+}
+
+async function releaseTrip(req, res) 
+{
+    const data = JSON.parse(JSON.stringify(req.body));
+    const tripId = data.tripId; // Trip Object
+    const tripNumber = data.tripNumber; // Trip Object
+    const truckName = data.truckName;
+    const truckId = data.truckId; // Truck object
+    const enableYardManager = data.notifyYardMAnager; // Truck object
+    const date = data.date; // Truck object
+
+    try 
+    {
+        var trip = await Trip.findOne({
+            where: {
+                id: tripId
+            }
+        });
+
+        if(trip == null) {
+            const selectedDate = date ? new Date(date) : new Date();
+            const startOfDay = new Date(selectedDate.getFullYear(), selectedDate.getMonth(), selectedDate.getDate());
+            const endOfDay = new Date(selectedDate.getFullYear(), selectedDate.getMonth(), selectedDate.getDate() + 1);
 
             trip = await Trip.findOne({
                 where: {
@@ -279,16 +339,26 @@ async function releaseTrip(req, res)
             // Send notification to Admins
 //            sendNotification( `Trip ${tripId} for ${truck.truckName} is ready to load.`, 0, 0, tripId, 1, 0);
 
-            sendNotification( `Trip ${tripNumber} for ${truckName} is ready to load.`, 0, data.orderid, tripId, 3, 0);
+            const USER_TYPE_ADMINISTRATOR = 1;
+            const USER_TYPE_DRIVER = 2;
+            const USER_TYPE_YARD_MANAGER = 5;
+
+            console.log('Notifying administrators');
+            sendNotification( `Trip ${tripNumber} for ${truckName} is ready to load.`, 0, data.orderid, tripId, USER_TYPE_ADMINISTRATOR, 0);
 
             // Send notification to the driver
-            sendNotification( `Trip ${tripNumber} for ${truckName} is ready to load.`, 0, data.orderid, tripId, 2, data.driverId);
+            console.log('Notifying the driver');
+            sendNotification( `Trip ${tripNumber} for ${truckName} is ready to load.`, 0, data.orderid, tripId, USER_TYPE_DRIVER, data.driverId);
 
-            
-            
             if(enableYardManager) 
             {
-                sendNotification( `Trip ${tripNumber} for ${truckName} is ready to load.`, 0, data.orderid, tripId, 5, 0 );
+                console.log('Yard Manager is enabled');
+                
+                console.log('Notifying Yard Manager');
+                sendNotification( `Trip ${tripNumber} for ${truckName} is ready to load.`, 0, data.orderid, tripId, USER_TYPE_YARD_MANAGER, 0 );
+            }
+            else {
+                console.log('Yard Manager is NOT enabled');
             }
         }
 
@@ -323,8 +393,8 @@ async function newTrip(req, res)
             { 
                 // var date = date != null ? date : orders[0].date;
                 const selectedDate = date ? new Date(date) : new Date();
-                const startOfDay = new Date(selectedDate.getFullYear(), selectedDate.getMonth(), selectedDate.getDate() + 1);
-                const endOfDay = new Date(selectedDate.getFullYear(), selectedDate.getMonth(), selectedDate.getDate() + 2);
+                const startOfDay = new Date(selectedDate.getFullYear(), selectedDate.getMonth(), selectedDate.getDate());
+                const endOfDay = new Date(selectedDate.getFullYear(), selectedDate.getMonth(), selectedDate.getDate() + 1);
 
                 trip = await Trip.findOne({
                     where: {
@@ -428,5 +498,6 @@ module.exports = {
     getAllTrips,
     releaseTrip,
     checkStock,
+    createTrip,
     checkOrderStock
 };  

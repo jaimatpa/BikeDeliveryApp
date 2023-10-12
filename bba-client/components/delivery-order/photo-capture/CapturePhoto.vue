@@ -220,6 +220,8 @@ export default {
          */
         stopStreamedVideo(videoElem) {
             let stream = videoElem.srcObject;
+            if(stream === null) return;
+
             let tracks = stream.getTracks();
             tracks.forEach((track) => {
                 // stops the video track
@@ -271,6 +273,8 @@ export default {
                 .then((stream) => {
                     //Make sure to stop this MediaStream
                     //console.log('Stopping tracks')
+                    if(stream === null) return;
+
                     let tracks = stream.getTracks();
                     tracks.forEach((track) => {
                         track.stop();

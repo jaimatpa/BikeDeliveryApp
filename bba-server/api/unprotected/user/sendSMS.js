@@ -28,7 +28,7 @@ router.post("/", async (req, res) => {
         response = await client.messages.create({body: req.body.message, from: process.env.TWILIO_NUMBER, to: `+1${req.body.to}`, mediaUrl: req.body.mediaUrl});
       }
 
-      res.status(200).json({
+      return res.status(200).json({
         response: response,
         message: `Message Sent To ${req.body.to}`,
       });

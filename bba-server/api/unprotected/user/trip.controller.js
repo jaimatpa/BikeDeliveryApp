@@ -7,6 +7,7 @@ const {
     getAllTrips,
     releaseTrip,
     checkStock,
+    createTrip,
     checkOrderStock
 } = require("./trip.service");
 
@@ -19,6 +20,7 @@ router.get("/", getAllTrips);
 
 router.post('/', newTrip);
 router.post('/release', releaseTrip);
+router.post('/createTrip', createTrip);
 router.post('/checkstock', checkStock);
 router.get('/checkOrderStock', checkOrderStock);
 

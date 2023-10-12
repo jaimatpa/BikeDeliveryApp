@@ -34,19 +34,42 @@ module.exports = (sequelize, DataTypes) => {
       TruckId1: DataTypes.INTEGER,
       tripID1: DataTypes.INTEGER,
       tripID2: DataTypes.INTEGER,
-      tripPriority1: DataTypes.INTEGER,
-      tripPriority2: DataTypes.INTEGER,
+      tripPriority1: {
+        type: DataTypes.INTEGER,
+        defaultValue: 0
+      },
+      tripPriority2: {
+        type: DataTypes.INTEGER,
+        defaultValue: 0
+      },
       textSent: DataTypes.BOOLEAN,
       picturesSent: DataTypes.BOOLEAN,
       driverDeliveredBy: DataTypes.STRING,
       driverPickedUpBy: DataTypes.STRING,
-      swapOrder: DataTypes.BOOLEAN,
-      swapOrderDeliveryId: DataTypes.STRING,
-      extrasDelivered: DataTypes.BOOLEAN,
-      extrasDeliveredReason: DataTypes.STRING,
-      extrasPickedUp: DataTypes.BOOLEAN,
-      extrasPickedUpReason: DataTypes.STRING,
-      
+      swapOrderDeliveryId: {
+        type: DataTypes.STRING,
+        defaultValue: ''
+      }, 
+      swapOrder: {
+        type: DataTypes.BOOLEAN,
+        defaultValue: false
+      },
+      extrasDelivered: {
+        type: DataTypes.BOOLEAN,
+        defaultValue: false
+      },
+      extrasPickedUp: {
+        type: DataTypes.BOOLEAN,
+        defaultValue: false
+      },
+      extrasDeliveredReason: {
+        type: DataTypes.STRING,
+        defaultValue: ''
+      },
+      extrasPickedUpReason: {
+        type: DataTypes.STRING,
+        defaultValue: ''
+      },
     },
     {
       sequelize,

@@ -55,7 +55,7 @@ export default {
     components: {
         Page
     },
-    created() {
+    mounted() {
         this.getOrderDetails();
         this.getLockingDetails();
     },

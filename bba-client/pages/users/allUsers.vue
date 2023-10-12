@@ -79,7 +79,7 @@ export default {
       return new Promise(async (resolve, reject) => {
         const { sortBy, sortDesc, page, itemsPerPage } = this.options;
 
-        const data = await this.$axios.$get("/api/user/allUsers");
+        const data = await this.$axios.$get("/api/user/allUsersx");
         console.log(data);
 
         let items = data.allUsers;

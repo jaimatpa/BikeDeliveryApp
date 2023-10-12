@@ -1,5 +1,5 @@
 <template>
-  <PageResource name="User" :title="!isMobile ? 'List of Users' : ''" :fields="fields"
+  <PageResource name="User" :title="!isMobile ? 'List of Users' : ''" :fields="fields" :sort="'email'" 
     endpoint="/api/users" />
 </template>
 
@@ -20,6 +20,7 @@ export default {
   },
   data() {
     return {
+      sortBy: 'email',
       breakpoint: 640,
       fields: {
         email: {
@@ -32,7 +33,7 @@ export default {
           required: true,
         },
         password: {
-          type: "Password",
+          type: String, 
         },
         userType: {
           type: "UserType",
