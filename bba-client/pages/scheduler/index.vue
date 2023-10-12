@@ -47,7 +47,7 @@
                             Trip #{{ trip.tripNumber }} 
                         </h4>
                         <h5>
-                            {{ truck.TruckName }}
+                            {{ truck.TruckName }} ({{trip.truckId}}) ({{truck.id}})
                         </h5>
  
 
