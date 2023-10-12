@@ -1,5 +1,18 @@
 <template>
     <Page :title="!isMobile ? `Location Sort` : ''">
+        <!--<OverlayLoading :active="this.loading" message="Test"></OverlayLoading>-->
+        <div v-show="this.loading" style="position: relative; left: 0; width: 100%; z-index: 9999; ">
+            <div class="overlay-container" style="position: absolute; height: 100vh; width: 100%; xbackground-color: red;">
+                <v-progress-circular
+                :rotate="-90"
+                :size="50"
+                indeterminate
+                color="secondary"
+                style="align-items: middle; text-align: center; display: block; position: relative; margin-left: 50%; margin-right: 50%;"
+                >
+                </v-progress-circular>
+            </div>
+        </div>
         <div class="row">
             <div class="col-4">
                 <h3>Area</h3>
@@ -79,6 +92,7 @@
 <script>
 import Page from "@/components/paradym/Page";
 import Draggable from "vuedraggable";
+import OverlayLoading from "../../components/OverlayLoading.vue";
 
 export default {
     name: "Location-Sort",
@@ -90,7 +104,8 @@ export default {
     },
     components: {
         Page,
-        Draggable
+        Draggable,
+        OverlayLoading
     },
     computed: {
         isMobile() {
@@ -159,6 +174,7 @@ export default {
             this.loading = !this.loading;
         },
         async handleAreaMove(event) {
+            this.loading = !this.loading;
             const { moved: { newIndex, element } } = event;
             await this.$axios.$put(`/api/user/locations/areas/${element.id}?ctx=p_update`, { priority: newIndex + 1 });
             element.priority = newIndex + 1;
@@ -167,8 +183,11 @@ export default {
             // this.areas = this.swapElement(this.areas, element)
 
             await this.getAllAreas();
+
+            this.loading = !this.loading;
         },
         async handleVillaMove(event) {
+            this.loading = !this.loading;
             const { moved: { newIndex, element } } = event;
             await this.$axios.$put(`/api/user/locations/areas/villas/${element.id}?ctx=p_update`, { priority: newIndex + 1 });
             element.priority = newIndex + 1;
@@ -177,8 +196,11 @@ export default {
             // this.villas = this.swapElement(this.villas, element)
 
             await this.getAllVillasByArea();
+
+            this.loading = !this.loading;
         },
         async handleStreetAddressMove(event) {
+            this.loading = !this.loading;
             const { moved: { newIndex, element } } = event;
             await this.$axios.$put(`/api/user/locations/areas/villas/street-addresses/${element.id}?ctx=p_update`, { priority: newIndex + 1 });
             element.priority = newIndex + 1;
@@ -186,6 +208,8 @@ export default {
             // Perform swap
             // this.streetAddresses = this.swapElement(this.streetAddresses, element)
             await this.getAllStreetAddressesByVilla();
+
+            this.loading = !this.loading;
         },
         async handleCardClick(cardType, element) {
             console.log(`${cardType} clicked`, element);

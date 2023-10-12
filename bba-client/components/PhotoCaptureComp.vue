@@ -156,7 +156,6 @@ export default {
         };
     },
     mounted() {
-        alert(props.step);
         var el = this.$refs.currentImgRef;
         touchScreen.swipedetect(el, (swipedir) => {
             // swipedir contains either "none", "left", "right", "top", or "down"

@@ -17,8 +17,16 @@
 -->
 <template>
     <div>
-        <v-data-table :loading="loading" :headers="computedHeaders" :items="computedItems" :options.sync="options"
-            :search="search" disable-sort :footer-props="{ 'items-per-page-options': [10, 25, 50, 100] }"
+        <v-text-field
+            v-model="search"
+            append-icon="mdi-magnify"
+            label="Search"
+            single-line
+            hide-details
+        ></v-text-field>
+
+        <v-data-table :loading="loading" :headers="computedHeaders" :sort-by="sort" :items="computedItems" :options.sync="options"
+            :search="search" :footer-props="{ 'items-per-page-options': [10, 25, 50, 100] }"
             :mobile-breakpoint="0">
 
             <!-- Show Custom User Type Column -->
@@ -56,7 +64,7 @@
 
             <!-- Actions -->
             <template v-slot:[`item.actions`]="{ item }">
-                <a :href="`/stock-tracking/${item.id}`" target="_blank">
+                <a :href="`/stock-tracking/${item.id}`" target="_blank" v-show="name=='Equipment Type'">
                     <v-icon v-if="includeStockTrackingLink" small color="secondary" class="mr-2">
                         mdi-glasses
                     </v-icon>
@@ -72,7 +80,13 @@
 
         <ModalConfirm v-model="deleteDialog" :title="`Delete ${name}`" :message="
             itemToDelete
-                ? `Delete ${name} <strong>${itemToDelete && itemToDelete.name || itemToDelete.Name ? itemToDelete.name || itemToDelete.Name : (itemToDelete && itemToDelete.Title ? itemToDelete.Title : (itemToDelete && itemToDelete.Notes ? itemToDelete.Notes : itemToDelete.id))}
+                ? `Are you sure you want to delete ${ name }  
+                <strong>${ 
+                    itemToDelete.TruckName ? itemToDelete.TruckName : 
+                    itemToDelete.Label ? itemToDelete.Label : 
+                    (itemToDelete && itemToDelete.name || itemToDelete.Name) ? itemToDelete.name || itemToDelete.Name :
+                    (itemToDelete && itemToDelete.Title ? itemToDelete.Title : 
+                    (itemToDelete && itemToDelete.Notes ? itemToDelete.Notes : itemToDelete.id))}
 
                                                                                                                                                             </strong>?`
                 : `Delete ${name}`
@@ -96,7 +110,7 @@ export default {
         name: {
             type: String,
             default: "item",
-        },
+        }
     },
     // We have access to $fetchState.pending, $fetchState.error, and $fetchState.timestamp
     /*
@@ -139,6 +153,7 @@ export default {
             loading: false,
             options: {},
             search: "",
+            sort: ['email'],
             timer: undefined,
             deleteDialog: false,
             itemToDelete: undefined,
@@ -199,6 +214,7 @@ export default {
             }, 200);
         },
         confirmDelete(item) {
+            console.log('confirmDelete', item);
             this.itemToDelete = item;
             this.deleteDialog = true;
         },

@@ -11,13 +11,18 @@
         </v-btn>
     </template>
     <template> 
-        <v-list lines="one">
-
+        <v-list lines="one"> 
             <template v-for="(item, index) in items">
-                <v-list-item :key="`user_${index}`" style="display: block">
+                <v-list-item :key="`user_${index}`" style="display: block; min-width: 200px;">
                     <template>
-                        <!-- <div class="mt-1 mb-1">Friday, April 3rd, 2013 05:03 PM</div> -->
-                        <div class="mt-2 mb-2">{{ item.message }}</div>
+                        <v-row class="mt-1">
+                            <v-col cols="1"><v-icon color="green">{{ icon }}</v-icon></v-col>
+                            <v-col>
+                                <div class="mb-1"><small>{{ item.createdAt }}</small></div>
+                                <div class="mt-2 mb-3">{{ item.message }}</div>
+                            </v-col>
+                        </v-row>
+
 
                         <v-btn class="mb-3" v-if="item.deliveryOrderId > 0" @click="$router.push({ path: `/deliveryOrder/${item.DeliveryOrder.orderid}` })">Go to Order #{{item.DeliveryOrder.orderid}}</v-btn>
                         <!-- <v-btn class="mb-2" v-if="item.tripId >0" @click.stop="$router.push({ path: `/deliveryOrder/${item.orderid}` })">Go to Trip #{{item.tripId}}</v-btn> -->
@@ -43,18 +48,6 @@ export default {
             type: Array,
             default: () => {
                 return [
-                    {
-                    name: 'Item #1',
-                    id: 1,
-                    },
-                    {
-                    name: 'Item #2',
-                    id: 2,
-                    },
-                    {
-                    name: 'Item #3',
-                    id: 3,
-                    },
                 ];
             },
         },

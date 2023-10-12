@@ -302,6 +302,7 @@ export default {
 
             // A video's MediaStream object is available through its srcObject attribute
             const mediaStream = video.srcObject;
+            if(mediaStream === null) return;
 
             // Through the MediaStream, you can get the MediaStreamTracks with getTracks():
             const tracks = mediaStream.getTracks();
@@ -311,7 +312,7 @@ export default {
 
             // Or stop all like so:
             tracks.forEach((track) => track.stop());
-
+        
         },
     },
 };

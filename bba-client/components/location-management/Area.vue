@@ -15,7 +15,7 @@
             <template v-slot:item.name="{ item }">
                 <div v-if="item.editable">
                     <v-text-field v-model="item.name" @blur="saveItem(item)" @keydown.esc="cancelEditing(item)"
-                        @keydown.enter="saveItem(item)" single-line></v-text-field>
+                        @keydown.enter="saveItem(item)" single-line autofocus></v-text-field>
                 </div>
                 <div @click="item.editable = !editingLocked" v-else>{{ item.name }}</div>
             </template>

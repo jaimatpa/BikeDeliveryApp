@@ -125,7 +125,7 @@ async function start () {
 
     })
     .catch((err) => {
-      consola.error('Unable to connect to the database', error)
+      consola.error('Unable to connect to the database', err)
     })
 }
 
