@@ -16,12 +16,14 @@ function createEmailHtml(messageObj, images) {
   html.push(`<p>${messageObj}</p>`);
   html.push("<br>")
   html.push("<br>")
-  images.forEach(image => {
-    html.push(`<img style="border-bottom-color:black;border-bottom-style:solid;border-bottom-width:
-    1px;border-left-color:black;border-left-style:solid;border-left-width:1px;
-    border-right-color:black;border-right-style:solid;border-right-width:1px;
-    border-top-color:black;border-top-style:solid;border-top-width:1px;" src="${image}" width="600" height="340"/>`)
-  });
+  if(images) {
+    images.forEach(image => {
+      html.push(`<img style="border-bottom-color:black;border-bottom-style:solid;border-bottom-width:
+      1px;border-left-color:black;border-left-style:solid;border-left-width:1px;
+      border-right-color:black;border-right-style:solid;border-right-width:1px;
+      border-top-color:black;border-top-style:solid;border-top-width:1px;" src="${image}" width="600" height="340"/>`)
+    });
+  }
 
   return html.join("");
 }
@@ -55,7 +57,8 @@ router.post("/", async (req, res) => {
   console.log(req.body);
   const orderid = req.body.orderid || req.body.params.orderid;
   const message = req.body.message || req.body.params.message;
-  const images = req.body.images || req.body.params.images;
+  const images = req.body.images || (req.body.params && req.body.params.images);
+  
   const deliveryOrder = await models.DeliveryOrders.findOne(
     {
       where:
