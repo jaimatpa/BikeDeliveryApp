@@ -7,6 +7,8 @@ const { sendNotification } = require("../../functions/notifications")
 
 const models = require("./../../../models");
 const { RecordingSettingsContext } = require("twilio/lib/rest/video/v1/recordingSettings");
+// const DeliveryOrderQuery = require("../../../translation/DeliveryOrderQuery");
+const translateDeliveryOrder = require("../../../translation/DeliveryOrderQuery");
 
 router.post("/", async (req, res) => {
 
@@ -66,17 +68,17 @@ router.post("/createEquipmentSwapOrder", async (req, res) => {
 });
 
 router.get("/", async (req, res) => {
-    console.log('searching delivery orders');
+    try {
+        console.log('searching delivery orders');
     
-    let data = [];
-    const search = req.query.search;
-    const type = req.query.type;
-    const barcodeid = req.query.barcodeid;
+        let data = [];
+        const search = req.query.search;
+        const type = req.query.type;
+        const barcodeid = req.query.barcodeid;
 
-    if (search) {
-        try {
-            data = await models.DeliveryOrders.findAll({
-                where: {
+        if (search) {
+            try {
+                const whereConditions = {
                     [Op.or]: {
                         name: {
                             [Op.like]: `%${search}%`
@@ -105,11 +107,133 @@ router.get("/", async (req, res) => {
                         barcode: {
                             [Op.like]: `%${search}%`
                         }
-
                     } 
-
                 }
+                const query = translateDeliveryOrder(whereConditions);
+
+                data = await models.sequelize.query(query, {
+                    type: models.sequelize.QueryTypes.SELECT
+                });
+                
+                
+                if (type === "DeliveryOrders") {
+                    data = data.filter((record => {
+                        var d = moment(record.date).add(4, 'hours').startOf('day');
+                        var today = moment().endOf('day');
+                        if (d >= today && record.status == 0) {
+                            return true;
+                        } else {
+                            return false;
+                        }
+                    }));
+                }
+                else if (type === "Locking") {
+                    data = data.filter((record => {
+                        var d = moment(record.date).add(4, 'hours').format('LL');
+                        var today = moment().format('LL');
+                        if (d >= today) {
+                            return true;
+                        } else {
+                            return false;
+                        }
+                    }));
+                } else if (type === "SearchHistory") {
+                    
+                    console.log("SEARCH HISTORY, W CRITERIA 1");
+                    data = data.filter((record => {
+                        record.swapOrder == 0
+                    }));
+                } else if (type === "Dashboard") {
+                    data = data.filter( ( record => {
+                        record.swapOrder == 0
+                    }));
+                    data = data.filter((record => {
+                        var d = moment(record.date).add(4, 'hours').format('LL');
+                        var today = moment().format('LL');
+                        if (d == today) {
+                            return true;
+                        } else {
+                            return false;
+                        }
+                    }));
+                } else if (type === "Resend") {
+                    data = data.filter((record => {
+                        var d = moment(record.date).add(4, 'hours').format('LL');
+                        var today = moment().format('LL');
+                        if (d > today && record.status == 1) {
+                            return true;
+                        } else {
+                            return false;
+                        }
+                    }));
+                } else if (type === "Logistics") {
+                    data = data.filter((record => {
+                        var d = moment(record.date).add(4, 'hours').format('LL');
+                        var today = moment().format('LL');
+                        if (d >= today && record.status == 0) {
+                            return true;
+                        } else {
+                            return false;
+                        }
+                    }));
+                } else if (type === "Pickup") {
+                    data = data.filter((record => {
+                        if (record.status == 1 && record.PickedUp == 0  && record.swapOrder == 0) {
+                            return true;
+                        } else {
+                            return false;
+                        }
+                    }));
+                }
+                else if (type === "SwapOrder") {
+                    console.log('swap order filter');
+                    data = data.filter((record => {
+                        if (record.status == 0 && record.swapOrder == 1) {
+                            return true;
+                        } else {
+                            return false;
+                        }
+                    }));
+                }
+
+            } catch (error) {
+                console.log(error)
+            }
+        }
+        else if (barcodeid) {
+            if (barcodeid) {
+                try {
+                    const whereConditions = {
+                        status: 0,
+                        barcode: {
+                            [Op.like]: `%${barcodeid}%`
+                        }
+                    }
+                    const query = generateSQLQuery(whereConditions);
+    
+                    data = await models.sequelize.query(query, {
+                        type: models.sequelize.QueryTypes.SELECT
+                    });
+                    // data = await models.DeliveryOrders.findAll({
+                    //     where: {
+                    //         status: 0,
+                    //         barcode: {
+                    //             [Op.like]: `%${barcodeid}%`
+                    //         }
+                    //     }
+                    // });
+                } catch (error) {
+                    return Promise.reject();
+                }
+            }
+        }
+        else {
+            const query = translateDeliveryOrder();
+
+            data = await models.sequelize.query(query, {
+                type: models.sequelize.QueryTypes.SELECT
             });
+            
 
             if (type === "DeliveryOrders") {
                 data = data.filter((record => {
@@ -121,10 +245,18 @@ router.get("/", async (req, res) => {
                         return false;
                     }
                 }));
+            } else if (type === "EquipmentSwap") {
+                data = data.filter((record => {
+                    if (record.status < 2 && record.swapOrder == true) {
+                        return true;
+                    } else {
+                        return false;
+                    }
+                }));
             }
             else if (type === "Locking") {
                 data = data.filter((record => {
-                    var d = moment(record.date).add(4, 'hours').format('LL');
+                    var d = moment(record.date).add(4, 'hours').startOf('day').format('LL');
                     var today = moment().format('LL');
                     if (d >= today) {
                         return true;
@@ -133,18 +265,18 @@ router.get("/", async (req, res) => {
                     }
                 }));
             } else if (type === "SearchHistory") {
-                
-                console.log("SEARCH HISTORY, W CRITERIA 1");
                 data = data.filter((record => {
+                    console.log("SEARCH HISTORY, NO CRITERIA");
                     record.swapOrder == 0
                 }));
-            } else if (type === "Dashboard") {
+            } else if (type === "Dashboard") { 
                 data = data.filter( ( record => {
-                    record.swapOrder == 0
+                    return record.swapOrder == 0
                 }));
+
                 data = data.filter((record => {
-                    var d = moment(record.date).add(4, 'hours').format('LL');
-                    var today = moment().format('LL');
+                    var d = moment(record.date).add(4, 'hours').format("LL");
+                    var today = moment().format("LL");
                     if (d == today) {
                         return true;
                     } else {
@@ -153,7 +285,7 @@ router.get("/", async (req, res) => {
                 }));
             } else if (type === "Resend") {
                 data = data.filter((record => {
-                    var d = moment(record.date).add(4, 'hours').format('LL');
+                    var d = moment(record.date).add(4, 'hours').startOf('LL');
                     var today = moment().format('LL');
                     if (d > today && record.status == 1) {
                         return true;
@@ -163,8 +295,8 @@ router.get("/", async (req, res) => {
                 }));
             } else if (type === "Logistics") {
                 data = data.filter((record => {
-                    var d = moment(record.date).add(4, 'hours').format('LL');
-                    var today = moment().format('LL');
+                    var d = moment(record.date).add(4, 'hours').startOf('day');
+                    var today = moment().endOf('day');
                     if (d >= today && record.status == 0) {
                         return true;
                     } else {
@@ -173,133 +305,19 @@ router.get("/", async (req, res) => {
                 }));
             } else if (type === "Pickup") {
                 data = data.filter((record => {
-                    if (record.status == 1 && record.PickedUp == 0  && record.swapOrder == 0) {
+                    var d = moment(record.date).add(4, 'hours').format('LL');
+                    var today = moment().format('LL');
+                    if (record.status == 1 && record.PickedUp == 0 && record.swapOrder == 0) {
                         return true;
                     } else {
                         return false;
                     }
                 }));
             }
-            else if (type === "SwapOrder") {
-                console.log('swap order filter');
-                data = data.filter((record => {
-                    if (record.status == 0 && record.swapOrder == 1) {
-                        return true;
-                    } else {
-                        return false;
-                    }
-                }));
-            }
-
-        } catch (error) {
-            console.log(error)
         }
-    }
-    else if (barcodeid) {
-        if (barcodeid) {
-            try {
-                data = await models.DeliveryOrders.findAll({
-                    where: {
-                        status: 0,
-                        barcode: {
-                            [Op.like]: `%${barcodeid}%`
-                        }
-                    }
-                });
-            } catch (error) {
-                return Promise.reject();
-            }
-        }
-    }
-    else {
-        data = await models.DeliveryOrders.findAll().catch((e) => {
-            console.error(e);
-            data = [];
-            return res.send([]);
-        });
-        if (type === "DeliveryOrders") {
-            data = data.filter((record => {
-                var d = moment(record.date).add(4, 'hours').startOf('day');
-                var today = moment().endOf('day');
-                if (d >= today && record.status == 0) {
-                    return true;
-                } else {
-                    return false;
-                }
-            }));
-        } else if (type === "EquipmentSwap") {
-            data = data.filter((record => {
-                if (record.status < 2 && record.swapOrder == true) {
-                    return true;
-                } else {
-                    return false;
-                }
-            }));
-        }
-        else if (type === "Locking") {
-            data = data.filter((record => {
-                var d = moment(record.date).add(4, 'hours').startOf('day').format('LL');
-                var today = moment().format('LL');
-                if (d >= today) {
-                    return true;
-                } else {
-                    return false;
-                }
-            }));
-        } else if (type === "SearchHistory") {
-            data = data.filter((record => {
-                console.log("SEARCH HISTORY, NO CRITERIA");
-                record.swapOrder == 0
-            }));
-        } else if (type === "Dashboard") { 
-            data = data.filter( ( record => {
-                return record.swapOrder == 0
-            }));
-
-            data = data.filter((record => {
-                var d = moment(record.date).add(4, 'hours').format("LL");
-                var today = moment().format("LL");
-                if (d == today) {
-                    return true;
-                } else {
-                    return false;
-                }
-            }));
-        } else if (type === "Resend") {
-            data = data.filter((record => {
-                var d = moment(record.date).add(4, 'hours').startOf('LL');
-                var today = moment().format('LL');
-                if (d > today && record.status == 1) {
-                    return true;
-                } else {
-                    return false;
-                }
-            }));
-        } else if (type === "Logistics") {
-            data = data.filter((record => {
-                var d = moment(record.date).add(4, 'hours').startOf('day');
-                var today = moment().endOf('day');
-                if (d >= today && record.status == 0) {
-                    return true;
-                } else {
-                    return false;
-                }
-            }));
-        } else if (type === "Pickup") {
-            data = data.filter((record => {
-                var d = moment(record.date).add(4, 'hours').format('LL');
-                var today = moment().format('LL');
-                if (record.status == 1 && record.PickedUp == 0 && record.swapOrder == 0) {
-                    return true;
-                } else {
-                    return false;
-                }
-            }));
-        }
-    }
-    try {
         return res.send(data);
     } catch (e) {
+        console.log(e);
         // return res.send([]);
     }
 
@@ -379,17 +397,29 @@ router.get("/query", async (req, res) => {
         const startOfDay = new Date(selectedDate.getFullYear(), selectedDate.getMonth(), selectedDate.getDate());
         const endOfDay = new Date(selectedDate.getFullYear(), selectedDate.getMonth(), selectedDate.getDate() + 1);
         // Fetch all records from the three tables
+        const whereConditions = {
+            date: {
+                [Op.gte]: startOfDay,
+                [Op.lt]: endOfDay
+            },
+            status: 1
+        }
+        const query = translateDeliveryOrder(whereConditions);
 
-        let [deliveryOrders, areas, villas, streetAddresses] = await Promise.all([
-            models.DeliveryOrders.findAll({
-                where: {
-                    date: {
-                        [Op.gte]: startOfDay,
-                        [Op.lt]: endOfDay
-                    },
-                    status: 1 // considering 1 as true
-                }
-            }),
+        let deliveryOrders = await models.sequelize.query(query, {
+            type: models.sequelize.QueryTypes.SELECT
+        });
+
+        let [areas, villas, streetAddresses] = await Promise.all([
+            // models.DeliveryOrders.findAll({
+            //     where: {
+            //         date: {
+            //             [Op.gte]: startOfDay,
+            //             [Op.lt]: endOfDay
+            //         },
+            //         status: 1 // considering 1 as true
+            //     }
+            // }),
             models.Area.findAll(),
             models.Villa.findAll(),
             models.StreetAddress.findAll()
@@ -435,13 +465,18 @@ router.get("/query", async (req, res) => {
         
         if(type == '' || type=='deliveries')
         {
+            const query = generateSQLQuery();
+
             let [deliveryOrders, areas, villas, streetAddresses] = await Promise.all([
-                models.DeliveryOrders.findAll({
-                    where,
-                    order: [
-                        ['tripPriority1', 'ASC'],
+                // models.DeliveryOrders.findAll({
+                //     where,
+                //     order: [
+                //         ['tripPriority1', 'ASC'],
                         
-                    ]
+                //     ]
+                // }),
+                models.sequelize.query(query, {
+                    type: models.sequelize.QueryTypes.SELECT
                 }),
                 models.Area.findAll(),
                 models.Villa.findAll(),
@@ -456,20 +491,32 @@ router.get("/query", async (req, res) => {
         {
             if(date != null && date != '')  {
 //                console.log('pickups', startOfDay, endOfDay);
+                const whereConditions = {
+                    endDate: {
+                        [Op.ne]: null,
+                        [Op.gte]: startOfDay,
+                        [Op.lt]: endOfDay
+                    }, 
+                }
+
+                const query = generateSQLQuery(whereConditions);
 
                 let [deliveryOrders, areas, villas, streetAddresses] = await Promise.all([
-                    models.DeliveryOrders.findAll({
-                        where: {
-                            endDate: {
-                                [Op.ne]: null,
-                                [Op.gte]: startOfDay,
-                                [Op.lt]: endOfDay
-                            }, 
-                        },
-                        order: [
-                            ['tripPriority2', 'ASC'],
+                    // models.DeliveryOrders.findAll({
+                    //     where: {
+                    //         endDate: {
+                    //             [Op.ne]: null,
+                    //             [Op.gte]: startOfDay,
+                    //             [Op.lt]: endOfDay
+                    //         }, 
+                    //     },
+                    //     order: [
+                    //         ['tripPriority2', 'ASC'],
                             
-                        ]
+                    //     ]
+                    // }),
+                    models.sequelize.query(query, {
+                        type: models.sequelize.QueryTypes.SELECT
                     }),
                     models.Area.findAll(),
                     models.Villa.findAll(),
@@ -481,17 +528,16 @@ router.get("/query", async (req, res) => {
                 return res.json(sortedOrders);
             }
             else {
+                const whereConditions = {
+                    endDate: {
+                        [Op.ne]: null,
+                    }, 
+                }
+                const query = generateSQLQuery(whereConditions);
+
                 let [deliveryOrders, areas, villas, streetAddresses] = await Promise.all([
-                    models.DeliveryOrders.findAll({
-                        where: {
-                            endDate: {
-                                [Op.ne]: null,
-                            }, 
-                        },
-                        order: [
-                            ['tripPriority2', 'ASC'],
-                            
-                        ]
+                    models.sequelize.query(query, {
+                        type: models.sequelize.QueryTypes.SELECT
                     }),
                     models.Area.findAll(),
                     models.Villa.findAll(),
@@ -520,7 +566,9 @@ router.get("/location_reconciliation", async (req, res) => {
         const startOfDay = new Date(selectedDate.getFullYear(), selectedDate.getMonth(), selectedDate.getDate());
         const endOfDay = new Date(selectedDate.getFullYear(), selectedDate.getMonth(), selectedDate.getDate() + 1);
         const deliveryOrders = all
-            ? await models.DeliveryOrders.findAll()
+            ? await models.sequelize.query(generateSQLQuery(), {
+                type: models.sequelize.QueryTypes.SELECT
+            })
             : await models.DeliveryOrders.findAll({
                 where: {
                     date: {
@@ -539,7 +587,9 @@ router.get("/location_reconciliation", async (req, res) => {
     else 
     {
         const deliveryOrders = all
-            ? await models.DeliveryOrders.findAll()
+            ? await models.sequelize.query(generateSQLQuery(), {
+                type: models.sequelize.QueryTypes.SELECT
+            })
             : await models.DeliveryOrders.findAll({
                 where: {
                     location: {

@@ -1,6 +1,7 @@
 const { Op, Transaction } = require("sequelize");
 const { Trip, DeliveryOrders, EquipmentType, DeliveryItem, Truck, Notification, User } = require("./../../../models");
-const { sendNotification } = require("../../functions/notifications")
+const { sendNotification } = require("../../functions/notifications");
+const translateDeliveryOrder = require("../../../translation/DeliveryOrderQuery");
 
 /**
  * Get all trip
@@ -28,29 +29,50 @@ async function getAllTrips(req, res) {
 }
 
 async function getAllOrders(tripId, truckId) {
-    const orders = await DeliveryOrders.findAll({
-        where: {
-            [Op.and]: [
-                { truckId: truckId }, 
-                { tripID1: tripId },   
-            ],
-            //status: 0
-        }
-    });
+    // const orders = await DeliveryOrders.findAll({
+    //     where: {
+    //         [Op.and]: [
+    //             { truckId: truckId }, 
+    //             { tripID1: tripId },   
+    //         ],
+    //         //status: 0
+    //     }
+    // });
+
+    const whereConditions = {
+        [Op.and]: [
+            { truckId: truckId }, 
+            { tripID1: tripId },   
+        ],
+    }
+    const query = translateDeliveryOrder(whereConditions);
+
+    const orders = await models.sequelize.query(query, {
+        type: models.sequelize.QueryTypes.SELECT
+    }) ;
  
     return orders;
 }
 
 async function getAllOrdersNoFilter(tripId, truckId) {
-    const orders = await DeliveryOrders.findAll({
-        where: {   
-            tripID1:  {  [Op.ne]: null },  
-            // tripID2:  {  [Op.ne]: null },  
+    // const orders = await DeliveryOrders.findAll({
+    //     where: {   
+    //         tripID1:  {  [Op.ne]: null },  
+    //         // tripID2:  {  [Op.ne]: null },  
             
-            //status: 1,
-            // pickedup: 0
-        }
-    });
+    //         //status: 1,
+    //         // pickedup: 0
+    //     }
+    // });
+
+    const whereConditions = {
+        tripID1:  {  [Op.ne]: null },
+    }
+    const query = translateDeliveryOrder(whereConditions);
+
+    const orders = await models.sequelize.query(query, {
+        type: models.sequelize.QueryTypes.SELECT
+    }) ;
  
     return orders;
 }
