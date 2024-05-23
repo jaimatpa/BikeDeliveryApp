@@ -1,6 +1,6 @@
 const express = require("express");
 const router = express.Router();
-const { Op, literal } = require("sequelize");
+const { Op, literal, where } = require("sequelize");
 const moment = require("moment");
 const iterate = require("../../../libs/iterate");
 const { sendNotification } = require("../../functions/notifications")
@@ -75,40 +75,40 @@ router.get("/", async (req, res) => {
         const search = req.query.search;
         const type = req.query.type;
         const barcodeid = req.query.barcodeid;
-
         if (search) {
             try {
                 const whereConditions = {
-                    [Op.or]: {
+                    or: {
                         name: {
-                            [Op.like]: `%${search}%`
+                            like: `%${search}%`
                         },
                         location: {
-                            [Op.like]: `%${search}%`
+                            like: `%${search}%`
                         },
                         orderid: {
-                            [Op.like]: `%${search}%`
+                            like: `%${search}%`
                         },
                         rack: {
-                            [Op.like]: `%${search}%`
+                            like: `%${search}%`
                         },
                         color: {
-                            [Op.like]: `%${search}%`
+                            like: `%${search}%`
                         },
                         combination: {
-                            [Op.like]: `%${search}%`
+                            like: `%${search}%`
                         },
                         lock: {
-                            [Op.like]: `%${search}%`
+                            like: `%${search}%`
                         },
                         mobileNo: {
-                            [Op.like]: `%${search}%`
+                            like: `%${search}%`
                         },
                         barcode: {
-                            [Op.like]: `%${search}%`
+                            like: `%${search}%`
                         }
-                    } 
+                    },
                 }
+                console.log("******************************************************************");
                 const query = translateDeliveryOrder(whereConditions);
 
                 data = await models.sequelize.query(query, {
@@ -204,9 +204,11 @@ router.get("/", async (req, res) => {
             if (barcodeid) {
                 try {
                     const whereConditions = {
-                        status: 0,
-                        barcode: {
-                            [Op.like]: `%${barcodeid}%`
+                        and:{
+                            status: 0,
+                            barcode: {
+                                like: `%${barcodeid}%`
+                            }
                         }
                     }
                     const query = generateSQLQuery(whereConditions);
