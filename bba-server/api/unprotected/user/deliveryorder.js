@@ -108,7 +108,6 @@ router.get("/", async (req, res) => {
                         }
                     },
                 }
-                console.log("******************************************************************");
                 const query = translateDeliveryOrder(whereConditions);
 
                 data = await models.sequelize.query(query, {
@@ -147,6 +146,7 @@ router.get("/", async (req, res) => {
                     data = data.filter( ( record => {
                         record.swapOrder == 0
                     }));
+                    console.log(data);
                     data = data.filter((record => {
                         var d = moment(record.date).add(4, 'hours').format('LL');
                         var today = moment().format('LL');
@@ -211,7 +211,7 @@ router.get("/", async (req, res) => {
                             }
                         }
                     }
-                    const query = generateSQLQuery(whereConditions);
+                    const query = translateDeliveryOrder(whereConditions);
     
                     data = await models.sequelize.query(query, {
                         type: models.sequelize.QueryTypes.SELECT
@@ -272,10 +272,11 @@ router.get("/", async (req, res) => {
                     record.swapOrder == 0
                 }));
             } else if (type === "Dashboard") { 
-                data = data.filter( ( record => {
-                    return record.swapOrder == 0
-                }));
-
+                console.log("******************************************************************");
+                // data = data.filter( ( record => {
+                //     return record.swapOrder == 0
+                // }));
+                console.log(data);
                 data = data.filter((record => {
                     var d = moment(record.date).add(4, 'hours').format("LL");
                     var today = moment().format("LL");
@@ -467,7 +468,7 @@ router.get("/query", async (req, res) => {
         
         if(type == '' || type=='deliveries')
         {
-            const query = generateSQLQuery();
+            const query = translateDeliveryOrder();
 
             let [deliveryOrders, areas, villas, streetAddresses] = await Promise.all([
                 // models.DeliveryOrders.findAll({
@@ -501,7 +502,7 @@ router.get("/query", async (req, res) => {
                     }, 
                 }
 
-                const query = generateSQLQuery(whereConditions);
+                const query = translateDeliveryOrder(whereConditions);
 
                 let [deliveryOrders, areas, villas, streetAddresses] = await Promise.all([
                     // models.DeliveryOrders.findAll({
@@ -535,7 +536,7 @@ router.get("/query", async (req, res) => {
                         [Op.ne]: null,
                     }, 
                 }
-                const query = generateSQLQuery(whereConditions);
+                const query = translateDeliveryOrder(whereConditions);
 
                 let [deliveryOrders, areas, villas, streetAddresses] = await Promise.all([
                     models.sequelize.query(query, {
@@ -568,7 +569,7 @@ router.get("/location_reconciliation", async (req, res) => {
         const startOfDay = new Date(selectedDate.getFullYear(), selectedDate.getMonth(), selectedDate.getDate());
         const endOfDay = new Date(selectedDate.getFullYear(), selectedDate.getMonth(), selectedDate.getDate() + 1);
         const deliveryOrders = all
-            ? await models.sequelize.query(generateSQLQuery(), {
+            ? await models.sequelize.query(translateDeliveryOrder(), {
                 type: models.sequelize.QueryTypes.SELECT
             })
             : await models.DeliveryOrders.findAll({
@@ -589,7 +590,7 @@ router.get("/location_reconciliation", async (req, res) => {
     else 
     {
         const deliveryOrders = all
-            ? await models.sequelize.query(generateSQLQuery(), {
+            ? await models.sequelize.query(translateDeliveryOrder(), {
                 type: models.sequelize.QueryTypes.SELECT
             })
             : await models.DeliveryOrders.findAll({

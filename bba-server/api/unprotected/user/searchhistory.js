@@ -24,68 +24,34 @@ router.get("/", async (req, res) => {
     if (search) {
         console.log(search);
         try {
-            // data = await models.DeliveryOrders.findAll({
-            //     where: {
-            //         [Op.or]: {
-            //             name: {
-            //                 [Op.like]: `%${search}%`,
-            //             },
-            //             location: {
-            //                 [Op.like]: `%${search}%`,
-            //             },
-            //             orderid: {
-            //                 [Op.like]: `%${search}%`,
-            //             },
-            //             rack: {
-            //                 [Op.like]: `%${search}%`,
-            //             },
-            //             color: {
-            //                 [Op.like]: `%${search}%`,
-            //             },
-            //             combination: {
-            //                 [Op.like]: `%${search}%`,
-            //             },
-            //             lock: {
-            //                 [Op.like]: `%${search}%`,
-            //             },
-            //             mobileNo: {
-            //                 [Op.like]: `%${search}%`,
-            //             },
-            //             barcode: {
-            //                 [Op.like]: `%${search}%`,
-            //             },
-            //         },
-            //         swapOrder: swapOrder
-            //     },
-            // });
             const whereConditions = {
-                [Op.or]: {
+                or: {
                     name: {
-                        [Op.like]: `%${search}%`,
+                        like: `%${search}%`,
                     },
                     location: {
-                        [Op.like]: `%${search}%`,
+                        like: `%${search}%`,
                     },
                     orderid: {
-                        [Op.like]: `%${search}%`,
+                        like: `%${search}%`,
                     },
                     rack: {
-                        [Op.like]: `%${search}%`,
+                        like: `%${search}%`,
                     },
                     color: {
-                        [Op.like]: `%${search}%`,
+                        like: `%${search}%`,
                     },
                     combination: {
-                        [Op.like]: `%${search}%`,
+                        like: `%${search}%`,
                     },
                     lock: {
-                        [Op.like]: `%${search}%`,
+                        like: `%${search}%`,
                     },
                     mobileNo: {
-                        [Op.like]: `%${search}%`,
+                        like: `%${search}%`,
                     },
                     barcode: {
-                        [Op.like]: `%${search}%`,
+                        like: `%${search}%`,
                     },
                 },
                 swapOrder: swapOrder
