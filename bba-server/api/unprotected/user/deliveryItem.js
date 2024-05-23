@@ -3,7 +3,9 @@ const router = express.Router();
 const { Op, where } = require("sequelize");
 const models = require("./../../../models");
 const apiMessage = require("./../../../language/en.json");
-const { sendNotification } = require("../../functions/notifications")
+const { sendNotification } = require("../../functions/notifications");
+const translateDeliveryItems = require("../../../translation/DeliveryItems");
+const translateDeliveryExtras = require("../../../translation/deliveryExtrasQuery");
 
 router.post("/", async (req, res) => {
     try {
@@ -132,11 +134,24 @@ router.get("/", async (req,res) => {
             return res.status(500).json("Error: You must provide a deliveryID");
         }
         
-        data = await models.DeliveryItem.findAll({
-            where: {
-                DeliveryID: deliveryID,
-                Active: true
+        // data = await models.DeliveryItem.findAll({
+        //     where: {
+        //         DeliveryID: deliveryID,
+        //         Active: true
+        //     }
+        // });
+
+        const whereConditions = {
+            and:{
+                deliveryID: deliveryID,
+                // Active: true
             }
+        }
+
+        const query = translateDeliveryItems(whereConditions);
+
+        data = await models.sequelize.query(query, {
+            type: models.sequelize.QueryTypes.SELECT
         });
 
         return res.send(data);
@@ -152,10 +167,23 @@ router.get("/extras", async (req,res) => {
         let deliveryID = req.query.deliveryID;
         let data = [];
 
-        data = await models.DeliveryExtras.findAll({
-            where: {
-                deliveryOrderId: deliveryID
+        // data = await models.DeliveryExtras.findAll({
+        //     where: {
+        //         deliveryOrderId: deliveryID
+        //     }
+        // });
+
+        const whereConditions = {
+            and:{
+                deliveryOrderId: deliveryID,
+                // Active: true
             }
+        }
+
+        const query = translateDeliveryExtras(whereConditions);
+
+        data = await models.sequelize.query(query, {
+            type: models.sequelize.QueryTypes.SELECT
         });
 
         return res.send(data);
