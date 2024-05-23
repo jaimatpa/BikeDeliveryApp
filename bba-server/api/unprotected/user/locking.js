@@ -4,6 +4,7 @@ const status = require("http-status");
 const { Op } = require("sequelize");
 
 const models = require("./../../../models");
+const translateColorLocks = require("../../../translation/colorLocks");
 
 router.post("/", async (req, res) => {
     try {
@@ -90,9 +91,15 @@ router.delete("/", async (req, res) => {
 router.get("/", async (req, res) => {
 
     try {
-        const lock = await models.Locks.findAll();
+        // const lock = await models.Locks.findAll();
+        const query = translateColorLocks();
+        console.log(query);
+        let lock = await models.sequelize.query(query, {
+            type: models.sequelize.QueryTypes.SELECT
+        });
         return res.send(lock)
     } catch (error) {
+        console.log(error);
         return res.send(error)
     }
 

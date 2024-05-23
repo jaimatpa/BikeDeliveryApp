@@ -24,6 +24,7 @@ router.post("/", async (req, res) => {
     let userToLogin = await models.User.findOne({
       where: { email: req.body.email },
     });
+    console.log(userToLogin);
     if (userToLogin) {
       // If the user was found
       if (userToLogin.isVerified) {

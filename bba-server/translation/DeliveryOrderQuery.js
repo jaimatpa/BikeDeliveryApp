@@ -1,22 +1,6 @@
-const { Op } = require('sequelize');
-
-const generateWhereString = (whereConditions) => {
-  const whereString = Object.keys(whereConditions).map((key) => {
-    if (typeof whereConditions[key] === 'object') {
-      return Object.keys(whereConditions[key]).map((op) => {
-        return `${key} ${op} '${whereConditions[key][op]}'`;
-      }).join(' AND ');
-    } else {
-      return `'${key}' = ${whereConditions[key]}`;
-    }
-  }).join(' AND ');
-
-  return whereString;
-};
+const generateWhereString = require("./generateWhereString");
 
 const translateDeliveryOrder = (whereConditions = null) => {
-  const whereClause = whereConditions ? generateWhereString(whereConditions) : '1=1';
-
   const query = `
     SELECT
       t1.id,
@@ -25,7 +9,7 @@ const translateDeliveryOrder = (whereConditions = null) => {
       CONCAT(t3.number, ' ', t3.street, ' ', t3.plantation) as location,
       t1.order_number as orderid,
       '' AS rack,
-      t4.color,
+      t4.color_key AS color,
       t4.combination,
       t1.color_id AS "lock",
       t1.phone_number AS mobileNo,
@@ -72,11 +56,12 @@ const translateDeliveryOrder = (whereConditions = null) => {
       LEFT JOIN customer_customers AS t2 ON t1.customer_id = t2.id
       LEFT JOIN all_addresses AS t3 ON t1.address_id = t3.id
       LEFT JOIN settings_colorcombinations AS t4 ON t1.color_id = t4.id
-    WHERE 
-      ${whereClause}
   `;
 
-  console.log(query);
+  const whereClause = whereConditions ? generateWhereString(whereConditions) : '';
+  if(whereClause) {
+    return `SELECT * FROM (${query}) AS sub WHERE ${whereClause}`
+  }
 
   return query;
 };
