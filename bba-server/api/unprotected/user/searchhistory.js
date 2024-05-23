@@ -5,6 +5,7 @@ const { Op } = require("sequelize");
 const models = require("../../../models");
 const AWS = require("aws-sdk");
 const { resolve } = require("@sentry/utils");
+const translateDeliveryOrder = require("../../../translation/DeliveryOrderQuery");
 
 AWS.config.update({
     accessKeyId: process.env.AWSAccessKey,
@@ -23,40 +24,77 @@ router.get("/", async (req, res) => {
     if (search) {
         console.log(search);
         try {
-            data = await models.DeliveryOrders.findAll({
-                where: {
-                    [Op.or]: {
-                        name: {
-                            [Op.like]: `%${search}%`,
-                        },
-                        location: {
-                            [Op.like]: `%${search}%`,
-                        },
-                        orderid: {
-                            [Op.like]: `%${search}%`,
-                        },
-                        rack: {
-                            [Op.like]: `%${search}%`,
-                        },
-                        color: {
-                            [Op.like]: `%${search}%`,
-                        },
-                        combination: {
-                            [Op.like]: `%${search}%`,
-                        },
-                        lock: {
-                            [Op.like]: `%${search}%`,
-                        },
-                        mobileNo: {
-                            [Op.like]: `%${search}%`,
-                        },
-                        barcode: {
-                            [Op.like]: `%${search}%`,
-                        },
+            // data = await models.DeliveryOrders.findAll({
+            //     where: {
+            //         [Op.or]: {
+            //             name: {
+            //                 [Op.like]: `%${search}%`,
+            //             },
+            //             location: {
+            //                 [Op.like]: `%${search}%`,
+            //             },
+            //             orderid: {
+            //                 [Op.like]: `%${search}%`,
+            //             },
+            //             rack: {
+            //                 [Op.like]: `%${search}%`,
+            //             },
+            //             color: {
+            //                 [Op.like]: `%${search}%`,
+            //             },
+            //             combination: {
+            //                 [Op.like]: `%${search}%`,
+            //             },
+            //             lock: {
+            //                 [Op.like]: `%${search}%`,
+            //             },
+            //             mobileNo: {
+            //                 [Op.like]: `%${search}%`,
+            //             },
+            //             barcode: {
+            //                 [Op.like]: `%${search}%`,
+            //             },
+            //         },
+            //         swapOrder: swapOrder
+            //     },
+            // });
+            const whereConditions = {
+                [Op.or]: {
+                    name: {
+                        [Op.like]: `%${search}%`,
                     },
-                    swapOrder: swapOrder
+                    location: {
+                        [Op.like]: `%${search}%`,
+                    },
+                    orderid: {
+                        [Op.like]: `%${search}%`,
+                    },
+                    rack: {
+                        [Op.like]: `%${search}%`,
+                    },
+                    color: {
+                        [Op.like]: `%${search}%`,
+                    },
+                    combination: {
+                        [Op.like]: `%${search}%`,
+                    },
+                    lock: {
+                        [Op.like]: `%${search}%`,
+                    },
+                    mobileNo: {
+                        [Op.like]: `%${search}%`,
+                    },
+                    barcode: {
+                        [Op.like]: `%${search}%`,
+                    },
                 },
-            });
+                swapOrder: swapOrder
+            }
+            const query = translateDeliveryOrder(whereConditions);
+
+            data = await models.sequelize.query(query, {
+                type: models.sequelize.QueryTypes.SELECT
+            }) ;
             console.log(data);
         } catch (error) {
             console.log(error);
@@ -64,13 +102,23 @@ router.get("/", async (req, res) => {
     } else if (barcodeid) {
         if (barcodeid) {
             try {
-                data = await models.DeliveryOrders.findAll({
-                    where: {
-                        barcode: {
-                            [Op.like]: `%${barcodeid}%`,
-                        },
+                // data = await models.DeliveryOrders.findAll({
+                //     where: {
+                //         barcode: {
+                //             [Op.like]: `%${barcodeid}%`,
+                //         },
+                //     },
+                // });
+                const whereConditions = {
+                    barcode: {
+                        [Op.like]: `%${barcodeid}%`,
                     },
-                });
+                }
+                const query = translateDeliveryOrder(whereConditions);
+
+                data = await models.sequelize.query(query, {
+                    type: models.sequelize.QueryTypes.SELECT
+                }) ;
                 console.log(data);
             } catch (error) {
                 console.log(error);
@@ -78,7 +126,15 @@ router.get("/", async (req, res) => {
         }
     } else {
         console.log('wtf ??');
-        data = await models.DeliveryOrders.findAll({where: { swapOrder: false }});
+        // data = await models.DeliveryOrders.findAll({where: { swapOrder: false }});
+        const whereConditions = {
+            swapOrder: false
+        }
+        const query = translateDeliveryOrder(whereConditions);
+
+        data = await models.sequelize.query(query, {
+            type: models.sequelize.QueryTypes.SELECT
+        });
     }
     return res.send(data);
 });
