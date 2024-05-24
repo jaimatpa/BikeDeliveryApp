@@ -116,9 +116,6 @@ router.post("/", async (req,res) => {
         console.log('Error updating Delivery Order', error);
         return res.send(error)
     }
-    
-    
-    
 });
 
 module.exports = router;

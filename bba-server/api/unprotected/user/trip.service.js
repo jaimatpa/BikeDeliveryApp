@@ -1,7 +1,7 @@
 const { Op, Transaction } = require("sequelize");
 const { Trip, DeliveryOrders, EquipmentType, DeliveryItem, Truck, Notification, User } = require("./../../../models");
 const { sendNotification } = require("../../functions/notifications");
-const translateDeliveryOrder = require("../../../translation/DeliveryOrderQuery");
+const DeliveryOrderQuery = require("../../../translation/DeliveryOrderQuery");
 
 /**
  * Get all trip
@@ -45,7 +45,7 @@ async function getAllOrders(tripId, truckId) {
             { tripID1: tripId },   
         ],
     }
-    const query = translateDeliveryOrder(whereConditions);
+    const query = DeliveryOrderQuery.translateDeliveryOrder(whereConditions);
 
     const orders = await models.sequelize.query(query, {
         type: models.sequelize.QueryTypes.SELECT
@@ -68,7 +68,7 @@ async function getAllOrdersNoFilter(tripId, truckId) {
     const whereConditions = {
         tripID1:  {  [Op.ne]: null },
     }
-    const query = translateDeliveryOrder(whereConditions);
+    const query = DeliveryOrderQuery.translateDeliveryOrder(whereConditions);
 
     const orders = await models.sequelize.query(query, {
         type: models.sequelize.QueryTypes.SELECT

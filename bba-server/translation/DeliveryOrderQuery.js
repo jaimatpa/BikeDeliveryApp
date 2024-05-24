@@ -66,4 +66,4 @@ const translateDeliveryOrder = (whereConditions = null) => {
   return query;
 };
 
-module.exports = translateDeliveryOrder;
+module.exports = {translateDeliveryOrder};

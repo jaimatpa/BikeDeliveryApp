@@ -5,7 +5,7 @@ const { Op } = require("sequelize");
 const models = require("../../../models");
 const AWS = require("aws-sdk");
 const { resolve } = require("@sentry/utils");
-const translateDeliveryOrder = require("../../../translation/DeliveryOrderQuery");
+const DeliveryOrderQuery = require("../../../translation/DeliveryOrderQuery");
 
 AWS.config.update({
     accessKeyId: process.env.AWSAccessKey,
@@ -56,7 +56,7 @@ router.get("/", async (req, res) => {
                 },
                 swapOrder: swapOrder
             }
-            const query = translateDeliveryOrder(whereConditions);
+            const query = DeliveryOrderQuery.translateDeliveryOrder(whereConditions);
 
             data = await models.sequelize.query(query, {
                 type: models.sequelize.QueryTypes.SELECT
@@ -80,7 +80,7 @@ router.get("/", async (req, res) => {
                         [Op.like]: `%${barcodeid}%`,
                     },
                 }
-                const query = translateDeliveryOrder(whereConditions);
+                const query = DeliveryOrderQuery.translateDeliveryOrder(whereConditions);
 
                 data = await models.sequelize.query(query, {
                     type: models.sequelize.QueryTypes.SELECT
@@ -96,7 +96,7 @@ router.get("/", async (req, res) => {
         const whereConditions = {
             swapOrder: false
         }
-        const query = translateDeliveryOrder(whereConditions);
+        const query = DeliveryOrderQuery.translateDeliveryOrder(whereConditions);
 
         data = await models.sequelize.query(query, {
             type: models.sequelize.QueryTypes.SELECT

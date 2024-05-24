@@ -9,7 +9,7 @@ const apiError = require("../../../libs/apiError");
 const constVariables = require("../../../constants");
 const apiMessage = require("../../../language/en.json");
 const { Op } = require("sequelize");
-const translateDeliveryOrder = require("../../../translation/DeliveryOrderQuery");
+const DeliveryOrderQuery = require("../../../translation/DeliveryOrderQuery");
 
 function createEmailHtml(messageObj, images) {
   let html = [];
@@ -73,7 +73,7 @@ router.post("/", async (req, res) => {
     }
   }
 
-  const query = translateDeliveryOrder(whereConditions);
+  const query = DeliveryOrderQuery.translateDeliveryOrder(whereConditions);
   const deliveryOrder = await models.sequelize.query(query, {
     type: models.sequelize.QueryTypes.SELECT
   });
