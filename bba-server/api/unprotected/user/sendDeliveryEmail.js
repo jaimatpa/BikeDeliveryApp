@@ -9,6 +9,7 @@ const apiError = require("../../../libs/apiError");
 const constVariables = require("../../../constants");
 const apiMessage = require("../../../language/en.json");
 const { Op } = require("sequelize");
+const translateDeliveryOrder = require("../../../translation/DeliveryOrderQuery");
 
 function createEmailHtml(messageObj, images) {
   let html = [];
@@ -53,21 +54,31 @@ function sendEmailMain(args, message, images) {
 // Create Verify Token route
 // *************************
 router.post("/", async (req, res) => {
-  console.log("IN SEND DELIVER EMAIL POST");
+  console.log("IN SEND DELIVER EMAIL POST dddd");
   console.log(req.body);
   const orderid = req.body.orderid || req.body.params.orderid;
   const message = req.body.message || req.body.params.message;
   const images = req.body.images || (req.body.params && req.body.params.images);
   
-  const deliveryOrder = await models.DeliveryOrders.findOne(
-    {
-      where:
-      {
-        orderid: orderid
-      }
-    });
+  // const deliveryOrder = await models.DeliveryOrders.findOne(
+  //   {
+  //     where:
+  //     {
+  //       orderid: orderid
+  //     }
+  //   });
+  const whereConditions = {
+    and:{
+      orderid: orderid
+    }
+  }
+
+  const query = translateDeliveryOrder(whereConditions);
+  const deliveryOrder = await models.sequelize.query(query, {
+    type: models.sequelize.QueryTypes.SELECT
+  });
   try {
-    sendEmailMain(deliveryOrder, message, images);
+    sendEmailMain(deliveryOrder[0], message, images);
   } catch (error) {
 
   }

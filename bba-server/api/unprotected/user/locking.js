@@ -4,7 +4,7 @@ const status = require("http-status");
 const { Op } = require("sequelize");
 
 const models = require("./../../../models");
-const translateColorLocks = require("../../../translation/colorLocks");
+const translateColorLocks = require("../../../translation/colorLocksQuery");
 
 router.post("/", async (req, res) => {
     try {

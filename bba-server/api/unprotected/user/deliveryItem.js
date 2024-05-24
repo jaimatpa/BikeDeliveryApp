@@ -4,7 +4,7 @@ const { Op, where } = require("sequelize");
 const models = require("./../../../models");
 const apiMessage = require("./../../../language/en.json");
 const { sendNotification } = require("../../functions/notifications");
-const translateDeliveryItems = require("../../../translation/DeliveryItems");
+const DeliveryItemsQuery = require("../../../translation/DeliveryItemsQuery");
 const translateDeliveryExtras = require("../../../translation/deliveryExtrasQuery");
 
 router.post("/", async (req, res) => {
@@ -105,6 +105,20 @@ router.put("/", async (req, res) => {
     }
 });
 
+router.put("/translate", async (req, res) => { 
+    try {
+        console.log("translate", req.body);
+        const updateQuery = DeliveryItemsQuery.updateDelieveryItemByTranslation(req.body);
+        console.log(updateQuery);
+        result = await models.sequelize.query(updateQuery, {
+            type: models.sequelize.QueryTypes.UPDATE
+        });
+        res.send("Delivery item updated successfully");
+    } catch (error) {
+        console.log(error);
+    }
+});
+
 router.delete("/", async (req, res) => {
     try {
         const deleteTruck = await models.Truck.destroy(
@@ -148,7 +162,7 @@ router.get("/", async (req,res) => {
             }
         }
 
-        const query = translateDeliveryItems(whereConditions);
+        const query = DeliveryItemsQuery.translateDeliveryItems(whereConditions);
 
         data = await models.sequelize.query(query, {
             type: models.sequelize.QueryTypes.SELECT

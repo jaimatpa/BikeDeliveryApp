@@ -114,7 +114,6 @@ router.get("/", async (req, res) => {
                     type: models.sequelize.QueryTypes.SELECT
                 });
                 
-                
                 if (type === "DeliveryOrders") {
                     data = data.filter((record => {
                         var d = moment(record.date).add(4, 'hours').startOf('day');
@@ -235,12 +234,14 @@ router.get("/", async (req, res) => {
             data = await models.sequelize.query(query, {
                 type: models.sequelize.QueryTypes.SELECT
             });
-            
+            console.log(data);
 
             if (type === "DeliveryOrders") {
                 data = data.filter((record => {
                     var d = moment(record.date).add(4, 'hours').startOf('day');
-                    var today = moment().endOf('day');
+                    // var today = moment().endOf('day');
+                    var today = moment().startOf('day');
+                    // console.log(d, today);
                     if (d >= today && record.status == 0) {
                         return true;
                     } else {
