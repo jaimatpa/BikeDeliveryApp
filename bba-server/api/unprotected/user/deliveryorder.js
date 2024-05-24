@@ -145,7 +145,7 @@ router.get("/", async (req, res) => {
                     data = data.filter( ( record => {
                         record.swapOrder == 0
                     }));
-                    console.log(data);
+                    // console.log(data);
                     data = data.filter((record => {
                         var d = moment(record.date).add(4, 'hours').format('LL');
                         var today = moment().format('LL');
@@ -234,7 +234,7 @@ router.get("/", async (req, res) => {
             data = await models.sequelize.query(query, {
                 type: models.sequelize.QueryTypes.SELECT
             });
-            console.log(data);
+            // console.log(data);
 
             if (type === "DeliveryOrders") {
                 data = data.filter((record => {
@@ -277,7 +277,7 @@ router.get("/", async (req, res) => {
                 // data = data.filter( ( record => {
                 //     return record.swapOrder == 0
                 // }));
-                console.log(data);
+                // console.log(data);
                 data = data.filter((record => {
                     var d = moment(record.date).add(4, 'hours').format("LL");
                     var today = moment().format("LL");

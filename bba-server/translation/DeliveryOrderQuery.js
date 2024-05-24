@@ -8,12 +8,10 @@ const translateDeliveryOrder = (whereConditions = null) => {
       CONCAT(t2.first_name, ' ', t2.last_name) AS "name",
       CONCAT(t3.number, ' ', t3.street, ' ', t3.plantation) as location,
       t1.order_number as orderid,
-      '' AS rack,
       t4.color_key AS color,
       t4.combination,
-      t1.color_id AS "lock",
+      t4.lock_id AS "lock",
       t1.phone_number AS mobileNo,
-      '' AS barcode,
       t1.createdAt,
       t1.updatedAt,
       t1.note,
@@ -28,29 +26,31 @@ const translateDeliveryOrder = (whereConditions = null) => {
           ELSE t1.stage
       END AS status,
       t3.plantation AS "area",
-      '' AS lane,
       t1.end_date AS "endDate",
-      NULL As PickedUp,
-      NULL As PickupNotes,
-      NULL As truckID,
-      NULL As textSent,
-      NULL As picturesSent,
-      NULL As customerPickedUp,
-      NULL As readyForDriverPickup,
-      NULL As driverDeliveredBylongtext,
-      NULL As driverPickedUpBylongtext,
-      NULL As TruckId1,
-      NULL As StopNumber,
-      NULL As tripID1,
-      NULL As tripID2,
-      NULL As tripPriority1,
-      NULL As tripPriority2,
-      NULL As extrasDelivered,
-      NULL As extrasDeliveredReason,
-      NULL As extrasPickedUp,
-      NULL As extrasPickedUpReason,
-      NULL As swapOrder,
-      NULL As swapOrderDeliveryId
+      t1.rack,
+      t1.barcode,
+      t1.lane,
+      t1.PickedUp,
+      t1.PickupNotes,
+      t1.truckID,
+      t1.textSent,
+      t1.picturesSent,
+      t1.customerPickedUp,
+      t1.readyForDriverPickup,
+      t1.driverDeliveredBy,
+      t1.driverPickedUpBy,
+      t1.TruckId1,
+      t1.StopNumber,
+      t1.tripID1,
+      t1.tripID2,
+      t1.tripPriority1,
+      t1.tripPriority2,
+      t1.extrasDelivered,
+      t1.extrasDeliveredReason,
+      t1.extrasPickedUp,
+      t1.extrasPickedUpReason,
+      t1.swapOrder,
+      t1.swapOrderDeliveryId
     FROM
       reservations AS t1
       LEFT JOIN customer_customers AS t2 ON t1.customer_id = t2.id
@@ -66,4 +66,50 @@ const translateDeliveryOrder = (whereConditions = null) => {
   return query;
 };
 
-module.exports = {translateDeliveryOrder};
+const updateDeliveryOrderByTranslation = (order) => {
+  console.log(order);
+  let stage = null;
+  if(order.status == 0) stage = 2;
+  else if(order.status >= 1) stage = 3;
+
+  const query = `
+    UPDATE reservations
+    SET 
+      ${order.note ? `note = '${order.note}',`: ''}
+      ${order.email ? `email = '${order.email}',`: ''}
+      ${stage ? `stage = ${stage},` : ''}
+      ${order.color_id ? `color_id = ${order.color_id},`: ''}
+      ${order.endDate ? `end_date = '${order.endDate}',`: ''}
+      ${order.rack ? `rack = '${order.rack}',`: ''}
+      ${order.barcode ? `barcode = '${order.barcode}',`: ''}
+      ${order.lane ? `lane = '${order.lane}',`: ''}
+      ${order.PickedUp ? `PickedUp = ${order.PickedUp?1:0},`: ''}
+      ${order.PickupNotes ? `PickupNotes = '${order.PickupNotes}',`: ''}
+      ${order.truckID ? `truckID = ${order.truckID},`: ''}
+      ${order.textSent ? `textSent = ${order.textSent},`: ''}
+      ${order.picturesSent ? `picturesSent = ${order.picturesSent},`: ''}
+      ${order.customerPickedUp ? `customerPickedUp = ${order.customerPickedUp},`: ''}
+      ${order.readyForDriverPickup ? `readyForDriverPickup = ${order.readyForDriverPickup},`: ''}
+      ${order.driverDeliveredBy ? `driverDeliveredBy = '${order.driverDeliveredBy}',`: ''}
+      ${order.driverPickedUpBy ? `driverPickedUpBy = '${order.driverPickedUpBy}',`: ''}
+      ${order.TruckId1 ? `TruckId1 = ${order.TruckId1},`: ''}
+      ${order.StopNumber ? `StopNumber = ${order.StopNumber},`: ''}
+      ${order.tripID1 ? `tripID1 = ${order.tripID1},`: ''}
+      ${order.tripID2 ? `tripID2 = ${order.tripID2},`: ''}
+      ${order.tripPriority1 ? `tripPriority1 = ${order.tripPriority1},`: ''}
+      ${order.tripPriority2 ? `tripPriority2 = ${order.tripPriority2},`: ''}
+      ${order.extrasDelivered ? `extrasDelivered = ${order.extrasDelivered},`: ''}
+      ${order.extrasDeliveredReason ? `extrasDeliveredReason = '${order.extrasDeliveredReason}',`: ''}
+      ${order.extrasPickedUp ? `extrasPickedUp = ${order.extrasPickedUp},`: ''}
+      ${order.extrasPickedUpReason ? `extrasPickedUpReason = '${order.extrasPickedUpReason}',`: ''}
+      ${order.swapOrder ? `swapOrder = ${order.swapOrder},`: ''}
+      ${order.swapOrderDeliveryId ? `swapOrderDeliveryId = ${order.swapOrderDeliveryId},`: ''}
+      id = ${order.id}
+    WHERE 
+      id = ${order.id};
+    `;
+  return query;
+}
+
+
+module.exports = { translateDeliveryOrder, updateDeliveryOrderByTranslation };
