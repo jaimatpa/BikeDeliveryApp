@@ -406,6 +406,7 @@ export default {
     async saveUpdate(item) {
       console.log("ITEM", item);
       let response = await this.$axios.$put("/api/user/deliveryItem", item);
+      // let response = await this.$axios.$put("/api/user/deliveryItem/translate", item);
       console.log("RESPONSE", response);
       this.closeScanner();
       this.getOrderItems();

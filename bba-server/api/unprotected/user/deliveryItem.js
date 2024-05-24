@@ -4,7 +4,7 @@ const { Op, where } = require("sequelize");
 const models = require("./../../../models");
 const apiMessage = require("./../../../language/en.json");
 const { sendNotification } = require("../../functions/notifications");
-const translateDeliveryItems = require("../../../translation/DeliveryItems");
+const DeliveryItemsQuery = require("../../../translation/DeliveryItemsQuery");
 const translateDeliveryExtras = require("../../../translation/deliveryExtrasQuery");
 
 router.post("/", async (req, res) => {
@@ -61,17 +61,30 @@ router.post("/createEquipmentItemsSwapOrder", async (req, res) => {
 router.put("/", async (req, res) => { 
     try {
         console.log(req.body);
-        let existingItem = await models.DeliveryItem.findAll({
-            where: {
-                id: req.body.id,
-            }
-        });
+        // let existingItem = await models.DeliveryItem.findAll({
+        //     where: {
+        //         id: req.body.id,
+        //     }
+        // });
 
-        const items = await models.DeliveryItem.findAll({
-            where: {
-                deliveryID: req.body.deliveryID
+        // const items = await models.DeliveryItem.findAll({
+        //     where: {
+        //         deliveryID: req.body.deliveryID
+        //     }
+        // })
+
+        
+        const whereConditions = {
+            and:{
+                deliveryID: req.body.deliveryID,
             }
-        })
+        }
+
+        const query = DeliveryItemsQuery.translateDeliveryItems(whereConditions);
+
+        items = await models.sequelize.query(query, {
+            type: models.sequelize.QueryTypes.SELECT
+        });
 
         console.log('items len = ', items.length)
         var count = items.length;
@@ -87,23 +100,43 @@ router.put("/", async (req, res) => {
             console.log(`Loading items ... ${delivered} / ${count}`);
         }
 
-        const updateDeliveryItem = await models.DeliveryItem.update({
-            checkedDelievery: req.body.checkedDelievery,
-            checkPickup: req.body.checkPickup,
-            serialbarcode: req.body.serialbarcode,
-        },
-        {
-        where: {
-            id: req.body.id
-        }
+        // const updateDeliveryItem = await models.DeliveryItem.update({
+        //     checkedDelievery: req.body.checkedDelievery,
+        //     checkPickup: req.body.checkPickup,
+        //     serialbarcode: req.body.serialbarcode,
+        // },
+        // {
+        // where: {
+        //     id: req.body.id
+        // }
+        // });
+
+        const updateQuery = DeliveryItemsQuery.updateDelieveryItemByTranslation(req.body);
+        console.log(updateQuery);
+        result = await models.sequelize.query(updateQuery, {
+            type: models.sequelize.QueryTypes.UPDATE
         });
 
-
-        return res.send(updateDeliveryItem);
+        // return res.send(updateDeliveryItem);
+        return res.send("Delivery item updated successfully");
     } catch (error) {
         console.log(error);
     }
 });
+
+// router.put("/translate", async (req, res) => { 
+//     try {
+//         console.log("translate", req.body);
+//         const updateQuery = DeliveryItemsQuery.updateDelieveryItemByTranslation(req.body);
+//         console.log(updateQuery);
+//         result = await models.sequelize.query(updateQuery, {
+//             type: models.sequelize.QueryTypes.UPDATE
+//         });
+//         res.send("Delivery item updated successfully");
+//     } catch (error) {
+//         console.log(error);
+//     }
+// });
 
 router.delete("/", async (req, res) => {
     try {
@@ -148,7 +181,7 @@ router.get("/", async (req,res) => {
             }
         }
 
-        const query = translateDeliveryItems(whereConditions);
+        const query = DeliveryItemsQuery.translateDeliveryItems(whereConditions);
 
         data = await models.sequelize.query(query, {
             type: models.sequelize.QueryTypes.SELECT

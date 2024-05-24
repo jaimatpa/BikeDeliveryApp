@@ -8,7 +8,7 @@ const { sendNotification } = require("../../functions/notifications")
 const models = require("./../../../models");
 const { RecordingSettingsContext } = require("twilio/lib/rest/video/v1/recordingSettings");
 // const DeliveryOrderQuery = require("../../../translation/DeliveryOrderQuery");
-const translateDeliveryOrder = require("../../../translation/DeliveryOrderQuery");
+const DeliveryOrderQuery = require("../../../translation/DeliveryOrderQuery");
 
 router.post("/", async (req, res) => {
 
@@ -108,12 +108,11 @@ router.get("/", async (req, res) => {
                         }
                     },
                 }
-                const query = translateDeliveryOrder(whereConditions);
+                const query = DeliveryOrderQuery.translateDeliveryOrder(whereConditions);
 
                 data = await models.sequelize.query(query, {
                     type: models.sequelize.QueryTypes.SELECT
                 });
-                
                 
                 if (type === "DeliveryOrders") {
                     data = data.filter((record => {
@@ -146,7 +145,7 @@ router.get("/", async (req, res) => {
                     data = data.filter( ( record => {
                         record.swapOrder == 0
                     }));
-                    console.log(data);
+                    // console.log(data);
                     data = data.filter((record => {
                         var d = moment(record.date).add(4, 'hours').format('LL');
                         var today = moment().format('LL');
@@ -211,7 +210,7 @@ router.get("/", async (req, res) => {
                             }
                         }
                     }
-                    const query = translateDeliveryOrder(whereConditions);
+                    const query = DeliveryOrderQuery.translateDeliveryOrder(whereConditions);
     
                     data = await models.sequelize.query(query, {
                         type: models.sequelize.QueryTypes.SELECT
@@ -230,17 +229,19 @@ router.get("/", async (req, res) => {
             }
         }
         else {
-            const query = translateDeliveryOrder();
+            const query = DeliveryOrderQuery.translateDeliveryOrder();
 
             data = await models.sequelize.query(query, {
                 type: models.sequelize.QueryTypes.SELECT
             });
-            
+            // console.log(data);
 
             if (type === "DeliveryOrders") {
                 data = data.filter((record => {
                     var d = moment(record.date).add(4, 'hours').startOf('day');
-                    var today = moment().endOf('day');
+                    // var today = moment().endOf('day');
+                    var today = moment().startOf('day');
+                    // console.log(d, today);
                     if (d >= today && record.status == 0) {
                         return true;
                     } else {
@@ -276,7 +277,7 @@ router.get("/", async (req, res) => {
                 // data = data.filter( ( record => {
                 //     return record.swapOrder == 0
                 // }));
-                console.log(data);
+                // console.log(data);
                 data = data.filter((record => {
                     var d = moment(record.date).add(4, 'hours').format("LL");
                     var today = moment().format("LL");
@@ -407,7 +408,7 @@ router.get("/query", async (req, res) => {
             },
             status: 1
         }
-        const query = translateDeliveryOrder(whereConditions);
+        const query = DeliveryOrderQuery.translateDeliveryOrder(whereConditions);
 
         let deliveryOrders = await models.sequelize.query(query, {
             type: models.sequelize.QueryTypes.SELECT
@@ -468,7 +469,7 @@ router.get("/query", async (req, res) => {
         
         if(type == '' || type=='deliveries')
         {
-            const query = translateDeliveryOrder();
+            const query = DeliveryOrderQuery.translateDeliveryOrder();
 
             let [deliveryOrders, areas, villas, streetAddresses] = await Promise.all([
                 // models.DeliveryOrders.findAll({
@@ -502,7 +503,7 @@ router.get("/query", async (req, res) => {
                     }, 
                 }
 
-                const query = translateDeliveryOrder(whereConditions);
+                const query = DeliveryOrderQuery.translateDeliveryOrder(whereConditions);
 
                 let [deliveryOrders, areas, villas, streetAddresses] = await Promise.all([
                     // models.DeliveryOrders.findAll({
@@ -536,7 +537,7 @@ router.get("/query", async (req, res) => {
                         [Op.ne]: null,
                     }, 
                 }
-                const query = translateDeliveryOrder(whereConditions);
+                const query = DeliveryOrderQuery.translateDeliveryOrder(whereConditions);
 
                 let [deliveryOrders, areas, villas, streetAddresses] = await Promise.all([
                     models.sequelize.query(query, {
@@ -569,7 +570,7 @@ router.get("/location_reconciliation", async (req, res) => {
         const startOfDay = new Date(selectedDate.getFullYear(), selectedDate.getMonth(), selectedDate.getDate());
         const endOfDay = new Date(selectedDate.getFullYear(), selectedDate.getMonth(), selectedDate.getDate() + 1);
         const deliveryOrders = all
-            ? await models.sequelize.query(translateDeliveryOrder(), {
+            ? await models.sequelize.query(DeliveryOrderQuery.translateDeliveryOrder(), {
                 type: models.sequelize.QueryTypes.SELECT
             })
             : await models.DeliveryOrders.findAll({
@@ -590,7 +591,7 @@ router.get("/location_reconciliation", async (req, res) => {
     else 
     {
         const deliveryOrders = all
-            ? await models.sequelize.query(translateDeliveryOrder(), {
+            ? await models.sequelize.query(DeliveryOrderQuery.translateDeliveryOrder(), {
                 type: models.sequelize.QueryTypes.SELECT
             })
             : await models.DeliveryOrders.findAll({

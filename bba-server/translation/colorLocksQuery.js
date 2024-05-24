@@ -20,4 +20,4 @@ const translateColorLocks = (whereConditions = null) => {
   return query;
 };
 
-module.exports = translateColorLocks;
+module.exports = {translateColorLocks};
