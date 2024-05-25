@@ -40,10 +40,10 @@ async function getAllOrders(tripId, truckId) {
     // });
 
     const whereConditions = {
-        [Op.and]: [
-            { truckId: truckId }, 
-            { tripID1: tripId },   
-        ],
+        and : {
+            truckId: truckId,
+            tripID1: tripId
+        }
     }
     const query = DeliveryOrderQuery.translateDeliveryOrder(whereConditions);
 
@@ -66,7 +66,9 @@ async function getAllOrdersNoFilter(tripId, truckId) {
     // });
 
     const whereConditions = {
-        tripID1:  {  [Op.ne]: null },
+        and:{
+            tripID1: null,    
+        }
     }
     const query = DeliveryOrderQuery.translateDeliveryOrder(whereConditions);
 

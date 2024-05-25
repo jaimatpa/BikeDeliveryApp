@@ -402,11 +402,13 @@ router.get("/query", async (req, res) => {
         const endOfDay = new Date(selectedDate.getFullYear(), selectedDate.getMonth(), selectedDate.getDate() + 1);
         // Fetch all records from the three tables
         const whereConditions = {
-            date: {
-                [Op.gte]: startOfDay,
-                [Op.lt]: endOfDay
-            },
-            status: 1
+            and:{
+                date: {
+                    ">=": startOfDay,
+                    "<=": endOfDay
+                },
+                status: 1
+            }
         }
         const query = DeliveryOrderQuery.translateDeliveryOrder(whereConditions);
 
