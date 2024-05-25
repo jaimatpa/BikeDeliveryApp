@@ -3,7 +3,11 @@ const generateWhereString = (whereConditions) => {
 
   const processConditions = (conditions, operator) => {
     return Object.keys(conditions).map((field) => {
-      if (typeof conditions[field] === 'object') {
+      if (conditions[field] === null) {
+        return `${field} is null`;
+      } else if (conditions[field] == 'NOT NULL') {
+        return `${field} is not null`;
+      } else if (typeof conditions[field] === 'object') {
         return Object.keys(conditions[field]).map((operation) => {
           return `\`${field}\` ${operation} '${conditions[field][operation]}'`;
         }).join(' AND ');

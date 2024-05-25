@@ -20,7 +20,6 @@ router.get("/", async (req, res) => {
     
     const barcodeid = req.query.barcodeid;
     var swapOrder = type == 'swap' ? 1 : 0;
-
     if (search) {
         console.log(search);
         try {
@@ -57,7 +56,7 @@ router.get("/", async (req, res) => {
                 swapOrder: swapOrder
             }
             const query = DeliveryOrderQuery.translateDeliveryOrder(whereConditions);
-
+            console.log(query);
             data = await models.sequelize.query(query, {
                 type: models.sequelize.QueryTypes.SELECT
             }) ;
@@ -76,11 +75,15 @@ router.get("/", async (req, res) => {
                 //     },
                 // });
                 const whereConditions = {
-                    barcode: {
-                        [Op.like]: `%${barcodeid}%`,
-                    },
+                    and:{
+                        barcode: {
+                            like: `%${barcodeid}%`,
+                        },
+                    }
                 }
                 const query = DeliveryOrderQuery.translateDeliveryOrder(whereConditions);
+                console.log("**************************************query");
+                console.log(query);
 
                 data = await models.sequelize.query(query, {
                     type: models.sequelize.QueryTypes.SELECT
@@ -94,7 +97,10 @@ router.get("/", async (req, res) => {
         console.log('wtf ??');
         // data = await models.DeliveryOrders.findAll({where: { swapOrder: false }});
         const whereConditions = {
-            swapOrder: false
+            or: {
+                swapOrder: false,
+                swapOrder: null,
+            }
         }
         const query = DeliveryOrderQuery.translateDeliveryOrder(whereConditions);
 
