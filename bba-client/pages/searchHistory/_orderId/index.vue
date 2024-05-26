@@ -644,6 +644,7 @@ export default {
       }
     },
     async getOrderImages() {
+      // console.log("..................", this.orderData);
       try {
         let response = await this.$axios.$get(
           "/api/user/searchhistory/images",

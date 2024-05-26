@@ -6,7 +6,7 @@ const translateDeliveryOrder = (whereConditions = null) => {
       t1.id,
       t1.start_date AS "date",
       CONCAT(t2.first_name, ' ', t2.last_name) AS "name",
-      CONCAT(t3.number, ' ', t3.street, ' ', t3.plantation) as location,
+      IF(use_manual = 1, manual_address, CONCAT(t3.number, ' ', t3.street, ' ', t3.plantation)) as location,
       t1.order_number as orderid,
       t4.color_key AS color,
       t4.combination,

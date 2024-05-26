@@ -25,7 +25,17 @@ router.post("/", async (req, res) => {
       } 
       else 
       {
-        response = await client.messages.create({body: req.body.message, from: process.env.TWILIO_NUMBER, to: `+1${req.body.to}`, mediaUrl: req.body.mediaUrl});
+        let formattedNumber = req.body.to;
+        if (formattedNumber.startsWith('+1')) {
+            formattedNumber = formattedNumber.slice(2);
+        }
+
+        response = await client.messages.create({
+            body: req.body.message,
+            from: process.env.TWILIO_NUMBER,
+            to: formattedNumber,
+            mediaUrl: req.body.mediaUrl
+        });
       }
 
       return res.status(200).json({
