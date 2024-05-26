@@ -42,19 +42,19 @@
 
                         <v-row cols="12">
                             <v-col cols="12" xs="12" sm="12" md="4" xl="4">
-                                <img :src="`https://images.hiretheproz.com/${orderData.barcode}-0.jpeg`" onload="this.style='display: block;'" style="display:none"></img>
+                                <img :src="`https://images.bodhisys.io/${orderData.barcode}-0.jpeg`" onload="this.style='display: block;'" style="display:none"></img>
                             </v-col>
                             <v-col cols="12" xs="12" sm="12" md="4" xl="4">
-                                <img :src="`https://images.hiretheproz.com/${orderData.barcode}-1.jpeg`" onload="this.style='display: block;'" style="display:none"></img>
+                                <img :src="`https://images.bodhisys.io/${orderData.barcode}-1.jpeg`" onload="this.style='display: block;'" style="display:none"></img>
                             </v-col>
                             <v-col cols="12" xs="12" sm="12" md="4" xl="4">
-                                <img :src="`https://images.hiretheproz.com/${orderData.barcode}-2.jpeg`" onload="this.style='display: block;'" style="display:none"></img>
+                                <img :src="`https://images.bodhisys.io/${orderData.barcode}-2.jpeg`" onload="this.style='display: block;'" style="display:none"></img>
                             </v-col>
                             <v-col cols="12" xs="12" sm="12" md="4" xl="4">
-                                <img :src="`https://images.hiretheproz.com/${orderData.barcode}-3.jpeg`" onload="this.style='display: block;'" style="display:none"></img>
+                                <img :src="`https://images.bodhisys.io/${orderData.barcode}-3.jpeg`" onload="this.style='display: block;'" style="display:none"></img>
                             </v-col>
                             <v-col cols="12" xs="12" sm="12" md="4" xl="4">
-                                <img :src="`https://images.hiretheproz.com/${orderData.barcode}-4.jpeg`" onload="this.style='display: block;'" style="display:none"></img>
+                                <img :src="`https://images.bodhisys.io/${orderData.barcode}-4.jpeg`" onload="this.style='display: block;'" style="display:none"></img>
                             </v-col>
                         </v-row>
                     </div>
