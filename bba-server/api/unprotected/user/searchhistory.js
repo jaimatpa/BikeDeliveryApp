@@ -133,23 +133,25 @@ router.get("/images", async (req, res) => {
 
 async function getImages(prefix, orderID) {
     const directoryPath = path.join('/home/ubuntu/bikeapp-copy/bba-server/', 'public');
-    let imageArray = [];
-    fs.readdir(directoryPath, function (err, files) {
-        //handling error
-        
-        if (err) {
-            return console.log('Unable to scan directory: ' + err);
-        } 
+    return new Promise((resolve, reject) => {
+            let imageArray = [];
+        fs.readdir(directoryPath, function (err, files) {
+            //handling error
+            
+            if (err) {
+                return console.log('Unable to scan directory: ' + err);
+            } 
 
-        files.forEach(function (file) {
-            console.log(`${prefix}-${orderID}`, file);
-            if(file.toLowerCase().indexOf(`${prefix}-${orderID}`.toLocaleLowerCase()) === 0) {
-                console.log('found file - ' + file);
-                imageArray.push(file); 
-            }
+            files.forEach(function (file) {
+                console.log(`${prefix}-${orderID}`, file);
+                if(file.toLowerCase().indexOf(`${prefix}-${orderID}`.toLocaleLowerCase()) === 0) {
+                    console.log('found file - ' + file);
+                    imageArray.push(file); 
+                }
+            });
+            resolve(imageArray);
         });
-    });
-    return imageArray;
+    }
 
     // return new Promise((resolve, reject) => {
     //     let imageArray = [];
