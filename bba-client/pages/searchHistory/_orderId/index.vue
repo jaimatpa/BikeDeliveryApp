@@ -660,12 +660,12 @@ export default {
         // 'https://images.bodhisys.io/D-Apr0020-22/637848762657544860'
         response.D.forEach((image) => {
           localDeliveryArray.push(
-            `https://images.bodhisys.io/D-${this.orderData.orderid}/${image}`
+            `https://images.bodhisys.io/${image}`
           );
         });
         response.P.forEach((image) => {
           localPickupArray.push(
-            `https://images.bodhisys.io/P-${this.orderData.orderid}/${image}`
+            `https://images.bodhisys.io/${image}`
           );
         });
         this.deliveryImages = localDeliveryArray;
