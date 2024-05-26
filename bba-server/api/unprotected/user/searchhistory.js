@@ -113,7 +113,7 @@ router.get("/", async (req, res) => {
 });
 
 router.get("/images", async (req, res) => {
-    // console.log("IN IMAGES ENDPOINT");
+    console.log("IN IMAGES ENDPOINT");
     let id = req.query.orderID;
     // console.log(id);
     let images = {};
