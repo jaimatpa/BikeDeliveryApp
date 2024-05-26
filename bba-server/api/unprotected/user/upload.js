@@ -106,7 +106,8 @@ router.get("/", async (req, res) => {
         let tempData = {
             id: val.id,
             orderid: val.orderid,
-            filepath: process.env.BASE_URL + "/" + uploadLocalFilePath,
+            //filepath: process.env.BASE_URL + "/" + uploadLocalFilePath,
+            filepath: 'https://images.bodhisys.io/' + uploadLocalFilePath,
             createdAt: val.createdAt,
             updatedAt: val.updatedAt
         }

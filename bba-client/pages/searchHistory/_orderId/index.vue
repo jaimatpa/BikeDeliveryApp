@@ -657,15 +657,15 @@ export default {
         let localDeliveryArray = [];
         let localPickupArray = [];
         console.log("IMAGES", response);
-        // 'https://bike-app-storage.s3.amazonaws.com/D-Apr0020-22/637848762657544860'
+        // 'https://images.bodhisys.io/D-Apr0020-22/637848762657544860'
         response.D.forEach((image) => {
           localDeliveryArray.push(
-            `https://bike-app-storage.s3.amazonaws.com/D-${this.orderData.orderid}/${image}`
+            `https://images.bodhisys.io/D-${this.orderData.orderid}/${image}`
           );
         });
         response.P.forEach((image) => {
           localPickupArray.push(
-            `https://bike-app-storage.s3.amazonaws.com/P-${this.orderData.orderid}/${image}`
+            `https://images.bodhisys.io/P-${this.orderData.orderid}/${image}`
           );
         });
         this.deliveryImages = localDeliveryArray;
