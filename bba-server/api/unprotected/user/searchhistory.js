@@ -1,7 +1,8 @@
 const express = require("express");
 const router = express.Router();
 const { Op } = require("sequelize");
-
+const path = require('path');
+const fs = require('fs');
 const models = require("../../../models");
 const AWS = require("aws-sdk");
 const { resolve } = require("@sentry/utils");
@@ -131,26 +132,42 @@ router.get("/images", async (req, res) => {
 
 
 async function getImages(prefix, orderID) {
-    return new Promise((resolve, reject) => {
-        let imageArray = [];
-        let s3 = new AWS.S3({ params: { Bucket: 'bike-app-storage', Prefix: `${prefix}-${orderID}/`, Delimiter: '/' } });
-        s3.listObjectsV2(function (err, data) {
-            if (err) {
-                console.log(err);
-                reject(err);
-            } else {
-                //   console.log(data);
-                data.Contents.forEach(imageObject => {
-                    let key = imageObject.Key;
-                    let splitKey = key.split('/');
-                    //console.log(splitKey);
-                    imageArray.push(splitKey[1]);
-                });
-                //console.log(imageArray);
-                resolve(imageArray);
-            }
+    const directoryPath = path.join(__dirname, 'public');
+    let imageArray = [];
+    fs.readdir(directoryPath, function (err, files) {
+        //handling error
+        
+        if (err) {
+            return console.log('Unable to scan directory: ' + err);
+        } 
+
+        files.forEach(function (file) {
+            // Do whatever you want to do with the file
+            console.log(file); 
         });
-    })
+    });
+    return imageArray;
+
+    // return new Promise((resolve, reject) => {
+    //     let imageArray = [];
+    //     let s3 = new AWS.S3({ params: { Bucket: 'bike-app-storage', Prefix: `${prefix}-${orderID}/`, Delimiter: '/' } });
+    //     s3.listObjectsV2(function (err, data) {
+    //         if (err) {
+    //             console.log(err);
+    //             reject(err);
+    //         } else {
+    //             //   console.log(data);
+    //             data.Contents.forEach(imageObject => {
+    //                 let key = imageObject.Key;
+    //                 let splitKey = key.split('/');
+    //                 //console.log(splitKey);
+    //                 imageArray.push(splitKey[1]);
+    //             });
+    //             //console.log(imageArray);
+    //             resolve(imageArray);
+    //         }
+    //     });
+    // })
 }
 
 module.exports = router;

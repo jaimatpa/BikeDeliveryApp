@@ -654,7 +654,7 @@ export default {
       formData.append("file", newfileObj);
 
       try {
-        let pictureName = `${this.deliveryOrderData.orderid}-${pictureNumber}`;
+        let pictureName = `d-${this.deliveryOrderData.orderid}-${pictureNumber}`;
         let result = await this.$axios.$post(
           `/api/user/upload?orderid=${pictureName}`,
           formData
