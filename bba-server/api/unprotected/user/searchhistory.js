@@ -151,7 +151,7 @@ async function getImages(prefix, orderID) {
             });
             resolve(imageArray);
         });
-    }
+    });
 
     // return new Promise((resolve, reject) => {
     //     let imageArray = [];
