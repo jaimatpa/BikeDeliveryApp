@@ -68,11 +68,11 @@ router.post("/", async (req, res) => {
     
     const path = '/public';
     let mediaUrls = [];
-    // mediaUrls.push(`https://images.hiretheproz.com/${deliveryOrder.barcode}-0.jpeg`);
-    // mediaUrls.push(`https://images.hiretheproz.com/${deliveryOrder.barcode}-1.jpeg`);
-    // mediaUrls.push(`https://images.hiretheproz.com/${deliveryOrder.barcode}-2.jpeg`);
-    // mediaUrls.push(`https://images.hiretheproz.com/${deliveryOrder.barcode}-3.jpeg`);
-    // mediaUrls.push(`https://images.hiretheproz.com/${deliveryOrder.barcode}-4.jpeg`);
+    mediaUrls.push(`https://images.bodhisys.io/${deliveryOrder.barcode}-0.jpeg`);
+    mediaUrls.push(`https://images.bodhisys.io/${deliveryOrder.barcode}-1.jpeg`);
+    mediaUrls.push(`https://images.bodhisys.io/${deliveryOrder.barcode}-2.jpeg`);
+    mediaUrls.push(`https://images.bodhisys.io/${deliveryOrder.barcode}-3.jpeg`);
+    mediaUrls.push(`https://images.bodhisys.io/${deliveryOrder.barcode}-4.jpeg`);
 
     let mediaUrls2 = [];
 

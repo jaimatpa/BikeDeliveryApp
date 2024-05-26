@@ -695,7 +695,7 @@ export default {
       for (const upload of this.uploads) {
         let uploadResponse = await this.upload(upload, counter);
         messageObject.mediaUrl.push(
-          `https://images.hiretheproz.com/${this.deliveryOrderData.barcode}-${counter}.jpeg`
+          `https://images.bodhisys.io/${this.deliveryOrderData.barcode}-${counter}.jpeg`
         );
         counter = counter + 1;
       }

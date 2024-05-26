@@ -715,7 +715,7 @@ export default {
         console.log('uploading deliveryImage', upload);
         let uploadResponse = await this.upload(upload, 'delivery', counter);
         messageObject.mediaUrl.push(
-          `https://images.hiretheproz.com/${this.deliveryOrderData.barcode}-${counter}.jpeg`
+          `https://images.bodhisys.io/${this.deliveryOrderData.barcode}-${counter}.jpeg`
         );
         counter = counter + 1;
       }
@@ -724,7 +724,7 @@ export default {
         console.log('uploading pickupImages', upload);
         let uploadResponse = await this.upload(upload, 'pickup', counter);
         messageObject.mediaUrl.push(
-          `https://images.hiretheproz.com/pickup/${this.deliveryOrderData.barcode}-${counter}.jpeg`
+          `https://images.bodhisys.io/pickup/${this.deliveryOrderData.barcode}-${counter}.jpeg`
         );
         counter = counter + 1;
       }
