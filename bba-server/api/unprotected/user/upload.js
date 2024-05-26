@@ -40,57 +40,57 @@ const storage = multer.diskStorage({
 });
 router.post("/", async (req, res) => {
     
-    const upload = multer({
-        storage: multerS3({
-          s3: s3,
-          bucket: 'some-bucket',
-          metadata: function (req, file, cb) {
-            cb(null, {fieldName: file.fieldname});
-          },
-          key: function (req, file, cb) {
-            cb(null, Date.now().toString())
-          }
-        })
-      })
+    // const upload = multer({
+    //     storage: multerS3({
+    //       s3: s3,
+    //       bucket: 'some-bucket',
+    //       metadata: function (req, file, cb) {
+    //         cb(null, {fieldName: file.fieldname});
+    //       },
+    //       key: function (req, file, cb) {
+    //         cb(null, Date.now().toString())
+    //       }
+    //     })
+    //   })
 
-    // let upload = multer({ storage: storage, fileFilter: imageFilter }).single('file');
+    let upload = multer({ storage: storage, fileFilter: imageFilter }).single('file');
 
-    // upload(req, res, async function (err) {
-    //     console.log("START");
+    upload(req, res, async function (err) {
+        console.log("START");
 
         
-    //     // req.file contains information of uploaded file
-    //     // req.body contains information of text fields, if there were any
-    //     const orderid = req.query.orderid;
-    //     try {
-    //         if (orderid) {
-    //             await models.Files.build({ orderid: orderid, filepath: req.file.path }).save();
-    //         }
-    //     } catch (error) {
-    //         console.log("ERROR BUILDING FILE");
-    //     }
+        // req.file contains information of uploaded file
+        // req.body contains information of text fields, if there were any
+        const orderid = req.query.orderid;
+        try {
+            if (orderid) {
+                await models.Files.build({ orderid: orderid, filepath: req.file.path }).save();
+            }
+        } catch (error) {
+            console.log("ERROR BUILDING FILE");
+        }
 
-    //     if (req.fileValidationError) {
-    //     console.log("File Validation Error");
-    //     return res.send(req.fileValidationError);
-    //     }
-    //     else if (!req.file) {
-    //     console.log("NO FILE");
-    //     return res.send('Please select an image to upload');
-    //     }
-    //     else if (err instanceof multer.MulterError) {
-    //     console.log("MULTER ERROR");
-    //     return res.send(err);
-    //     }
-    //     else if (err) {
-    //     console.log("GENERIC", err);
-    //     return res.send(err);
-    //     }
+        if (req.fileValidationError) {
+        console.log("File Validation Error");
+        return res.send(req.fileValidationError);
+        }
+        else if (!req.file) {
+        console.log("NO FILE");
+        return res.send('Please select an image to upload');
+        }
+        else if (err instanceof multer.MulterError) {
+        console.log("MULTER ERROR");
+        return res.send(err);
+        }
+        else if (err) {
+        console.log("GENERIC", err);
+        return res.send(err);
+        }
 
-    //     // Display uploaded image for user validation
-    //     res.header("Access-Control-Allow-Origin", "*");
-    //     res.send({ success: true, body: `You have uploaded this image: <hr/><img src="${req.file.path}" width="500"><hr /><a href="./">Upload another image</a>` });
-    // });
+        // Display uploaded image for user validation
+        res.header("Access-Control-Allow-Origin", "*");
+        res.send({ success: true, body: `You have uploaded this image: <hr/><img src="${req.file.path}" width="500"><hr /><a href="./">Upload another image</a>` });
+    });
 });
 
 router.get("/", async (req, res) => {
