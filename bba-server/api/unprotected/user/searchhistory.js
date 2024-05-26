@@ -142,7 +142,7 @@ async function getImages(prefix, orderID) {
         } 
 
         files.forEach(function (file) {
-            if(file.indexOf(`${prefix}-${orderID}`) !== 0) {
+            if(file.indexOf(`${prefix}-${orderID}`) === 0) {
             // Do whatever you want to do with the file
                 console.log(`${prefix}-${orderID}`, file);
                 imageArray.push(file); 
