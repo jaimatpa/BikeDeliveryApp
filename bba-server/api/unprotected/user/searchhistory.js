@@ -142,8 +142,11 @@ async function getImages(prefix, orderID) {
         } 
 
         files.forEach(function (file) {
+            if(file.indexOf(`${prefix}-${orderID}`) !== 0) {
             // Do whatever you want to do with the file
-            console.log(file); 
+                console.log(file);
+                imageArray.push(file); 
+            }
         });
     });
     return imageArray;
