@@ -99,3 +99,4 @@ bba-server/package-lock.json
 yarn.lock
 bba-client/yarn.lock
 bba-server/yarn.lock
+bba-server/public

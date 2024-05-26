@@ -14,6 +14,7 @@ const accept = process.env.UPLOAD_ACCEPT || undefined;
 
 const storage = multer.diskStorage({
   filename: (req, file, cb) => {
+    console.log('111');
     const filename =
       Math.random().toString(36).substring(2, 15) +
       Math.random().toString(36).substring(2, 15) +
