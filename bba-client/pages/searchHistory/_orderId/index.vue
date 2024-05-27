@@ -657,7 +657,6 @@ export default {
         let localDeliveryArray = [];
         let localPickupArray = [];
         console.log("IMAGES", response);
-        // 'https://images.bodhisys.io/D-Apr0020-22/637848762657544860'
         response.D.forEach((image) => {
           localDeliveryArray.push(
             `https://images.bodhisys.io/${image}`
@@ -726,7 +725,7 @@ export default {
       this.smsObject.message = output;
       this.smsObject.images = this.deliveryImages;
       console.log("MESSAGE", this.smsObject.message);
-      console.log("IMAGES", this.smsObject.images)
+      console.log("IMAGES ---->", this.smsObject.images)
 
       try {
         let emailResponse = await this.$axios.post(
@@ -787,6 +786,7 @@ export default {
       let dataToAdd = this.orderData;
       let userPositionData = this.userPosition;
 
+
       let infoMap = {
         "[customer-name]": "name",
         "[location]": "location",
@@ -811,13 +811,15 @@ export default {
       console.log(output);
       this.smsObject.message = output;
       this.smsObject.orderid = this.orderData.orderid;
+      this.smsObject.images = this.deliveryImages;
+      this.smsObject.meidaUrl = this.deliveryImages;
 
       // try {
       //     let response = await this.uploadFiles(this.smsObject);
       // } catch (error) {
       //     console.log("error", error);
       // }
-      console.log("TESTING!!!!");
+      console.log("TESTING!!!! X123");
       console.log(this.orderData);
 
       try {

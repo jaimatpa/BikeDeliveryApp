@@ -12,7 +12,7 @@ router.post("/", async (req, res) => {
   try 
   {
     //LOCAL TESTING
-      console.log("Hello from SendSMS");
+      console.log("Hello from SendSMS", req.body.mediaUrl);
 
       let response = {};
       if (req.body.mediaUrl === undefined || req.body.mediaUrl.length == 0) 

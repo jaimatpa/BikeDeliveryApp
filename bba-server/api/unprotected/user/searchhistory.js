@@ -132,7 +132,7 @@ router.get("/images", async (req, res) => {
 
 
 async function getImages(prefix, orderID) {
-    const directoryPath = path.join('/home/ubuntu/bikeapp-copy/bba-server/', 'public');
+    const directoryPath = path.join('public');
     return new Promise((resolve, reject) => {
             let imageArray = [];
         fs.readdir(directoryPath, function (err, files) {

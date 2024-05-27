@@ -189,7 +189,9 @@ export default {
             console.log(output);
             this.smsObject.message = output;
             this.smsObject.orderid = this.orderData.orderid;
-            console.log("TESTING!!!!");
+            this.smsObject.images = this.orderData.images;
+
+            console.log("TESTING!!!! dsagdsg");
             console.log(this.orderData);
 
             try {

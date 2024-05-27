@@ -367,12 +367,6 @@ export default {
           this.deliveryOrderData.color = newVal;
           this.deliveryOrderData.lock = data && data.lockId;
         }
-        // alert JSON stringify(data);
-        // alert("334: " + JSON.stringify(data));
-
-
-
-        // alert("Default color value is changed");
       }
     },
   },
@@ -486,6 +480,12 @@ export default {
     },
 
     async sendNotification() {
+      try {
+        let response = await this.uploadFiles(this.smsObject);
+      } catch (error) {
+        console.log("error", error);
+      }
+
       this.searchHistoryDialog = false;
       this.deliveryOrderDialog = false;
       this.loader = true;
@@ -517,13 +517,7 @@ export default {
       );
       this.smsObject.message = output;
       this.smsObject.orderid = this.deliveryOrderData.orderid;
-      this.smsObject.images = this.deliveryImages;
-      try {
-        let response = await this.uploadFiles(this.smsObject);
-      } catch (error) {
-        console.log("error", error);
-      }
-
+      
       try {
         let emailResponse = await this.$axios.post(
           "api/user/sendDeliveryEmail",
@@ -531,7 +525,7 @@ export default {
             params: {
               orderid: this.deliveryOrderData.orderid,
               message: this.smsObject.message,
-              images: this.smsObject.images
+              images: this.smsObject.mediaUrl
             },
           }
         );
@@ -591,7 +585,7 @@ export default {
         // 'https://images.bodhisys.io/D-Apr0020-22/637848762657544860'
         response.D.forEach((image) => {
           localDeliveryArray.push(
-            `https://images.bodhisys.io/D-${this.orderData.orderid}/${image}`
+            `https://images.bodhisys.io/d-${this.orderData.orderid}/${image}`
           );
         });
         this.deliveryImages = localDeliveryArray;
@@ -694,8 +688,10 @@ export default {
 
       for (const upload of this.uploads) {
         let uploadResponse = await this.upload(upload, counter);
+        console.log('uploadResponse', uploadResponse);
+
         messageObject.mediaUrl.push(
-          `https://images.bodhisys.io/${this.deliveryOrderData.barcode}-${counter}.jpeg`
+          `https://images.bodhisys.io/d-${this.deliveryOrderData.orderid}-${counter}.jpeg`
         );
         counter = counter + 1;
       }

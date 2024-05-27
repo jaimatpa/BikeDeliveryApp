@@ -48,31 +48,31 @@ router.post("/", async (req, res) => {
     //LOCAL TESTING
     console.log("IN RESEND");
     const orderid = req.body.orderid;
-    const deliveryOrder = await models.DeliveryOrders.findOne(
-        {
-            where:
-            {
-                orderid:orderid
-            }
-        });
+    // const deliveryOrder = await models.DeliveryOrders.findOne(
+    //     {
+    //         where:
+    //         {
+    //             orderid:orderid
+    //         }
+    //     });
 
 
     let sendTo = `+1${req.body.to}`;
 
+    console.log('sending retry sms', orderid, req.body.images)
 
     var textResponse = await client.messages.create({
       body: req.body.message,
       from: process.env.TWILIO_NUMBER,
-      to: sendTo,
+      to: sendTo
     });
     
-    const path = '/public';
     let mediaUrls = [];
-    mediaUrls.push(`https://images.bodhisys.io/${deliveryOrder.barcode}-0.jpeg`);
-    mediaUrls.push(`https://images.bodhisys.io/${deliveryOrder.barcode}-1.jpeg`);
-    mediaUrls.push(`https://images.bodhisys.io/${deliveryOrder.barcode}-2.jpeg`);
-    mediaUrls.push(`https://images.bodhisys.io/${deliveryOrder.barcode}-3.jpeg`);
-    mediaUrls.push(`https://images.bodhisys.io/${deliveryOrder.barcode}-4.jpeg`);
+    mediaUrls.push(`https://images.bodhisys.io/d-${orderid}-0.jpeg`);
+    mediaUrls.push(`https://images.bodhisys.io/d-${orderid}-1.jpeg`);
+    mediaUrls.push(`https://images.bodhisys.io/d-${orderid}-2.jpeg`);
+    mediaUrls.push(`https://images.bodhisys.io/d-${orderid}-3.jpeg`);
+    mediaUrls.push(`https://images.bodhisys.io/d-${orderid}-4.jpeg`);
 
     let mediaUrls2 = [];
 
@@ -80,6 +80,7 @@ router.post("/", async (req, res) => {
         let exist = await urlExists(url);
         if (exist) {
             mediaUrls2.push(url);
+            console.log('sending text with url', url);
         }
     });
 
@@ -89,7 +90,7 @@ router.post("/", async (req, res) => {
            .create({body: "Here are the photo(s) of the bike!", from: process.env.TWILIO_NUMBER, to: sendTo, mediaUrl: mediaUrls2})
            .then(message => console.log(message.sid));
    } catch (error) {
-
+    console.log('error sending');
    }
 
 
