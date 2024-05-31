@@ -17,14 +17,17 @@ const translateDeliveryOrder = (whereConditions = null) => {
       t1.note,
       t1.email,
       t1.stage,
-      CASE t1.stage
+      CAST(
+        CASE t1.stage
           WHEN 0 THEN -1
           WHEN 1 THEN -1
           WHEN 2 THEN 0
           WHEN 3 THEN 1
           WHEN 4 THEN 1
           ELSE t1.stage
-      END AS status,
+        END
+        AS SIGNED
+      ) AS status,
       t3.plantation AS "area",
       t1.end_date AS "endDate",
       t1.rack,
