@@ -48,7 +48,7 @@ const updateDelieveryItemByTranslation = (item) => {
   const query = `
     UPDATE reservation_items 
     SET 
-      barcode = ${item.serialbarcode},
+      barcode = '${item.serialbarcode}',
       \`status\` = ${status},
       updatedAt = '${currentDate}'
     WHERE 
