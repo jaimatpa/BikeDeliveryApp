@@ -112,13 +112,22 @@ router.put("/", async (req, res) => {
         // });
 
         const updateQuery = DeliveryItemsQuery.updateDelieveryItemByTranslation(req.body);
-        console.log(updateQuery);
         result = await models.sequelize.query(updateQuery, {
             type: models.sequelize.QueryTypes.UPDATE
         });
 
-        // return res.send(updateDeliveryItem);
-        return res.send("Delivery item updated successfully");
+        const whereConditions2 = {
+            and:{
+                id: req.body.id,
+            }
+        }
+        const query2 = DeliveryItemsQuery.translateDeliveryItems(whereConditions2);
+
+        dbRow = await models.sequelize.query(query2, {
+            type: models.sequelize.QueryTypes.UPDATE
+        });
+
+        return res.send(dbRow[0]);
     } catch (error) {
         console.log(error);
     }
