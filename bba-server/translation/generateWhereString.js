@@ -21,7 +21,7 @@ const generateWhereString = (whereConditions) => {
   const andConditions = whereConditions?.and ? processConditions(whereConditions.and, 'AND') : '';
 
   if (orConditions && andConditions) {
-    whereString = `${orConditions} OR ${andConditions}`;
+    whereString = `(${orConditions}) AND ${andConditions}`;
   } else {
     whereString = orConditions || andConditions;
   }
