@@ -1,9 +1,60 @@
 const generateWhereString = require("./generateWhereString");
 
+const Cols = [
+  'order_number',
+  'customer_id',
+  'brand_id',
+  'start_date',
+  'end_date',
+  'promo_code',
+  'stage',
+  'note',
+  'subtotal',
+  'discount_amount',
+  'tax_rate',
+  'tax_amount',
+  'total_price',
+  'paid',
+  'price_table_id',
+  'color_id',
+  'address_id',
+  'use_manual',
+  'manual_address',
+  'email',
+  'phone_number',
+  'driver_tip',
+  'createdAt',
+  'updatedAt',
+  'rack',
+  'barcode',
+  'lane',
+  'PickedUp',
+  'PickupNotes',
+  'truckID',
+  'textSent',
+  'picturesSent',
+  'customerPickedUp',
+  'readyForDriverPickup',
+  'driverDeliveredBy',
+  'driverPickedUpBy',
+  'TruckId1',
+  'StopNumber',
+  'tripID1',
+  'tripID2',
+  'tripPriority1',
+  'tripPriority2',
+  'extrasDelivered',
+  'extrasDeliveredReason',
+  'extrasPickedUp',
+  'extrasPickedUpReason',
+  'swapOrder',
+  'swapOrderDeliveryId',
+];
+
 const translateDeliveryOrder = (whereConditions = null) => {
   const query = `
     SELECT
-      t1.id,
+      t1.*,
       t1.start_date AS "date",
       CONCAT(t2.first_name, ' ', t2.last_name) AS "name",
       IF(use_manual = 1, manual_address, CONCAT(t3.number, ' ', t3.street, ' ', t3.plantation)) as location,
@@ -12,11 +63,6 @@ const translateDeliveryOrder = (whereConditions = null) => {
       t4.combination,
       t4.lock_id AS "lock",
       t1.phone_number AS mobileNo,
-      t1.createdAt,
-      t1.updatedAt,
-      t1.note,
-      t1.email,
-      t1.stage,
       CAST(
         CASE t1.stage
           WHEN 0 THEN -1
@@ -29,31 +75,7 @@ const translateDeliveryOrder = (whereConditions = null) => {
         AS SIGNED
       ) AS status,
       t3.plantation AS "area",
-      t1.end_date AS "endDate",
-      t1.rack,
-      t1.barcode,
-      t1.lane,
-      t1.PickedUp,
-      t1.PickupNotes,
-      t1.truckID,
-      t1.textSent,
-      t1.picturesSent,
-      t1.customerPickedUp,
-      t1.readyForDriverPickup,
-      t1.driverDeliveredBy,
-      t1.driverPickedUpBy,
-      t1.TruckId1,
-      t1.StopNumber,
-      t1.tripID1,
-      t1.tripID2,
-      t1.tripPriority1,
-      t1.tripPriority2,
-      t1.extrasDelivered,
-      t1.extrasDeliveredReason,
-      t1.extrasPickedUp,
-      t1.extrasPickedUpReason,
-      t1.swapOrder,
-      t1.swapOrderDeliveryId
+      t1.end_date AS "endDate"
     FROM
       reservations AS t1
       LEFT JOIN customer_customers AS t2 ON t1.customer_id = t2.id
@@ -70,7 +92,6 @@ const translateDeliveryOrder = (whereConditions = null) => {
 };
 
 const updateDeliveryOrderByTranslation = (order) => {
-  console.log(order);
   let stage = null;
   if(order.status == 0) stage = 2;
   else if(order.status >= 1) stage = 3;
@@ -114,5 +135,53 @@ const updateDeliveryOrderByTranslation = (order) => {
   return query;
 }
 
+const inseretDeliveryOrderByTranslation = (data) => {
+  const order = {...data}
 
-module.exports = { translateDeliveryOrder, updateDeliveryOrderByTranslation };
+  if(order.status == 0) order.stage = 2;
+  else if(order.status >= 1) order.stage = 3;
+
+  if(order.endDate) order.end_date = order.endDate;
+  if(order.date) order.start_date = order.date;
+  if(order.mobileNo) order.phone_number = order.mobileNo;
+  if(order.orderid) order.order_number = order.orderid;
+
+  if(order.createdAt) delete order.createdAt;
+  if(order.removedAt) delete order.removedAt;
+
+  const columns = [];
+  const values = [];
+
+  Cols.forEach(col => {
+    if (order[col]) {
+      if (col.includes('date') || col.includes('number')) {
+        columns.push(col);
+        values.push(`'${order[col]}'`)
+        console.log(col);
+        console.log(parseFloat(order[col]));
+      }else if (!isNaN(parseFloat(order[col]))) {
+        columns.push(col);
+        values.push(order[col]);
+      } else if (typeof order[col] === 'boolean') {
+        columns.push(col);
+        values.push(order[col]);
+      } else if (typeof order[col] === 'string') {
+        columns.push(col);
+        values.push(`'${order[col]}'`);
+      }
+    }
+  });
+
+  const columnsString = columns.join(', ');
+  const valuesString = values.join(', ');
+
+  const query = `
+    INSERT INTO reservations 
+    (${columnsString}) 
+    VALUES 
+    (${valuesString})
+  `;
+  return query;
+}
+
+module.exports = { translateDeliveryOrder, updateDeliveryOrderByTranslation, inseretDeliveryOrderByTranslation };

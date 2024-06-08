@@ -54,14 +54,16 @@ router.get("/", async (req, res) => {
                         like: `%${search}%`,
                     },
                 },
-                swapOrder: swapOrder
+                and: {
+                    swapOrder: swapOrder
+                }
             }
             const query = DeliveryOrderQuery.translateDeliveryOrder(whereConditions);
+            console.log(whereConditions);
             console.log(query);
             data = await models.sequelize.query(query, {
                 type: models.sequelize.QueryTypes.SELECT
             }) ;
-            console.log(data);
         } catch (error) {
             console.log(error);
         }
@@ -83,13 +85,11 @@ router.get("/", async (req, res) => {
                     }
                 }
                 const query = DeliveryOrderQuery.translateDeliveryOrder(whereConditions);
-                console.log("**************************************query");
-                console.log(query);
 
                 data = await models.sequelize.query(query, {
                     type: models.sequelize.QueryTypes.SELECT
                 }) ;
-                console.log(data);
+
             } catch (error) {
                 console.log(error);
             }

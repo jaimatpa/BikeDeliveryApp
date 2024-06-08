@@ -135,10 +135,7 @@ router.post("/", async (req,res) => {
         }
 
         // await deliveryOrder.save();
-        console.log("deliveryOrder--------------------------------", deliveryOrder);
         const updateQuery = DeliveryOrderQuery.updateDeliveryOrderByTranslation(deliveryOrder);
-        console.log("updateQuery--------------------------------");
-        console.log(updateQuery);
         result = await models.sequelize.query(updateQuery, {
             type: models.sequelize.QueryTypes.UPDATE
         });

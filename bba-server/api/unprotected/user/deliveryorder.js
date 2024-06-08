@@ -54,10 +54,22 @@ router.post("/createEquipmentSwapOrder", async (req, res) => {
         data.swapOrder = true;
         data.swapOrderDeliveryId = data.id;
 
+        if(data.location){
+            data.manual_address = data.location;
+            data.use_manual = 1;
+        }
+        if(data.deli)
         // Create a new swapOrder
-        const order = await models.DeliveryOrders.build(data).save();
+        // const order = await models.DeliveryOrders.build(data).save();
 
-        res.send(order);
+        console.log("-------- createEquipmentSwapOrder ---------");
+        const updateQuery = DeliveryOrderQuery.inseretDeliveryOrderByTranslation(data);
+        console.log("insert Query--------------------------------", updateQuery);
+        result = await models.sequelize.query(updateQuery, {
+            type: models.sequelize.QueryTypes.UPDATE
+        });
+
+        res.send(data);
     } catch (error) {
         res.send(error);
         console.log(error)
@@ -139,7 +151,7 @@ router.get("/", async (req, res) => {
                     
                     console.log("SEARCH HISTORY, W CRITERIA 1");
                     data = data.filter((record => {
-                        record.swapOrder == 0
+                        return record.swapOrder == 0 || record.swapOrder == null
                     }));
                 } else if (type === "Dashboard") {
                     data = data.filter( ( record => {
@@ -230,7 +242,6 @@ router.get("/", async (req, res) => {
         }
         else {
             const query = DeliveryOrderQuery.translateDeliveryOrder();
-
             data = await models.sequelize.query(query, {
                 type: models.sequelize.QueryTypes.SELECT
             });
