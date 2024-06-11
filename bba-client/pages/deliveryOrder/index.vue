@@ -122,7 +122,7 @@ export default {
                     align: "center",
                 },
                 {
-                    text: "PRINT",
+                    text: "PRINTED",
                     value: "printed",
                     sortable: true,
                     align: "center",
