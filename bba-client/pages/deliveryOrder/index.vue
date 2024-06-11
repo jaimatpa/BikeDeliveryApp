@@ -25,6 +25,10 @@
             {{ getLockFormat(item.lock) }}
         </template>
 
+        <template v-slot:[`item.printed`]="{ item }">
+            {{ getPrintFormat(item.printed) }}
+        </template>
+
         <!-- Actions -->
         <template v-slot:item.actions="{ item }">
             <v-icon medium color="primary" @click.stop="$router.push({ path: `/deliveryOrder/${item.orderid}` })">
@@ -115,7 +119,13 @@ export default {
                     text: "LOCK",
                     value: "lock",
                     sortable: true,
-                    align: "left",
+                    align: "center",
+                },
+                {
+                    text: "PRINT",
+                    value: "printed",
+                    sortable: true,
+                    align: "center",
                 },
                 {
                     text: "ACTION",
@@ -159,6 +169,13 @@ export default {
         },
         getLockFormat(lock) {
             if (lock) {
+                return "YES";
+            } else {
+                return "NO";
+            }
+        },
+        getPrintFormat(printed) {
+            if (printed) {
                 return "YES";
             } else {
                 return "NO";
