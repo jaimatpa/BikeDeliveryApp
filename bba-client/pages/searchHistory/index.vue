@@ -12,6 +12,12 @@
             <template v-slot:item.date="{ item }">
                 {{ getDateFormat(item.date) }}
             </template>
+            
+            <template v-slot:[`item.printed`]="{ item }">
+                <v-simple-checkbox v-model="item.printed" v-ripple>
+
+                </v-simple-checkbox>
+            </template>
 
             <template v-slot:[`item.status`]="{ item }">
                 <v-simple-checkbox v-model="item.status" v-ripple>
@@ -92,6 +98,11 @@ export default {
             {
                 text: "ORDER#",
                 value: "orderid",
+                sortable: true
+            },
+            {
+                text: "Printed?",
+                value: "printed",
                 sortable: true
             },
             {

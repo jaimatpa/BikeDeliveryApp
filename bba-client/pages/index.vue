@@ -59,6 +59,9 @@
           <template v-slot:[`item.lock`]="{ item }">
             {{ getLockFormat(item.lock) }}
           </template>
+          <template v-slot:[`item.printed`]="{ item }">
+            {{ getPrintFormat(item.printed) }}
+          </template>
           <template v-slot:[`item.textSent`]="{ item }">
             <v-simple-checkbox v-model="item.textSent" v-ripple> </v-simple-checkbox>
           </template>
@@ -135,6 +138,12 @@ export default {
           align: "left",
         },
         {
+          text: "PRINTED",
+          value: "printed",
+          sortable: true,
+          align: "center",
+        },
+        {
           text: "DELIVERED",
           value: "status",
           sortable: true,
@@ -206,6 +215,13 @@ export default {
     },
     getLockFormat(lock) {
       if (lock) {
+        return "YES";
+      } else {
+        return "NO";
+      }
+    },
+    getPrintFormat(printed) {
+      if (printed) {
         return "YES";
       } else {
         return "NO";
