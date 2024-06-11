@@ -49,6 +49,8 @@ const Cols = [
   'extrasPickedUpReason',
   'swapOrder',
   'swapOrderDeliveryId',
+  'stripe_cus_id',
+  'printed',
 ];
 
 const translateDeliveryOrder = (whereConditions = null) => {
