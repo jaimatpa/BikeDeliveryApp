@@ -39,10 +39,21 @@ router.post("/", async (req,res) => {
         //         }
         //     });
 
-        const whereConditions = {
-            and: {
-                orderid: orderid
-            },
+        let whereConditions = {};
+        if(data.id){
+            whereConditions = {
+                and: {
+                    id: data.id
+                },
+            }
+        }else if(data.orderid){
+            whereConditions = {
+                and: {
+                    orderid: orderid
+                },
+            }
+        }else{
+            res.send("No order found");
         }
         const query = DeliveryOrderQuery.translateDeliveryOrder(whereConditions);
         const dbRows = await models.sequelize.query(query, {

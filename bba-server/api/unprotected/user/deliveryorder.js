@@ -52,22 +52,51 @@ router.post("/createEquipmentSwapOrder", async (req, res) => {
 
         data.id = null;
         data.swapOrder = true;
-        data.swapOrderDeliveryId = data.id;
+        data.swapOrderDeliveryId = req.body.id;
 
         if(data.location){
             data.manual_address = data.location;
             data.use_manual = 1;
         }
-        if(data.deli)
+
+        if(data.subtotal) delete data.subtotal;
+        if(data.tax_rate) delete data.tax_rate;
+        if(data.tax_amount) delete data.tax_amount;
+        if(data.total_price) delete data.total_price;
+        if(data.paid) delete data.paid;
+        if(data.price_table_id) delete data.price_table_id;
+        if(data.textSent) delete data.textSent;
+        if(data.discount_amount) delete data.discount_amount;
+
+        data.status = 0;
+
         // Create a new swapOrder
         // const order = await models.DeliveryOrders.build(data).save();
 
-        console.log("-------- createEquipmentSwapOrder ---------");
-        const updateQuery = DeliveryOrderQuery.inseretDeliveryOrderByTranslation(data);
-        console.log("insert Query--------------------------------", updateQuery);
-        result = await models.sequelize.query(updateQuery, {
-            type: models.sequelize.QueryTypes.UPDATE
+        const whereConditions = {
+            and:{
+                orderid:{
+                    like: `%${data.orderid}%`
+                }
+            }
+        }
+        const query = DeliveryOrderQuery.translateDeliveryOrder(whereConditions);
+
+        let deliveryOrders = await models.sequelize.query(query, {
+            type: models.sequelize.QueryTypes.SELECT
         });
+        if(deliveryOrders.length > 0){
+            data.orderid = `${data.orderid}-SWAP-${deliveryOrders.length}`;
+        }else{
+            res.send('No delivery order found');
+        }
+
+        const insertQuery = DeliveryOrderQuery.inseretDeliveryOrderByTranslation(data);
+        console.log("-------- createEquipmentSwapOrder ---------", insertQuery);
+        const [newId] = await models.sequelize.query(insertQuery, {
+            type: models.sequelize.QueryTypes.INSERT
+        });
+        data.id = newId;
 
         res.send(data);
     } catch (error) {
