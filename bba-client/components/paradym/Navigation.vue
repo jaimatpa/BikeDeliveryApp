@@ -30,7 +30,7 @@
 
         <v-footer style=" position: fixed; bottom: 0; width: 100%; display: flex; justify-content: center;">
             <div style=" display: flex; align-items: center;">
-                <small>V{{ version }}</small>
+                <small>V{{ version }} {COMMIT}</small>
             </div>
         </v-footer>
     </v-navigation-drawer>
