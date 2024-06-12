@@ -1,0 +1,102 @@
+image: node:lts
+
+before_script:  
+  - apt-get update -qq && apt-get install
+  - apt install -y rsync
+  - 'which ssh-agent || ( apt-get update -y && apt-get install openssh-client -y )'
+  - eval $(ssh-agent -s)
+  - cat "$SSH_PRIVATE_KEY" | tr -d '\r' | ssh-add -
+
+#cache:
+#  paths:
+#    - node_modules/
+#    - .yarn
+
+stages:
+  - build
+  - deploy
+
+
+build dev:
+  stage: build
+  only:
+    - dev
+  script:
+    - yarn
+    - yarn generate
+
+
+build staging:
+  stage: build
+  only:
+    - staging
+  script:
+    - yarn
+    - echo "export const BOHDISYS_API_URL = 'https://api.staging.bodhisys.io';" > env.js
+    - echo "export const BOHDISYS_BASE_URL = 'https://api.staging.bodhisys.io';" >> env.js
+    - echo "export const STRIPE_PUBLIC_KEY = 'pk_live_xbuOrv8Cb4oXWPns8yJvOVnL00VroSgXDR';" >> env.js
+    - echo "export const STRIPE_PUBLIC_KEY_STAND = 'pk_live_xbuOrv8Cb4oXWPns8yJvOVnL00VroSgXDR';" >> env.js
+    - sed -i "s/{COMMIT}/$CI_COMMIT_REF_SLUG $CI_COMMIT_SHORT_SHA/g" src/screens/Home.tsx
+    - export NODE_OPTIONS=--openssl-legacy-provider 
+    - npx expo export:web
+
+
+build main:
+  stage: build
+  only:
+    - main
+  script:
+    - yarn
+    - echo "export const BOHDISYS_API_URL = 'https://api.bodhisys.io';" > env.js
+    - echo "export const BOHDISYS_BASE_URL = 'https://api.bodhisys.io';" >> env.js
+    - echo "export const STRIPE_PUBLIC_KEY = 'pk_live_xbuOrv8Cb4oXWPns8yJvOVnL00VroSgXDR';" >> env.js
+    - echo "export const STRIPE_PUBLIC_KEY_STAND = 'pk_live_xbuOrv8Cb4oXWPns8yJvOVnL00VroSgXDR';" >> env.js
+    - sed -i "s/{COMMIT}/$CI_COMMIT_REF_SLUG $CI_COMMIT_SHORT_SHA/g" src/screens/Home.tsx
+    - export NODE_OPTIONS=--openssl-legacy-provider 
+    - npx expo export:web
+
+deploy main:
+  stage: deploy
+  only:
+    - main
+  script:
+    - yarn
+    - echo "export const BOHDISYS_API_URL = 'https://api.bodhisys.io';" > env.js
+    - echo "export const BOHDISYS_BASE_URL = 'https://api.bodhisys.io';" >> env.js
+    - echo "export const STRIPE_PUBLIC_KEY = 'pk_live_xbuOrv8Cb4oXWPns8yJvOVnL00VroSgXDR';" >> env.js
+    - echo "export const STRIPE_PUBLIC_KEY_STAND = 'pk_live_xbuOrv8Cb4oXWPns8yJvOVnL00VroSgXDR';" >> env.js
+    - sed -i "s/{COMMIT}/$CI_COMMIT_REF_SLUG $CI_COMMIT_SHORT_SHA/g" src/screens/Home.tsx
+    - export NODE_OPTIONS=--openssl-legacy-provider 
+    - npm config set loglevel warn
+    - npx expo export:web
+    - rsync -azh --rsh="ssh -o StrictHostKeyChecking=no -l ubuntu" ./web-build/** ubuntu@3.22.62.199:/var/www/apps/bohdisys-mobile
+
+
+deploy staging:
+  stage: deploy
+  only:
+    - staging
+  script:
+    - yarn
+    - echo "export const BOHDISYS_API_URL = 'https://api.staging.bodhisys.io';" > env.js
+    - echo "export const BOHDISYS_BASE_URL = 'https://api.staging.bodhisys.io';" >> env.js
+    - echo "export const STRIPE_PUBLIC_KEY = 'pk_live_xbuOrv8Cb4oXWPns8yJvOVnL00VroSgXDR';" >> env.js
+    - echo "export const STRIPE_PUBLIC_KEY_STAND = 'pk_live_xbuOrv8Cb4oXWPns8yJvOVnL00VroSgXDR';" >> env.js
+    - sed -i "s/{COMMIT}/$CI_COMMIT_REF_SLUG $CI_COMMIT_SHORT_SHA/g" src/screens/Home.tsx
+    - export NODE_OPTIONS=--openssl-legacy-provider 
+    - npm config set loglevel warn
+    - npx expo export:web
+    - rsync -azh --rsh="ssh -o StrictHostKeyChecking=no -l ubuntu" ./** ubuntu@18.220.145.253:/var/www/apps/staging/bohdisys-admin
+
+deploy development:
+  stage: deploy
+  only:
+    - dev
+  script:
+    - yarn
+    - yarn generate
+    - rsync -azh --rsh="ssh -o StrictHostKeyChecking=no -l ubuntu" ./** ubuntu@3.22.62.199:/home/ubuntu/bikeapp-copy
+#    - scp -r -o StrictHostKeyChecking=no ../** ubuntu@18.220.145.253:/var/www/apps/dev/test
+#    - ssh -o StrictHostKeyChecking=no ubuntu@18.220.145.253 "cd /var/www/apps/dev/bohdisys-admin; npx expo export:web"
+
+
