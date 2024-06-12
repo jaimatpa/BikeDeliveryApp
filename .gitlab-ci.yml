@@ -32,6 +32,7 @@ deploy development:
     - dev
   script:
     - cd bba-client
+    - sed -i "s/{COMMIT}/$CI_COMMIT_REF_SLUG $CI_COMMIT_SHORT_SHA/g" components/paradym/Navigation.vue
     - yarn
     - yarn generate
     - rsync -azh --rsh="ssh -o StrictHostKeyChecking=no -l ubuntu" ./** ubuntu@3.22.62.199:/home/ubuntu/bikeapp-copy
