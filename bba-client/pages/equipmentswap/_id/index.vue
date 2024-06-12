@@ -70,14 +70,14 @@
             <v-stepper-content step="2">
                 <div>
                   <h3 class="mb-3">Pickup</h3>
-                  <v-data-table width="100%" block cols="12" xs="12" sm="12" md="12" xl="12" :headers="pickupheaders" :items="equipment" item-key="name" class="elevation-1 ma-1 mb-5">
+                  <v-data-table width="100%" block cols="12" xs="12" sm="12" md="12" xl="12" :headers="pickupheaders" :items="equipment2" item-key="name" class="elevation-1 ma-1 mb-5">
                         <template v-slot:[`item.checkPickup`]="{ item }">
                             <v-simple-checkbox v-model="item.checkPickup" v-ripple @input="saveUpdate(item)">
 
                             </v-simple-checkbox>
                         </template>
                         <template v-slot:[`item.actions`]="{ item }">
-                            <v-icon size="50" medium color="primary" @click.stop="currentItem=item;scanDialogVisible = true;cameraRender += 1">
+                            <v-icon size="50" medium color="primary" @click.stop="currentItem={...item, broken:1};scanDialogVisible = true;cameraRender += 1">
                                 mdi-barcode
                             </v-icon>
                         </template>
@@ -91,7 +91,7 @@
                             </v-simple-checkbox>
                         </template>
                         <template v-slot:[`item.actions`]="{ item }">
-                            <v-icon size="50" medium color="primary" @click.stop="currentItem=item;scanDialogVisible = true;cameraRender += 1">
+                            <v-icon size="50" medium color="primary" @click.stop="currentItem={...item, broken:0};scanDialogVisible = true;cameraRender += 1">
                                 mdi-barcode
                             </v-icon>
                         </template>
@@ -318,6 +318,7 @@ export default {
         },
       ],
       equipment: [],
+      equipment2: [],
 
       // Date field
       date: null,
@@ -409,6 +410,14 @@ export default {
 
         this.equipment = response;
 
+        let response2 = await this.$axios.$get("/api/user/deliveryItem", {
+          params: {
+            deliveryID: this.deliveryOrderData.swapOrderDeliveryId,
+          },
+        });
+
+        this.equipment2 = response2;
+
         //  this.$router.go(-1);
       } catch (err) {
         console.log("Issue in getOrderItems 1234", err.response);
@@ -416,9 +425,24 @@ export default {
     },
     async code(value) {
       console.log("CURRENTITEM", this.currentItem);
-      this.currentItem.serialbarcode = value;
-      this.currentItem.checkedDelievery = true;
-      this.saveUpdate(this.currentItem);
+      if(this.currentItem.broken == 1){
+        if(this.currentItem.serialbarcode != value){
+          this.closeScanner();
+          this.showError('You sanned a wrong item');
+        }else{
+          this.currentItem.checkPickup = true;
+          this.saveUpdate(this.currentItem);
+        }
+      }else{
+        if(this.equipment2.find(item=>item.serialbarcode == value)){
+          this.closeScanner();
+          this.showError('You sanned a broken item');
+        }else{
+          this.currentItem.serialbarcode = value;
+          this.currentItem.checkedDelievery = true;
+          this.saveUpdate(this.currentItem);
+        }
+      }
     },
     async saveUpdate(item) {
       console.log("ITEM", item);
@@ -550,6 +574,7 @@ export default {
           .$post("api/user/sendSMS", this.smsObject)
           .then(async (response) => {
             let saveData = {
+              id: this.deliveryOrderData.id,
               date: this.dateFormatted,
               name: this.deliveryOrderData.name,
               location: this.deliveryOrderData.location,
@@ -684,6 +709,7 @@ export default {
           );
 
           const saveData = {
+            id: this.orderData.id,
             date: this.dateFormatted,
             name: this.deliveryOrderData.name,
             location: this.deliveryOrderData.location,

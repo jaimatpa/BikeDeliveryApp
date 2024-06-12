@@ -15,7 +15,6 @@ router.post("/", async (req, res) => {
             }
         });
 
-
         let newDeliveryItem = await models.DeliveryItem.create({
             deliveryID: existingItem[0].dataValues.deliveryID,
             item: existingItem[0].dataValues.item,
@@ -41,13 +40,23 @@ router.post("/createEquipmentItemsSwapOrder", async (req, res) => {
 
     try {
         const data = JSON.parse(JSON.stringify(req.body));
-        data.forEach(async x=> {
+
+        for (const x of data) {
             x.id = null;
-            await models.DeliveryItem.build(x).save();
-        });
+            // await models.DeliveryItem.build(x).save();
+            x.serialbarcode = null;
+            x.status = 2;
+
+            const insertQuery = DeliveryItemsQuery.inseretDeliveryItemByTranslation(x);
+            // console.log(insertQuery);
+            const [newId] = await models.sequelize.query(insertQuery, {
+                type: models.sequelize.QueryTypes.INSERT
+            });
+            x.id = newId;
+        }
         
-        console.log(items);
-        res.send(items);
+        // console.log(data);
+        res.send(data);
     } catch (error) {
         res.send(error);
         console.log(error)
@@ -57,10 +66,8 @@ router.post("/createEquipmentItemsSwapOrder", async (req, res) => {
     //res.send(req.body);
 });
 
-
 router.put("/", async (req, res) => { 
     try {
-        console.log(req.body);
         // let existingItem = await models.DeliveryItem.findAll({
         //     where: {
         //         id: req.body.id,
@@ -73,7 +80,7 @@ router.put("/", async (req, res) => {
         //     }
         // })
 
-        
+        /* ------------------------------------------
         const whereConditions = {
             and:{
                 deliveryID: req.body.deliveryID,
@@ -86,7 +93,6 @@ router.put("/", async (req, res) => {
             type: models.sequelize.QueryTypes.SELECT
         });
 
-        console.log('items len = ', items.length)
         var count = items.length;
         var delivered = 1;
         items.forEach( item => {
@@ -99,6 +105,7 @@ router.put("/", async (req, res) => {
         else {
             console.log(`Loading items ... ${delivered} / ${count}`);
         }
+        --------------------------------------------*/
 
         // const updateDeliveryItem = await models.DeliveryItem.update({
         //     checkedDelievery: req.body.checkedDelievery,
@@ -115,6 +122,27 @@ router.put("/", async (req, res) => {
         result = await models.sequelize.query(updateQuery, {
             type: models.sequelize.QueryTypes.UPDATE
         });
+
+        if(req.body.checkedDelievery || req.body.checkPickup){
+            let status = null;
+            if(req.body.checkedDelievery) status = 2; //checked out
+            if(req.body.checkPickup){
+                if(req.body.broken) status = 4; //broken
+                else status = 3; //checked in
+            }
+
+            if(status){
+                const updateProductSatus = {
+                    barcode:req.body.serialbarcode, 
+                    status: status,
+                }
+        
+                const updateProductSatausQuery = DeliveryItemsQuery.updateProductItemStatusQuery(updateProductSatus);
+                await models.sequelize.query(updateProductSatausQuery, {
+                    type: models.sequelize.QueryTypes.UPDATE
+                });
+            }
+        }
 
         const whereConditions2 = {
             and:{
@@ -202,7 +230,6 @@ router.get("/", async (req,res) => {
         res.status(500).json("Error: " + error);
     }
 });
-
 
 router.get("/extras", async (req,res) => {
     try {

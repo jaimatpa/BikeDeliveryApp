@@ -847,6 +847,7 @@ export default {
         let response = await this.$axios.$get("/api/user/searchhistory", {
           params: {
             search: this.$route.params.orderId,
+            type: this.$route.query.type,
           },
         });
 

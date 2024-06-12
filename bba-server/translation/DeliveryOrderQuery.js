@@ -148,19 +148,27 @@ const inseretDeliveryOrderByTranslation = (data) => {
   if(order.mobileNo) order.phone_number = order.mobileNo;
   if(order.orderid) order.order_number = order.orderid;
 
-  if(order.createdAt) delete order.createdAt;
-  if(order.removedAt) delete order.removedAt;
+  const now = new Date();
+  const year = now.getFullYear();
+  const month = String(now.getMonth() + 1).padStart(2, '0');
+  const day = String(now.getDate()).padStart(2, '0');
+  const hour = String(now.getHours()).padStart(2, '0');
+  const minute = String(now.getMinutes()).padStart(2, '0');
+  const second = String(now.getSeconds()).padStart(2, '0');
+  const currentDate = `${year}-${month}-${day} ${hour}:${minute}:${second}`;
+
+  order.createdAt = currentDate;
+  order.updatedAt = currentDate;
+  console.log();
 
   const columns = [];
   const values = [];
 
   Cols.forEach(col => {
     if (order[col]) {
-      if (col.includes('date') || col.includes('number')) {
+      if (col.includes('date') || col.includes('number') || col.includes('manual_address')  || col.includes('createdAt') || col.includes('updatedAt')) {
         columns.push(col);
         values.push(`'${order[col]}'`)
-        console.log(col);
-        console.log(parseFloat(order[col]));
       }else if (!isNaN(parseFloat(order[col]))) {
         columns.push(col);
         values.push(order[col]);
