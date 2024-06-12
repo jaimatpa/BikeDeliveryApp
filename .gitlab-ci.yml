@@ -1,1 +1,41 @@
+image: node:lts
+
+before_script:  
+  - apt-get update -qq && apt-get install
+  - apt install -y rsync
+  - 'which ssh-agent || ( apt-get update -y && apt-get install openssh-client -y )'
+  - eval $(ssh-agent -s)
+  - cat "$SSH_PRIVATE_KEY" | tr -d '\r' | ssh-add -
+
+#cache:
+#  paths:
+#    - node_modules/
+#    - .yarn
+
+stages:
+  - build
+  - deploy
+
+
+build dev:
+  stage: build
+  only:
+    - dev
+  script:
+    - cd bba-client
+    - yarn
+    - yarn generate
+
+deploy development:
+  stage: deploy
+  only:
+    - dev
+  script:
+    - cd bba-client
+    - yarn
+    - yarn generate
+    - rsync -azh --rsh="ssh -o StrictHostKeyChecking=no -l ubuntu" ./** ubuntu@3.22.62.199:/home/ubuntu/bikeapp-copy
+#    - scp -r -o StrictHostKeyChecking=no ../** ubuntu@18.220.145.253:/var/www/apps/dev/test
+#    - ssh -o StrictHostKeyChecking=no ubuntu@18.220.145.253 "cd /var/www/apps/dev/bohdisys-admin; npx expo export:web"
+
 
