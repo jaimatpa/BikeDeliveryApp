@@ -73,6 +73,24 @@ router.post("/createEquipmentSwapOrder", async (req, res) => {
         // Create a new swapOrder
         // const order = await models.DeliveryOrders.build(data).save();
 
+        const whereConditions = {
+            and:{
+                orderid:{
+                    like: `%${data.orderid}%`
+                }
+            }
+        }
+        const query = DeliveryOrderQuery.translateDeliveryOrder(whereConditions);
+
+        let deliveryOrders = await models.sequelize.query(query, {
+            type: models.sequelize.QueryTypes.SELECT
+        });
+        if(deliveryOrders.length > 0){
+            data.orderid = `${data.orderid}-SWAP-${deliveryOrders.length}`;
+        }else{
+            res.send('No delivery order found');
+        }
+
         const insertQuery = DeliveryOrderQuery.inseretDeliveryOrderByTranslation(data);
         console.log("-------- createEquipmentSwapOrder ---------", insertQuery);
         const [newId] = await models.sequelize.query(insertQuery, {
