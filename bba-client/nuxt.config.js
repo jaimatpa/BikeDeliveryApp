@@ -11,6 +11,7 @@ export default {
 
   publicRuntimeConfig: {
     appName: process.env.APP_NAME,
+    bodhisysAPIURL: process.env.BODHYSIS_API_URL,
   },
 
   // Global page headers (https://go.nuxtjs.dev/config-head)

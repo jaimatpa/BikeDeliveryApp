@@ -69,17 +69,35 @@
 
             <v-stepper-content step="2">
                 <div>
+                    <v-row dense style="margin-top: 10px;">
+                        <v-col cols="6" xs="6" sm="6" md="6" xl="6">
+                            <v-text-field v-model="manualCode" label="Barcode" placeholder="Barcode" dense outlined>
+                            </v-text-field>
+                        </v-col>
+                        <v-col cols="3" xs="3" sm="3" md="3" xl="3">
+                            <v-btn block depressed color="primary" @click="manualScan">
+                                Scan
+                            </v-btn>
+                        </v-col>
+                        <v-col cols="3" xs="3" sm="3" md="3" xl="3">
+                          <v-btn block depressed color="blue" @click.stop="openScanner">
+                            <v-icon size="50" medium color="white">
+                                mdi-barcode
+                            </v-icon>
+                          </v-btn>
+                        </v-col>
+                    </v-row>
                     <v-data-table width="100%" block cols="12" xs="12" sm="12" md="12" xl="12" :headers="headers" :items="equipment" item-key="name" class="elevation-1 ma-1 mb-2">
                         <template v-slot:[`item.checkedDelievery`]="{ item }">
-                            <v-simple-checkbox v-model="item.checkedDelievery" v-ripple @input="saveUpdate(item)">
+                            <v-simple-checkbox v-model="item.checkedDelievery" v-ripple @input="saveUpdate(item)" :disabled="true">
 
                             </v-simple-checkbox>
                         </template>
-                        <template v-slot:[`item.actions`]="{ item }">
+                        <!-- <template v-slot:[`item.actions`]="{ item }">
                             <v-icon size="50" medium color="primary" @click.stop="currentItem=item;scanDialogVisible = true;cameraRender += 1">
                                 mdi-barcode
                             </v-icon>
-                        </template>
+                        </template> -->
                     </v-data-table>
 
                     <h3 class="mb-2 mt-2">Extras</h3>
@@ -220,6 +238,7 @@ import cyclePhoto from "@/assets/images/cycle@2x.png";
 
 import ThirdStepper from "@/components/delivery-order/steppers/ThirdStepper";
 import FourthStepper from "@/components/delivery-order/steppers/FourthStepper";
+const axios = require('axios');
 
 export default {
   name: "deliveryOrderDetails",
@@ -263,6 +282,8 @@ export default {
       defaultCombinationValue: "",
       defaultLockId: "",
       colorItems: [],
+      scannedItems: [],
+      manualCode: "",
       lockingData: [],
       colors: [
         "Red",
@@ -288,12 +309,12 @@ export default {
           text: "DELIVERED",
           value: "checkedDelievery",
         },
-        {
-          text: "ACTION",
-          value: "actions",
-          sortable: false,
-          align: "center",
-        },
+        // {
+        //   text: "ACTION",
+        //   value: "actions",
+        //   sortable: false,
+        //   align: "center",
+        // },
       ],
       equipment: [],
       headersextras: [{
@@ -392,10 +413,50 @@ export default {
       }
     },
     async code(value) {
-      console.log("CURRENTITEM", this.currentItem);
-      this.currentItem.serialbarcode = value;
-      this.currentItem.checkedDelievery = true;
-      this.saveUpdate(this.currentItem);
+      if(!this.scannedItems.includes(value)){
+        try {
+          const response = await axios.post("http://localhost:5000/reservation/scanbarcode",
+            {
+              reservation_id: this.deliveryOrderData.id,
+              barcode: value,
+            }
+          );
+          this.showSuccess(`${response.data.barcode} scanned successfully`)
+          this.equipment.forEach(item=>{
+            if(item.id == response.data.item_id){
+              item.serialbarcode = response.data.barcode;
+              item.checkedDelievery = 1;
+            }
+          })
+          this.scannedItems.push(value);
+        } catch (error) {
+          if(error?.response?.data?.error) this.showError(error.response.data.error);
+          else this.showError("Error ocuured")
+          this.closeScanner();
+        }
+      }else{
+      }
+    },
+    async manualScan() {
+      try {
+        const response = await axios.post("http://localhost:5000/reservation/scanbarcode",
+          {
+            reservation_id: this.deliveryOrderData.id,
+            barcode: this.manualCode,
+          }
+        );
+        this.showSuccess(`${response.data.barcode} scanned successfully`)
+        this.equipment.forEach(item=>{
+          if(item.id == response.data.item_id){
+            item.serialbarcode = response.data.barcode;
+            item.checkedDelievery = 1;
+          }
+        })
+        this.manualCode = "";
+      } catch (error) {
+        if(error?.response?.data?.error) this.showError(error.response.data.error);
+        else this.showError("Error ocuured")
+      }
     },
     async saveUpdate(item) {
       console.log("ITEM", item);
@@ -740,6 +801,10 @@ export default {
 
       return "";
     },
+    openScanner() {
+      this.scanDialogVisible = true;
+      this.cameraRender += 1
+    }
   },
 };
 </script>
