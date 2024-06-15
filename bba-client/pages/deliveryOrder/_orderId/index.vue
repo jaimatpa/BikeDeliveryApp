@@ -415,7 +415,7 @@ export default {
     async code(value) {
       if(!this.scannedItems.includes(value)){
         try {
-          const response = await axios.post("http://localhost:5000/reservation/scanbarcode",
+          const response = await axios.post(this.$config.bodhisysAPIURL+"/reservation/scanbarcode",
             {
               reservation_id: this.deliveryOrderData.id,
               barcode: value,
@@ -439,7 +439,7 @@ export default {
     },
     async manualScan() {
       try {
-        const response = await axios.post("http://localhost:5000/reservation/scanbarcode",
+        const response = await axios.post(this.$config.bodhisysAPIURL+"/reservation/scanbarcode",
           {
             reservation_id: this.deliveryOrderData.id,
             barcode: this.manualCode,
