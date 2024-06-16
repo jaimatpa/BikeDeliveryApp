@@ -1,0 +1,35 @@
+[
+  {
+    "name": "test2",
+    "theme": {
+      "primary": "#3f51b5",
+      "accent": "#8c9eff",
+      "secondary": "#b0bec5",
+      "error": "#b71c1c",
+      "info": "#4CAF50",
+      "warning": "#2196F3",
+      "success": "#4CAF50"
+    }
+  },
+  {
+    "name": "lobo_tuerto",
+    "dark": {
+      "primary": "#21CFF3",
+      "secondary": "#FF4081",
+      "accent": "#ffe18d",
+      "info": "#4CAF50",
+      "warning": "#2196F3",
+      "error": "#FB8C00",
+      "success": "#4CAF50"
+    },
+    "light": {
+      "primary": "#1976D2",
+      "secondary": "#e91e63",
+      "accent": "#30b1dc",
+      "success": "#4CAF50",
+      "info": "#2196F3",
+      "warning": "#FB8C00",
+      "error": "#FF5252"
+    }
+  }
+]

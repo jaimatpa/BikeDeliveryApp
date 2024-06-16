@@ -1,0 +1,50 @@
+{
+  "name": "bullock-bike-server",
+  "version": "1.1.0",
+  "description": "A Bullock Bike Delivery App",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "bba-client": "cd .. && cd  bba-client && yarn dev",
+    "dev": "concurrently -n 'server,client' -c 'blue,green' \"nodemon index.js\" \"yarn bba-client\"",
+    "start": "node index.js"
+  },
+  "author": "krahamatullah@paradynamix.com",
+  "license": "ISC",
+  "dependencies": {
+    "@aws-sdk/client-s3": "^3.583.0",
+    "@aws-sdk/lib-storage": "^3.583.0",
+    "@sentry/node": "^6.5.0",
+    "@sentry/tracing": "^6.5.0",
+    "adm-zip": "^0.5.5",
+    "aws-sdk": "^2.1153.0",
+    "bcrypt": "^5.0.1",
+    "consola": "^2.15.3",
+    "cookie-parser": "^1.4.6",
+    "cors": "^2.8.5",
+    "crypto-random-string": "^3.3.1",
+    "express": "^4.17.1",
+    "finale-rest": "^1.1.1",
+    "http-status": "^1.5.0",
+    "jsonwebtoken": "^8.5.1",
+    "lodash": "^4.17.21",
+    "moment": "^2.29.1",
+    "multer": "^1.4.5-lts.1",
+    "multer-s3": "^3.0.1",
+    "mysql2": "^2.2.5",
+    "node-fetch": "^3.2.6",
+    "nodemailer": "^6.6.1",
+    "request": "^2.88.2",
+    "sequelize": "^6.5.0",
+    "twilio": "^3.67.2",
+    "url-exist": "^3.0.0",
+    "vuetify-datetime-picker": "^2.1.1"
+  },
+  "devDependencies": {
+    "concurrently": "^6.2.0",
+    "dotenv": "^8.6.0",
+    "morgan": "^1.10.0",
+    "nodemon": "^2.0.7",
+    "sequelize-cli": "^6.2.0"
+  }
+}

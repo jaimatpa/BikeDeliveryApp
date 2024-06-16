@@ -1,0 +1,145 @@
+// Vuetify overrides
+.v-application .v-application--wrap {
+  .overline {
+    color: #666;
+    font-size: 0.6875rem !important;
+    letter-spacing: 0.07272727em !important;
+    line-height: 17.5px;
+    margin-bottom: -2px;
+    margin-right: 8px;
+  }
+}
+
+// Navigation Drawer
+.v-navigation-drawer__content {
+  background-color: #f5f6fa !important;
+}
+@media (max-width: 640px) {
+  .v-data-table.elevation-1.v-data-table--has-bottom.theme--light {
+    .v-data-table__wrapper {
+      table tr th,
+      td {
+        font-size: 12px;
+        padding: 0 4px;
+        height: 40px !important;
+      }
+
+      tr:hover:not(.v-data-table__expanded__content):not(.v-data-table__empty-wrapper) {
+        background: #e4f0df !important;
+      }
+
+      tbody {
+        tr:nth-child(odd) {
+          background-color: #f2f2f2 !important;
+        }
+      }
+
+      .v-data-table__progress {
+        .column {
+          height: 0 !important;
+        }
+      }
+    }
+
+    .v-data-footer {
+      justify-content: space-between !important;
+
+      .v-data-footer__pagination {
+        margin: 0 6px 0 0 !important;
+      }
+
+      .v-data-footer__icons-before,
+      .v-data-footer__icons-after {
+        margin-bottom: 5px;
+
+        .v-btn--icon.v-size--default {
+          height: 30px !important;
+          width: 30px !important;
+        }
+
+        .v-btn--round {
+          background-color: #4c9a2a !important;
+          color: #ffffff !important;
+          border-radius: 5px !important;
+        }
+
+        .v-btn--disabled {
+          background-color: #ccc !important;
+        }
+      }
+    }
+  }
+
+  .v-data-table.v-data-table--has-top.v-data-table--has-bottom.theme--light {
+    .v-data-table__wrapper {
+      table tr th,
+      td {
+        font-size: 12px;
+        padding: 0 4px;
+      }
+    }
+  }
+  .v-chip.theme--dark.v-size--default {
+    font-size: 12px;
+    padding: 0px 10px;
+    border-radius: 5px;
+  }
+
+  .v-chip.v-size--default {
+    height: 25px !important;
+  }
+
+  .v-list-item__action {
+    .v-image {
+      max-width: 30px !important;
+      max-height: 30px !important;
+    }
+  }
+
+  .v-text-field__slot {
+    .v-label {
+      color: #4c9a2a !important;
+      font-weight: bold !important;
+    }
+  }
+
+  .v-select__slot {
+    .v-label {
+      color: #4c9a2a !important;
+      font-weight: bold !important;
+    }
+  }
+
+  // stepper-override
+  .order-details-stepper {
+    height: 100%;
+
+    .v-stepper__items {
+      height: 100% !important;
+
+      .v-stepper__content {
+        padding: 15px 10px !important;
+        height: 100% !important;
+
+        .v-stepper__wrapper {
+          height: 100% !important;
+
+          .v-input {
+            padding: 5px 0 !important;
+          }
+        }
+      }
+    }
+  }
+
+  //Date Picker override
+  .v-date-picker-table {
+    .v-btn--active {
+      background-color: #4c9a2a !important;
+    }
+
+    .v-date-picker-table__current {
+      color: #4c9a2a !important;
+    }
+  }
+}
