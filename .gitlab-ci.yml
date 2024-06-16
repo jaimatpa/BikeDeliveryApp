@@ -36,6 +36,18 @@ deploy development:
     - sed -i "s/{COMMIT}/$CI_COMMIT_REF_SLUG $CI_COMMIT_SHORT_SHA/g" components/paradym/Navigation.vue
     - yarn
     - yarn generate
+    - rsync -azh --rsh="ssh -o StrictHostKeyChecking=no -l ubuntu" ./../** ubuntu@18.220.145.253:/home/ubuntu/bikeapp-copy
+    - ssh -o StrictHostKeyChecking=no ubuntu@18.220.145.253 "pm2 restart bikeapp"
+
+deploy master:
+  stage: deploy
+  only:
+    - dev
+  script:
+    - cd bba-client
+    - sed -i "s/{COMMIT}/$CI_COMMIT_REF_SLUG $CI_COMMIT_SHORT_SHA/g" components/paradym/Navigation.vue
+    - yarn
+    - yarn generate
     - rsync -azh --rsh="ssh -o StrictHostKeyChecking=no -l ubuntu" ./../** ubuntu@3.22.62.199:/home/ubuntu/bikeapp-copy
     - ssh -o StrictHostKeyChecking=no ubuntu@3.22.62.199 "pm2 restart bikeapp"
 
