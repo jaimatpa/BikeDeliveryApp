@@ -1,0 +1,80 @@
+{
+  "user": {
+    "api_message": {
+      "common": {
+        "unauthorized_request": "Unauthorized request.",
+        "invalid_email": "Invalid email address.",
+        "invalid_email_or_password": "Invalid email or password.",
+        "server_error": "Server authentication error.",
+        "email_required": "An email address is required.",
+        "password_required": "A password is required.",
+        "account_exists": "An account with this email already exists.",
+        "no_account_exists": "No account exists with this email address.",
+        "password_changed": "Password was successfully changed.",
+        "token_invalid": "The token was invalid.",
+        "account_already_verified": "This account has already been verified.",
+        "new_email_verification": "A new email verification message was sent.",
+        "email_verified": "Email address verified.",
+        "not_find_your_account": "Couldn't find your account.",
+        "wrong_password": "Wrong password. Try again?"
+      },
+      "login": {
+        "user_authenticated": "User authenticated",
+        "user_not_verified": "User not verified."
+      },
+      "register": {
+        "user_created": "User created",
+        "error_creating_new_user": "Error creating new user.",
+        "user_type_required": "User type is required."
+      },
+      "forgot_password": {
+        "account_not_exists": "No account exists with this email address.",
+        "password_reset_email": "Password reset email was sent.",
+        "not_verified": "User not verified."
+      },
+      "reset_password": {
+        "reset_token_not_provided": "A reset token was not provided.",
+        "problem_with_password": "There was a problem with the new password.",
+        "verification_token_not_provided": "The verification token provided was not found."
+      },
+      "verify_email": {
+        "verification_token_not_provided": "A verification token was not provided.",
+        "verification_token_not_found": "The verification token provided was not found.",
+        "account_not_found": "The user account was not found."
+      },
+      "all_users": {
+        "retrieving_all_users_error": "Some error occurred while retrieving users.",
+        "retrieving_all_users_success": "Retrieving All Users Successfully Done"
+      },
+      "change_password": {
+        "missing_password_data": "Missing required password data.",
+        "password_do_not_match": "Passwords do not match.",
+        "password_updated": "Password Successfully Updated",
+        "user_not_verified": "User not verified."
+      },
+      "delete_user": {
+        "not_delete_user_with_id": "Could not delete user with id= ",
+        "user_successfully_deleted": "User Successfully Deleted",
+        "maybe_user_was_not_found": "Maybe user was not found!"
+      },
+      "restore_users": {
+        "restore_all_users_error": "Some error occurred while restore users.",
+        "restore_all_users_success": "Restore All Users Successfully Done"
+      },
+      "update_user": {
+        "no_user_data_to_update": "No user data to update.",
+        "user_successfully_updated": "User Successfully Updated"
+      }
+    }
+  },
+  "web_hook": {
+    "api_message": {
+      "web_hook_url_required": "Web Hook URL is required.",
+      "web_hook_created": "Web Hook URL created",
+      "error_creating_web_hook_url": "Error creating new web hook url.",
+      "web_hook_updated": "Web Hook URL updated.",
+      "retrieving_all_web_hook_error": "Retrieving all web hooks error",
+      "retrieving_all_web_hook_success": "Retrieving all web hooks success"
+    }
+  }
+}

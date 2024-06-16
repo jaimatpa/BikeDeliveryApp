@@ -1,0 +1,24 @@
+// font import
+@import url('https://fonts.googleapis.com/css2?family=Poppins:ital,wght@0,400;0,500;0,600;0,700;1,300&display=swap');
+
+// abstracts scss
+@import 'abstracts/functions';
+@import 'abstracts/mixins';
+@import 'abstracts/variables';
+
+// base scss
+@import 'base/base';
+@import 'base/animations';
+// @import "base/typhography";
+@import 'base/utilities';
+
+// components scss
+@import 'components/user';
+
+// layout scss
+@import 'layout/navigation';
+@import 'layout/header';
+@import 'layout/footer';
+
+// pages scss
+@import 'pages/users';

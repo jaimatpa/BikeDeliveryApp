@@ -25,6 +25,7 @@ build dev:
     - cd bba-client
     - yarn
     - yarn generate
+    - ls -la
 
 deploy development:
   stage: deploy
@@ -32,10 +33,19 @@ deploy development:
     - dev
   script:
     - cd bba-client
-    - yarn
-    - yarn generate
-    - rsync -azh --rsh="ssh -o StrictHostKeyChecking=no -l ubuntu" ./** ubuntu@3.22.62.199:/home/ubuntu/bikeapp-copy
-#    - scp -r -o StrictHostKeyChecking=no ../** ubuntu@18.220.145.253:/var/www/apps/dev/test
-#    - ssh -o StrictHostKeyChecking=no ubuntu@18.220.145.253 "cd /var/www/apps/dev/bohdisys-admin; npx expo export:web"
+    - sed -i "s/{COMMIT}/$CI_COMMIT_REF_SLUG $CI_COMMIT_SHORT_SHA/g" components/paradym/Navigation.vue
+    - rsync -azh --rsh="ssh -o StrictHostKeyChecking=no -l ubuntu" ./../** ubuntu@18.220.145.253:/var/www/apps/dev/dev.mobile.bodhisys.io/
+    - ssh -o StrictHostKeyChecking=no ubuntu@18.220.145.253 "cd /var/www/apps/dev/dev.mobile.bodhisys.io/bba-client; yarn; yarn generate; pm2 restart bikeapp"
+
+deploy production:
+  stage: deploy
+  only:
+    - main
+  script:
+    - cd bba-client
+    - sed -i "s/{COMMIT}/$CI_COMMIT_REF_SLUG $CI_COMMIT_SHORT_SHA/g" components/paradym/Navigation.vue
+    - rsync -azh --rsh="ssh -o StrictHostKeyChecking=no -l ubuntu" ./../** ubuntu@3.22.62.199:/home/ubuntu/bikeapp-copy
+    - ssh -o StrictHostKeyChecking=no ubuntu@3.22.62.199 "cd /var/www/apps/dev/dev.mobile.bodhisys.io/bba-client; yarn; yarn generate; pm2 restart bikeapp"
+
 
 
