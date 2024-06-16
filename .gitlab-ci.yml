@@ -45,7 +45,7 @@ deploy production:
     - cd bba-client
     - sed -i "s/{COMMIT}/$CI_COMMIT_REF_SLUG $CI_COMMIT_SHORT_SHA/g" components/paradym/Navigation.vue
     - rsync -azh --rsh="ssh -o StrictHostKeyChecking=no -l ubuntu" ./../** ubuntu@3.22.62.199:/home/ubuntu/bikeapp-copy
-    - ssh -o StrictHostKeyChecking=no ubuntu@3.22.62.199 "cd /var/www/apps/dev/dev.mobile.bodhisys.io/bba-client; yarn; yarn generate; pm2 restart bikeapp"
+    - ssh -o StrictHostKeyChecking=no ubuntu@3.22.62.199 "cd /home/ubuntu/bikeapp-copy/bba-client; yarn; yarn generate; pm2 restart bikeapp"
 
 
 
