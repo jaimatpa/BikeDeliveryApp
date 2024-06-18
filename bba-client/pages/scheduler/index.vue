@@ -691,17 +691,18 @@ export default {
                 date: this.selectedDate
             }
 
-            await this.$axios.$post(`/api/user/trips/checkStock`, data).then( async stock => {
-                this.insufficientStockList = stock.orders
+            // await this.$axios.$post(`/api/user/trips/checkStock`, data).then( async stock => {
+            //     this.insufficientStockList = stock.orders
 
-                if(stock.outOfStock) 
-                {
-                    this.stockDialog = true;
-                }
-                else {
-                    await this.releaseTrip(selectedTrip);
-                }
-            });
+            //     if(stock.outOfStock) 
+            //     {
+            //         this.stockDialog = true;
+            //     }
+            //     else {
+            //         await this.releaseTrip(selectedTrip);
+            //     }
+            // });
+            await this.releaseTrip(selectedTrip);
         },
         async releaseTrip(trip) 
         {

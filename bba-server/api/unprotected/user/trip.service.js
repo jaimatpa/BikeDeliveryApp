@@ -1,5 +1,6 @@
 const { Op, Transaction } = require("sequelize");
 const { Trip, DeliveryOrders, EquipmentType, DeliveryItem, Truck, Notification, User } = require("./../../../models");
+const models = require("./../../../models");
 const { sendNotification } = require("../../functions/notifications");
 const DeliveryOrderQuery = require("../../../translation/DeliveryOrderQuery");
 
@@ -401,6 +402,7 @@ async function newTrip(req, res)
     const tripNumber = data.tripNumber; // Trip Object
     const truck = data.truckId; // Truck object
     const date = data.date;
+    const deliveryOrderId = data.deliveryOrderId;
     const type = data.type;
     var trip;
     var tripid;
@@ -447,36 +449,58 @@ async function newTrip(req, res)
 
                 console.log('updating existing...: ' + trip.id);
 
-                orders.forEach( async order => {
-                    await DeliveryOrders.findAll({
-                        where: [{
-                            id: order.id
-                        }]
-                    }).then( x => {
-                        x.forEach( async _order => {
+                if(type == 'delivery'){
+                    const deliveryOrder = {
+                        id: deliveryOrderId,
+                        truckID: truck.id,
+                        tripID1: trip.id
+                    }
+                    const updateQuery = DeliveryOrderQuery.updateDeliveryOrderByTranslation(deliveryOrder);
+                    result = await models.sequelize.query(updateQuery, {
+                        type: models.sequelize.QueryTypes.UPDATE,
+                        logging: true,
+                    });
+                    // console.log(updateQuery);
+                }else if(type == 'pickup'){
+                    const deliveryOrder = {
+                        id: deliveryOrderId,
+                        TruckId1: truck.id,
+                        tripID2: trip.id
+                    }
+                    const updateQuery = DeliveryOrderQuery.updateDeliveryOrderByTranslation(deliveryOrder);
+                    result = await models.sequelize.query(updateQuery, {
+                        type: models.sequelize.QueryTypes.UPDATE
+                    });
+                }
 
-                            if(type=='delivery') {
-                                _order.update({
-                                    id: order.id,
-                                    truckID: truck.id,
-                                    tripID1: trip.id
-                                });
-                            }
-                            else if(type=='pickup') {
-                                console.log('updating order truckid1 to ', order.id, truck.id);
-                                _order.update({
-                                    id: order.id,
-                                    TruckId1: truck.id,
-                                    tripID2: trip.id
-                                }); 
-                            }
+                // orders.forEach( async order => {
+                //     await DeliveryOrders.findAll({
+                //         where: [{
+                //             id: order.id
+                //         }]
+                //     }).then( x => {
+                //         x.forEach( async _order => {
+
+                //             if(type=='delivery') {
+                //                 _order.update({
+                //                     id: order.id,
+                //                     truckID: truck.id,
+                //                     tripID1: trip.id
+                //                 });
+                //             }
+                //             else if(type=='pickup') {
+                //                 console.log('updating order truckid1 to ', order.id, truck.id);
+                //                 _order.update({
+                //                     id: order.id,
+                //                     TruckId1: truck.id,
+                //                     tripID2: trip.id
+                //                 }); 
+                //             }
 
                             
-                        });
-                    });
-                });
-
-
+                //         });
+                //     });
+                // });
             }
 
  
