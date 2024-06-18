@@ -414,6 +414,8 @@ export default {
     },
     async code(value) {
       if(!this.scannedItems.includes(value)){
+        this.loader = true;
+        this.closeScanner();
         try {
           const response = await axios.post(this.$config.bodhisysAPIURL+"/reservation/scanbarcode",
             {
@@ -429,10 +431,12 @@ export default {
             }
           })
           this.scannedItems.push(value);
+          this.loader = false;
+          this.openScanner();
         } catch (error) {
           if(error?.response?.data?.error) this.showError(error.response.data.error);
           else this.showError("Error ocuured")
-          this.closeScanner();
+          this.loader = false;
         }
       }else{
       }

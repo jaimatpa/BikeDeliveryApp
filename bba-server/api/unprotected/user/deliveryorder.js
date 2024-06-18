@@ -491,10 +491,13 @@ router.get("/query", async (req, res) => {
             startOfDay = new Date(selectedDate.getFullYear(), selectedDate.getMonth(), selectedDate.getDate());
             endOfDay = new Date(selectedDate.getFullYear(), selectedDate.getMonth(), selectedDate.getDate() + 1);
             where = {
-                date: {
-                    [Op.gte]: startOfDay,
-                    [Op.lt]: endOfDay
-                },
+                and:{
+                    date: {
+                        ">=": moment(startOfDay).format("YYYY-MM-DD"),
+                        "<=": moment(endOfDay).format("YYYY-MM-DD")
+                    },
+                    status: 0
+                }
                 //status: 0 // considering 1 as true
                 //status 0 and pickup 0
             }
@@ -511,8 +514,7 @@ router.get("/query", async (req, res) => {
         
         if(type == '' || type=='deliveries')
         {
-            const query = DeliveryOrderQuery.translateDeliveryOrder();
-
+            const query = DeliveryOrderQuery.translateDeliveryOrder(where);
             let [deliveryOrders, areas, villas, streetAddresses] = await Promise.all([
                 // models.DeliveryOrders.findAll({
                 //     where,
@@ -538,13 +540,15 @@ router.get("/query", async (req, res) => {
             if(date != null && date != '')  {
 //                console.log('pickups', startOfDay, endOfDay);
                 const whereConditions = {
-                    endDate: {
-                        [Op.ne]: null,
-                        [Op.gte]: startOfDay,
-                        [Op.lt]: endOfDay
-                    }, 
+                    and:{
+                        endDate: {
+                            ">=": moment(startOfDay).format("YYYY-MM-DD"),
+                            "<=": moment(endOfDay).format("YYYY-MM-DD")
+                        },
+                        stage: 3,
+                    }
                 }
-
+                
                 const query = DeliveryOrderQuery.translateDeliveryOrder(whereConditions);
 
                 let [deliveryOrders, areas, villas, streetAddresses] = await Promise.all([
