@@ -86,9 +86,9 @@ const translateDeliveryOrder = (whereConditions = null) => {
   `;
 
   const whereClause = whereConditions ? generateWhereString(whereConditions) : '';
-  if(whereClause) {
-    return `SELECT * FROM (${query}) AS sub WHERE ${whereClause}`
-  }
+  // if(whereClause) {
+    return `SELECT * FROM (${query}) AS sub WHERE area != 'Beach & Tennis' ${whereClause?` AND ${whereClause}`: ''}`
+  // }
 
   return query;
 };
