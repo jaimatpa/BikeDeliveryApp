@@ -27,6 +27,16 @@ build dev:
     - yarn generate
     - ls -la
 
+build production:
+  stage: build
+  only:
+    - main
+  script:
+    - cd bba-client
+    - yarn
+    - yarn generate
+    - ls -la
+
 deploy development:
   stage: deploy
   only:
