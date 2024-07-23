@@ -30,6 +30,14 @@
                     Photo
                 </v-btn>
                 <p class="primary--text mt-5 mb-0">LOCATION</p>
+                <iframe
+      width="100%"
+      height="400"
+      frameborder="0"
+      style="border:0"
+      :src="mapUrl"
+      allowfullscreen
+    ></iframe>
                 <p class="body-2 secondary--text text-center">
                     {{
               userPosition !== null && deliveryOrderData !== null
@@ -110,6 +118,7 @@ import {
     mapState,
     mapMutations
 } from "vuex";
+// console.log(userPosition);
 export default {
     name: "ThirdStepper",
     props: {
@@ -193,6 +202,11 @@ export default {
         ...mapState({
             capturedImagesFromVuex: (state) => state.capturedImages,
         }),
+        mapUrl() {
+            const latitude = this.userPosition && this.userPosition.lat ? this.userPosition.lat : 0;
+            const longitude = this.userPosition && this.userPosition.lng ? this.userPosition.lng : 0;
+            return `https://www.google.com/maps/embed/v1/view?key=${this.$config.googleMapKey}&center=${latitude},${longitude}&zoom=15`;
+        },
     },
     methods: {
         ...mapMutations(["SET_CAPTURED_PICKUP_IMAGES_IN_VUEX"]),
