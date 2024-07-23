@@ -391,6 +391,19 @@
             </v-img>
           </v-col>
         </v-row>
+        
+        <v-row class="mt-5">
+          <v-col cols="12" xs="12" sm="12" md="6" xl="6"> 
+            <h1 class="text-h5 mb-4">Locations</h1>
+          </v-col>
+        </v-row>
+
+        <v-row v-if="orderData.lat">
+            <v-col cols="12" xs="12" sm="12" md="12" xl="12" class="d-flex flex-column justify-center align-center">
+                <div ref="map" style="width: 100%; height: 400px;"></div>
+            </v-col>
+        </v-row>
+
         <v-row>
           <v-col cols="12" xs="12" sm="12" md="12" xl="12">
             <v-btn
@@ -484,6 +497,7 @@
 import _ from "lodash";
 import moment from "moment";
 import { mapActions } from "vuex";
+import { Loader } from '@googlemaps/js-api-loader';
 
 import Page from "@/components/paradym/Page";
 
@@ -500,6 +514,29 @@ export default {
   },
   async mounted() {
     await this.getOrderDetails();
+
+    const loader = new Loader({
+      apiKey: this.$config.googleMapKey,
+      version: 'weekly',
+    });
+
+    console.log("loader----------------", loader)
+    loader.load().then(() => {
+      const map = new google.maps.Map(this.$refs.map, {
+        center: { lat: this.orderData.lat, lng: this.orderData.lng },
+        zoom: 15,
+        // Add any additional options for the map here
+      });
+
+      // Optionally, you can add markers or other elements to the map
+      const marker = new google.maps.Marker({
+        position: { lat: this.orderData.lat, lng: this.orderData.lng  },
+        map: map,
+        title: 'Marker Title',
+      });
+    });
+
+
     await this.getOrderExtras();
     await this.getOrderItems();
     await this.getMsgTemplate();
@@ -514,6 +551,7 @@ export default {
     this.messages = await this.$axios.$get("/api/user/twilio/", {
       params: searchParam,
     });
+
   },
   computed: {
     isMobile() {

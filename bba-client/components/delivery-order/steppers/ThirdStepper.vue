@@ -30,22 +30,13 @@
                     Photo
                 </v-btn>
                 <p class="primary--text mt-5 mb-0">LOCATION</p>
-                <iframe
-      width="100%"
-      height="400"
-      frameborder="0"
-      style="border:0"
-      :src="mapUrl"
-      allowfullscreen
-    ></iframe>
                 <p class="body-2 secondary--text text-center">
-                    {{
-              userPosition !== null && deliveryOrderData !== null
-                ? `Your Location is: ${deliveryOrderData &&
-                    deliveryOrderData.location}. Your Position is lat: ${userPosition &&
-                    userPosition.lat} lng: ${userPosition && userPosition.lng}`
-                : "No Location Found"
-            }}
+                    {{userPosition !== null && deliveryOrderData !== null
+                        ? `Your Location is: ${deliveryOrderData &&
+                            deliveryOrderData.location}. Your Position is lat: ${userPosition &&
+                            userPosition.lat} lng: ${userPosition && userPosition.lng}`
+                        : "No Location Found"
+                    }}
                 </p>
             </v-col>
         </v-row>
@@ -77,6 +68,13 @@
             </v-col>
         </v-row>
     </div>
+    <!-- <div>
+        <v-row>
+            <v-col cols="12" xs="12" sm="12" md="12" xl="12" class="d-flex flex-column justify-center align-center">
+                <div ref="map" style="width: 100%; height: 400px;"></div>
+            </v-col>
+        </v-row>
+    </div> -->
 
     <CameraModal v-if="open_camera_module" :deliveryNumber="this.deliveryOrderData.barcode" :show="open_camera_module" @cancel="handleCancel" @captured-camera-images="saveCameraImages" :multipleUpload="true" />
 
@@ -118,7 +116,8 @@ import {
     mapState,
     mapMutations
 } from "vuex";
-// console.log(userPosition);
+const axios = require('axios');
+
 export default {
     name: "ThirdStepper",
     props: {
@@ -177,6 +176,16 @@ export default {
         window.addEventListener("resize", this.resize);
         this.resize();
         console.log(this.deliveryOrderData);
+
+        const script = document.createElement('script');
+        script.src = `https://maps.googleapis.com/maps/api/js?key=${this.$config.googleMapKey}`;
+        script.async = true;
+        script.defer = true;
+        document.head.appendChild(script);
+        
+        script.onload = () => {
+            // this.initMap();
+        };
     },
 
     watch: {
@@ -202,16 +211,39 @@ export default {
         ...mapState({
             capturedImagesFromVuex: (state) => state.capturedImages,
         }),
-        mapUrl() {
-            const latitude = this.userPosition && this.userPosition.lat ? this.userPosition.lat : 0;
-            const longitude = this.userPosition && this.userPosition.lng ? this.userPosition.lng : 0;
-            return `https://www.google.com/maps/embed/v1/view?key=${this.$config.googleMapKey}&center=${latitude},${longitude}&zoom=15`;
-        },
     },
     methods: {
         ...mapMutations(["SET_CAPTURED_PICKUP_IMAGES_IN_VUEX"]),
 
+        initMap() {
+            this.map = new google.maps.Map(this.$refs.map, {
+                center: {
+                lat: this.userPosition.lat,
+                lng: this.userPosition.lng,
+                },
+                zoom: 15,
+            });
+
+            this.marker = new google.maps.Marker({
+                position: {
+                lat: this.userPosition.lat,
+                lng: this.userPosition.lng,
+                },
+                map: this.map,
+                title: 'User position',
+            });
+        },
+
         handleGoToNextStepper() {
+            // console.log("this.deliveryOrderData", this.deliveryOrderData);
+            // console.log(this.userPosition);
+            const response = axios.post(this.$config.bodhisysAPIURL+"/reservations/updateposition",
+                {
+                    id: this.deliveryOrderData.id,
+                    lat: this.userPosition.lat,
+                    lng: this.userPosition.lng,
+                }
+            );
             this.SET_CAPTURED_PICKUP_IMAGES_IN_VUEX(this.local_files_to_upload);
             this.$emit("set-delivery-stepper", 4);
         },
