@@ -11,6 +11,7 @@ export default {
 
   publicRuntimeConfig: {
     appName: process.env.APP_NAME,
+    googleMapKey: process.env.GOOGLE_MAP_KEY,
     bodhisysAPIURL: process.env.BODHYSIS_API_URL,
   },
 
