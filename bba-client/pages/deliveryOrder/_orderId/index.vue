@@ -714,10 +714,20 @@ export default {
 
       try {
         let pictureName = `d-${this.deliveryOrderData.orderid}-${pictureNumber}`;
-        let result = await this.$axios.$post(
-          `/api/user/upload?orderid=${pictureName}`,
-          formData
-        );
+        let result;
+
+        if (navigator.onLine) {
+          result = await this.$axios.$post(
+            `/api/user/upload?orderid=${pictureName}`,
+            formData
+          );
+        } else {
+          // Store the upload data in the queue if offline
+          const uploadQueue = JSON.parse(localStorage.getItem('uploadQueue')) || [];
+          uploadQueue.push({ pictureName, formData });
+          localStorage.setItem('uploadQueue', JSON.stringify(uploadQueue));
+          console.log('Image added to queue. Waiting for internet connection to upload.');
+        }
 
         if (result.success) {
           console.log(

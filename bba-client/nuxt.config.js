@@ -13,6 +13,7 @@ export default {
     appName: process.env.APP_NAME,
     googleMapKey: process.env.GOOGLE_MAP_KEY,
     bodhisysAPIURL: process.env.BODHYSIS_API_URL,
+    baseURL: process.env.API_URL
   },
 
   // Global page headers (https://go.nuxtjs.dev/config-head)
@@ -45,6 +46,7 @@ export default {
     { src: "~/plugins/QReader.js", mode: "client" },
     { src: "~/plugins/barCode.js", ssr: false, mode: "client" },
     { src: "~/plugins/dateTimePicker.js", ssr: false, mode: "client" },
+    { src: "~/plugins/queuedUploads.js", ssr: false, mode: "client" },
     // { src: "~/plugins/barCode.js", mode: "client", ssr: false },
   ],
 
