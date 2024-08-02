@@ -1,8 +1,8 @@
 const axios = require('axios');
-const config = useRuntimeConfig();
-alert();
 
-export default function ({ app }) {
+export default ({ store, app, $vuetify }) => {
+  const config = app.$config;
+
   const uploadPendingImages = async function() {
     const uploadQueue = JSON.parse(localStorage.getItem('uploadQueue')) || [];
     const successfulUploads = [];
@@ -39,6 +39,7 @@ export default function ({ app }) {
     }
   };
 
-  window.addEventListener('online', handleNetworkChange);
-  alert();
+  app.mounted = async () => {
+    window.addEventListener('online', handleNetworkChange);
+  }
 }
