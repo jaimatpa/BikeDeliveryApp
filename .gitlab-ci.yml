@@ -1,9 +1,9 @@
 image: node:lts
 
-before_script:  
+before_script:
   - apt-get update -qq && apt-get install
   - apt install -y rsync
-  - 'which ssh-agent || ( apt-get update -y && apt-get install openssh-client -y )'
+  - "which ssh-agent || ( apt-get update -y && apt-get install openssh-client -y )"
   - eval $(ssh-agent -s)
   - cat "$SSH_PRIVATE_KEY" | tr -d '\r' | ssh-add -
 
@@ -50,5 +50,3 @@ deploy production:
     - sed -i "s/{COMMIT}/$CI_COMMIT_REF_SLUG $CI_COMMIT_SHORT_SHA/g" components/paradym/Navigation.vue
     - rsync -azh --rsh="ssh -o StrictHostKeyChecking=no -l gitlab" ./../** gitlab@192.168.13.158:/var/storage/apps/bodhisys/apps/bikeapp-copy
     - ssh -o StrictHostKeyChecking=no gitlab@192.168.13.158 "cd /var/storage/apps/bodhisys/apps/bikeapp-copy/bba-client; yarn; yarn generate; pm2 restart bikeapp"
-
-
