@@ -7,15 +7,9 @@ before_script:
   - eval $(ssh-agent -s)
   - cat "$SSH_PRIVATE_KEY" | tr -d '\r' | ssh-add -
 
-#cache:
-#  paths:
-#    - node_modules/
-#    - .yarn
-
 stages:
   - build
   - deploy
-
 
 build dev:
   stage: build
@@ -45,7 +39,7 @@ deploy development:
     - cd bba-client
     - sed -i "s/{COMMIT}/$CI_COMMIT_REF_SLUG $CI_COMMIT_SHORT_SHA/g" components/paradym/Navigation.vue
     - rsync -azh --rsh="ssh -o StrictHostKeyChecking=no -l gitlab" ./../** gitlab@192.168.13.158:/var/storage/apps/bodhisys/apps-dev/bikeapp-copy
-    - ssh -o StrictHostKeyChecking=no ubuntu@192.168.13.158 "cd /var/storage/apps/bodhisys/apps-dev/bikeapp-copy/bba-client; yarn; yarn generate; pm2 restart bikeapp"
+    - ssh -o StrictHostKeyChecking=no gitlab@192.168.13.158 "cd /var/storage/apps/bodhisys/apps-dev/bikeapp-copy/bba-client; yarn; yarn generate; pm2 restart bikeapp"
 
 deploy production:
   stage: deploy
