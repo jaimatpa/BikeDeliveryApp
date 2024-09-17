@@ -1,230 +1,245 @@
 <template lang="html">
-<Page :title="!isMobile ? 'Delivery Order Details' : ''">
+  <Page :title="!isMobile ? 'Delivery Order Details' : ''">
     <v-stepper v-model="deliveryStepper" class="order-details-stepper">
-        <v-stepper-items>
-            <!-- First Stepper -->
-            <v-stepper-content step="1">
-                <div class="d-flex flex-column justify-space-between" style="height: 100%">
-                    <div class="mt-1">
-                        <v-row>
-                            <v-col cols="12" xs="12" sm="12" md="6" xl="6">
-                                <v-text-field v-model="deliveryOrderData.orderid" label="ORDER #" placeholder="Order" readonly dense outlined>
-                                </v-text-field>
-                            </v-col>
-                            <v-col cols="12" xs="12" sm="12" md="6" xl="6">
-                                <v-menu ref="menu1" v-model="menu1" :close-on-content-click="false" transition="scale-transition" offset-y max-width="290px" min-width="auto">
-                                    <template v-slot:activator="{ on, attrs }">
-                                        <v-text-field v-model="dateFormatted" label="Date" hint="MM/DD/YYYY format" persistent-hint v-bind="attrs" @blur="date = parseDate(dateFormatted)" v-on="on" readonly outlined dense></v-text-field>
-                                    </template>
-                                    <v-date-picker v-model="date" no-title @input="menu1 = false"></v-date-picker>
-                                </v-menu>
-                            </v-col>
-                        </v-row>
-                        <v-row>
-                            <v-col cols="12" xs="12" sm="12" md="6" xl="6">
-                                <v-text-field v-model="deliveryOrderData.name" label="NAME" placeholder="Name" readonly dense outlined>
-                                </v-text-field>
-                            </v-col>
+      <v-stepper-items>
+        <!-- First Stepper -->
+        <v-stepper-content step="1">
+          <div class="d-flex flex-column justify-space-between" style="height: 100%">
+            <div class="mt-1">
+              <v-row>
+                <v-col cols="12" xs="12" sm="12" md="6" xl="6">
+                  <v-text-field v-model="deliveryOrderData.orderid" label="ORDER #" placeholder="Order" readonly dense
+                    outlined>
+                  </v-text-field>
+                </v-col>
+                <v-col cols="12" xs="12" sm="12" md="6" xl="6">
+                  <v-menu ref="menu1" v-model="menu1" :close-on-content-click="false" transition="scale-transition"
+                    offset-y max-width="290px" min-width="auto">
+                    <template v-slot:activator="{ on, attrs }">
+                      <v-text-field v-model="dateFormatted" label="Date" hint="MM/DD/YYYY format" persistent-hint
+                        v-bind="attrs" @blur="date = parseDate(dateFormatted)" v-on="on" readonly outlined
+                        dense></v-text-field>
+                    </template>
+                    <v-date-picker v-model="date" no-title @input="menu1 = false"></v-date-picker>
+                  </v-menu>
+                </v-col>
+              </v-row>
+              <v-row>
+                <v-col cols="12" xs="12" sm="12" md="6" xl="6">
+                  <v-text-field v-model="deliveryOrderData.name" label="NAME" placeholder="Name" readonly dense
+                    outlined>
+                  </v-text-field>
+                </v-col>
 
-                            <v-col cols="12" xs="12" sm="12" md="6" xl="6">
-                                <v-text-field v-model="deliveryOrderData.location" label="LOCATION" placeholder="Location" readonly dense outlined>
-                                </v-text-field>
-                            </v-col>
-                        </v-row>
-                        <v-row>
-                            <v-col cols="12" xs="12" sm="12" md="6" xl="6">
-                                <v-select :items="colorItems" v-model="defaultColorValue" label="Color" dense outlined></v-select>
-<!--                                <pre>{{ colorItems }}</pre>-->
-                            </v-col>
-                            <v-col cols="12" xs="12" sm="12" md="6" xl="6">
-                                <v-text-field v-model="defaultCombinationValue" label="COMBINATION" placeholder="Combination" readonly dense outlined>
-                                </v-text-field>
-                            </v-col>
-                        </v-row>
-                        <v-row cols="12" xs="12" sm="12" md="12" xl="12">
-                            <v-textarea v-model="deliveryOrderData.note" label="NOTES" placeholder="NOTES" readonly dense outlined>
-                            </v-textarea>
-                        </v-row>
-                    </div>
-                    <div>
-                        <!-- First Stepper Button -->
-                        <v-row>
-                            <v-col cols="12" xs="12" sm="12" md="6" xl="6">
-                                <v-btn block depressed color="error" @click.stop="deliveryCancelOrderDialog = true">
-                                    Cancel
-                                </v-btn>
-                            </v-col>
-                            <v-col cols="12" xs="12" sm="12" md="6" xl="6">
-                                <v-btn :disabled="isNextButtonDisabled" block depressed color="primary" @click.stop="deliveryStepper = 2">
-                                    Next
-                                    <v-icon dark>
-                                        mdi-chevron-right
-                                    </v-icon>
-                                </v-btn>
-                            </v-col>
-                        </v-row>
-                    </div>
-                </div>
-            </v-stepper-content>
+                <v-col cols="12" xs="12" sm="12" md="6" xl="6">
+                  <v-text-field v-model="deliveryOrderData.location" label="LOCATION" placeholder="Location" readonly
+                    dense outlined>
+                  </v-text-field>
+                </v-col>
+              </v-row>
+              <v-row>
+                <v-col cols="12" xs="12" sm="12" md="6" xl="6">
+                  <v-select :items="colorItems" v-model="defaultColorValue" label="Color" dense outlined></v-select>
+                  <!--                                <pre>{{ colorItems }}</pre>-->
+                </v-col>
+                <v-col cols="12" xs="12" sm="12" md="6" xl="6">
+                  <v-text-field v-model="defaultCombinationValue" label="COMBINATION" placeholder="Combination" readonly
+                    dense outlined>
+                  </v-text-field>
+                </v-col>
+              </v-row>
+              <v-row cols="12" xs="12" sm="12" md="12" xl="12">
+                <v-textarea v-model="deliveryOrderData.note" label="NOTES" placeholder="NOTES" readonly dense outlined>
+                </v-textarea>
+              </v-row>
+            </div>
+            <div>
+              <!-- First Stepper Button -->
+              <v-row>
+                <v-col cols="12" xs="12" sm="12" md="6" xl="6">
+                  <v-btn block depressed color="error" @click.stop="deliveryCancelOrderDialog = true">
+                    Cancel
+                  </v-btn>
+                </v-col>
+                <v-col cols="12" xs="12" sm="12" md="6" xl="6">
+                  <v-btn :disabled="isNextButtonDisabled" block depressed color="primary"
+                    @click.stop="deliveryStepper = 2">
+                    Next
+                    <v-icon dark>
+                      mdi-chevron-right
+                    </v-icon>
+                  </v-btn>
+                </v-col>
+              </v-row>
+            </div>
+          </div>
+        </v-stepper-content>
 
-            <v-stepper-content step="2">
-                <div>
-                    <v-row dense style="margin-top: 10px;">
-                        <v-col cols="6" xs="6" sm="6" md="6" xl="6">
-                            <v-text-field v-model="manualCode" label="Barcode" placeholder="Barcode" dense outlined>
-                            </v-text-field>
-                        </v-col>
-                        <v-col cols="3" xs="3" sm="3" md="3" xl="3">
-                            <v-btn block depressed color="primary" @click="manualScan">
-                                Scan
-                            </v-btn>
-                        </v-col>
-                        <v-col cols="3" xs="3" sm="3" md="3" xl="3">
-                          <v-btn block depressed color="blue" @click.stop="openScanner">
-                            <v-icon size="50" medium color="white">
-                                mdi-barcode
-                            </v-icon>
-                          </v-btn>
-                        </v-col>
-                    </v-row>
-                    <v-data-table width="100%" block cols="12" xs="12" sm="12" md="12" xl="12" :headers="headers" :items="equipment" item-key="name" class="elevation-1 ma-1 mb-2">
-                        <template v-slot:[`item.checkedDelievery`]="{ item }">
-                            <v-simple-checkbox v-model="item.checkedDelievery" v-ripple @input="saveUpdate(item)" :disabled="true">
+        <v-stepper-content step="2">
+          <div>
+            <v-row dense style="margin-top: 10px;">
+              <v-col cols="6" xs="6" sm="6" md="6" xl="6">
+                <v-text-field v-model="manualCode" label="Barcode" placeholder="Barcode" dense outlined>
+                </v-text-field>
+              </v-col>
+              <v-col cols="3" xs="3" sm="3" md="3" xl="3">
+                <v-btn block depressed color="primary" @click="manualScan">
+                  Scan
+                </v-btn>
+              </v-col>
+              <v-col cols="3" xs="3" sm="3" md="3" xl="3">
+                <v-btn block depressed color="blue" @click.stop="openScanner">
+                  <v-icon size="50" medium color="white">
+                    mdi-barcode
+                  </v-icon>
+                </v-btn>
+              </v-col>
+            </v-row>
+            <v-data-table width="100%" block cols="12" xs="12" sm="12" md="12" xl="12" :headers="headers"
+              :items="equipment" item-key="name" class="elevation-1 ma-1 mb-2">
+              <template v-slot:[`item.checkedDelievery`]="{ item }">
+                <v-simple-checkbox v-model="item.checkedDelievery" v-ripple @input="saveUpdate(item)" :disabled="true">
 
-                            </v-simple-checkbox>
-                        </template>
-                        <!-- <template v-slot:[`item.actions`]="{ item }">
+                </v-simple-checkbox>
+              </template>
+              <!-- <template v-slot:[`item.actions`]="{ item }">
                             <v-icon size="50" medium color="primary" @click.stop="currentItem=item;scanDialogVisible = true;cameraRender += 1">
                                 mdi-barcode
                             </v-icon>
                         </template> -->
-                    </v-data-table>
+            </v-data-table>
 
-                    <h3 class="mb-2 mt-2">Extras</h3>
-                    <v-data-table width="100%" block cols="12" xs="12" sm="12" md="12" xl="12" :headers="headersextras" :items="extras" item-key="name" class="elevation-6 ma-1 mb-2">
-                    </v-data-table>
-                    
-                    <v-row>
-                      <v-col cols="12" xs="12" sm="12" md="12" xl="12">
-                          <v-checkbox label="Unable to deliver all extra items" v-model="deliveryOrderData.extrasDelivered" v-ripple></v-checkbox>
-                          <v-textarea label="Reason why you can't deliver all extra items."
-                                      visible
-                                      v-model="deliveryOrderData.extrasDeliveredReason"
-                                      :disabled="!deliveryOrderData.extrasDelivered"
-                                      :v-show="deliveryOrderData.extrasDelivered"
-                                      hide-details
-                                      ></v-textarea>
-                      </v-col>
-                      
-                    </v-row>
-                    <v-row>
-                        <v-col cols="12" xs="12" sm="12" md="6" xl="6">
-                            <v-btn block depressed color="accent" @click.stop="deliveryStepper = 1">
-                                Back
-                            </v-btn>
-                        </v-col>
-                        <v-col cols="12" xs="12" sm="12" md="6" xl="6">
-                            <v-btn block depressed color="primary" @click.stop="deliveryStepper = 3">
-                                Next
-                            </v-btn>
-                        </v-col>
-                    </v-row>
-                </div>
-            </v-stepper-content>
+            <h3 class="mb-2 mt-2">Extras</h3>
+            <v-data-table width="100%" block cols="12" xs="12" sm="12" md="12" xl="12" :headers="headersextras"
+              :items="extras" item-key="name" class="elevation-6 ma-1 mb-2">
+            </v-data-table>
 
-            <!-- Third Stepper -->
-            <v-stepper-content step="3">
-                <ThirdStepper ref="thirdStep" @set-delivery-stepper="setDelivaryStepper" :deliveryOrderData="deliveryOrderData" :userPosition="userPosition" />
-            </v-stepper-content>
+            <v-row>
+              <v-col cols="12" xs="12" sm="12" md="12" xl="12">
+                <v-checkbox label="Unable to deliver all extra items" v-model="deliveryOrderData.extrasDelivered"
+                  v-ripple></v-checkbox>
+                <v-textarea label="Reason why you can't deliver all extra items." visible
+                  v-model="deliveryOrderData.extrasDeliveredReason" :disabled="!deliveryOrderData.extrasDelivered"
+                  :v-show="deliveryOrderData.extrasDelivered" hide-details></v-textarea>
+              </v-col>
 
-            <!-- Fourth Stepper -->
-            <v-stepper-content step="4">
-                <FourthStepper :deliveryOrderData="deliveryOrderData" :cyclePhoto="cyclePhoto" @set-delivery-stepper="setDelivaryStepper" @set-delivery-order-dialog="setDelivaryDialog" @setUploadFiles="setUploadFiles" />
-            </v-stepper-content>
-        </v-stepper-items>
+            </v-row>
+            <v-row>
+              <v-col cols="12" xs="12" sm="12" md="6" xl="6">
+                <v-btn block depressed color="accent" @click.stop="deliveryStepper = 1">
+                  Back
+                </v-btn>
+              </v-col>
+              <v-col cols="12" xs="12" sm="12" md="6" xl="6">
+                <v-btn block depressed color="primary" @click.stop="deliveryStepper = 3">
+                  Next
+                </v-btn>
+              </v-col>
+            </v-row>
+          </div>
+        </v-stepper-content>
+
+        <!-- Third Stepper -->
+        <v-stepper-content step="3">
+          <ThirdStepper ref="thirdStep" @set-delivery-stepper="setDelivaryStepper"
+            :deliveryOrderData="deliveryOrderData" :userPosition="userPosition" />
+        </v-stepper-content>
+
+        <!-- Fourth Stepper -->
+        <v-stepper-content step="4">
+          <FourthStepper :deliveryOrderData="deliveryOrderData" :cyclePhoto="cyclePhoto"
+            @set-delivery-stepper="setDelivaryStepper" @set-delivery-order-dialog="setDelivaryDialog"
+            @setUploadFiles="setUploadFiles" />
+        </v-stepper-content>
+      </v-stepper-items>
     </v-stepper>
 
     <!-- Search History Dialog -->
-    <v-dialog v-model="deliveryOrderDialog" transition="dialog-bottom-transition" max-width="350" content-class="order-details-dialog">
-        <v-card>
-            <v-toolbar dense color="primary" dark elevation="0">
-                <v-toolbar-title>Send</v-toolbar-title>
-                <v-spacer />
-                <v-btn icon dark @click.stop="deliveryOrderDialog = false">
-                    <v-icon>mdi-close</v-icon>
-                </v-btn>
-            </v-toolbar>
+    <v-dialog v-model="deliveryOrderDialog" transition="dialog-bottom-transition" max-width="350"
+      content-class="order-details-dialog">
+      <v-card>
+        <v-toolbar dense color="primary" dark elevation="0">
+          <v-toolbar-title>Send</v-toolbar-title>
+          <v-spacer />
+          <v-btn icon dark @click.stop="deliveryOrderDialog = false">
+            <v-icon>mdi-close</v-icon>
+          </v-btn>
+        </v-toolbar>
 
-            <v-card-text class="my-5 text-center">
-                <p class="title mb-3 secondary--text sure-title">
-                    Are you sure you want to send this information to this number?
-                    {{smsObject.to}}
-                    <v-btn class="mx-2" icon color="primary" @click="editNumber=!editNumber">
-                        <v-icon small dark>
-                            mdi-pencil
-                        </v-icon>
-                    </v-btn>
-                </p>
-                <v-text-field v-if="editNumber" v-model="smsObject.to" append-icon="mdi-mobile" label="You can change the number" single-line outlined dense clearable class="mb-5 order-search-text-field" :rules="[rules.required]"></v-text-field>
+        <v-card-text class="my-5 text-center">
+          <p class="title mb-3 secondary--text sure-title">
+            Are you sure you want to send this information to this number?
+            {{ smsObject.to }}
+            <v-btn class="mx-2" icon color="primary" @click="editNumber = !editNumber">
+              <v-icon small dark>
+                mdi-pencil
+              </v-icon>
+            </v-btn>
+          </p>
+          <v-text-field v-if="editNumber" v-model="smsObject.to" append-icon="mdi-mobile"
+            label="You can change the number" single-line outlined dense clearable class="mb-5 order-search-text-field"
+            :rules="[rules.required]"></v-text-field>
 
-                <div class="d-flex flex-column">
-                    <v-btn :disabled="smsObject.to==='' ||smsObject.to===null " class="ma-2" color="primary" @click="sendNotification()">
-                        Confirm
-                    </v-btn>
-                    <v-btn class="ma-2" outlined color="error" @click.stop="deliveryOrderDialog = false">
-                        Cancel
-                    </v-btn>
-                </div>
-            </v-card-text>
-        </v-card>
+          <div class="d-flex flex-column">
+            <v-btn :disabled="smsObject.to === '' || smsObject.to === null" class="ma-2" color="primary"
+              @click="sendNotification()">
+              Confirm
+            </v-btn>
+            <v-btn class="ma-2" outlined color="error" @click.stop="deliveryOrderDialog = false">
+              Cancel
+            </v-btn>
+          </div>
+        </v-card-text>
+      </v-card>
     </v-dialog>
 
     <!-- Delivery Cancel Dialog -->
-    <v-dialog v-model="deliveryCancelOrderDialog" transition="dialog-bottom-transition" max-width="350" content-class="order-details-dialog">
-        <v-card>
-            <v-toolbar dense color="error" dark elevation="0">
-                <v-toolbar-title>Cancel Delivery</v-toolbar-title>
-                <v-spacer />
-                <v-btn icon dark @click.stop="deliveryCancelOrderDialog = false">
-                    <v-icon>mdi-close</v-icon>
-                </v-btn>
-            </v-toolbar>
+    <v-dialog v-model="deliveryCancelOrderDialog" transition="dialog-bottom-transition" max-width="350"
+      content-class="order-details-dialog">
+      <v-card>
+        <v-toolbar dense color="error" dark elevation="0">
+          <v-toolbar-title>Cancel Delivery</v-toolbar-title>
+          <v-spacer />
+          <v-btn icon dark @click.stop="deliveryCancelOrderDialog = false">
+            <v-icon>mdi-close</v-icon>
+          </v-btn>
+        </v-toolbar>
 
-            <v-card-text class="my-5 text-center">
-                <p class="title mb-3 secondary--text sure-title">
-                    Are you sure you want to cancel this delivery order?
-                </p>
+        <v-card-text class="my-5 text-center">
+          <p class="title mb-3 secondary--text sure-title">
+            Are you sure you want to cancel this delivery order?
+          </p>
 
-                <div class="d-flex flex-column">
-                    <v-btn class="ma-2" color="primary" @click.stop="$router.go(-1)">
-                        Yes
-                    </v-btn>
-                    <v-btn class="ma-2" outlined color="error" @click.stop="deliveryCancelOrderDialog = false">
-                        No
-                    </v-btn>
-                </div>
-            </v-card-text>
-        </v-card>
+          <div class="d-flex flex-column">
+            <v-btn class="ma-2" color="primary" @click.stop="$router.go(-1)">
+              Yes
+            </v-btn>
+            <v-btn class="ma-2" outlined color="error" @click.stop="deliveryCancelOrderDialog = false">
+              No
+            </v-btn>
+          </div>
+        </v-card-text>
+      </v-card>
     </v-dialog>
     <v-overlay :value="loader">
-        <v-progress-circular indeterminate size="64"></v-progress-circular>
+      <v-progress-circular indeterminate size="64"></v-progress-circular>
     </v-overlay>
 
     <v-dialog v-model="scanDialogVisible" fullscreen>
-        <v-card>
-            <v-card-title class="title primary--text">
-                <!-- Scanning Barcode -->
-            </v-card-title>
+      <v-card>
+        <v-card-title class="title primary--text">
+          <!-- Scanning Barcode -->
+        </v-card-title>
 
-            <v-card-text>
-                <BarScanner @code="code" :key="cameraRender" />
-                <v-btn depressed color="primary" class="mb-5" @click.stop="closeScanner">
-                    Close
-                </v-btn>
-            </v-card-text>
-        </v-card>
+        <v-card-text>
+          <BarScanner @code="code" :key="cameraRender" />
+          <v-btn depressed color="primary" class="mb-5" @click.stop="closeScanner">
+            Close
+          </v-btn>
+        </v-card-text>
+      </v-card>
     </v-dialog>
-</Page>
+  </Page>
 </template>
 
 <script>
@@ -239,6 +254,10 @@ import cyclePhoto from "@/assets/images/cycle@2x.png";
 import ThirdStepper from "@/components/delivery-order/steppers/ThirdStepper";
 import FourthStepper from "@/components/delivery-order/steppers/FourthStepper";
 const axios = require('axios');
+
+import OfflineQueueProcessor from '../../../plugins/OfflineQueueProcessor.js';
+
+
 
 export default {
   name: "deliveryOrderDetails",
@@ -318,12 +337,12 @@ export default {
       ],
       equipment: [],
       headersextras: [{
-                    text: "Name",
-                    align: "start",
-                    value: "extraName",
-                }
-            ],
-            extras: [],
+        text: "Name",
+        align: "start",
+        value: "extraName",
+      }
+      ],
+      extras: [],
       // Date field
       date: null,
       dateFormatted: null,
@@ -381,7 +400,7 @@ export default {
       if (newVal !== oldVal && newVal != null) {
         console.log(this.lockingData);
         const data = _.find(this.lockingData, (o) => o.color === newVal);
-        if (data !== undefined){
+        if (data !== undefined) {
           this.defaultCombinationValue = data && data.combination;
           // set the combination to the order combination
           this.deliveryOrderData.combination = this.defaultCombinationValue;
@@ -413,19 +432,19 @@ export default {
       }
     },
     async code(value) {
-      if(!this.scannedItems.includes(value)){
+      if (!this.scannedItems.includes(value)) {
         this.loader = true;
         this.closeScanner();
         try {
-          const response = await axios.post(this.$config.bodhisysAPIURL+"/reservation/scanbarcode",
+          const response = await axios.post(this.$config.bodhisysAPIURL + "/reservation/scanbarcode",
             {
               reservation_id: this.deliveryOrderData.id,
               barcode: value,
             }
           );
           this.showSuccess(`${response.data.barcode} scanned successfully`)
-          this.equipment.forEach(item=>{
-            if(item.id == response.data.item_id){
+          this.equipment.forEach(item => {
+            if (item.id == response.data.item_id) {
               item.serialbarcode = response.data.barcode;
               item.checkedDelievery = 1;
             }
@@ -434,31 +453,31 @@ export default {
           this.loader = false;
           this.openScanner();
         } catch (error) {
-          if(error?.response?.data?.error) this.showError(error.response.data.error);
+          if (error?.response?.data?.error) this.showError(error.response.data.error);
           else this.showError("Error ocuured")
           this.loader = false;
         }
-      }else{
+      } else {
       }
     },
     async manualScan() {
       try {
-        const response = await axios.post(this.$config.bodhisysAPIURL+"/reservation/scanbarcode",
+        const response = await axios.post(this.$config.bodhisysAPIURL + "/reservation/scanbarcode",
           {
             reservation_id: this.deliveryOrderData.id,
             barcode: this.manualCode,
           }
         );
         this.showSuccess(`${response.data.barcode} scanned successfully`)
-        this.equipment.forEach(item=>{
-          if(item.id == response.data.item_id){
+        this.equipment.forEach(item => {
+          if (item.id == response.data.item_id) {
             item.serialbarcode = response.data.barcode;
             item.checkedDelievery = 1;
           }
         })
         this.manualCode = "";
       } catch (error) {
-        if(error?.response?.data?.error) this.showError(error.response.data.error);
+        if (error?.response?.data?.error) this.showError(error.response.data.error);
         else this.showError("Error ocuured")
       }
     },
@@ -471,21 +490,21 @@ export default {
       this.getOrderItems();
     },
     async getOrderExtras() {
-          try {
-            let response = await this.$axios.$get("/api/user/deliveryItem/extras", {
-                params: {
-                    deliveryID: this.deliveryOrderData.id,
-                },
-            });
+      try {
+        let response = await this.$axios.$get("/api/user/deliveryItem/extras", {
+          params: {
+            deliveryID: this.deliveryOrderData.id,
+          },
+        });
 
-            this.extras = response;
-            console.log("Extras", this.extras);
+        this.extras = response;
+        console.log("Extras", this.extras);
 
-            //  this.$router.go(-1);
-          } catch (err) {
-                console.log("Issue in getOrderExtras", err);
-          }
-        },
+        //  this.$router.go(-1);
+      } catch (err) {
+        console.log("Issue in getOrderExtras", err);
+      }
+    },
     closeScanner() {
       this.scanDialogVisible = false;
 
@@ -493,7 +512,7 @@ export default {
 
       // A video's MediaStream object is available through its srcObject attribute
       const mediaStream = video.srcObject;
-      if(mediaStream === null) return;
+      if (mediaStream === null) return;
 
       // Through the MediaStream, you can get the MediaStreamTracks with getTracks():
       const tracks = mediaStream.getTracks();
@@ -546,7 +565,7 @@ export default {
 
     async sendNotification() {
       try {
-        let response = await this.uploadFiles(this.smsObject);
+        await this.uploadFiles(this.smsObject);
       } catch (error) {
         console.log("error", error);
       }
@@ -554,12 +573,9 @@ export default {
       this.searchHistoryDialog = false;
       this.deliveryOrderDialog = false;
       this.loader = true;
+
       let dataToAdd = this.deliveryOrderData;
       let userPositionData = this.userPosition;
-
-      // alert(this.defaultColorValue);
-
-      // return;
 
       let infoMap = {
         "[customer-name]": "name",
@@ -582,58 +598,48 @@ export default {
       );
       this.smsObject.message = output;
       this.smsObject.orderid = this.deliveryOrderData.orderid;
-      
-      try {
-        let emailResponse = await this.$axios.post(
-          "api/user/sendDeliveryEmail",
-          {
-            params: {
-              orderid: this.deliveryOrderData.orderid,
-              message: this.smsObject.message,
-              images: this.smsObject.mediaUrl
-            },
-          }
-        );
-      } catch (error) {
-        this.loader = false;
-      }
 
       try {
-        let response = await this.$axios
-          .$post("api/user/sendSMS", this.smsObject)
-          .then(async (response) => {
-            let saveData = {
-              date: this.dateFormatted,
-              name: this.deliveryOrderData.name,
-              location: this.deliveryOrderData.location,
-              color: this.defaultColorValue,
-              combination: this.defaultCombinationValue, 
-              orderid: this.deliveryOrderData.orderid,
-              swapOrder: this.deliveryOrderData.swapOrder,
-              status: 1,
-              textSent: 1,
-              picturesSent: 1,
-              unableToDeliverItems: this.deliveryOrderData.unableToDeliverItems,
-              note: this.deliveryOrderData.note,
-              extrasDelivered: this.deliveryOrderData.extrasDelivered,
-              extrasDeliveredReason: this.deliveryOrderData.extrasDeliveredReason,
-              delivered: true
-            }
- 
-            let result = await this.$axios.$post(
-              "/api/user/deliveryorderupdate",
-              saveData
-            );
-            console.log("RESPONSE", response);
-            this.loader = false;
-            
-            this.showSuccess(response.message);
-            
-            this.$router.push("/deliveryOrder");
-          });
-      } catch (error) {
-        console.log("errror 1234", error);
+        let saveData = {
+          date: this.dateFormatted,
+          name: this.deliveryOrderData.name,
+          location: this.deliveryOrderData.location,
+          color: this.defaultColorValue,
+          combination: this.defaultCombinationValue,
+          orderid: this.deliveryOrderData.orderid,
+          swapOrder: this.deliveryOrderData.swapOrder,
+          status: 1,
+          textSent: 1,
+          picturesSent: 1,
+          unableToDeliverItems: this.deliveryOrderData.unableToDeliverItems,
+          note: this.deliveryOrderData.note,
+          extrasDelivered: this.deliveryOrderData.extrasDelivered,
+          extrasDeliveredReason: this.deliveryOrderData.extrasDeliveredReason,
+          delivered: true,
+          message: this.smsObject.message,
+          images: this.smsObject.mediaUrl
+        };
+
+        if (navigator.onLine) {
+          // If online, submit directly
+          const response = await this.$axios.$post("/api/user/deliveryorderupdate", saveData);
+          this.showSuccess("Order submitted successfully");
+        } else {
+          // If offline, queue the submission
+          await OfflineQueueProcessor.submitDeliveryOrder(saveData);
+          this.showSuccess("Order queued for submission when online");
+        }
+
         this.loader = false;
+        this.$router.push("/deliveryOrder");
+      } catch (error) {
+        console.log("Error handling order submission:", error);
+        this.loader = false;
+        if (navigator.onLine) {
+          this.showError("Failed to submit order. Please try again.");
+        } else {
+          this.showError("Failed to queue order. It will be retried automatically when online.");
+        }
       }
     },
     async getOrderImages() {
@@ -672,7 +678,7 @@ export default {
         this.defaultColorValue = response[0].color;
         this.defaultCombinationValue = response[0].combination;
         this.smsObject.to = this.deliveryOrderData.mobileNo;
- 
+
         // console.log("TESTING CAPTURED IMAGES", ThirdStepper.capturedImages);
         // console.log(
         //   "TESTING CAPTURED IMAGES BEFORE",
@@ -690,7 +696,7 @@ export default {
 
         // this.$refs.fourthStep.local_files_to_upload = [];
         // FourthStepper.capturedImages = [];
-       
+
 
         //  this.$router.go(-1);
       } catch (err) {
@@ -709,52 +715,34 @@ export default {
         type: blob.type,
       });
 
-      let formData = new FormData();
-      formData.append("file", newfileObj);
-
       try {
-        let pictureName = `d-${this.deliveryOrderData.orderid}-${pictureNumber}`;
-        let result = await this.$axios.$post(
-          `/api/user/upload?orderid=${pictureName}`,
-          formData
-        );
-
-        if (result.success) {
-          console.log(
-            `Photo upload was successful. ${this.deliveryOrderData.orderid}`
-          );
- 
-          const saveData = {
-            date: this.dateFormatted,
-            name: this.deliveryOrderData.name,
-            location: this.deliveryOrderData.location,
-            color: this.defaultColorValue,
-            combination: this.defaultCombinationValue,
-            extrasDelivered: this.deliveryOrderData.extrasDelivered,
-            extrasDeliveredReason: this.deliveryOrderData.extrasDeliveredReason,    
-            orderid: this.deliveryOrderData.orderid,
-            status: 1,
-            swapOrder: 1
-          };
-
-          let result = await this.$axios.$post(
-            "/api/user/deliveryorderupdate",
-            saveData
-          );
+        if (navigator.onLine) {
+          // If online, upload directly
+          const formData = new FormData();
+          formData.append('file', newfileObj);
+          const url = process.env.API_URL + `/api/user/upload?orderid=d-${this.deliveryOrderData.orderid}-${pictureNumber}`;
+          await this.$axios.$post(url, formData);
+          console.log(`Photo uploaded for ${this.deliveryOrderData.orderid}`);
         } else {
-          console.log("upload failed!!!");
+          // If offline, queue the upload
+          await OfflineQueueProcessor.uploadImage(
+            newfileObj,
+            this.deliveryOrderData.orderid,
+            pictureNumber
+          );
+          console.log(`Photo upload queued for ${this.deliveryOrderData.orderid}`);
         }
       } catch (err) {
-        console.log(err);
+        console.log("Error handling photo upload:", err);
+        this.showError("Failed to handle photo upload. Please try again.");
       }
     },
+
     async uploadFiles(messageObject) {
       var counter = 0;
 
       for (const upload of this.uploads) {
-        let uploadResponse = await this.upload(upload, counter);
-        console.log('uploadResponse', uploadResponse);
-
+        await this.upload(upload, counter);
         messageObject.mediaUrl.push(
           `https://images.bodhisys.io/d-${this.deliveryOrderData.orderid}-${counter}.jpeg`
         );
