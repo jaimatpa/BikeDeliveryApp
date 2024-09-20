@@ -714,6 +714,9 @@ export default {
       const newfileObj = new File([blob], `${upload.originalName}.jpeg`, {
         type: blob.type,
       });
+      
+      let formData = new FormData();
+      formData.append("file", newfileObj);
 
       try {
         let pictureName = `d-${this.deliveryOrderData.orderid}-${pictureNumber}`;
