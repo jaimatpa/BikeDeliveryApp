@@ -622,7 +622,44 @@ export default {
 
         if (navigator.onLine) {
           // If online, submit directly
-          const response = await this.$axios.$post("/api/user/deliveryorderupdate", saveData);
+          try {
+            let emailResponse = await this.$axios.post(
+              "api/user/sendDeliveryEmail",
+              {
+                params: {
+                  orderid: this.deliveryOrderData.orderid,
+                  message: this.smsObject.message,
+                  images: this.smsObject.mediaUrl
+                },
+              }
+            );
+          } catch (error) {
+            this.loader = false;
+          } 
+          
+          let response = await this.$axios
+            .$post("api/user/sendSMS", this.smsObject)
+            .then(async (response) => {
+              let saveData = {
+                date: this.dateFormatted,
+                name: this.deliveryOrderData.name,
+                location: this.deliveryOrderData.location,
+                color: this.defaultColorValue,
+                combination: this.defaultCombinationValue,
+                orderid: this.deliveryOrderData.orderid,
+                swapOrder: this.deliveryOrderData.swapOrder,
+                status: 1,
+                textSent: 1,
+                picturesSent: 1,
+                unableToDeliverItems: this.deliveryOrderData.unableToDeliverItems,
+                note: this.deliveryOrderData.note,
+                extrasDelivered: this.deliveryOrderData.extrasDelivered,
+                extrasDeliveredReason: this.deliveryOrderData.extrasDeliveredReason,
+                delivered: true
+              }
+            }); 
+            
+          await this.$axios.$post("/api/user/deliveryorderupdate", saveData);
           this.showSuccess("Order submitted successfully");
         } else {
           // If offline, queue the submission

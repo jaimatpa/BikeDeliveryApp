@@ -4,15 +4,20 @@ import axios from 'axios';
 class OfflineQueueProcessor {
     constructor() {
         this.db = null;
-        this.isOnline = navigator.onLine;
-        this.initDB();
-        this.setupEventListeners();
-        this.processInterval = 30000;
-        this.connectionCheckInterval = 60000;
-        this.maxRetries = 3;
-        this.retryDelay = 5000;
-        this.startProcessingQueue();
-        this.startConnectionCheck();
+        if(typeof(navigator) !== 'undefined' && !navigator.onLine) {
+            this.isOnline = navigator.onLine;
+            this.initDB();
+            this.setupEventListeners();
+            this.processInterval = 30000;
+            this.connectionCheckInterval = 60000;
+            this.maxRetries = 3;
+            this.retryDelay = 5000;
+            this.startProcessingQueue();
+            this.startConnectionCheck();
+        }
+        else {
+            console.log('Offline queue processor is not initialized because the device is online.')
+        }
     }
 
     async initDB() {
@@ -99,12 +104,53 @@ class OfflineQueueProcessor {
 
         if (this.isOnline) {
             try {
+                try {
+                    let emailResponse = await this.$axios.post(
+                    "api/user/sendDeliveryEmail",
+                    {
+                        params: {
+                        orderid: this.deliveryOrderData.orderid,
+                        message: this.smsObject.message,
+                        images: this.smsObject.mediaUrl
+                        },
+                    }
+                    );
+                } catch (error) {
+                    this.loader = false;
+                }
+
+                let response = await this.$axios
+                .$post("api/user/sendSMS", this.smsObject)
+                .then(async (response) => {
+                    let saveData = {
+                        date: this.dateFormatted,
+                        name: this.deliveryOrderData.name,
+                        location: this.deliveryOrderData.location,
+                        color: this.defaultColorValue,
+                        combination: this.defaultCombinationValue,
+                        orderid: this.deliveryOrderData.orderid,
+                        swapOrder: this.deliveryOrderData.swapOrder,
+                        status: 1,
+                        textSent: 1,
+                        picturesSent: 1,
+                        unableToDeliverItems: this.deliveryOrderData.unableToDeliverItems,
+                        note: this.deliveryOrderData.note,
+                        extrasDelivered: this.deliveryOrderData.extrasDelivered,
+                        extrasDeliveredReason: this.deliveryOrderData.extrasDeliveredReason,
+                        delivered: true
+                    }
+                });
+
+                this.loader = false;
+                this.showSuccess("Order submitted successfully");
+                
                 return await this.sendRequest({
                     method: 'POST',
                     url: '/api/user/deliveryorderupdate',
                     data: completeOrderData
-                });
-            } catch (error) {
+                }); 
+            } 
+            catch (error) {
                 console.error('Failed to submit delivery order:', error);
                 await this.enqueueRequest('/api/user/deliveryorderupdate', 'POST', completeOrderData);
             }
