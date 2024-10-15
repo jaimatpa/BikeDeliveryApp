@@ -124,8 +124,8 @@
                             </v-btn>
                         </v-col>
                         <v-col cols="12" xs="12" sm="12" md="6" xl="6">
-                            <v-btn :disabled="this.is_loaded" block depressed color="primary" @click.stop="confirm">
-                                Confirm
+                            <v-btn :disabled="this.complete" block depressed color="primary" @click.stop="confirm">
+                                Complete
                             </v-btn>
                         </v-col>
                     </v-row>
@@ -254,10 +254,12 @@ export default {
     FourthStepper,
   },
   async created() {
-    await this.getOrderDetails();
+    // await this.getOrderDetails();
+    await this.getTripDetail();
+    this.tripId = this.$route.params.orderId
     await this.getOrderExtras();
     await this.getOrderItems();
-    await this.getOrderImages();
+    // await this.getOrderImages();
     this.getMsgTemplate();
     this.getUserlocation();
     this.getLockingDetails();
@@ -299,7 +301,7 @@ export default {
         {
           text: "ITEM",
           align: "start",
-          value: "item",
+          value: "display_name",
         },
         {
           text: "BARCODE",
@@ -399,9 +401,9 @@ export default {
     async getOrderItems() {
       try {
         console.log("IN ORDER ITEMS", this.deliveryOrderData);
-        let response = await this.$axios.$get("/api/user/deliveryItem", {
+        let response = await this.$axios.$get("/api/user/deliveryItem/bytrip", {
           params: {
-            deliveryID: this.deliveryOrderData.id,
+            tripId: this.tripId,
           },
         });
 
@@ -423,7 +425,7 @@ export default {
         try {
           const response = await axios.post(this.$config.bodhisysAPIURL+"/reservation/loaditem",
             {
-              reservation_id: this.deliveryOrderData.id,
+              trip_id: this.tripId,
               barcode: value,
             }
           );
@@ -449,7 +451,7 @@ export default {
       try {
         const response = await axios.post(this.$config.bodhisysAPIURL+"/reservation/loaditem",
           {
-            reservation_id: this.deliveryOrderData.id,
+            trip_id: this.tripId,
             barcode: this.manualCode,
           }
         );
@@ -640,65 +642,73 @@ export default {
         this.loader = false;
       }
     },
-    async getOrderImages() {
-      try {
-        let response = await this.$axios.$get(
-          "/api/user/searchhistory/images",
-          {
-            params: {
-              orderID: this.deliveryOrderData.orderid,
-            },
-          }
-        );
-        let localDeliveryArray = [];
-        // 'https://images.bodhisys.io/D-Apr0020-22/637848762657544860'
-        response.D.forEach((image) => {
-          localDeliveryArray.push(
-            `https://images.bodhisys.io/d-${this.orderData.orderid}/${image}`
-          );
-        });
-        this.deliveryImages = localDeliveryArray;
+    // async getOrderImages() {
+    //   try {
+    //     let response = await this.$axios.$get(
+    //       "/api/user/searchhistory/images",
+    //       {
+    //         params: {
+    //           orderID: this.deliveryOrderData.orderid,
+    //         },
+    //       }
+    //     );
+    //     let localDeliveryArray = [];
+    //     // 'https://images.bodhisys.io/D-Apr0020-22/637848762657544860'
+    //     response.D.forEach((image) => {
+    //       localDeliveryArray.push(
+    //         `https://images.bodhisys.io/d-${this.orderData.orderid}/${image}`
+    //       );
+    //     });
+    //     this.deliveryImages = localDeliveryArray;
 
-      } catch (error) {
-        console.log("ERROR", error);
-      }
-    },
-    async getOrderDetails() {
-      try {
-        let response = await this.$axios.$get("/api/user/deliveryOrder", {
-          params: {
-            search: this.$route.params.orderId,
-          },
-        });
-        this.deliveryOrderData = response[0];
-        this.date = response[0].date.substr(0, 10);
-        this.dateFormatted = this.formatDate(response[0].date.substr(0, 10));
-        this.defaultColorValue = response[0].color;
-        this.defaultCombinationValue = response[0].combination;
-        this.is_loaded = response[0].is_loaded?true:false;
-        console.log("this.is_loaded", this.is_loaded);
-        this.smsObject.to = this.deliveryOrderData.mobileNo;
+    //   } catch (error) {
+    //     console.log("ERROR", error);
+    //   }
+    // },
+    // async getOrderDetails() {
+    //   try {
+    //     let response = await this.$axios.$get("/api/user/deliveryOrder", {
+    //       params: {
+    //         search: this.$route.params.orderId,
+    //       },
+    //     });
+    //     this.deliveryOrderData = response[0];
+    //     this.date = response[0].date.substr(0, 10);
+    //     this.dateFormatted = this.formatDate(response[0].date.substr(0, 10));
+    //     this.defaultColorValue = response[0].color;
+    //     this.defaultCombinationValue = response[0].combination;
+    //     this.is_loaded = response[0].is_loaded?true:false;
+    //     console.log("this.is_loaded", this.is_loaded);
+    //     this.smsObject.to = this.deliveryOrderData.mobileNo;
  
-        // console.log("TESTING CAPTURED IMAGES", ThirdStepper.capturedImages);
-        // console.log(
-        //   "TESTING CAPTURED IMAGES BEFORE",
-        //   this.$refs.thirdStep.local_files_to_upload
-        // );
-        this.$refs.thirdStep.local_files_to_upload = [];
-        ThirdStepper.capturedImages = [];
-        // this.$emit("captured-camera-images", ThirdStepper.capturedImages);
+    //     // console.log("TESTING CAPTURED IMAGES", ThirdStepper.capturedImages);
+    //     // console.log(
+    //     //   "TESTING CAPTURED IMAGES BEFORE",
+    //     //   this.$refs.thirdStep.local_files_to_upload
+    //     // );
+    //     this.$refs.thirdStep.local_files_to_upload = [];
+    //     ThirdStepper.capturedImages = [];
+    //     // this.$emit("captured-camera-images", ThirdStepper.capturedImages);
 
-        // ThirdStepper.local_files_to_upload = [];
-        // console.log(
-        //   "TESTING CAPTURED IMAGES AFTER",
-        //   this.$refs.thirdStep.local_files_to_upload
-        // );
+    //     // ThirdStepper.local_files_to_upload = [];
+    //     // console.log(
+    //     //   "TESTING CAPTURED IMAGES AFTER",
+    //     //   this.$refs.thirdStep.local_files_to_upload
+    //     // );
 
-        // this.$refs.fourthStep.local_files_to_upload = [];
-        // FourthStepper.capturedImages = [];
+    //     // this.$refs.fourthStep.local_files_to_upload = [];
+    //     // FourthStepper.capturedImages = [];
        
 
-        //  this.$router.go(-1);
+    //     //  this.$router.go(-1);
+    //   } catch (err) {
+    //     console.log("errror", err.response);
+    //   }
+    // },
+    async getTripDetail() {
+      try {
+        let response = await this.$axios.$get("/api/user/trips/"+this.$route.params.orderId);
+        this.complete = response.complete
       } catch (err) {
         console.log("errror", err.response);
       }
@@ -833,10 +843,10 @@ export default {
         this.loader = true;
         const response = await axios.post(this.$config.bodhisysAPIURL+"/reservation/loadconfirm",
           {
-            reservation_id: this.deliveryOrderData.id,
+            trip_id: this.tripId,
           }
         );
-        this.showSuccess(`Load Confirmed`)
+        this.showSuccess(`Completed`)
         this.loader = false
         this.$router.push("/truckloading");
       } catch (error) {

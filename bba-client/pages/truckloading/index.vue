@@ -2,7 +2,7 @@
 <Page>
     <!-- <h1>vue-barcode-reader demo</h1> -->
     <!-- Delivery Order Scan Button  -->
-    <v-btn x-large block depressed color="primary" class="mb-5" @click.stop="
+    <!-- <v-btn x-large block depressed color="primary" class="mb-5" @click.stop="
         dialog = true;
         cameraRender += 1;
       ">
@@ -10,12 +10,12 @@
             mdi-barcode-scan
         </v-icon>
         Scan Barcode
-    </v-btn>
+    </v-btn> -->
 
     <!-- Order Search Field -->
-    <v-text-field v-model="search" append-icon="mdi-magnify" label="Search by Order #, Name, Location" single-line hide-details outlined dense clearable class="mb-5 order-search-text-field" @keyup="onKeyUp" @click:clear="onClearClicked"></v-text-field>
+    <v-text-field v-model="search" append-icon="mdi-magnify" label="Search by Truck, Driver Name" single-line hide-details outlined dense clearable class="mb-5 order-search-text-field" @keyup="onKeyUp" @click:clear="onClearClicked"></v-text-field>
 
-    <v-data-table :headers="headers" :items="deliveries" :options.sync="options" :server-items-length="totalOrderDelivery" :loading="loading" :search="search" class="elevation-1" :mobile-breakpoint="0" sort-by="date" :sort-desc="false">
+    <v-data-table :headers="headers" :items="deliveries" :options.sync="options" :server-items-length="totalOrderDelivery" :loading="loading" :search="search" class="elevation-1" :mobile-breakpoint="0" sort-by="date" :sort-desc="true">
         <!-- Date -->
         <template v-slot:item.date="{ item }">
             {{ getDateFormat(item.date) }}
@@ -29,15 +29,15 @@
             {{ getPrintFormat(item.printed) }}
         </template>
 
-        <template v-slot:[`item.is_loaded`]="{ item }">
-            <v-simple-checkbox v-model="item.is_loaded" v-ripple :disabled="true">
+        <template v-slot:[`item.complete`]="{ item }">
+            <v-simple-checkbox v-model="item.complete" v-ripple :disabled="true">
 
             </v-simple-checkbox>
         </template>
 
         <!-- Actions -->
         <template v-slot:item.actions="{ item }">
-            <v-icon medium color="primary" @click.stop="$router.push({ path: `/truckloading/${item.orderid}` })">
+            <v-icon medium color="primary" @click.stop="$router.push({ path: `/truckloading/${item.id}` })">
                 mdi-page-next
             </v-icon>
         </template>
@@ -107,18 +107,18 @@ export default {
                     value: "date",
                 },
                 {
-                    text: "NAME",
+                    text: "TRIP#",
+                    value: "tripNumber",
+                    sortable: false,
+                },
+                {
+                    text: "TRUCK",
+                    value: "TruckName",
+                    sortable: false,
+                },
+                {
+                    text: "DRIVER",
                     value: "name",
-                    sortable: false,
-                },
-                {
-                    text: "LOCATION",
-                    value: "location",
-                    sortable: false,
-                },
-                {
-                    text: "ORDER#",
-                    value: "orderid",
                     sortable: false,
                 },
                 // {
@@ -134,8 +134,8 @@ export default {
                 //     align: "center",
                 // },
                 {
-                    text: "Loaded",
-                    value: "is_loaded",
+                    text: "COMPLETED",
+                    value: "complete",
                     sortable: true,
                     align: "center",
                 },
@@ -176,8 +176,8 @@ export default {
         }),
         getDateFormat(date) {
             return moment(date)
-                .add(4, "hours")
-                .format("MM/DD/YYYY hh:mm A");
+                // .add(4, "hours")
+                .format("MM/DD/YYYY");
         },
         getLockFormat(lock) {
             if (lock) {
@@ -248,7 +248,7 @@ export default {
                         type: "truckloading",
                     };
 
-                const orderDeliveryMockData = await this.$axios.$get("/api/user/deliveryOrder", {
+                const orderDeliveryMockData = await this.$axios.$get("/api/user/trips/active", {
                     params: param,
                 });
 

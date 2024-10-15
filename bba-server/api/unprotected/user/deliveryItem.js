@@ -231,6 +231,30 @@ router.get("/", async (req,res) => {
     }
 });
 
+router.get("/bytrip", async (req,res) => {
+    try {
+        let tripId = req.query.tripId;
+        let data = [];
+        if(typeof(tripId) == 'undefined')
+        {
+            return res.status(500).json("Error: You must provide a tripId");
+        }
+
+        const query = `select t3.* from trip as t1 inner join reservations as t2 on t1.id = t2.tripID1 
+            and t1.id = ${tripId} inner join reservation_items as t3 on t2.id = t3.reservation_id`;
+        console.log(query);
+        data = await models.sequelize.query(query, {
+            type: models.sequelize.QueryTypes.SELECT,
+            // logging: true,
+        });
+
+        return res.send(data);
+    } catch (error) {
+        console.log(error);
+        res.status(500).json("Error: " + error);
+    }
+});
+
 router.get("/extras", async (req,res) => {
     try {
         let deliveryID = req.query.deliveryID;

@@ -29,6 +29,45 @@ async function getAllTrips(req, res) {
     return res.send(data);
 }
 
+async function getTripDetail(req, res) {
+    const { id } = req.params;
+    try {
+        const data = await Trip.findOne({
+            where: {id:id}
+        });
+
+        return res.send(data);
+    } catch (error) {
+        console.error('Error fetching trip details:', error);
+        return res.status(500).send({ message: 'Internal server error' });
+    }
+}
+
+async function getActiveTrips(req, res) {
+    const { search } = req.query;
+
+    try {
+        let query = "select t1.*, t2.TruckName, t3.name from trip as t1 left join trucks as t2 on t1.truckId = t2.id \
+            left join users as t3 on t1.driverId = t3.id where t1.released = 1 ";
+
+        if (search) {
+            const searchParam = `%${search}%`;
+            query += ` AND (t2.TruckName LIKE '${searchParam}' OR t3.name LIKE '${searchParam}')`;
+        }
+
+        query += ` order by t1.date desc`;
+
+        const data = await models.sequelize.query(query, {
+            type: models.sequelize.QueryTypes.SELECT
+        }) ;
+
+        return res.send(data);
+    } catch (error) {
+        console.error('Error fetching active trips:', error);
+        return res.status(500).send({ message: 'Internal server error' });
+    }
+}
+
 async function getAllOrders(tripId, truckId) {
     // const orders = await DeliveryOrders.findAll({
     //     where: {
@@ -544,6 +583,8 @@ async function newTrip(req, res)
 module.exports = {
     newTrip,
     getAllTrips,
+    getActiveTrips,
+    getTripDetail,
     releaseTrip,
     checkStock,
     createTrip,
