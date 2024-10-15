@@ -140,6 +140,13 @@ export default {
                 color: "primary",
             },
             {
+                title: "TRUCK LOADING",
+                icon: "mdi-dolly",
+                iconSelected: "mdi-dolly",
+                to: "/truckloading",
+                color: "primary",
+            },
+            {
                 title: "SCHEDULER",
                 icon: "mdi-history",
                 iconSelected: "mdi-history",
