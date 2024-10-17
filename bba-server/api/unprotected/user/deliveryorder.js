@@ -234,6 +234,16 @@ router.get("/", async (req, res) => {
                             return false;
                         }
                     }));
+                }else if (type === "truckloading") {
+                    console.log('trcukloading filter');
+                    data = data.filter((record => {
+                        console.log(record.tripID);
+                        if ((record.stage == 2) && record.tripID) {
+                            return true;
+                        } else {
+                            return false;
+                        }
+                    }));
                 }
 
             } catch (error) {
@@ -274,7 +284,8 @@ router.get("/", async (req, res) => {
             data = await models.sequelize.query(query, {
                 type: models.sequelize.QueryTypes.SELECT
             });
-            // console.log(data);
+            console.log('truckloading filter');
+            console.log(type);
 
             if (type === "DeliveryOrders") {
                 data = data.filter((record => {
@@ -352,6 +363,14 @@ router.get("/", async (req, res) => {
                     var d = moment(record.date).add(4, 'hours').format('LL');
                     var today = moment().format('LL');
                     if (record.status == 1 && record.PickedUp == 0 && record.swapOrder == 0) {
+                        return true;
+                    } else {
+                        return false;
+                    }
+                }));
+            }else if (type === "truckloading") {
+                data = data.filter((record => {
+                    if ((record.stage == 2) && record.tripID1) {
                         return true;
                     } else {
                         return false;
