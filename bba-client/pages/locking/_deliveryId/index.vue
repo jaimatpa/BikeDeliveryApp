@@ -29,6 +29,11 @@
                     </v-btn>
                 </v-col>
             </v-row>
+            <v-row>
+                <span class="button-description">
+                    Last Used Color: {{ lastUsedColor ? lastUsedColor : 'No color used yet' }}
+                </span> 
+            </v-row>  
         </div>
 
         <div>
@@ -43,6 +48,7 @@
 import _ from "lodash";
 
 import Page from "@/components/paradym/Page";
+const axios = require('axios');
 
 export default {
     name: "lockDetails",
@@ -81,6 +87,7 @@ export default {
             colorHexValues: [],
             lockingData: [],
             lockData: {},
+            lastUsedColor: "",
         };
     },
     methods: {
@@ -102,6 +109,20 @@ export default {
                 this.defaultCombinationValue = response[0].combination;
                 this.defaultLockingValue = response[0].lock;
 
+                const lastCombinationData = await axios.post(this.$config.bodhisysAPIURL+"/reservations/getlastusedcolorcombinationbycustomerid",
+                    {
+                        customer_id: response[0].customer_id,
+                        current_order_id: response[0].id,
+                    }
+                );
+
+                console.log(lastCombinationData);
+                if (lastCombinationData.data && lastCombinationData.data.color) {
+                    this.lastUsedColor = lastCombinationData.data.color.color_key;
+                } else {
+                    this.lastUsedColor = '';
+                }
+                console.log(lastCombinationData);
                 //  this.$router.go(-1);
             } catch (err) {
                 console.log("errror", err.response);
