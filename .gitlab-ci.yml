@@ -43,7 +43,7 @@ deploy development:
     - cd ..
     - cd bba-server
     - rsync -azh --rsh="ssh -o StrictHostKeyChecking=no -l gitlab" ./../** gitlab@192.168.13.158:/var/storage/apps/bodhisys/apps-dev/bikeapp-server
-    - ssh -o StrictHostKeyChecking=no gitlab@192.168.13.158 "cd /var/storage/apps/bodhisys/apps-dev/bikeapp-copy/bba-server; yarn; yarn generate;"
+    - ssh -o StrictHostKeyChecking=no gitlab@192.168.13.158 "cd /var/storage/apps/bodhisys/apps-dev/bikeapp-copy/bba-server; yarn;"
     - ls -la ./..
 
 deploy production:
@@ -58,5 +58,5 @@ deploy production:
     - cd ..
     - cd bba-server
     - rsync -azh --rsh="ssh -o StrictHostKeyChecking=no -l gitlab" ./../** gitlab@192.168.13.158:/var/storage/apps/bodhisys/apps/bikeapp-server
-    - ssh -o StrictHostKeyChecking=no gitlab@192.168.13.158 "cd /var/storage/apps/bodhisys/apps/bikeapp-copy/bba-server; yarn; yarn generate;"
+    - ssh -o StrictHostKeyChecking=no gitlab@192.168.13.158 "cd /var/storage/apps/bodhisys/apps/bikeapp-copy/bba-server; yarn;"
     - ls -la ./..
