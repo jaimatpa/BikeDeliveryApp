@@ -39,12 +39,8 @@ deploy development:
     - cd bba-client
     - sed -i "s/{COMMIT}/$CI_COMMIT_REF_SLUG $CI_COMMIT_SHORT_SHA/g" components/paradym/Navigation.vue
     - rsync -azh --rsh="ssh -o StrictHostKeyChecking=no -l gitlab" ./../** gitlab@192.168.13.158:/var/storage/apps/bodhisys/apps-dev/bikeapp-copy
-    - ssh -o StrictHostKeyChecking=no gitlab@192.168.13.158 "cd /var/storage/apps/bodhisys/apps-dev/bikeapp-copy/bba-client; yarn; yarn generate;"
-    - cd ..
-    - cd bba-server
-    - rsync -azh --rsh="ssh -o StrictHostKeyChecking=no -l gitlab" ./../** gitlab@192.168.13.158:/var/storage/apps/bodhisys/apps-dev/bikeapp-server
-    - ssh -o StrictHostKeyChecking=no gitlab@192.168.13.158 "cd /var/storage/apps/bodhisys/apps-dev/bikeapp-copy/bba-server; yarn;"
-    - ls -la ./..
+    - ssh -o StrictHostKeyChecking=no gitlab@192.168.13.158 "cd /var/storage/apps/bodhisys/apps-dev/bikeapp-copy/bba-client; yarn; yarn generate; pm2 restart  bodhisys-mobile"
+
 
 deploy production:
   stage: deploy
@@ -54,9 +50,4 @@ deploy production:
     - cd bba-client
     - sed -i "s/{COMMIT}/$CI_COMMIT_REF_SLUG $CI_COMMIT_SHORT_SHA/g" components/paradym/Navigation.vue
     - rsync -azh --rsh="ssh -o StrictHostKeyChecking=no -l gitlab" ./../** gitlab@192.168.13.158:/var/storage/apps/bodhisys/apps/bikeapp-copy
-    - ssh -o StrictHostKeyChecking=no gitlab@192.168.13.158 "cd /var/storage/apps/bodhisys/apps/bikeapp-copy/bba-client; yarn; yarn generate;"
-    - cd ..
-    - cd bba-server
-    - rsync -azh --rsh="ssh -o StrictHostKeyChecking=no -l gitlab" ./../** gitlab@192.168.13.158:/var/storage/apps/bodhisys/apps/bikeapp-server
-    - ssh -o StrictHostKeyChecking=no gitlab@192.168.13.158 "cd /var/storage/apps/bodhisys/apps/bikeapp-copy/bba-server; yarn;"
-    - ls -la ./..
+    - ssh -o StrictHostKeyChecking=no gitlab@192.168.13.158 "cd /var/storage/apps/bodhisys/apps/bikeapp-copy/bba-client; yarn; yarn generate; pm2 restart  bodhisys-mobile"
