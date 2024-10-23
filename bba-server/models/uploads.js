@@ -13,6 +13,7 @@ module.exports = (sequelize, DataTypes) => {
   }, {
     sequelize,
     modelName: 'Upload',
+    tableName: 'uploads',
     timestamps: true,
     updatedAt: false,
   });
