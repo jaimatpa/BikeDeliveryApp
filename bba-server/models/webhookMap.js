@@ -17,6 +17,7 @@ module.exports = (sequelize, DataTypes) => {
     {
       sequelize,
       modelName: "WebhookMaps",
+      tableName: "webhookMaps",
     }
   );
   return WebhookMap;

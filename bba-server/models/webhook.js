@@ -19,6 +19,7 @@ module.exports = (sequelize, DataTypes) => {
     {
       sequelize,
       modelName: "WebHook",
+      tableName: "webhooks",
     }
   );
   return WebHook;

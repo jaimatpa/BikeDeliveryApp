@@ -18,6 +18,7 @@ module.exports = (sequelize, DataTypes) => {
     {
       sequelize,
       modelName: "VerificationToken",
+      tableName: "verificationTokens",
       timestamps: true,
       updatedAt: false,
     }
