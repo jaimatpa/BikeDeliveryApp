@@ -448,6 +448,7 @@ function customDeliveryOrderSort(deliveryOrders, areas, villas, streetAddresses)
 }
 
 router.get("/query", async (req, res) => {
+    console.log('wefwef');
     const { order_type, date, type } = req.query;
     var { status } = req.query;
 
@@ -472,7 +473,8 @@ router.get("/query", async (req, res) => {
         const query = DeliveryOrderQuery.translateDeliveryOrder(whereConditions);
 
         let deliveryOrders = await models.sequelize.query(query, {
-            type: models.sequelize.QueryTypes.SELECT
+            type: models.sequelize.QueryTypes.SELECT,
+            logging: true,
         });
 
         let [areas, villas, streetAddresses] = await Promise.all([
