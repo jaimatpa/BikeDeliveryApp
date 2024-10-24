@@ -23,7 +23,7 @@ router.post("/", async (req, res) => {
     }
     const query = DeliveryOrderQuery.translateDeliveryOrder(whereConditions);
     let data = await models.sequelize.query(query, {
-        type: models.sequelize.QueryTypes.SELECT
+        type: models.sequelize.QueryTypes.SELECT,
     });
     let deliveryOrder = data[0];
     if (deliveryOrder) {
@@ -51,7 +51,6 @@ router.get("/", async (req, res) => {
         type: models.sequelize.QueryTypes.SELECT
     });
     let deliveryOrder = data[0];
-    console.log(deliveryOrder);
     if (deliveryOrder) {
         console.log("IN GET SUCCESS");
         return res.send('1');

@@ -47,7 +47,7 @@ async function getActiveTrips(req, res) {
     const { search } = req.query;
 
     try {
-        let query = "select t1.*, t2.TruckName, t3.name from trip as t1 left join trucks as t2 on t1.truckId = t2.id \
+        let query = "select t1.*, t2.TruckName, t3.name from trips as t1 left join trucks as t2 on t1.truckId = t2.id \
             left join users as t3 on t1.driverId = t3.id where t1.released = 1 ";
 
         if (search) {
