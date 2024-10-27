@@ -147,6 +147,13 @@ export default {
                 color: "primary",
             },
             {
+                title: "TIME CLOCK",
+                icon: "mdi-timer",
+                iconSelected: "mdi-timer-marker",
+                to: "/timeclock",
+                color: "primary",
+            },
+            {
                 title: "SCHEDULER",
                 icon: "mdi-history",
                 iconSelected: "mdi-history",

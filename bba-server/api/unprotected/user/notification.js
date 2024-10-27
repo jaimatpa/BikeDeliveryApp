@@ -44,6 +44,25 @@ async function getAllNotifications(req, res) {
             order: [['id', 'DESC']]
         });
 
+        const lastTimeLog = await models.Timeclock.findOne({
+            where: {
+                user_id: decodedToken.id
+            },
+            order: [
+                ['createdAt', 'Desc'],
+            ],
+            limit: 100,
+        });
+        if(lastTimeLog){
+            const lastStatus = lastTimeLog?.status??0;
+            if(lastStatus != 0) {
+                const time = new Date(lastTimeLog.createdAt);
+                const now = new Date();
+                const diff = now.getTime() - time.getTime();
+                lastTimeLog.update({duration: diff });
+            }
+        }
+
         return res.send(data);
     } catch (error) {
         console.log(error);
