@@ -32,6 +32,8 @@ async function getAllNotifications(req, res) {
     }
 
     try {
+        const {lat, lng} = req.query;
+
         const data = await models.Notification.findAll({
             include: {
                 model: models.DeliveryOrders,
@@ -43,6 +45,31 @@ async function getAllNotifications(req, res) {
             limit: 5,
             order: [['id', 'DESC']]
         });
+
+        const lastTimeLog = await models.Timeclock.findOne({
+            where: {
+                user_id: decodedToken.id
+            },
+            order: [
+                ['createdAt', 'Desc'],
+            ],
+            limit: 100,
+        });
+        
+        if(lastTimeLog){
+            const lastStatus = lastTimeLog?.status??0;
+            if(lastStatus != 0) {
+                const time = new Date(lastTimeLog.createdAt);
+                const now = new Date();
+                const diff = now.getTime() - time.getTime();
+                let UpdatedData = {
+                    duration : diff
+                }
+                if(lat) UpdatedData.lat = lat;
+                if(lng) UpdatedData.lng = lng;
+                lastTimeLog.update(UpdatedData);
+            }
+        }
 
         return res.send(data);
     } catch (error) {

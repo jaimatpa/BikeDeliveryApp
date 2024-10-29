@@ -69,6 +69,8 @@ export default {
             if (user) this.$auth.setUser(user);
         }
 
+        this.getUserPosition();
+        setInterval( this.getUserPosition , 5000);
     },
     mounted() {
         this.$nextTick(() => {
@@ -91,6 +93,7 @@ export default {
     },
     data() {
         return {
+            userPosition: {},
             drawer: false,
             settings: false,
             poller: null,
@@ -144,6 +147,13 @@ export default {
                 icon: "mdi-dolly",
                 iconSelected: "mdi-dolly",
                 to: "/truckloading",
+                color: "primary",
+            },
+            {
+                title: "TIME CLOCK",
+                icon: "mdi-timer",
+                iconSelected: "mdi-timer-marker",
+                to: "/timeclock",
                 color: "primary",
             },
             {
@@ -411,7 +421,9 @@ export default {
             {
                 // if(this.$auth.ctx.id === !'undefined')
                 // {
-                    await this.$axios.get(`/api/user/notifications`).then( response => {
+                    await this.$axios.get(`/api/user/notifications`, {
+                        params:{...this.userPosition}
+                    }).then( response => {
                         
                         response.data.forEach( item => {
                             item.createdAt = new Date(item.createdAt).toLocaleDateString('en-us', { weekday:"long", year:"numeric", month:"long", day:"numeric", hour:"numeric", minute:"numeric"});
@@ -428,6 +440,26 @@ export default {
             catch(e) 
             {
 
+            }
+        },
+        getUserPosition () {
+            if (process.client) {
+                if (navigator.geolocation) {
+                    console.log(navigator.geolocation);
+                    navigator.geolocation.getCurrentPosition(
+                        (position) => {
+                            const pos = {
+                                lat: position.coords.latitude,
+                                lng: position.coords.longitude,
+                            };
+                            console.log("pos ==== ", pos);
+                            this.userPosition = pos;
+                        },
+                        (error) => {
+                            this.userPosition = {};
+                        }
+                    );
+                }
             }
         },
     },
