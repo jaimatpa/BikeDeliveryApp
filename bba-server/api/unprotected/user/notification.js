@@ -32,6 +32,8 @@ async function getAllNotifications(req, res) {
     }
 
     try {
+        const {lat, lng} = req.query;
+
         const data = await models.Notification.findAll({
             include: {
                 model: models.DeliveryOrders,
@@ -53,13 +55,19 @@ async function getAllNotifications(req, res) {
             ],
             limit: 100,
         });
+        
         if(lastTimeLog){
             const lastStatus = lastTimeLog?.status??0;
             if(lastStatus != 0) {
                 const time = new Date(lastTimeLog.createdAt);
                 const now = new Date();
                 const diff = now.getTime() - time.getTime();
-                lastTimeLog.update({duration: diff });
+                let UpdatedData = {
+                    duration : diff
+                }
+                if(lat) UpdatedData.lat = lat;
+                if(lng) UpdatedData.lng = lng;
+                lastTimeLog.update(UpdatedData);
             }
         }
 

@@ -35,9 +35,10 @@ async function getlogs(req, res) {
                 user_id: decodedToken.id
             },
             order: [
-                ['createdAt', 'Desc'],
+                ['id', 'Desc'],
             ],
             limit: 100,
+            logging: true,
         });
 
         return res.send(data);
@@ -78,38 +79,6 @@ async function getLastStatus(req, res) {
     }
 }
 
-async function getlogs(req, res) {
-    const decodedToken = verifyAuthHeader(req.headers.authorization);
-    if (!decodedToken || !decodedToken.id)
-    {
-      return apiError(
-        res,
-        {
-          type: "authentication",
-          message: apiMessage.user.api_message.common.unauthorized_request,
-        },
-        status.UNAUTHORIZED
-      );
-    }
-
-
-    try {
-        const data = await models.Timeclock.findAll({
-            where: {
-                user_id: decodedToken.id
-            },
-            order: [
-                ['createdAt', 'Desc'],
-            ],
-            limit: 100,
-        });
-
-        return res.send(data);
-    } catch (error) {
-        console.log(error);
-    }
-}
-
 /**
  * Create an Timeclock type
  * 
@@ -138,7 +107,7 @@ async function createTimeclock(req, res) {
                 user_id: decodedToken.id
             },
             order: [
-                ['createdAt', 'Desc'],
+                ['id', 'Desc'],
             ],
             limit: 100,
         });

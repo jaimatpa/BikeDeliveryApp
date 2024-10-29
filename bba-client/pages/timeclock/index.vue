@@ -301,16 +301,13 @@
             console.log(navigator.geolocation);
             navigator.geolocation.getCurrentPosition(
               (position) => {
-                console.log("Clicked on pointer, position === ", position);
                 const pos = {
                   lat: position.coords.latitude,
                   lng: position.coords.longitude,
                 };
-                console.log("pos ==== ", pos);
                 this.userPosition = pos;
               },
               (error) => {
-                // handle error here.
                 console.log("error =========== ", error);
               }
             );
