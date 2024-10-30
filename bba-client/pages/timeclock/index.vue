@@ -84,7 +84,7 @@
               {{ getStatusFormat(item.status) }}
             </template>
             <template v-slot:[`item.duration`]="{ item }">
-              {{ getDurationFormat(item.duration) }}
+              {{ getDurationFormat(item.duration, item.status) }}
             </template>
             <!-- Name Editable Cell -->
             <template v-slot:item.note="{ item }">
@@ -333,8 +333,8 @@
             return "Unknown Status";
         }
       },
-      getDurationFormat(duration) {
-        if (duration === 0) return '';
+      getDurationFormat(duration, status) {
+        if (duration === 0 || status == 0) return '';
 
         const seconds = Math.floor(duration / 1000);
         const days = Math.floor(seconds / (24 * 3600));
