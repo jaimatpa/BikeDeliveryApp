@@ -26,6 +26,7 @@ const equipmentType = require("./user/equipmentType");
  
 
 const problem = require("./user/problem");
+const timeclock = require("./user/timeclock");
 const problemType = require("./user/problemType");
 const activity = require("./user/activity");
 const deal = require("./user/deal");
@@ -76,6 +77,7 @@ module.exports = {
 
     // * Problems
     app.use("/api/user/problems", problem);
+    app.use("/api/user/timeclock", timeclock);
     app.use("/api/user/problems/:id", problem);
 
     // * Problem Types
