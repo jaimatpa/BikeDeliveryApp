@@ -88,6 +88,14 @@ export default {
                     color: "primary",
                 },
                 {
+                    title: "TIME CLOCK",
+                    icon: "mdi-timer",
+                    iconSelected: "mdi-timer-marker",
+                    to: "/timeclock",
+                    disabled: false,
+                    color: "primary",
+                },
+                {
                     title: "EQUIPMENT SWAP",
                     icon: "mdi-swap-horizontal-circle-outline",
                     iconSelected: "mdi-swap-horizontal-circle",
