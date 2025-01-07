@@ -28,7 +28,6 @@ async function getlogs(req, res) {
       );
     }
 
-
     try {
         const data = await models.Timeclock.findAll({
             where: {
@@ -40,8 +39,13 @@ async function getlogs(req, res) {
             limit: 100,
             logging: true,
         });
+        const logs = data.map((item)=>item.dataValues)
+        if(logs.length > 0 && logs[0]){
+            const currDate = new Date();
+            logs[0].duration = Math.abs(currDate.getTime() - logs[0].createdAt);
+        }
 
-        return res.send(data);
+        return res.send(logs);
     } catch (error) {
         console.log(error);
     }
@@ -120,10 +124,9 @@ async function createTimeclock(req, res) {
         
         if(lastLog){
             const laststatusTime = lastLog.createdAt;
-    
+
             if (laststatusTime) {
                 const duration = Math.abs(newTime - laststatusTime);
-                console.log(duration);
                 lastLog.duration = duration;
                 await lastLog.save();
             }
