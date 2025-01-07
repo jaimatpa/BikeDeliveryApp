@@ -47,20 +47,6 @@
           </div>
         </v-col>
       </v-row>
-        
-      <!-- <v-text-field
-        v-model="search"
-        append-icon="mdi-magnify"
-        label="Search by Order #, Name, Location"
-        single-line
-        hide-details
-        outlined
-        dense
-        clearable
-        class="mb-5 order-search-text-field"
-        @keyup="onKeyUp"
-        @click:clear="onClearClicked"
-      ></v-text-field> -->
       <!-- Orders Mock Data Table -->
       <v-row>
         <v-col cols="12" xs="12" sm="12" md="12" xl="12" class="mt-1">
@@ -148,6 +134,7 @@
       return {
         breakpoint: 640,
         totalOrders: 0,
+        timeInterval: null,
         orders: [],
         search: "",
         loading: true,
@@ -161,7 +148,7 @@
           //   value: "id",
           // },
           {
-            text: "Time",
+            text: "From",
             align: "start",
             value: "createdAt",
             sortable: false, 
@@ -232,9 +219,9 @@
         },
         deep: true,
       },
-      search: function(newValue) {
-        this.getDataFromApi();
-      },
+      // search: function(newValue) {
+      //   this.getDataFromApi();
+      // },
       status(newValue) {
         this.handleStatusChange(newValue);
       },
@@ -364,29 +351,28 @@
           return "NO";
         }
       },
-      onKeyUp(event) {
-        // console.log('key uppppppp ', typeof event.target.value,  `${event.target.value}`.length)
-        if (event.key === "Enter") {
-          this.getDataFromApi();
-        } else if (`${event.target.value}`.length === 0) {
-          // if someone clears the input field.
-          this.getDataFromApi();
-        }
-      },
       async getDataFromApi() {
         this.loading = true;
-        this.apiCall().then((data) => {
+
+        try {
+          const data = await this.apiCall();
           this.orders = data.items;
           this.totalOrders = data.total;
+          if (this.timeInterval) {
+            clearInterval(this.timeInterval);
+          }
+          this.timeInterval = setInterval(() => {
+            const firstItem = this.orders[0];
+            if (firstItem && firstItem.status === 1) {
+              firstItem.duration += 1000;
+            }
+          }, 1000);
+
+        } catch (error) {
+          console.error('Error fetching data:', error);
+        } finally {
           this.loading = false;
-        });
-      },
-      onClearClicked() {
-        if (this.search !== "" || this.searchByBarcode !== "") {
-          this.search = "";
-          this.searchByBarcode = "";
         }
-        this.getDataFromApi();
       },
       apiCall() {
         return new Promise(async (resolve, reject) => {
