@@ -237,7 +237,6 @@
         if(resposne) this.status = resposne.status
       },
       async saveNote(item){
-        console.log(item);
         await this.$axios.$put("/api/user/timeclock", {
           ...item
         });
@@ -303,7 +302,7 @@
       },
       getDateFormat(date) {
         return moment(date)
-          .add(4, "hours")
+          // .add(4, "hours")
           .format("MM/DD/YYYY hh:mm A");
       },
       getStatusFormat(status) {

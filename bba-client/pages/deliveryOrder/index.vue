@@ -164,8 +164,8 @@ export default {
         }),
         getDateFormat(date) {
             return moment(date)
-                .add(4, "hours")
-                .format("MM/DD/YYYY hh:mm A");
+                // .add(4, "hours")
+                .format("MM/DD/YYYY");
         },
         getLockFormat(lock) {
             if (lock) {
