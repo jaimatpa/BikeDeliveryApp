@@ -143,7 +143,9 @@ export default {
     },
     methods: {
         getDateFormat(date) {
-            return moment(date).add(4, 'hours').format("MM/DD/YYYY hh:mm A");
+            return moment(date)
+                // .add(4, 'hours')
+                .format("MM/DD/YYYY");
         },
         delivarieselectValueColor(color) {
             return {

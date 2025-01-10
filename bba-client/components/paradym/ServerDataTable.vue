@@ -302,7 +302,9 @@ export default {
         },
         formatDate(date) {
             let d = new Date(date);
-            return moment(date).add(4, 'hours').format('MM/DD/YYYY hh:mm A');
+            return moment(date)
+                // .add(4, 'hours')
+                .format('MM/DD/YYYY');
         },
         debounce(func, delay) {
             clearTimeout(this.timer);

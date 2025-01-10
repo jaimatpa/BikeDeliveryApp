@@ -164,7 +164,9 @@ export default {
             showError: "error"
         }),
         getDateFormat(date) {
-            return moment(date).add(4, 'hours').format("MM/DD/YYYY hh:mm A");
+            return moment(date)
+                // .add(4, 'hours')
+                .format("MM/DD/YYYY");
         },
         onClearClicked() {
             if (this.search !== "" || this.searchByBarcode !== "") {
