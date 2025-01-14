@@ -116,9 +116,12 @@ async function createTimeclock(req, res) {
             limit: 100,
         });
 
+        const data = {...req.body}
+
         const newTimeclock = await models.Timeclock.create({
-            ...req.body,
-            user_id: decodedToken.id
+            ...data,
+            user_id: decodedToken.id,
+            logging: true,
         })
         const newTime = newTimeclock.createdAt;
         
