@@ -415,7 +415,6 @@ export default {
             setInterval( this.getNotifications , 15000);
         },      
         async getNotifications() {
-            console.log('Getting notifications for user');
 
             try 
             {
@@ -430,7 +429,6 @@ export default {
                         });
 
                         this.notifications = response.data;
-                        console.log('notifications have been updated', response.data);
                     })
                 // }
                 //else {
@@ -445,14 +443,12 @@ export default {
         getUserPosition () {
             if (process.client) {
                 if (navigator.geolocation) {
-                    console.log(navigator.geolocation);
                     navigator.geolocation.getCurrentPosition(
                         (position) => {
                             const pos = {
                                 lat: position.coords.latitude,
                                 lng: position.coords.longitude,
                             };
-                            console.log("pos ==== ", pos);
                             this.userPosition = pos;
                         },
                         (error) => {
