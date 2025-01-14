@@ -284,7 +284,6 @@
       getUserPosition () {
         if (process.client) {
           if (navigator.geolocation) {
-            console.log(navigator.geolocation);
             navigator.geolocation.getCurrentPosition(
               (position) => {
                 const pos = {
@@ -364,7 +363,7 @@
             const firstItem = this.orders[0];
             if (firstItem && firstItem.status === 1) {
               firstItem.duration += 1000;
-            }
+            }else firstItem.duration = 1000;
           }, 1000);
 
         } catch (error) {

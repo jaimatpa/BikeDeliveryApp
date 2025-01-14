@@ -723,7 +723,6 @@ export default {
                 lat: position.coords.latitude,
                 lng: position.coords.longitude,
               };
-              // console.log("pos ==== ", pos);
               this.userPosition = pos;
             },
             (error) => {
