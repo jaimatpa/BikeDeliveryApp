@@ -9,7 +9,7 @@ const config = require(__dirname + '/../config/config.js')[env];
 const db = {};
 
 const options = {
-  timezone: 'America/New_York', // Set timezone to New York
+  // timezone: 'America/New_York', // Set timezone to New York
 };
 
 let sequelize;

@@ -356,15 +356,16 @@
           const data = await this.apiCall();
           this.orders = data.items;
           this.totalOrders = data.total;
-          if (this.timeInterval) {
-            clearInterval(this.timeInterval);
-          }
-          this.timeInterval = setInterval(() => {
-            const firstItem = this.orders[0];
-            if (firstItem && firstItem.status === 1) {
-              firstItem.duration += 1000;
-            }else firstItem.duration = 1000;
-          }, 1000);
+          // if (this.timeInterval) {
+          //   clearInterval(this.timeInterval);
+          // }
+          if(!this.timeInterval)
+            this.timeInterval = setInterval(() => {
+              const firstItem = this.orders[0];
+              if (firstItem && firstItem.status === 1) {
+                firstItem.duration += 1000;
+              }else firstItem.duration = 1000;
+            }, 1000);
 
         } catch (error) {
           console.error('Error fetching data:', error);
