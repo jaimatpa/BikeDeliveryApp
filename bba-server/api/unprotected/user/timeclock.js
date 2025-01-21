@@ -5,6 +5,7 @@ const status = require("http-status");
 const apiError = require("../../../libs/apiError");
 const apiMessage = require("./../../../language/en.json");
 const verifyAuthHeader = require("../../extensions/verifyAuthHeader");
+const { Op, QueryTypes } = require('sequelize');
 
 const router = express.Router();
 
@@ -31,7 +32,10 @@ async function getlogs(req, res) {
     try {
         const data = await models.Timeclock.findAll({
             where: {
-                user_id: decodedToken.id
+                user_id: decodedToken.id,
+                deletedAt: {
+                    [Op.is]: null
+                },
             },
             order: [
                 ['id', 'Desc'],
@@ -69,7 +73,10 @@ async function getLastStatus(req, res) {
     try {
         const data = await models.Timeclock.findOne({
             where: {
-                user_id: decodedToken.id
+                user_id: decodedToken.id,
+                deletedAt: {
+                    [Op.is]: null
+                },
             },
             order: [
                 ['id', 'Desc'],
@@ -108,7 +115,10 @@ async function createTimeclock(req, res) {
         
         const lastLog = await models.Timeclock.findOne({
             where: {
-                user_id: decodedToken.id
+                user_id: decodedToken.id,
+                deletedAt: {
+                    [Op.is]: null,
+                }
             },
             order: [
                 ['id', 'Desc'],
@@ -171,7 +181,8 @@ async function updateTimeclock(req, res) {
  */
 async function deleteTimeclock(req, res) {
     try {
-        const deletedTimeclock = await models.Timeclock.destroy({
+        const deletedTimeclock = await models.Timeclock.update({deletedAt:new Date()},
+        {
             where: {
                 id: req.body.itemID
             }
