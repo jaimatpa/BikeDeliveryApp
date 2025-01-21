@@ -36,6 +36,9 @@ module.exports = (sequelize, DataTypes) => {
         note: {
             type: DataTypes.STRING,
         },
+        deletedAt: {
+            type: DataTypes.DATE
+        }
     }, {
         sequelize,
         modelName: "Timeclock",
