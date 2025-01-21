@@ -57,7 +57,6 @@
             :options.sync="options"
             :hide-default-footer="false"
             :server-items-length="totalOrders"
-            :loading="loading"
             class="elevation-1"
             :mobile-breakpoint="0"
             :items-per-page="10"
@@ -185,28 +184,31 @@
             title: "Clock in",
             icon: require("./../../assets/images/timer_start.svg"),
             opacity: 1,
-            function: () => {
+            function: async () => {
               if(this.status == 0) this.status = 1;
               else if(this.status == 1) this.status = 2;
               else if(this.status > 1) this.status = 1;
+              this.updateServerStatus();
             },
           },
           {
             title: "Lunch",
             icon: require("./../../assets/images/timer_lunchbreak.svg"),
             opacity: 0.3,
-            function: () => {
+            function: async () => {
               if(this.status == 0 || this.status == 3) return;
               this.status = 3;
+              this.updateServerStatus();
             },
           },
           {
             title: "Clock out",
             icon: require("./../../assets/images/timer_stop.svg"),
             opacity: 0.3,
-            function: () => {
+            function: async () => {
               if(this.status == 0) return;
               this.status = 0;
+              this.updateServerStatus();
             },
           },
         ],
@@ -231,10 +233,35 @@
       this.getDataFromApi();
       this.getUserPosition();
     },
+    mounted() {
+      this.startStatusPolling();
+    },
+    beforeDestroy() {
+      this.stopStatusPolling();
+    },
     methods: {
       async getLastStatus() {
         const resposne = await this.$axios.$get("/api/user/timeclock/lastStatus");
-        if(resposne) this.status = resposne.status
+        if(resposne) {
+          this.status = resposne.status
+          if(this.orders){
+            const firstItem = this.orders[0];
+            if (firstItem && firstItem.status === 1) {
+              firstItem.duration = resposne.duration;
+            }
+          }
+        }
+      },
+      startStatusPolling() {
+        this.statusInterval = setInterval(async () => {
+          await this.getLastStatus();
+        }, 1000);
+      },
+      stopStatusPolling() {
+        if (this.statusInterval) {
+          clearInterval(this.statusInterval);
+          this.statusInterval = null;
+        }
       },
       async saveNote(item){
         await this.$axios.$put("/api/user/timeclock", {
@@ -272,6 +299,8 @@
             this.Items[2].opacity = 1;
             break;
         }
+      },
+      async updateServerStatus(){
         if(!this.loading) {
           await this.$axios.$post("/api/user/timeclock", {
             status: this.status,
@@ -359,13 +388,13 @@
           // if (this.timeInterval) {
           //   clearInterval(this.timeInterval);
           // }
-          if(!this.timeInterval)
-            this.timeInterval = setInterval(() => {
-              const firstItem = this.orders[0];
-              if (firstItem && firstItem.status === 1) {
-                firstItem.duration += 1000;
-              }else firstItem.duration = 1000;
-            }, 1000);
+          // if(!this.timeInterval)
+          //   this.timeInterval = setInterval(() => {
+          //     const firstItem = this.orders[0];
+          //     if (firstItem && firstItem.status === 1) {
+          //       firstItem.duration += 1000;
+          //     }else firstItem.duration = 1000;
+          //   }, 1000);
 
         } catch (error) {
           console.error('Error fetching data:', error);
