@@ -223,6 +223,7 @@ import cyclePhoto from "@/assets/images/cycle@2x.png";
 import ThirdSwapStepper from "@/components/delivery-order/steppers/ThirdSwapStepper";
 import FourthSwapStepper from "@/components/delivery-order/steppers/FourthSwapStepper";
 import FourthStepper from "@/components/delivery-order/steppers/FourthStepper";
+const axios = require('axios');
 
 export default {
   name: "deliveryOrderDetails",
@@ -399,6 +400,7 @@ export default {
     ...mapActions("snackbar", {
       showSuccess: "success",
       showError: "error",
+      showWarn: "warning",
     }),
     async getOrderItems() {
       try { 
@@ -425,9 +427,9 @@ export default {
     },
     async code(value) {
       console.log("CURRENTITEM", this.currentItem);
+      this.closeScanner();
       if(this.currentItem.broken == 1){
         if(this.currentItem.serialbarcode != value){
-          this.closeScanner();
           this.showError('You sanned a wrong item');
         }else{
           this.currentItem.checkPickup = true;
@@ -435,9 +437,34 @@ export default {
         }
       }else{
         if(this.equipment2.find(item=>item.serialbarcode == value)){
-          this.closeScanner();
           this.showError('You sanned a broken item');
         }else{
+          if(this.currentItem.serialbarcode == value) {
+            this.showWarn('You already scanned this item');
+            return;
+          }
+
+          const response = await axios.post(this.$config.bodhisysAPIURL+"/product/getproductdetailbybarcode",
+            {
+              barcode: value,
+            }
+          );
+
+          if(!response || !response.data) {
+            this.showError('You sanned a wrong item');
+            return;
+          }
+
+          if(this.currentItem.item != response.data.family.display_name) {
+            this.showError('You sanned a wrong item');
+            return;
+          }
+
+          if(response.data.status >= 2 ) {
+            this.showError('This item is not available');
+            return;
+          }
+
           this.currentItem.serialbarcode = value;
           this.currentItem.checkedDelievery = true;
           this.saveUpdate(this.currentItem);
@@ -445,10 +472,7 @@ export default {
       }
     },
     async saveUpdate(item) {
-      console.log("ITEM", item);
       let response = await this.$axios.$put("/api/user/deliveryItem", item);
-      console.log("RESPONSE", response);
-      this.closeScanner();
       this.getOrderItems();
     },
     closeScanner() {
@@ -484,7 +508,6 @@ export default {
     async getLockingDetails() {
       const lockingDataResponse = await this.$axios.$get("/api/user/locking");
       this.lockingData = lockingDataResponse;
-      console.log(lockingDataResponse);
       this.colorItems = _.map(lockingDataResponse, "color");
     },
     getUserlocation() {
