@@ -197,9 +197,10 @@ export default {
             let result = await this.$axios.get(`/api/user/getOrder`, {
                 params: orderParam,
             });
-            console.log(result);
-            if (result.data == "1") {
-                this.$router.push(`/deliveryOrder/${value}`);
+            if (result.data) {
+                if(result.data.stage == 2 && result.data.swapOrderDeliveryId == null)
+                    this.$router.push(`/deliveryOrder/${value}`);
+                else this.showError("This order is not a confirmed order");
             } else {
                 this.showError("The scanned order does not appear to be in the system.");
             }
