@@ -53,10 +53,10 @@ router.get("/", async (req, res) => {
     let deliveryOrder = data[0];
     if (deliveryOrder) {
         console.log("IN GET SUCCESS");
-        return res.send('1');
+        return res.send(deliveryOrder);
     } else {
         console.log("IN GET FAILURE");
-        return res.send('0');
+        return res.send(null);
     }
 });
 

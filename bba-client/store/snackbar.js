@@ -48,6 +48,9 @@ export const actions = {
     if (value.color) commit("setColor", value.color);
     else if (value.canClose) commit("setColor", "primary");
 
+    // Set TextColor
+    if (value.textColor) commit("setTextColor", value.textColor);
+
     // Set CanClose
     if (value.canClose) commit("setCanClose", value.canClose);
 
@@ -72,6 +75,16 @@ export const actions = {
       timeout: 2000,
       color: "success",
       canClose: false,
+      message: message,
+    });
+  },
+
+  async warning({ commit, dispatch }, message) {
+    dispatch("busy", {
+      timeout: 3000,
+      color: "warning",
+      textColor: "black",
+      canClose: true,
       message: message,
     });
   },

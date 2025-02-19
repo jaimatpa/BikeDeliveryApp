@@ -45,10 +45,10 @@ router.post("/createEquipmentItemsSwapOrder", async (req, res) => {
             x.id = null;
             // await models.DeliveryItem.build(x).save();
             x.serialbarcode = null;
-            x.status = 2;
+            x.Loaded = null;
+            x.status = null;
 
             const insertQuery = DeliveryItemsQuery.inseretDeliveryItemByTranslation(x);
-            // console.log(insertQuery);
             const [newId] = await models.sequelize.query(insertQuery, {
                 type: models.sequelize.QueryTypes.INSERT
             });

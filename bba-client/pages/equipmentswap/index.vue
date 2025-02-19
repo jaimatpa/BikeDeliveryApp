@@ -17,7 +17,7 @@
             Swap Equipment
         </v-btn>
 
-    <v-data-table :headers="headers" :items="delivaries" :options.sync="options" :server-items-length="totalOrderDelivery" :loading="loading" :search="search" class="elevation-1" :mobile-breakpoint="0" sort-by="date" :sort-desc="false">
+    <v-data-table :headers="headers" :items="delivaries" :options.sync="options" :server-items-length="totalOrderDelivery" :loading="loading" :search="search" class="elevation-1" :mobile-breakpoint="0" sort-by="date" :sort-desc="true">
         <!-- Date -->
         <template v-slot:item.date="{ item }">
             {{ getDateFormat(item.date) }}
@@ -182,9 +182,13 @@ export default {
                 orderid: value
             }
             let result = await this.$axios.get(`/api/user/getOrder`, {params: orderParam});
-            console.log(result);
-            if (result.data == '1') {
-                this.$router.push(`/deliveryOrder/${value}`);
+            if (result.data) {
+                if(result.data.swapOrderDeliveryId)
+                    this.$router.push(`/equipmentswap/${value}`);
+                else{
+                    this.showError("This order is not a swap order");
+                    // this.$router.push(`/deliveryOrder/${value}`);
+                } 
             } else {
                 this.showError("The scanned order does not appear to be in the system.");
             }

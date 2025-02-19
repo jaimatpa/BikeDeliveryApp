@@ -67,6 +67,15 @@ router.post("/createEquipmentSwapOrder", async (req, res) => {
         if(data.price_table_id) delete data.price_table_id;
         if(data.textSent) delete data.textSent;
         if(data.discount_amount) delete data.discount_amount;
+        if(data.stripe_cus_id) delete data.stripe_cus_id;
+
+        const now = new Date();
+        const year = now.getFullYear();
+        const month = String(now.getMonth() + 1).padStart(2, '0');
+        const day = String(now.getDate()).padStart(2, '0');
+        const currentDate = `${year}-${month}-${day}`;
+        data.date = currentDate;
+        console.log(data.date);
 
         data.status = 0;
 
@@ -116,6 +125,7 @@ router.get("/", async (req, res) => {
         const search = req.query.search;
         const type = req.query.type;
         const barcodeid = req.query.barcodeid;
+
         if (search) {
             try {
                 const whereConditions = {
@@ -157,9 +167,12 @@ router.get("/", async (req, res) => {
                 
                 if (type === "DeliveryOrders") {
                     data = data.filter((record => {
-                        var d = moment(record.date).add(4, 'hours').startOf('day');
-                        var today = moment().endOf('day');
-                        if (d >= today && record.status == 0) {
+                        var d = moment(record.date)
+                            .add(4, 'hours')
+                            .startOf('day');
+                        var today = moment().startOf('day');
+                        // if (d >= today && record.status == 0) {
+                        if (record.status == 0 && record.swapOrderDeliveryId == null) {
                             return true;
                         } else {
                             return false;
@@ -168,7 +181,9 @@ router.get("/", async (req, res) => {
                 }
                 else if (type === "Locking") {
                     data = data.filter((record => {
-                        var d = moment(record.date).add(4, 'hours').format('LL');
+                        var d = moment(record.date)
+                            // .add(4, 'hours')
+                            .format('LL');
                         var today = moment().format('LL');
                         if (d >= today) {
                             return true;
@@ -186,9 +201,10 @@ router.get("/", async (req, res) => {
                     data = data.filter( ( record => {
                         record.swapOrder == 0
                     }));
-                    // console.log(data);
                     data = data.filter((record => {
-                        var d = moment(record.date).add(4, 'hours').format('LL');
+                        var d = moment(record.date)
+                            // .add(4, 'hours')
+                            .format('LL');
                         var today = moment().format('LL');
                         if (d == today) {
                             return true;
@@ -198,7 +214,9 @@ router.get("/", async (req, res) => {
                     }));
                 } else if (type === "Resend") {
                     data = data.filter((record => {
-                        var d = moment(record.date).add(4, 'hours').format('LL');
+                        var d = moment(record.date)
+                            // .add(4, 'hours')
+                            .format('LL');
                         var today = moment().format('LL');
                         if (d > today && record.status == 1) {
                             return true;
@@ -208,7 +226,9 @@ router.get("/", async (req, res) => {
                     }));
                 } else if (type === "Logistics") {
                     data = data.filter((record => {
-                        var d = moment(record.date).add(4, 'hours').format('LL');
+                        var d = moment(record.date)
+                            // .add(4, 'hours')
+                            .format('LL');
                         var today = moment().format('LL');
                         if (d >= today && record.status == 0) {
                             return true;
@@ -237,7 +257,6 @@ router.get("/", async (req, res) => {
                 }else if (type === "truckloading") {
                     console.log('trcukloading filter');
                     data = data.filter((record => {
-                        console.log(record.tripID);
                         if ((record.stage == 2) && record.tripID) {
                             return true;
                         } else {
@@ -289,11 +308,12 @@ router.get("/", async (req, res) => {
 
             if (type === "DeliveryOrders") {
                 data = data.filter((record => {
-                    var d = moment(record.date).add(4, 'hours').startOf('day');
+                    var d = moment(record.date)
+                        // .add(4, 'hours')
+                        .startOf('day');
                     // var today = moment().endOf('day');
-                    var today = moment().startOf('day');
-                    // console.log(d, today);
-                    if (d >= today && record.status == 0) {
+                    var today = moment().add(-4, 'hours').startOf('day');
+                    if (d >= today && record.status == 0 && record.swapOrderDeliveryId == null) {
                         return true;
                     } else {
                         return false;
@@ -310,7 +330,9 @@ router.get("/", async (req, res) => {
             }
             else if (type === "Locking") {
                 data = data.filter((record => {
-                    var d = moment(record.date).add(4, 'hours').startOf('day').format('LL');
+                    var d = moment(record.date)
+                        // .add(4, 'hours')
+                        .startOf('day').format('LL');
                     var today = moment().format('LL');
                     if (d >= today) {
                         return true;
@@ -324,13 +346,13 @@ router.get("/", async (req, res) => {
                     record.swapOrder == 0
                 }));
             } else if (type === "Dashboard") { 
-                console.log("******************************************************************");
                 // data = data.filter( ( record => {
                 //     return record.swapOrder == 0
                 // }));
-                // console.log(data);
                 data = data.filter((record => {
-                    var d = moment(record.date).add(4, 'hours').format("LL");
+                    var d = moment(record.date)
+                        // .add(4, 'hours')
+                        .format("LL");
                     var today = moment().format("LL");
                     if (d == today) {
                         return true;
@@ -340,7 +362,9 @@ router.get("/", async (req, res) => {
                 }));
             } else if (type === "Resend") {
                 data = data.filter((record => {
-                    var d = moment(record.date).add(4, 'hours').startOf('LL');
+                    var d = moment(record.date)
+                        // .add(4, 'hours')
+                        .startOf('LL');
                     var today = moment().format('LL');
                     if (d > today && record.status == 1) {
                         return true;
@@ -350,7 +374,9 @@ router.get("/", async (req, res) => {
                 }));
             } else if (type === "Logistics") {
                 data = data.filter((record => {
-                    var d = moment(record.date).add(4, 'hours').startOf('day');
+                    var d = moment(record.date)
+                        // .add(4, 'hours')
+                        .startOf('day');
                     var today = moment().endOf('day');
                     if (d >= today && record.status == 0) {
                         return true;
@@ -360,8 +386,10 @@ router.get("/", async (req, res) => {
                 }));
             } else if (type === "Pickup") {
                 data = data.filter((record => {
-                    var d = moment(record.date).add(4, 'hours').format('LL');
-                    var today = moment().format('LL');
+                    var d = moment(record.date)
+                        // .add(4, 'hours')
+                        .format('LL');
+                    var today = moment().add(-4, 'hours').format('LL');
                     if (record.status == 1 && record.PickedUp == 0 && record.swapOrder == 0) {
                         return true;
                     } else {
@@ -448,7 +476,6 @@ function customDeliveryOrderSort(deliveryOrders, areas, villas, streetAddresses)
 }
 
 router.get("/query", async (req, res) => {
-    console.log('wefwef');
     const { order_type, date, type } = req.query;
     var { status } = req.query;
 
@@ -457,7 +484,6 @@ router.get("/query", async (req, res) => {
 
     if (order_type === "delivery_order") {
         const selectedDate = new Date(date);
-        console.log(selectedDate);
         const startOfDay = new Date(selectedDate.getFullYear(), selectedDate.getMonth(), selectedDate.getDate());
         const endOfDay = new Date(selectedDate.getFullYear(), selectedDate.getMonth(), selectedDate.getDate() + 1);
         // Fetch all records from the three tables
