@@ -97,6 +97,8 @@ const updateDeliveryOrderByTranslation = (order) => {
   let stage = null;
   if(order.status == 0) stage = 2;
   else if(order.status >= 1) stage = 3;
+  
+  if (order.PickedUp) stage = 4;
 
   const query = `
     UPDATE reservations
