@@ -536,7 +536,7 @@ router.get("/query", async (req, res) => {
         {
             selectedDate = new Date(date);
             startOfDay = new Date(selectedDate.getFullYear(), selectedDate.getMonth(), selectedDate.getDate());
-            endOfDay = new Date(selectedDate.getFullYear(), selectedDate.getMonth(), selectedDate.getDate() + 1);
+            endOfDay = new Date(selectedDate.getFullYear(), selectedDate.getMonth(), selectedDate.getDate());
             where = {
                 and:{
                     date: {
